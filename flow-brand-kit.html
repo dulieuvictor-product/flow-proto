@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elo (flow) — Brand Kit v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F2F4F8;--surface:#FFFFFF;--surface2:#F7F9FC;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);
+  --ink:#1A1C1E;--slate:#4A5568;--muted:#8A95A3;
+  --primary:#0E8FCC;--primary-tint:#EAF6FD;
+  --success:#2A9554;--success-tint:#E8F8EF;
+  --warning:#C27B00;--warning-tint:#FEF4E0;
+  --danger:#D63050;--danger-tint:#FDEAED;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);display:flex;min-height:100vh}
+
+/* SIDEBAR NAV */
+.sidebar{
+  width:240px;flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+.sidebar-brand{
+  padding:20px 16px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-mark svg{width:18px;height:18px}
+.brand-name{font-size:13px;font-weight:300;color:var(--ink);letter-spacing:-0.02em;line-height:1.2}
+.brand-name strong{font-weight:600}
+.brand-sub{font-size:10px;color:var(--primary);font-family:var(--mono);display:block;margin-top:1px}
+.sidebar-tag{margin:12px 12px 4px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:0 4px}
+.sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12px;color:var(--slate);text-decoration:none;border-radius:0;transition:background 0.1s,color 0.1s;border-left:2px solid transparent}
+.sidebar-link:hover{background:var(--surface2);color:var(--ink)}
+.sidebar-link.active{color:var(--primary);font-weight:500;border-left-color:var(--primary);background:var(--primary-tint)}
+.sidebar-bottom{margin-top:auto;padding:12px 16px;border-top:1px solid var(--border)}
+.back-link{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);text-decoration:none;transition:color 0.1s}
+.back-link:hover{color:var(--primary)}
+
+/* MAIN CONTENT */
+.main{flex:1;min-width:0;padding:48px 56px 80px;max-width:860px}
+
+/* TYPOGRAPHY */
+h1{font-size:32px;font-weight:300;letter-spacing:-0.04em;color:var(--ink);margin-bottom:8px;margin-top:0;line-height:1.1}
+h2{font-size:20px;font-weight:500;letter-spacing:-0.02em;color:var(--ink);margin:40px 0 14px;padding-top:8px}
+h2:first-child{margin-top:0}
+h3{font-size:14px;font-weight:600;color:var(--ink);margin:24px 0 10px}
+p{font-size:14px;color:var(--slate);line-height:1.7;margin-bottom:12px}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{font-weight:600;color:var(--ink)}
+em{font-style:italic}
+code{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px solid var(--border2);padding:1px 6px;border-radius:4px;color:var(--primary)}
+pre{background:var(--ink);border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0}
+pre code{background:transparent;border:none;color:#C8D3E0;font-size:12px;padding:0;line-height:1.7}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+blockquote{border-left:3px solid var(--primary);background:var(--primary-tint);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:13px;color:var(--slate);font-style:italic}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+thead{background:var(--surface2)}
+th{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-family:var(--mono)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink);vertical-align:top;line-height:1.5}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface2)}
+
+/* LISTS */
+ul,ol{padding-left:20px;margin:12px 0}
+li{font-size:14px;color:var(--slate);line-height:1.7;margin-bottom:4px}
+li strong{color:var(--ink)}
+
+/* SWATCH DISPLAY — rendered from table cells containing hex values */
+td code[style]{display:inline-block}
+
+/* HEADER SECTION */
+.page-header{margin-bottom:40px;padding-bottom:32px;border-bottom:2px solid var(--border)}
+.page-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:10px}
+.page-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.meta-tag{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);background:var(--surface2)}
+.meta-tag.active{background:var(--primary-tint);color:var(--primary);border-color:rgba(14,143,204,0.3)}
+
+/* COLOUR SWATCHES — inject into table cells that have hex */
+.hex-swatch{display:inline-flex;align-items:center;gap:6px}
+.hex-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,0.1)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{padding:32px 24px 60px}
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.main{animation:fadeIn 0.4s ease both}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="brand-name">elo<strong>logik</strong><span class="brand-sub">(flow)</span></div>
+  </div>
+
+  <div class="sidebar-tag">Foundations</div>
+  <a href="#identite" class="sidebar-link">Identite &amp; Positionnement</a>
+  <a href="#typographie" class="sidebar-link">Typographie</a>
+  <a href="#palette-light" class="sidebar-link">Palette Light Mode</a>
+  <a href="#palette-dark" class="sidebar-link">Palette Dark Mode</a>
+  <a href="#palette-dataviz" class="sidebar-link">Data Visualization</a>
+  <a href="#spacing" class="sidebar-link">Spacing &amp; Layout</a>
+  <a href="#icones" class="sidebar-link">Icones</a>
+
+  <div class="sidebar-tag">Composants</div>
+  <a href="#boutons" class="sidebar-link">Boutons</a>
+  <a href="#badges" class="sidebar-link">Badges &amp; Tags</a>
+  <a href="#inputs" class="sidebar-link">Inputs &amp; Form</a>
+  <a href="#molecules" class="sidebar-link">Molecules</a>
+  <a href="#organisms" class="sidebar-link">Organisms</a>
+
+  <div class="sidebar-tag">Usage</div>
+  <a href="#regles" class="sidebar-link">Regles d'usage</a>
+
+  <div class="sidebar-bottom">
+    <a href="index.html" class="back-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour au portail
+    </a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <div class="page-eyebrow">Brand Kit</div>
+    <h1>elo (flow) — Design System v1.0</h1>
+    <p style="font-size:15px;margin-bottom:0">Systeme de design pour eLogik Flow, l'outil de data visualization logistique.</p>
+    <div class="page-meta">
+      <span class="meta-tag active">v1.0</span>
+      <span class="meta-tag">Mars 2026</span>
+      <span class="meta-tag">Plus Jakarta Sans</span>
+      <span class="meta-tag">DM Mono</span>
+      <span class="meta-tag">En cours</span>
+    </div>
+  </div>
+
+  <div id="identite"></div>
+  <div id="typographie"></div>
+  <div id="palette-light"></div>
+  <div id="palette-dark"></div>
+  <div id="palette-dataviz"></div>
+  <div id="spacing"></div>
+  <div id="icones"></div>
+  <div id="boutons"></div>
+  <div id="badges"></div>
+  <div id="inputs"></div>
+  <div id="molecules"></div>
+  <div id="organisms"></div>
+  <div id="regles"></div>
+
+<h1>🌊 Flow — Brand Kit v1.0</h1>
+<blockquote>Système de design pour <strong>eLogik Flow</strong>, l'outil de data visualization logistique.</blockquote>
+<blockquote>Dernière mise à jour : mars 2026 · Statut : <strong>En cours</strong></blockquote>
+
+<hr>
+
+<h2>📋 Table des matières</h2>
+
+<ol>
+<li><a href="#identite" target="_blank">Identité & Positionnement</a></li>
+<li><a href="#typographie" target="_blank">Typographie</a></li>
+<li><a href="#palette-light" target="_blank">Palette de couleurs — Light Mode</a></li>
+<li><a href="#palette-dark" target="_blank">Palette de couleurs — Dark Mode & Fluos</a></li>
+<li><a href="#palette-dataviz" target="_blank">Palette Data Visualization</a></li>
+<li><a href="#spacing" target="_blank">Spacing & Layout</a></li>
+<li><a href="#icones" target="_blank">Icônes</a></li>
+<li><a href="#boutons" target="_blank">Atoms — Boutons</a></li>
+<li><a href="#badges" target="_blank">Atoms — Badges & Tags</a></li>
+<li><a href="#inputs" target="_blank">Atoms — Inputs & Form</a></li>
+<li><a href="#molecules" target="_blank">Molecules — Composants composites</a></li>
+<li><a href="#organisms" target="_blank">Organisms — Patterns complets</a></li>
+<li><a href="#regles" target="_blank">Règles d'usage</a></li>
+</ol>
+
+<hr>
+
+<h2>🎯 Identité & Positionnement </h2>
+
+<table>
+<thead><tr><th>Attribut</th><th>Valeur</th></tr></thead><tbody>
+<tr><td><strong>Nom produit</strong></td><td>Flow</td></tr>
+<tr><td><strong>Famille</strong></td><td>eLogik — Fine Logistic</td></tr>
+<tr><td><strong>Catégorie</strong></td><td>SaaS B2B · Data Visualization</td></tr>
+<tr><td><strong>Cibles</strong></td><td>Responsables logistiques, DSI, opérationnels terrain</td></tr>
+<tr><td><strong>Positionnement</strong></td><td>Fiabilité + accessible + human-first</td></tr>
+<tr><td><strong>Ton</strong></td><td>Professionnel sans être froid · Clair · Concret</td></tr>
+</tbody></table>
+
+<h3>Principes de design</h3>
+
+<ul>
+<li><strong>Clarté avant tout</strong> — chaque donnée doit être lisible au premier coup d'œil</li>
+<li><strong>Contraste fort</strong> — particulièrement en dark mode, pour des environnements d'opération intensive</li>
+<li><strong>Cohérence marque</strong> — les couleurs Flow sont directement héritées du logo eLogik</li>
+<li><strong>Accessibilité</strong> — toutes les combinaisons de couleurs respectent WCAG AA minimum</li>
+</ul>
+
+<hr>
+
+<h2>🔤 Typographie </h2>
+
+<h3>Police principale : Plus Jakarta Sans</h3>
+
+<blockquote>Choisie pour sa personnalité moderne sans être froide, et son excellente lisibilité aux petites tailles dans les tableaux de données.</blockquote>
+
+<p><strong>Source</strong> : Google Fonts — <code>Plus Jakarta Sans</code></p>
+<p><strong>Police mono</strong> : <code>DM Mono</code> — pour les codes commandes, références, données techniques</p>
+
+<hr>
+
+<h3>Échelle typographique</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Taille</th><th>Poids</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>--text-h1</code></td><td>32px</td><td>300 Light</td><td>Titres de page, grands chiffres KPI</td></tr>
+<tr><td><code>--text-h2</code></td><td>22px</td><td>500 Medium</td><td>Titres de section</td></tr>
+<tr><td><code>--text-h3</code></td><td>16px</td><td>500 Medium</td><td>Sous-titres, titres de card</td></tr>
+<tr><td><code>--text-body</code></td><td>14px</td><td>400 Regular</td><td>Contenu principal</td></tr>
+<tr><td><code>--text-caption</code></td><td>12px</td><td>400 Regular</td><td>Métadonnées, timestamps</td></tr>
+<tr><td><code>--text-label</code></td><td>10px</td><td>600 SemiBold</td><td>Labels uppercase, en-têtes de colonne</td></tr>
+<tr><td><code>--text-mono</code></td><td>12px</td><td>400 Regular</td><td>Codes, références, données brutes</td></tr>
+</tbody></table>
+
+<h3>Règles typographiques</h3>
+
+<ul>
+<li>Toujours <strong>sentence case</strong> — jamais ALL CAPS dans les titres principaux</li>
+<li>Les grands chiffres (KPIs) utilisent <strong>weight 300</strong> pour paraître légers et lisibles</li>
+<li>Les <strong>labels de colonnes</strong> sont en uppercase + letter-spacing 0.08em</li>
+<li><code>DM Mono</code> est réservé aux données identifiantes : CMD-48291, 1Z999AA…</li>
+</ul>
+
+<hr>
+
+<h2>🎨 Palette de couleurs — Light Mode </h2>
+
+<blockquote>Héritage direct du logo eLogik. Le cyan devient la couleur primaire de Flow, le lime est l'accent action/succès.</blockquote>
+
+<h3>Couleurs brand (extraites du logo)</h3>
+
+<table>
+<thead><tr><th>Nom</th><th>Hex</th><th>Rôle</th></tr></thead><tbody>
+<tr><td><strong>Lime eLogik</strong></td><td><code>#8DC63F</code></td><td>ADN marque — origine</td></tr>
+<tr><td><strong>Cyan eLogik</strong></td><td><code>#29ABE2</code></td><td>ADN marque — origine</td></tr>
+<tr><td><strong>Anthracite</strong></td><td><code>#58595B</code></td><td>ADN marque — origine</td></tr>
+</tbody></table>
+
+<h3>Couleurs primaires Flow</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Hex</th><th>Rôle</th></tr></thead><tbody>
+<tr><td><code>--color-primary</code></td><td><code>#0E8FCC</code></td><td>CTA principal, liens actifs</td></tr>
+<tr><td><code>--color-primary-hover</code></td><td><code>#075E8A</code></td><td>État hover, pressed</td></tr>
+<tr><td><code>--color-primary-tint</code></td><td><code>#C6EBF8</code></td><td>Background hover, sélection légère</td></tr>
+<tr><td><code>--color-accent</code></td><td><code>#78B82A</code></td><td>Succès, livré, action positive</td></tr>
+<tr><td><code>--color-accent-tint</code></td><td><code>#EDF7D9</code></td><td>Background succès, badge livré</td></tr>
+</tbody></table>
+
+<h3>Couleurs sémantiques</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Hex</th><th>Rôle</th></tr></thead><tbody>
+<tr><td><code>--color-success</code></td><td><code>#78B82A</code></td><td>Livré, validé, OK</td></tr>
+<tr><td><code>--color-warning</code></td><td><code>#F5A623</code></td><td>En attente, retard modéré</td></tr>
+<tr><td><code>--color-danger</code></td><td><code>#E2274A</code></td><td>Retard critique, erreur, alerte</td></tr>
+<tr><td><code>--color-info</code></td><td><code>#0E8FCC</code></td><td>Information, neutre</td></tr>
+</tbody></table>
+
+<h3>Neutrals & Surfaces</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Hex</th><th>Rôle</th></tr></thead><tbody>
+<tr><td><code>--color-ink</code></td><td><code>#1A1C1E</code></td><td>Texte primaire</td></tr>
+<tr><td><code>--color-slate</code></td><td><code>#4A5568</code></td><td>Texte secondaire</td></tr>
+<tr><td><code>--color-muted</code></td><td><code>#8A95A3</code></td><td>Texte tertiaire, placeholders</td></tr>
+<tr><td><code>--color-surface</code></td><td><code>#EEF1F5</code></td><td>Background secondaire</td></tr>
+<tr><td><code>--color-canvas</code></td><td><code>#F8FAFB</code></td><td>Background primaire (page)</td></tr>
+<tr><td><code>--color-border</code></td><td><code>rgba(0,0,0,0.10)</code></td><td>Bordures standard</td></tr>
+</tbody></table>
+
+<hr>
+
+<h2>🌑 Palette de couleurs — Dark Mode & Fluos </h2>
+
+<blockquote>En dark mode, les couleurs brand sont poussées à leur saturation maximale pour créer un contraste fort sur fonds profonds. Même signal sémantique, impact visuel décuplé.</blockquote>
+
+<h3>Surfaces dark</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Hex</th><th>Rôle</th></tr></thead><tbody>
+<tr><td><code>--dark-canvas</code></td><td><code>#0B0E13</code></td><td>Background primaire</td></tr>
+<tr><td><code>--dark-surface</code></td><td><code>#141920</code></td><td>Background card</td></tr>
+<tr><td><code>--dark-elevated</code></td><td><code>#1C2330</code></td><td>Background hover</td></tr>
+<tr><td><code>--dark-border</code></td><td><code>#253040</code></td><td>Bordures</td></tr>
+<tr><td><code>--dark-text-primary</code></td><td><code>#C8D3E0</code></td><td>Texte primaire</td></tr>
+<tr><td><code>--dark-text-secondary</code></td><td><code>#5A6478</code></td><td>Texte secondaire</td></tr>
+</tbody></table>
+
+<h3>Accents fluos — Dark Mode uniquement</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Hex</th><th>Correspond à</th><th>Signal</th></tr></thead><tbody>
+<tr><td><code>--fluo-cyan</code></td><td><code>#1ADCFF</code></td><td>Cyan eLogik <code>#29ABE2</code></td><td>Données actives, primaire</td></tr>
+<tr><td><code>--fluo-green</code></td><td><code>#22FF7A</code></td><td>Lime eLogik <code>#8DC63F</code></td><td>Succès, livré, flux actif</td></tr>
+<tr><td><code>--fluo-yellow</code></td><td><code>#FFE040</code></td><td>Warning amber</td><td>En attente, retard léger</td></tr>
+<tr><td><code>--fluo-red</code></td><td><code>#FF3B6A</code></td><td>Danger rouge</td><td>Critique, alerte urgente</td></tr>
+</tbody></table>
+
+<blockquote>⚠️ <strong>Règle stricte</strong> : les fluos sont <strong>exclusivement réservés au dark mode</strong>. Ne jamais utiliser <code>#22FF7A</code> sur fond blanc — le contraste est insuffisant et l'effet est agressif.</blockquote>
+
+<hr>
+
+<h2>📊 Palette Data Visualization </h2>
+
+<blockquote>6 couleurs distinctes, ordonnées par priorité de lecture. Testées daltonisme-friendly — rouge et vert ne sont jamais adjacents dans les composants de visualisation.</blockquote>
+
+<table>
+<thead><tr><th>Index</th><th>Nom</th><th>Hex light</th><th>Hex dark (fluo)</th><th>Usage</th></tr></thead><tbody>
+<tr><td>DV-1</td><td>Cyan</td><td><code>#29ABE2</code></td><td><code>#1ADCFF</code></td><td>Série principale, volume total</td></tr>
+<tr><td>DV-2</td><td>Lime</td><td><code>#8DC63F</code></td><td><code>#22FF7A</code></td><td>Livré, validé, objectif atteint</td></tr>
+<tr><td>DV-3</td><td>Ambre</td><td><code>#F5A623</code></td><td><code>#FFE040</code></td><td>En attente, prévisionnel</td></tr>
+<tr><td>DV-4</td><td>Rouge</td><td><code>#E2274A</code></td><td><code>#FF3B6A</code></td><td>Retard, alerte, erreur</td></tr>
+<tr><td>DV-5</td><td>Violet</td><td><code>#7E57C2</code></td><td><code>#A97FFF</code></td><td>Données prévisionnelles, secondaires</td></tr>
+<tr><td>DV-6</td><td>Ardoise</td><td><code>#58595B</code></td><td><code>#4A5568</code></td><td>Inactif, historique, comparaison</td></tr>
+</tbody></table>
+
+<h3>Règles d'usage data viz</h3>
+
+<ul>
+<li>Toujours utiliser <strong>DV-1 en premier</strong> pour la série la plus importante</li>
+<li>Ne jamais placer <strong>DV-2 (vert) et DV-4 (rouge) côte à côte</strong> sans DV-3 entre eux</li>
+<li>En dark mode, utiliser systématiquement les <strong>variantes fluos</strong></li>
+<li>Maximum <strong>4 couleurs</strong> par graphique — au-delà, regrouper en "Autres"</li>
+<li>Les <strong>courbes de tendance</strong> utilisent toujours DV-5 Violet (neutre, non-sémantique)</li>
+</ul>
+
+<hr>
+
+<h2>📐 Spacing & Layout </h2>
+
+<h3>Grille de base : 4px</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Valeur</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>--space-1</code></td><td>4px</td><td>Gap minimal, padding icône</td></tr>
+<tr><td><code>--space-2</code></td><td>8px</td><td>Gap interne composant</td></tr>
+<tr><td><code>--space-3</code></td><td>12px</td><td>Padding badge, espace label</td></tr>
+<tr><td><code>--space-4</code></td><td>16px</td><td>Padding card, gap standard</td></tr>
+<tr><td><code>--space-6</code></td><td>24px</td><td>Padding page, gap section</td></tr>
+<tr><td><code>--space-8</code></td><td>32px</td><td>Margin section</td></tr>
+<tr><td><code>--space-12</code></td><td>48px</td><td>Margin page</td></tr>
+<tr><td><code>--space-16</code></td><td>64px</td><td>Espaces généreux, hero</td></tr>
+</tbody></table>
+
+<h3>Border radius</h3>
+
+<table>
+<thead><tr><th>Token</th><th>Valeur</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>--radius-sm</code></td><td>4px</td><td>Badges inline, petits éléments</td></tr>
+<tr><td><code>--radius-md</code></td><td>6px</td><td>Boutons small, inputs</td></tr>
+<tr><td><code>--radius-base</code></td><td>8px</td><td>Boutons, inputs standard</td></tr>
+<tr><td><code>--radius-lg</code></td><td>10px</td><td>Cards, modals</td></tr>
+<tr><td><code>--radius-xl</code></td><td>12px</td><td>Panels, sections</td></tr>
+<tr><td><code>--radius-pill</code></td><td>100px</td><td>Tags, badges statut</td></tr>
+</tbody></table>
+
+<h3>Padding pages</h3>
+
+<ul>
+<li><strong>Page standard</strong> : 24px horizontal, 32px vertical</li>
+<li><strong>Card</strong> : 16px</li>
+<li><strong>Table cell</strong> : 10px vertical, 12px horizontal</li>
+<li><strong>Bouton M</strong> : 8px vertical, 16px horizontal</li>
+</ul>
+
+<hr>
+
+<h2>🔲 Icônes </h2>
+
+<p><strong>Librairie</strong> : <a href="https://lucide.dev" target="_blank">Lucide Icons</a></p>
+
+<table>
+<thead><tr><th>Attribut</th><th>Valeur</th></tr></thead><tbody>
+<tr><td>Taille standard</td><td>20×20px</td></tr>
+<tr><td>Stroke width</td><td>1.5px</td></tr>
+<tr><td>Stroke linecap</td><td>round</td></tr>
+<tr><td>Couleur</td><td>Héritée du texte parent (<code>currentColor</code>)</td></tr>
+</tbody></table>
+
+<h3>Icônes prioritaires Flow</h3>
+
+<table>
+<thead><tr><th>Icône</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>layout-dashboard</code></td><td>Navigation — Dashboard</td></tr>
+<tr><td><code>package</code></td><td>Navigation — Commandes</td></tr>
+<tr><td><code>truck</code></td><td>Navigation — Transport</td></tr>
+<tr><td><code>warehouse</code></td><td>Navigation — Entrepôts</td></tr>
+<tr><td><code>bar-chart-2</code></td><td>Navigation — Analytics</td></tr>
+<tr><td><code>activity</code></td><td>Flow / temps réel</td></tr>
+<tr><td><code>bell</code></td><td>Notifications</td></tr>
+<tr><td><code>search</code></td><td>Recherche</td></tr>
+<tr><td><code>settings</code></td><td>Paramètres</td></tr>
+<tr><td><code>filter</code></td><td>Filtres</td></tr>
+<tr><td><code>download</code></td><td>Export</td></tr>
+<tr><td><code>alert-triangle</code></td><td>Alerte critique</td></tr>
+<tr><td><code>check-circle</code></td><td>Succès / livré</td></tr>
+<tr><td><code>clock</code></td><td>En attente</td></tr>
+</tbody></table>
+
+<h3>Règle d'usage</h3>
+
+<ul>
+<li>Ne jamais utiliser les icônes seules sans tooltip (accessibilité)</li>
+<li>Taille minimale dans un bouton : 16px</li>
+<li>Ne pas mélanger avec d'autres librairies d'icônes sur la même interface</li>
+</ul>
+
+<hr>
+
+<h2>🔘 Atoms — Boutons </h2>
+
+<h3>Variantes</h3>
+
+<table>
+<thead><tr><th>Variante</th><th>Usage</th><th>Quand l'utiliser</th></tr></thead><tbody>
+<tr><td><code>Primary</code></td><td>Action principale</td><td>1 seul par écran/section</td></tr>
+<tr><td><code>Secondary</code></td><td>Actions secondaires</td><td>Alternatives à l'action principale</td></tr>
+<tr><td><code>Ghost</code></td><td>Actions tertiaires</td><td>Annuler, voir plus, navigation</td></tr>
+<tr><td><code>Danger</code></td><td>Actions destructives</td><td>Supprimer, réinitialiser uniquement</td></tr>
+</tbody></table>
+
+<h3>Tailles</h3>
+
+<table>
+<thead><tr><th>Taille</th><th>Height</th><th>Padding H</th><th>Font</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>SM</code></td><td>28px</td><td>10px</td><td>11px</td><td>Dans des tableaux, espaces denses</td></tr>
+<tr><td><code>MD</code></td><td>36px</td><td>16px</td><td>13px</td><td>Usage standard</td></tr>
+<tr><td><code>LG</code></td><td>44px</td><td>24px</td><td>15px</td><td>CTAs principaux, hero</td></tr>
+</tbody></table>
+
+<h3>États</h3>
+
+<table>
+<thead><tr><th>État</th><th>Comportement</th></tr></thead><tbody>
+<tr><td><code>default</code></td><td>État normal</td></tr>
+<tr><td><code>hover</code></td><td>Background légèrement plus sombre (−10%)</td></tr>
+<tr><td><code>focus</code></td><td>Focus ring 3px, couleur primaire à 25% d'opacité</td></tr>
+<tr><td><code>active</code></td><td>Scale 0.98, couleur pressed</td></tr>
+<tr><td><code>disabled</code></td><td>Opacity 0.38, cursor not-allowed, non interactif</td></tr>
+<tr><td><code>loading</code></td><td>Icône spinner + texte "Chargement…", non cliquable</td></tr>
+</tbody></table>
+
+<h3>Règles</h3>
+
+<blockquote>✅ <strong>Faire</strong> : Un seul bouton Primary par zone d'action. Libellé court et actionnable (verbe + objet).</blockquote>
+<blockquote>❌ <strong>Ne pas faire</strong> : Deux boutons Primary côte à côte. Bouton Danger accessible sans confirmation.</blockquote>
+
+<hr>
+
+<h2>🏷️ Atoms — Badges & Tags </h2>
+
+<h3>Badges (statuts readonly)</h3>
+
+<table>
+<thead><tr><th>Variante</th><th>Hex bg</th><th>Hex text</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>Blue</code></td><td><code>#C6EBF8</code></td><td><code>#075E8A</code></td><td>En transit, en cours</td></tr>
+<tr><td><code>Green</code></td><td><code>#EDF7D9</code></td><td><code>#3A6B10</code></td><td>Livré, validé, actif</td></tr>
+<tr><td><code>Amber</code></td><td><code>#FEF3DC</code></td><td><code>#8A5800</code></td><td>En attente, planifié</td></tr>
+<tr><td><code>Red</code></td><td><code>#FDEAED</code></td><td><code>#9C1528</code></td><td>Retard, erreur, critique</td></tr>
+<tr><td><code>Gray</code></td><td><code>#EEF1F5</code></td><td><code>#4A5568</code></td><td>Annulé, inactif, archivé</td></tr>
+</tbody></table>
+
+<h3>Tags (filtres interactifs)</h3>
+
+<table>
+<thead><tr><th>État</th><th>Apparence</th></tr></thead><tbody>
+<tr><td><code>default</code></td><td>Border + bg transparent, texte secondary</td></tr>
+<tr><td><code>active</code></td><td>Border cyan + bg cyan tint, texte cyan dark</td></tr>
+<tr><td><code>hover</code></td><td>Border légèrement plus visible</td></tr>
+</tbody></table>
+
+<h3>Règles</h3>
+
+<blockquote>✅ Badges = statuts non-modifiables (lecture seule). Tags = filtres/sélections actionnables.</blockquote>
+<blockquote>❌ Ne jamais utiliser un badge comme filtre, ni un tag pour afficher un statut métier.</blockquote>
+
+<hr>
+
+<h2>📝 Atoms — Inputs & Form </h2>
+
+<h3>Variantes input</h3>
+
+<table>
+<thead><tr><th>État</th><th>Bordure</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>default</code></td><td><code>rgba(0,0,0,0.15)</code></td><td>Champ vide, prêt</td></tr>
+<tr><td><code>focus</code></td><td>Cyan <code>#0E8FCC</code> + shadow ring</td><td>Saisie active</td></tr>
+<tr><td><code>success</code></td><td>Lime <code>#78B82A</code></td><td>Valeur valide</td></tr>
+<tr><td><code>error</code></td><td>Rouge <code>#E2274A</code></td><td>Valeur invalide + message</td></tr>
+<tr><td><code>disabled</code></td><td>Opacity 0.38</td><td>Non modifiable</td></tr>
+</tbody></table>
+
+<h3>Composants form</h3>
+
+<table>
+<thead><tr><th>Composant</th><th>États</th><th>Usage</th></tr></thead><tbody>
+<tr><td><code>Checkbox</code></td><td>unchecked / checked / indeterminate / disabled</td><td>Sélections multiples</td></tr>
+<tr><td><code>Toggle</code></td><td>off / on / disabled</td><td>Activation de fonctionnalité</td></tr>
+<tr><td><code>Tooltip</code></td><td>visible au hover</td><td>Labels d'icônes, info contextuelle</td></tr>
+</tbody></table>
+
+<h3>Règles</h3>
+
+<blockquote>✅ Toujours accompagner un champ en erreur d'un message explicite en dessous.</blockquote>
+<blockquote>✅ Grouper les champs liés avec un label de section.</blockquote>
+<blockquote>❌ Ne pas utiliser le placeholder comme label — il disparaît à la saisie.</blockquote>
+
+<hr>
+
+<h2>🧩 Molecules — Composants composites </h2>
+
+<h3>Search Bar</h3>
+
+<p>Combinaison : icône search + input + raccourci clavier.</p>
+<ul>
+<li>Raccourci global : <code>⌘K</code> affiché à droite</li>
+<li>Largeur recommandée : 280–360px</li>
+<li>Toujours accessible depuis la Top Bar</li>
+</ul>
+
+<h3>Barre de filtres</h3>
+
+<p>Combinaison : Search Bar + Tags de catégorie + bouton "Filtres ▾" (filtres avancés).</p>
+<ul>
+<li>Les tags actifs affichent un <code>✕</code> pour suppression rapide</li>
+<li>Maximum 5 tags visibles — au-delà, afficher <code>+N autres</code></li>
+</ul>
+
+<h3>Metric Card</h3>
+
+<p>Structure : label uppercase (10px) → chiffre principal (28px 300) → delta badge + contexte.</p>
+
+<table>
+<thead><tr><th>Élément</th><th>Règle</th></tr></thead><tbody>
+<tr><td>Chiffre principal</td><td>Toujours weight 300, letter-spacing −0.03em</td></tr>
+<tr><td>Delta positif</td><td>Badge vert lime background</td></tr>
+<tr><td>Delta négatif</td><td>Badge rouge background</td></tr>
+<tr><td>Progress bar</td><td>Optionnelle, hauteur 4px, border-radius pill</td></tr>
+</tbody></table>
+
+<h3>Pagination</h3>
+
+<ul>
+<li>Toujours afficher : <code>‹ prev</code> + pages numérotées + <code>next ›</code></li>
+<li>Page active : background cyan primary, texte blanc</li>
+<li>Ellipsis <code>…</code> si plus de 7 pages</li>
+<li>Afficher le nombre total de résultats au-dessus (<code>1–25 sur 248 résultats</code>)</li>
+</ul>
+
+<h3>Table Row</h3>
+
+<table>
+<thead><tr><th>Élément</th><th>Règle</th></tr></thead><tbody>
+<tr><td>Hauteur</td><td>44px standard, 56px si 2 lignes</td></tr>
+<tr><td>Hover</td><td>Background surface (−1 niveau)</td></tr>
+<tr><td>Colonne ID/ref</td><td>Police DM Mono, 12px</td></tr>
+<tr><td>Colonne statut</td><td>Badge uniquement, pas de texte brut</td></tr>
+<tr><td>Colonne actions</td><td>Ghost buttons, visibles au hover uniquement</td></tr>
+</tbody></table>
+
+<hr>
+
+<h2>🏛️ Organisms — Patterns complets </h2>
+
+<h3>Data Table</h3>
+
+<p>Structure complète :</p>
+<ol>
+<li><strong>Toolbar</strong> : titre + search bar + filtres + export</li>
+<li><strong>En-têtes</strong> : uppercase 10px, sortable (icône ↕), sticky au scroll</li>
+<li><strong>Lignes</strong> : hover state + sélection checkbox optionnelle</li>
+<li><strong>Footer</strong> : pagination + nombre de résultats</li>
+</ol>
+
+<p>Règles :</p>
+<blockquote>✅ Colonnes fixes (ID, statut, actions) — colonnes flexibles au milieu.</blockquote>
+<blockquote>✅ Colonne Actions toujours en dernière position, alignée à droite.</blockquote>
+<blockquote>❌ Ne jamais tronquer une colonne statut — toujours afficher le badge entier.</blockquote>
+
+<h3>Side Navigation</h3>
+
+<p>Structure :</p>
+<ul>
+<li>Logo Flow en haut (36px) + nom produit</li>
+<li>Sections avec label uppercase (10px)</li>
+<li>Items : icône 20px + label, height 36px</li>
+<li>État actif : background cyan tint, texte cyan dark, font weight 500</li>
+<li>État hover : background surface +1 niveau</li>
+</ul>
+
+<p>Règles :</p>
+<blockquote>Largeur standard : 220px. Collapsible (icônes seules) à 52px.</blockquote>
+<blockquote>Maximum 2 niveaux de navigation. Sous-items indentés de 28px.</blockquote>
+
+<h3>Top Bar</h3>
+
+<p>Éléments gauche → droite :</p>
+<ol>
+<li>Logo/nom produit (fixe)</li>
+<li>Search bar globale (⌘K)</li>
+<li>Badge notifications (chiffre si > 0)</li>
+<li>Avatar utilisateur (initiales)</li>
+</ol>
+
+<h3>Modal</h3>
+
+<p>Types :</p>
+<table>
+<thead><tr><th>Type</th><th>Usage</th><th>Actions</th></tr></thead><tbody>
+<tr><td><code>Confirm</code></td><td>Valider une action sensible</td><td>Annuler + Confirmer</td></tr>
+<tr><td><code>Alert</code></td><td>Informer d'une erreur critique</td><td>OK uniquement</td></tr>
+<tr><td><code>Form</code></td><td>Saisie dans un overlay</td><td>Annuler + Sauvegarder</td></tr>
+</tbody></table>
+
+<p>Règles :</p>
+<blockquote>✅ Toujours un titre clair + corps explicatif + actions en bas à droite.</blockquote>
+<blockquote>✅ Action destructive (Danger) toujours à droite, action annulation à gauche.</blockquote>
+<blockquote>❌ Jamais plus de 2 actions principales dans une modal.</blockquote>
+<blockquote>❌ Ne pas ouvrir une modal depuis une modal.</blockquote>
+
+<hr>
+
+<h2>📏 Règles d'usage globales </h2>
+
+<h3>Hiérarchie visuelle</h3>
+
+<ol>
+<li><strong>1 seul point d'attention primaire</strong> par écran (CTA primary, alerte critique)</li>
+<li>Les <strong>données critiques</strong> (retards, alertes) sont toujours accompagnées d'une couleur sémantique</li>
+<li>Les <strong>KPIs</strong> utilisent la typographie grande (32px 300) — jamais de bold sur les grands chiffres</li>
+</ol>
+
+<h3>Dark Mode</h3>
+
+<ul>
+<li>Utiliser dark mode pour les <strong>tableaux de bord opérationnels</strong> utilisés en continu</li>
+<li>Utiliser light mode pour les <strong>pages de configuration</strong>, formulaires, onboarding</li>
+<li>Ne jamais mélanger les deux modes dans la même vue</li>
+</ul>
+
+<h3>Accessibilité</h3>
+
+<ul>
+<li>Contraste minimum texte/fond : <strong>4.5:1</strong> (WCAG AA)</li>
+<li>Tous les champs de formulaire ont un <strong>label visible</strong> (pas de placeholder comme seul label)</li>
+<li>Tous les boutons icône ont un <strong>tooltip</strong> ou <code>aria-label</code></li>
+<li>Focus ring visible sur tous les éléments interactifs</li>
+</ul>
+
+<h3>Nomenclature des composants Figma</h3>
+
+<pre><code class="lang-">
+[Catégorie]/[Nom]/[Variante]--[État]
+
+Exemples :
+Atoms/Button/Primary--Default
+Atoms/Button/Primary--Hover
+Atoms/Badge/Green--Default
+Molecules/MetricCard/WithDelta--Default
+Organisms/DataTable/Default--Empty
+</code></pre>
+
+<hr>
+
+<h2>🔗 Ressources</h2>
+
+<table>
+<thead><tr><th>Ressource</th><th>Lien</th></tr></thead><tbody>
+<tr><td>Figma — Brand Kit Flow</td><td><a href="https://www.figma.com/design/esq8MOxVkvZbcYMZZc4Ket/" target="_blank">Ouvrir le fichier Figma</a></td></tr>
+<tr><td>Plus Jakarta Sans</td><td><a href="https://fonts.google.com/specimen/Plus+Jakarta+Sans" target="_blank">Google Fonts</a></td></tr>
+<tr><td>DM Mono</td><td><a href="https://fonts.google.com/specimen/DM+Mono" target="_blank">Google Fonts</a></td></tr>
+<tr><td>Lucide Icons</td><td><a href="https://lucide.dev" target="_blank">lucide.dev</a></td></tr>
+<tr><td>WCAG Contrast Checker</td><td><a href="https://webaim.org/resources/contrastchecker/" target="_blank">webaim.org/resources/contrastchecker</a></td></tr>
+</tbody></table>
+
+<hr>
+
+<p><em>Flow Design System · eLogik · v1.0 · Mars 2026</em></p>
+
+
+</main>
+
+<script>
+// Highlight active sidebar link on scroll
+const links = document.querySelectorAll('.sidebar-link');
+const anchors = ['identite','typographie','palette-light','palette-dark','palette-dataviz','spacing','icones','boutons','badges','inputs','molecules','organisms','regles'];
+
+window.addEventListener('scroll', () => {
+  let current = anchors[0];
+  anchors.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= 80) current = id;
+  });
+  links.forEach(l => {
+    const href = l.getAttribute('href').replace('#','');
+    l.classList.toggle('active', href === current);
+  });
+});
+
+// Add colour swatches next to hex values in tables
+document.querySelectorAll('td code').forEach(el => {
+  const text = el.textContent.trim();
+  if (/^#[0-9A-Fa-f]{3,6}$/.test(text)) {
+    const dot = document.createElement('span');
+    dot.className = 'hex-dot';
+    dot.style.background = text;
+    el.parentNode.insertBefore(dot, el);
+  }
+});
+</script>
+</body>
+</html>
