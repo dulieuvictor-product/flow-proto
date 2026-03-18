@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elo (flow) — Dashboard Opérationnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS LIGHT ── */
+:root, [data-theme="light"] {
+  --bg:            #F2F4F8;
+  --surface:       #FFFFFF;
+  --surface2:      #F4F6FA;
+  --border:        rgba(0,0,0,0.07);
+  --border2:       rgba(0,0,0,0.13);
+  --ink:           #1A1C1E;
+  --slate:         #4A5568;
+  --muted:         #8A95A3;
+  --primary:       #0E8FCC;
+  --primary-tint:  #EAF6FD;
+  --success:       #2A9554;
+  --success-tint:  #E8F8EF;
+  --warning:       #C27B00;
+  --warning-tint:  #FEF4E0;
+  --danger:        #D63050;
+  --danger-tint:   #FDEAED;
+  --violet:        #6C47E8;
+  --violet-tint:   #F0EDFF;
+  --nav-bg:        #FFFFFF;
+  --nav-active-bg: #EAF6FD;
+  --nav-active-tx: #0E8FCC;
+  --topbar-bg:     #FFFFFF;
+  --card-shadow:   0 1px 3px rgba(0,0,0,0.06);
+  --overlay:       rgba(0,0,0,0.35);
+  --chart-grid:    rgba(0,0,0,0.05);
+  --chart-tick:    #8A95A3;
+}
+[data-theme="dark"] {
+  --bg:            #0C0F14;
+  --surface:       #181E28;
+  --surface2:      #1F2736;
+  --border:        rgba(255,255,255,0.10);
+  --border2:       rgba(255,255,255,0.18);
+  --ink:           #E2EAF4;
+  --slate:         #9AAABB;
+  --muted:         #5A6C7D;
+  --primary:       #1ADCFF;
+  --primary-tint:  rgba(26,220,255,0.13);
+  --success:       #22FF7A;
+  --success-tint:  rgba(34,255,122,0.13);
+  --warning:       #FFB020;
+  --warning-tint:  rgba(255,176,32,0.13);
+  --danger:        #FF3B6A;
+  --danger-tint:   rgba(255,59,106,0.13);
+  --violet:        #A78BFF;
+  --violet-tint:   rgba(167,139,255,0.13);
+  --nav-bg:        #141A22;
+  --nav-active-bg: rgba(26,220,255,0.12);
+  --nav-active-tx: #1ADCFF;
+  --topbar-bg:     #141A22;
+  --card-shadow:   0 1px 0 rgba(255,255,255,0.04);
+  --overlay:       rgba(0,0,0,0.65);
+  --chart-grid:    rgba(255,255,255,0.04);
+  --chart-tick:    #5A6C7D;
+}
+
+/* ── BASE ── */
+html, body { height: 100%; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); display: flex; transition: background 0.25s, color 0.25s; }
+
+/* ── SIDENAV ── */
+.sidenav { width: 220px; flex-shrink: 0; background: var(--nav-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; z-index: 200; transition: background 0.25s, border-color 0.25s, transform 0.3s; }
+.nav-brand { padding: 18px 14px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+.nav-brand-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.25s; }
+.nav-brand-mark svg { width: 18px; height: 18px; }
+.nav-brand-name { font-size: 14px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; line-height: 1.2; }
+.nav-brand-name strong { font-weight: 600; }
+.nav-brand-sub { font-size: 10px; color: var(--primary); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+.nav-close-btn { display: none; margin-left: auto; width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border2); background: var(--surface2); cursor: pointer; align-items: center; justify-content: center; }
+.nav-close-btn svg { width: 14px; height: 14px; color: var(--muted); }
+.nav-section { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 14px 14px 5px; font-family: 'DM Mono', monospace; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 1px 6px; border-radius: 9px; font-size: 13px; color: var(--slate); cursor: pointer; transition: background 0.12s, color 0.12s; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+.nav-item:hover { background: var(--surface2); color: var(--ink); }
+.nav-item:hover svg { opacity: 1; }
+.nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-tx); font-weight: 500; }
+.nav-item.active svg { opacity: 1; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--danger-tint); color: var(--danger); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-badge-info { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--primary-tint); color: var(--primary); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-bottom { margin-top: auto; padding: 10px 6px 14px; border-top: 1px solid var(--border); }
+.nav-user { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; cursor: pointer; transition: background 0.12s; }
+.nav-user:hover { background: var(--surface2); }
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; }
+.nav-user-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.nav-user-role { font-size: 10px; color: var(--muted); }
+.nav-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 190; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow-y: auto; }
+
+/* ── TOPBAR ── */
+.topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 100; transition: background 0.25s, border-color 0.25s; }
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.menu-btn { display: none; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.menu-btn svg { width: 18px; height: 18px; color: var(--slate); }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.bc-parent { color: var(--muted); }
+.bc-sep { color: var(--border2); }
+.bc-current { font-weight: 500; color: var(--ink); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.search-wrap { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 6px 10px; width: 200px; transition: background 0.25s; }
+.search-wrap svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+.search-wrap input { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; background: transparent; border: none; outline: none; color: var(--ink); flex: 1; min-width: 0; }
+.search-wrap input::placeholder { color: var(--muted); }
+.search-kbd { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; background: var(--border); padding: 2px 4px; border-radius: 3px; }
+.icon-btn { width: 34px; height: 34px; flex-shrink: 0; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: background 0.12s; }
+.icon-btn svg { width: 16px; height: 16px; color: var(--slate); }
+.notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--danger); border: 1.5px solid var(--topbar-bg); }
+.theme-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 0 12px; height: 34px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--slate); white-space: nowrap; flex-shrink: 0; transition: all 0.12s; }
+.theme-btn:hover { background: var(--primary-tint); color: var(--primary); border-color: var(--primary); }
+.theme-btn svg { width: 15px; height: 15px; }
+.icon-sun  { display: block; }
+.icon-moon { display: none; }
+[data-theme="dark"] .icon-sun  { display: none; }
+[data-theme="dark"] .icon-moon { display: block; }
+
+/* ── CONTENT ── */
+.content { padding: 24px; flex: 1; }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.page-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.page-title { font-size: 20px; font-weight: 300; letter-spacing: -0.03em; color: var(--ink); }
+.page-title span { color: var(--primary); }
+.page-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--success); background: var(--success-tint); border: 1px solid rgba(42,149,84,0.2); border-radius: 100px; padding: 5px 12px; white-space: nowrap; }
+[data-theme="dark"] .live-badge { border-color: rgba(34,255,122,0.2); }
+.live-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 1.6s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ── SECTION LABEL ── */
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── TEMPORAL SELECTOR ── */
+.time-selector { display: flex; align-items: center; gap: 4px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 3px; }
+.ts-btn { font-size: 12px; font-weight: 500; font-family: 'Plus Jakarta Sans', sans-serif; padding: 5px 14px; border-radius: 7px; border: none; background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.ts-btn:hover { color: var(--ink); }
+.ts-btn.active { background: var(--surface); color: var(--primary); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+[data-theme="dark"] .ts-btn.active { box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+/* ── KPI MOLECULE ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; position: relative; overflow: hidden; box-shadow: var(--card-shadow); transition: background 0.25s, border-color 0.25s, transform 0.15s; cursor: default; }
+.kpi-card:hover { transform: translateY(-2px); }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-p::before  { background: var(--primary); }
+.kpi-s::before  { background: var(--success); }
+.kpi-w::before  { background: var(--warning); }
+.kpi-d::before  { background: var(--danger); }
+.kpi-v::before  { background: var(--violet); }
+.kpi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.kpi-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.4; flex: 1; }
+.kpi-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-p .kpi-icon  { background: var(--primary-tint); }
+.kpi-s .kpi-icon  { background: var(--success-tint); }
+.kpi-w .kpi-icon  { background: var(--warning-tint); }
+.kpi-d .kpi-icon  { background: var(--danger-tint); }
+.kpi-v .kpi-icon  { background: var(--violet-tint); }
+.kpi-icon svg { width: 15px; height: 15px; }
+.kpi-p .kpi-icon svg  { stroke: var(--primary); }
+.kpi-s .kpi-icon svg  { stroke: var(--success); }
+.kpi-w .kpi-icon svg  { stroke: var(--warning); }
+.kpi-d .kpi-icon svg  { stroke: var(--danger); }
+.kpi-v .kpi-icon svg  { stroke: var(--violet); }
+.kpi-big { font-size: 30px; font-weight: 300; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+.kpi-p .kpi-big  { color: var(--primary); }
+.kpi-s .kpi-big  { color: var(--success); }
+.kpi-w .kpi-big  { color: var(--warning); }
+.kpi-d .kpi-big  { color: var(--danger); }
+.kpi-v .kpi-big  { color: var(--violet); }
+.kpi-sub { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.delta-up { font-size: 10px; font-weight: 600; background: var(--success-tint); color: var(--success); padding: 1px 6px; border-radius: 100px; transition: all 0.25s; }
+.delta-dn { font-size: 10px; font-weight: 600; background: var(--danger-tint); color: var(--danger); padding: 1px 6px; border-radius: 100px; transition: all 0.25s; }
+.delta-nt { font-size: 10px; font-weight: 600; background: var(--surface2); color: var(--muted); padding: 1px 6px; border-radius: 100px; }
+.kpi-bar { height: 3px; background: var(--border); border-radius: 100px; margin-top: 12px; overflow: hidden; }
+.kpi-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
+.kpi-p .kpi-fill  { background: var(--primary); }
+.kpi-s .kpi-fill  { background: var(--success); }
+.kpi-w .kpi-fill  { background: var(--warning); }
+.kpi-d .kpi-fill  { background: var(--danger); }
+.kpi-v .kpi-fill  { background: var(--violet); }
+
+/* threshold marker on bar */
+.kpi-bar-wrap { position: relative; margin-top: 12px; }
+.kpi-threshold { position: absolute; top: -2px; bottom: -2px; width: 1.5px; background: var(--danger); border-radius: 1px; }
+.kpi-threshold-lbl { position: absolute; top: 4px; font-size: 9px; color: var(--danger); font-family: 'DM Mono', monospace; white-space: nowrap; transform: translateX(-50%); }
+
+/* ── CARD ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--card-shadow); transition: background 0.25s, border-color 0.25s; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+.card-link { font-size: 11px; font-weight: 500; color: var(--primary); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; text-transform: none; letter-spacing: 0; }
+
+/* ── GRID ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.mb20 { margin-bottom: 20px; }
+.mb24 { margin-bottom: 24px; }
+
+/* ── TRANSPORTEUR TABLE ── */
+.carrier-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.carrier-table th { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+.carrier-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: middle; }
+.carrier-table tbody tr:last-child td { border-bottom: none; }
+.carrier-table tbody tr:hover td { background: var(--surface2); }
+.td-mono { font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--slate); }
+.td-bold { font-weight: 500; }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
+.bdg-s { background: var(--success-tint); color: var(--success); }
+.bdg-w { background: var(--warning-tint); color: var(--warning); }
+.bdg-d { background: var(--danger-tint);  color: var(--danger); }
+.bdg-g { background: var(--surface2); color: var(--muted); }
+.bar-mini-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-mini { flex: 1; height: 4px; background: var(--surface2); border-radius: 100px; overflow: hidden; min-width: 56px; }
+.bar-fill { height: 100%; border-radius: 100px; }
+.pct-lbl { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted); min-width: 36px; text-align: right; }
+
+/* ── STOCK TABLE ── */
+.stock-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.stock-table th { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; }
+.stock-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: middle; }
+.stock-table tbody tr:last-child td { border-bottom: none; }
+.stock-table tbody tr:hover td { background: var(--surface2); }
+.stock-alert-row td { background: rgba(214,48,80,0.03); }
+[data-theme="dark"] .stock-alert-row td { background: rgba(255,59,106,0.05); }
+.days-chip { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.days-ok   { background: var(--success-tint); color: var(--success); }
+.days-warn { background: var(--warning-tint); color: var(--warning); }
+.days-bad  { background: var(--danger-tint);  color: var(--danger); }
+
+/* ── ROTATION GAUGE ── */
+.rotation-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.rot-card { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--card-shadow); }
+.rot-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+.rot-big { font-size: 24px; font-weight: 300; letter-spacing: -0.03em; margin-bottom: 4px; }
+.rot-sub { font-size: 11px; color: var(--muted); }
+
+/* ── THRESHOLD CONTROL ── */
+.threshold-ctrl { display: flex; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 8px 14px; font-size: 12px; }
+.threshold-ctrl label { color: var(--slate); white-space: nowrap; }
+.threshold-ctrl input[type=range] { flex: 1; accent-color: var(--danger); cursor: pointer; }
+.threshold-val { font-family: 'DM Mono', monospace; font-weight: 700; color: var(--danger); min-width: 40px; text-align: center; font-size: 13px; }
+
+/* ── CHART AREA ── */
+.chart-section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--card-shadow); margin-bottom: 20px; transition: background 0.25s, border-color 0.25s; }
+.chart-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.chart-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+.chart-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--slate); }
+.chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.chart-wrap { position: relative; }
+
+/* ── BOTTOM NAV mobile ── */
+.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); border-top: 1px solid var(--border); padding: 6px 0 max(6px, env(safe-area-inset-bottom)); z-index: 150; transition: background 0.25s, border-color 0.25s; }
+.bottom-nav-inner { display: flex; justify-content: space-around; }
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; position: relative; color: var(--muted); border: none; background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+.bn-item svg { width: 20px; height: 20px; }
+.bn-item span { font-size: 10px; font-weight: 500; }
+.bn-item.active { color: var(--primary); }
+.bn-dot { position: absolute; top: 6px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--danger); border: 1.5px solid var(--nav-bg); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 900px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .g2, .g3 { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .sidenav { position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+  .sidenav.open { transform: translateX(0); }
+  .nav-close-btn { display: flex; }
+  .nav-overlay.open { display: block; }
+  .menu-btn { display: flex; }
+  .search-wrap { display: none; }
+  .bottom-nav { display: block; }
+  .content { padding: 16px 16px 88px; }
+  .page-header { flex-direction: column; gap: 10px; }
+  .theme-btn .theme-label { display: none; }
+  .theme-btn { padding: 0 10px; }
+  .topbar { padding: 0 14px; }
+}
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+
+<!-- ════ SIDENAV ════ -->
+<aside class="sidenav" id="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
+    <button class="nav-close-btn" onclick="closeNav()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="nav-section">Principal</div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </div>
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    Opérationnel
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg>
+    Commandes
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    Transporteurs
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Litiges
+    <span class="nav-badge">12</span>
+  </div>
+
+  <div class="nav-section">Opérations</div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>
+    Stocks
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg>
+    IA &amp; Prédictif
+    <span class="nav-badge-info">Bêta</span>
+  </div>
+
+  <div class="nav-bottom">
+    <div class="nav-user">
+      <div class="nav-avatar">LM</div>
+      <div>
+        <div class="nav-user-name">Lucas Martin</div>
+        <div class="nav-user-role">Admin logistique</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
+
+<!-- ════ MAIN ════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" onclick="openNav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="breadcrumb">
+        <span class="bc-parent">Dashboard</span>
+        <span class="bc-sep">/</span>
+        <span class="bc-current">Opérationnel</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input placeholder="Rechercher…"/>
+        <span class="search-kbd">⌘K</span>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <span class="theme-label" id="themeLabel">Mode sombre</span>
+      </button>
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CONTENT ════ -->
+  <div class="content">
+
+    <!-- PAGE HEADER + TEMPORAL SELECTOR -->
+    <div class="page-header mb20">
+      <div>
+        <div class="page-eyebrow">Vue opérationnelle · live</div>
+        <div class="page-title">Tableau de bord <span>opérationnel</span></div>
+        <div class="page-sub">Préparation · Livraison · Incidents · Stocks — mis à jour il y a 3 min</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="live-badge"><div class="live-pulse"></div>Live</div>
+        <div class="time-selector" id="timeSel">
+          <button class="ts-btn active" data-period="day" onclick="setPeriod(this)">Jour</button>
+          <button class="ts-btn" data-period="week" onclick="setPeriod(this)">Semaine</button>
+          <button class="ts-btn" data-period="month" onclick="setPeriod(this)">Mois</button>
+          <button class="ts-btn" data-period="year" onclick="setPeriod(this)">Année</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 1 : PRÉPARATION & LIVRAISON ── -->
+    <div class="section-label mb20">Préparation &amp; Livraison</div>
+    <div class="kpi-grid mb24">
+
+      <!-- Taux de préparation -->
+      <div class="kpi-card kpi-p">
+        <div class="kpi-header">
+          <div class="kpi-label">Taux de<br>préparation</div>
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+        </div>
+        <div class="kpi-big" id="kpi-prep">94.2<span style="font-size:16px;font-weight:400">%</span></div>
+        <div class="kpi-sub"><span class="delta-up" id="d-prep">↑ 1.4%</span> <span id="sub-prep">vs J-1</span></div>
+        <div class="kpi-bar-wrap">
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-prep" style="width:94.2%"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">Reçues <b id="recv" style="color:var(--ink)">1 248</b></span>
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">Envoyées <b id="sent" style="color:var(--primary)">1 175</b></span>
+        </div>
+      </div>
+
+      <!-- En cours / bloquées -->
+      <div class="kpi-card kpi-w">
+        <div class="kpi-header">
+          <div class="kpi-label">En cours<br>/ Bloquées</div>
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="kpi-big" id="kpi-block"><span id="blocked-n">73</span></div>
+        <div class="kpi-sub"><span class="delta-dn" id="d-block">↑ 12</span> <span id="sub-block">depuis hier</span></div>
+        <div class="kpi-bar-wrap">
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-block" style="width:24%"></div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span style="font-size:10px;background:var(--warning-tint);color:var(--warning);padding:2px 7px;border-radius:100px;font-weight:600">En attente <span id="wt">51</span></span>
+          <span style="font-size:10px;background:var(--danger-tint);color:var(--danger);padding:2px 7px;border-radius:100px;font-weight:600">Bloquées <span id="bl">22</span></span>
+        </div>
+      </div>
+
+      <!-- OTD -->
+      <div class="kpi-card kpi-s">
+        <div class="kpi-header">
+          <div class="kpi-label">On-Time<br>Delivery (OTD)</div>
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
+          </div>
+        </div>
+        <div class="kpi-big" id="kpi-otd">91.8<span style="font-size:16px;font-weight:400">%</span></div>
+        <div class="kpi-sub"><span class="delta-dn" id="d-otd">↓ 0.6%</span> <span id="sub-otd">vs J-1</span></div>
+        <div class="kpi-bar-wrap">
+          <div class="kpi-bar" style="position:relative">
+            <div class="kpi-fill" id="bar-otd" style="width:91.8%"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:3px"><span style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Objectif 95%</span></div>
+        </div>
+      </div>
+
+      <!-- Taux de départ à J -->
+      <div class="kpi-card kpi-p">
+        <div class="kpi-header">
+          <div class="kpi-label">Départ<br>à J</div>
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+        </div>
+        <div class="kpi-big" id="kpi-depart">96.3<span style="font-size:16px;font-weight:400">%</span></div>
+        <div class="kpi-sub"><span class="delta-up" id="d-depart">↑ 0.8%</span> <span id="sub-depart">vs J-1</span></div>
+        <div class="kpi-bar-wrap">
+          <div class="kpi-bar"><div class="kpi-fill" id="bar-depart" style="width:96.3%"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── SECTION 2 : INCIDENTS ── -->
+    <div class="section-label mb20">Incidents &amp; Qualité</div>
+    <div class="kpi-grid mb24">
+
+      <!-- Taux d'incidents -->
+      <div class="kpi-card kpi-d">
+        <div class="kpi-header">
+          <div class="kpi-label">Taux<br>d'incidents</div>
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        </div>
+        <div class="kpi-big" id="kpi-inc">3.6<span style="font-size:16px;font-weight:400">%</span></div>
+        <div class="kpi-sub"><span class="delta-dn" id="d-inc">↑ 0.4%</span> <span id="sub-inc">vs J-1</span></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <span style="font-size:10px;background:var(--danger-tint);color:var(--danger);padding:2px 7px;border-radius:100px;font-weight:600">Perdus <span id="lost">18</span></span>
+          <span style="font-size:10px;background:var(--warning-tint);color:var(--warning);padding:2px 7px;border-radius:100px;font-weight:600">Abîmés <span id="dmg">27</span></span>
+        </div>
+      </div>
+
+      <!-- Délai moyen livraison — span 3 -->
+      <div class="kpi-card kpi-v" style="grid-column: span 3;">
+        <div class="kpi-header">
+          <div class="kpi-label">Délai moyen de livraison par transporteur</div>
+          <span style="font-size:11px;color:var(--muted)">en jours ouvrés</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px" id="carrier-delays">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── GRAPHIQUE TEMPOREL ── -->
+    <div class="chart-section mb24">
+      <div class="chart-controls">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px" id="chart-title">Évolution quotidienne — aujourd'hui</div>
+          <div style="font-size:11px;color:var(--muted)" id="chart-sub">Taux de préparation, OTD, incidents</div>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--primary)"></div>Préparation</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--success)"></div>OTD</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--warning)"></div>Départ J</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--danger)"></div>Incidents</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="mainChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3 : STOCKS ── -->
+    <div class="section-label mb20">Stocks &amp; Ruptures</div>
+
+    <div class="g2 mb20">
+
+      <!-- Stock-out rate -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Stock-out rate — Ruptures</div>
+          <span class="badge bdg-d" id="stockout-count">8 ruptures</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+          <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:24px;font-weight:300;color:var(--danger);letter-spacing:-0.03em" id="so-critical">8</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px">Rupture</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:24px;font-weight:300;color:var(--warning);letter-spacing:-0.03em" id="so-alert">14</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px">Seuil atteint</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:24px;font-weight:300;color:var(--success);letter-spacing:-0.03em" id="so-ok">312</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px">OK</div>
+          </div>
+        </div>
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Référence</th>
+              <th>Désignation</th>
+              <th>Stock</th>
+              <th>Seuil</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="stock-alert-row">
+              <td class="td-mono">COS-10421</td>
+              <td class="td-bold">Shampoing Hydra+ 250ml</td>
+              <td class="td-mono" style="color:var(--danger)">0</td>
+              <td class="td-mono">50</td>
+              <td><span class="badge bdg-d">Rupture</span></td>
+            </tr>
+            <tr class="stock-alert-row">
+              <td class="td-mono">COS-10187</td>
+              <td class="td-bold">Mousse coiffante Volume 150ml</td>
+              <td class="td-mono" style="color:var(--danger)">3</td>
+              <td class="td-mono">20</td>
+              <td><span class="badge bdg-d">Rupture</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10654</td>
+              <td class="td-bold">Masque capillaire Repair 200ml</td>
+              <td class="td-mono" style="color:var(--warning)">18</td>
+              <td class="td-mono">25</td>
+              <td><span class="badge bdg-w">Seuil atteint</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10229</td>
+              <td class="td-bold">Après-shampoing Douceur 250ml</td>
+              <td class="td-mono" style="color:var(--warning)">22</td>
+              <td class="td-mono">30</td>
+              <td><span class="badge bdg-w">Seuil atteint</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Rotation des stocks -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Rotation des stocks</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;color:var(--muted)">Immobile depuis ></span>
+            <div class="threshold-ctrl" style="padding:4px 10px">
+              <input type="range" min="7" max="180" value="60" id="rotSlider" oninput="updateRotation(this.value)" style="width:80px">
+              <span class="threshold-val" id="rotVal">60j</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:14px">
+          <div style="flex:1;text-align:center;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:22px;font-weight:300;color:var(--danger);letter-spacing:-0.03em" id="rot-count">23</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">Réfs immobiles</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:22px;font-weight:300;color:var(--warning);letter-spacing:-0.03em" id="rot-val-stock">4 820</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">Unités bloquées</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+            <div style="font-size:22px;font-weight:300;color:var(--slate);letter-spacing:-0.03em" id="rot-avg">94j</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">Délai moyen</div>
+          </div>
+        </div>
+
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Référence</th>
+              <th>Désignation</th>
+              <th>Qté</th>
+              <th>Dernier mouvement</th>
+              <th>Immobile</th>
+            </tr>
+          </thead>
+          <tbody id="rot-table">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── GRAPHIQUE STOCKS ── -->
+    <div class="chart-section">
+      <div class="chart-controls">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px" id="stock-chart-title">Évolution stock-out &amp; seuils — <span id="sc-period">aujourd'hui</span></div>
+          <div style="font-size:11px;color:var(--muted)">Ruptures actives et références en alerte</div>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--danger)"></div>Ruptures</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--warning)"></div>Seuil atteint</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--violet)"></div>Réfs immobiles</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="stockChart"></canvas>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div>
+
+<!-- bottom nav mobile -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Home</span></button>
+    <button class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span>Ops</span></button>
+    <button class="bn-item" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><div class="bn-dot"></div><span>Litiges</span></button>
+    <button class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg><span>Stock</span></button>
+    <button class="bn-item" onclick="openNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg><span>Menu</span></button>
+  </div>
+</div>
+
+<script>
+/* ── THEME ── */
+function toggleTheme() {
+  const d = document.documentElement;
+  const isDark = d.getAttribute('data-theme') === 'dark';
+  d.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeLabel').textContent = isDark ? 'Mode sombre' : 'Mode clair';
+  rebuildCharts();
+}
+
+/* ── NAV ── */
+function openNav()  { document.getElementById('sidenav').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); }
+function closeNav() { document.getElementById('sidenav').classList.remove('open'); document.getElementById('navOverlay').classList.remove('open'); }
+
+/* ── PERIOD DATA ── */
+const PERIODS = {
+  day: {
+    label: 'Évolution quotidienne — aujourd\'hui',
+    sub: 'Taux de préparation, OTD, départ J, incidents',
+    labels: ['08h','09h','10h','11h','12h','13h','14h','15h','16h','17h','18h'],
+    prep:   [88,90,91,93,94,92,94,95,93,94,94],
+    otd:    [89,90,91,91,92,91,92,93,92,91,92],
+    dep:    [91,93,94,95,96,95,96,97,96,96,96],
+    inc:    [4.2,3.8,3.9,4.1,3.6,3.7,3.5,3.4,3.6,3.5,3.6],
+    scLabels:['08h','10h','12h','14h','16h','18h'],
+    sc_rupt: [6,7,7,8,8,8], sc_seuil:[12,13,14,14,14,14], sc_rot:[21,22,22,23,23,23],
+    kpis: { prep:'94.2%', prepD:'↑ 1.4%', prepDc:'up', block:'73', blockD:'↑ 12', blockDc:'dn', otd:'91.8%', otdD:'↓ 0.6%', otdDc:'dn', dep:'96.3%', depD:'↑ 0.8%', depDc:'up', inc:'3.6%', incD:'↑ 0.4%', incDc:'dn', sub:'vs J-1' }
+  },
+  week: {
+    label: 'Évolution hebdomadaire — 7 derniers jours',
+    sub: 'Taux de préparation, OTD, départ J, incidents',
+    labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+    prep:   [92,93,91,94,95,90,94],
+    otd:    [90,91,90,92,93,88,92],
+    dep:    [94,95,93,96,97,91,96],
+    inc:    [4.1,3.9,4.3,3.8,3.4,3.2,3.6],
+    scLabels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+    sc_rupt:[7,6,9,7,8,5,8], sc_seuil:[13,14,15,13,14,12,14], sc_rot:[22,22,23,22,23,23,23],
+    kpis: { prep:'93.1%', prepD:'↑ 0.8%', prepDc:'up', block:'68', blockD:'↓ 5', blockDc:'up', otd:'92.3%', otdD:'↑ 0.5%', otdDc:'up', dep:'95.7%', depD:'↑ 0.3%', depDc:'up', inc:'3.8%', incD:'↑ 0.2%', incDc:'dn', sub:'vs sem. préc.' }
+  },
+  month: {
+    label: 'Évolution mensuelle — 4 dernières semaines',
+    sub: 'Taux de préparation, OTD, départ J, incidents',
+    labels: ['S1','S2','S3','S4'],
+    prep:   [91,93,94,94],
+    otd:    [89,91,92,92],
+    dep:    [93,95,96,96],
+    inc:    [4.5,4.0,3.8,3.6],
+    scLabels:['S1','S2','S3','S4'],
+    sc_rupt:[9,8,8,8], sc_seuil:[16,15,14,14], sc_rot:[24,23,23,23],
+    kpis: { prep:'93.0%', prepD:'↑ 2.1%', prepDc:'up', block:'71', blockD:'↓ 9', blockDc:'up', otd:'91.0%', otdD:'↑ 1.8%', otdDc:'up', dep:'95.0%', depD:'↑ 1.2%', depDc:'up', inc:'4.0%', incD:'↓ 0.9%', incDc:'up', sub:'vs mois préc.' }
+  },
+  year: {
+    label: 'Évolution annuelle — 12 derniers mois',
+    sub: 'Taux de préparation, OTD, départ J, incidents',
+    labels: ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'],
+    prep:   [88,89,90,91,91,92,93,91,93,94,94,94],
+    otd:    [86,87,88,89,90,90,91,89,91,92,91,92],
+    dep:    [90,91,92,93,94,94,95,93,95,96,95,96],
+    inc:    [5.2,5.0,4.8,4.7,4.5,4.4,4.2,4.3,4.0,3.8,3.7,3.6],
+    scLabels:['Jan','Mar','Mai','Jul','Sep','Nov','Déc'],
+    sc_rupt:[12,10,9,8,8,8,8], sc_seuil:[18,17,16,15,14,14,14], sc_rot:[28,26,25,24,23,23,23],
+    kpis: { prep:'91.8%', prepD:'↑ 6.8%', prepDc:'up', block:'74', blockD:'↓ 18%', blockDc:'up', otd:'89.5%', otdD:'↑ 5.2%', otdDc:'up', dep:'93.4%', depD:'↑ 4.1%', depDc:'up', inc:'4.6%', incD:'↓ 1.6%', incDc:'up', sub:'vs an préc.' }
+  }
+};
+
+let currentPeriod = 'day';
+let mainChart, stockChart;
+
+function setPeriod(btn) {
+  document.querySelectorAll('.ts-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPeriod = btn.dataset.period;
+  updateKPIs();
+  rebuildCharts();
+  document.getElementById('sc-period').textContent = { day:"aujourd'hui", week:'7 jours', month:'ce mois', year:"cette année" }[currentPeriod];
+}
+
+function updateKPIs() {
+  const k = PERIODS[currentPeriod].kpis;
+  document.getElementById('kpi-prep').innerHTML = k.prep + '';
+  document.getElementById('d-prep').textContent = k.prepD;
+  document.getElementById('d-prep').className = k.prepDc === 'up' ? 'delta-up' : 'delta-dn';
+  document.getElementById('sub-prep').textContent = k.sub;
+  document.getElementById('kpi-otd').innerHTML = k.otd + '';
+  document.getElementById('d-otd').textContent = k.otdD;
+  document.getElementById('d-otd').className = k.otdDc === 'up' ? 'delta-up' : 'delta-dn';
+  document.getElementById('sub-otd').textContent = k.sub;
+  document.getElementById('kpi-depart').innerHTML = k.dep + '';
+  document.getElementById('d-depart').textContent = k.depD;
+  document.getElementById('d-depart').className = k.depDc === 'up' ? 'delta-up' : 'delta-dn';
+  document.getElementById('sub-depart').textContent = k.sub;
+  document.getElementById('blocked-n').textContent = k.block;
+  document.getElementById('d-block').textContent = k.blockD;
+  document.getElementById('d-block').className = k.blockDc === 'up' ? 'delta-up' : 'delta-dn';
+  document.getElementById('sub-block').textContent = k.sub;
+  document.getElementById('kpi-inc').innerHTML = k.inc + '';
+  document.getElementById('d-inc').textContent = k.incD;
+  document.getElementById('d-inc').className = k.incDc === 'up' ? 'delta-dn' : 'delta-up';
+  document.getElementById('sub-inc').textContent = k.sub;
+}
+
+/* ── CARRIER DELAYS ── */
+const carriers = [
+  { name: 'Chronopost', delay: 1.8, trend: 'up', color: 'var(--success)' },
+  { name: 'GLS',        delay: 2.1, trend: 'nt', color: 'var(--success)' },
+  { name: 'UPS',        delay: 2.4, trend: 'nt', color: 'var(--warning)' },
+  { name: 'DHL',        delay: 3.1, trend: 'dn', color: 'var(--warning)' },
+  { name: 'Colissimo',  delay: 2.0, trend: 'up', color: 'var(--success)' },
+];
+function renderCarriers() {
+  const wrap = document.getElementById('carrier-delays');
+  wrap.innerHTML = carriers.map(c => `
+    <div style="text-align:center;padding:10px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:${c.color}">${c.delay}<span style="font-size:11px;font-weight:400">j</span></div>
+      <div style="font-size:10px;font-weight:600;color:var(--ink);margin-top:4px">${c.name}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px">${{up:'↓ Mieux',dn:'↑ Dégradé',nt:'Stable'}[c.trend]}</div>
+    </div>`).join('');
+}
+
+/* ── ROTATION TABLE ── */
+const rotData = [
+  { ref:'COS-21142', name:'Sérum brillance Lissant 50ml', qty:240, lastMove:'04 jan. 2026', days:71 },
+  { ref:'COS-20834', name:'Gel coiffant Fixation forte 150ml', qty:85,  lastMove:'18 jan. 2026', days:57 },
+  { ref:'COS-21891', name:'Huile capillaire Argan 100ml', qty:310, lastMove:'28 déc. 2025', days:78 },
+  { ref:'COS-20412', name:'Spray thermoprotecteur 200ml', qty:62,  lastMove:'12 jan. 2026', days:63 },
+  { ref:'COS-22014', name:'Crème de soin Boucles 250ml', qty:520, lastMove:'02 nov. 2025', days:134 },
+];
+function renderRotation(threshold) {
+  const filtered = rotData.filter(r => r.days >= threshold);
+  document.getElementById('rot-count').textContent = filtered.length;
+  document.getElementById('rot-val-stock').textContent = filtered.reduce((s,r) => s+r.qty, 0).toLocaleString('fr-FR');
+  const avg = filtered.length ? Math.round(filtered.reduce((s,r)=>s+r.days,0)/filtered.length) : 0;
+  document.getElementById('rot-avg').textContent = avg + 'j';
+  const tbody = document.getElementById('rot-table');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);font-size:12px;padding:16px">Aucune référence immobile au-delà de ce seuil</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(r => {
+    const cls = r.days >= 90 ? 'days-bad' : r.days >= 60 ? 'days-warn' : 'days-ok';
+    const rowCls = r.days >= threshold ? 'stock-alert-row' : '';
+    return `<tr class="${rowCls}"><td class="td-mono">${r.ref}</td><td style="font-weight:500">${r.name}</td><td class="td-mono">${r.qty}</td><td class="td-mono">${r.lastMove}</td><td><span class="days-chip ${cls}">${r.days}j</span></td></tr>`;
+  }).join('');
+}
+function updateRotation(val) {
+  document.getElementById('rotVal').textContent = val + 'j';
+  renderRotation(parseInt(val));
+}
+
+/* ── CHARTS ── */
+function getCSSVar(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function rebuildCharts() {
+  if (mainChart)  mainChart.destroy();
+  if (stockChart) stockChart.destroy();
+
+  const p = PERIODS[currentPeriod];
+  const tick  = getCSSVar('--chart-tick');
+  const grid  = getCSSVar('--chart-grid');
+  const font  = { family: "'Plus Jakarta Sans', sans-serif", size: 11 };
+  const baseScales = {
+    x: { grid: { display: false }, ticks: { font, color: tick }, border: { display: false } },
+    y: { grid: { color: grid }, ticks: { font, color: tick }, border: { display: false }, min: 0, max: 100 }
+  };
+
+  /* document title */
+  document.getElementById('chart-title').textContent = p.label;
+  document.getElementById('chart-sub').textContent   = p.sub;
+
+  mainChart = new Chart(document.getElementById('mainChart'), {
+    type: 'line',
+    data: {
+      labels: p.labels,
+      datasets: [
+        { label:'Préparation', data:p.prep, borderColor:'#0E8FCC', backgroundColor:'rgba(14,143,204,0.07)', fill:true, tension:0.4, borderWidth:2, pointRadius:2, pointBackgroundColor:'#0E8FCC' },
+        { label:'OTD',         data:p.otd,  borderColor:'#2A9554', backgroundColor:'rgba(42,149,84,0.06)',  fill:true, tension:0.4, borderWidth:2, pointRadius:2, pointBackgroundColor:'#2A9554' },
+        { label:'Départ J',    data:p.dep,  borderColor:'#C27B00', fill:false, tension:0.4, borderWidth:1.5, borderDash:[4,3], pointRadius:2, pointBackgroundColor:'#C27B00' },
+        { label:'Incidents %', data:p.inc,  borderColor:'#D63050', fill:false, tension:0.4, borderWidth:1.5, yAxisID:'y2', pointRadius:2, pointBackgroundColor:'#D63050' },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}${ctx.datasetIndex < 3 ? '%' : '%'}` }}
+      },
+      scales: {
+        ...baseScales,
+        y:  { ...baseScales.y, min:80, max:100, ticks:{ ...baseScales.y.ticks, callback: v => v+'%' } },
+        y2: { position:'right', grid:{display:false}, ticks:{ font, color:tick, callback:v=>v+'%' }, border:{display:false}, min:0, max:10 }
+      }
+    }
+  });
+
+  stockChart = new Chart(document.getElementById('stockChart'), {
+    type: 'bar',
+    data: {
+      labels: p.scLabels,
+      datasets: [
+        { label:'Ruptures',       data:p.sc_rupt,  backgroundColor:'rgba(214,48,80,0.75)',  borderRadius:4, borderSkipped:false },
+        { label:'Seuil atteint',  data:p.sc_seuil, backgroundColor:'rgba(194,123,0,0.65)',  borderRadius:4, borderSkipped:false },
+        { label:'Réfs immobiles', data:p.sc_rot,   backgroundColor:'rgba(108,71,232,0.55)', borderRadius:4, borderSkipped:false },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false }},
+      scales: {
+        x: { grid:{display:false}, ticks:{font, color:tick}, border:{display:false}, stacked:false },
+        y: { grid:{color:grid}, ticks:{font, color:tick}, border:{display:false} }
+      }
+    }
+  });
+}
+
+/* ── INIT ── */
+renderCarriers();
+renderRotation(60);
+rebuildCharts();
+</script>
+</body>
+</html>

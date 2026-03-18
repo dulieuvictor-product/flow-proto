@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eLogik — Prototypes & Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #F2F4F8;
+  --surface:  #FFFFFF;
+  --surface2: #F7F9FC;
+  --border:   rgba(0,0,0,0.07);
+  --border2:  rgba(0,0,0,0.12);
+  --ink:      #1A1C1E;
+  --slate:    #4A5568;
+  --muted:    #8A95A3;
+  --font:     'Plus Jakarta Sans', sans-serif;
+  --mono:     'DM Mono', monospace;
+  /* product colours */
+  --flow:    #0E8FCC;
+  --ekan:    #6C47E8;
+  --transit: #C27B00;
+  --stock:   #2A9554;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+/* ── HEADER ── */
+.header {
+  background: #0C0F14;
+  padding: 48px 40px 56px;
+  position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,143,204,0.15) 0%, transparent 70%);
+  top: -200px; right: -80px; pointer-events: none;
+}
+.header::after {
+  content: ''; position: absolute;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(42,149,84,0.08) 0%, transparent 70%);
+  bottom: -150px; left: 60px; pointer-events: none;
+}
+.header-inner { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 40px; height: 40px; border-radius: 10px; background: var(--flow); display: flex; align-items: center; justify-content: center; }
+.brand-mark svg { width: 22px; height: 22px; }
+.brand-name { font-size: 16px; font-weight: 300; color: #fff; letter-spacing: -0.02em; }
+.brand-name strong { font-weight: 600; }
+.brand-name .sub { color: rgba(255,255,255,0.4); font-weight: 300; }
+.header-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: var(--mono); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 5px 14px; }
+
+.hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--flow); font-family: var(--mono); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::after { content: ''; flex: 0 0 40px; height: 1px; background: rgba(255,255,255,0.1); }
+.hero-title { font-size: clamp(32px, 5vw, 52px); font-weight: 300; letter-spacing: -0.04em; color: #fff; line-height: 1.08; margin-bottom: 14px; }
+.hero-title em { font-style: normal; color: #1ADCFF; }
+.hero-sub { font-size: 15px; color: rgba(255,255,255,0.45); max-width: 520px; line-height: 1.65; }
+
+/* ── PRODUCT TAGS STRIP ── */
+.product-strip { display: flex; gap: 8px; margin-top: 32px; flex-wrap: wrap; }
+.prod-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; border: 1px solid; font-family: var(--mono); }
+.prod-flow    { color: #1ADCFF;  border-color: rgba(26,220,255,0.3);  background: rgba(26,220,255,0.07); }
+.prod-ekan    { color: #A78BFF;  border-color: rgba(167,139,255,0.3); background: rgba(167,139,255,0.07); }
+.prod-transit { color: #FFB020;  border-color: rgba(255,176,32,0.3);  background: rgba(255,176,32,0.07); }
+.prod-stock   { color: #22FF7A;  border-color: rgba(34,255,122,0.3);  background: rgba(34,255,122,0.07); }
+
+/* ── MAIN ── */
+.main { max-width: 1080px; margin: 0 auto; padding: 48px 40px 80px; }
+
+/* ── SECTION LABEL ── */
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+.section-block { margin-bottom: 40px; }
+
+/* ── CARD GRID ── */
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.cards-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+/* ── FILE CARD ── */
+.file-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  text-decoration: none; display: flex; flex-direction: column;
+}
+.file-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+.file-card:hover .fc-hero { filter: brightness(1.04); }
+
+/* hero thumbnail */
+.fc-hero { height: 120px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.fc-hero-icon { opacity: 0.18; }
+.fc-hero-icon svg { width: 80px; height: 80px; }
+.fc-badge { position: absolute; bottom: 12px; left: 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; border: 1px solid; font-family: var(--mono); }
+
+/* theme variants */
+.fc-flow   .fc-hero { background: #020E14; }
+.fc-flow   .fc-hero-icon svg { stroke: #1ADCFF; }
+.fc-flow   .fc-badge { color: #1ADCFF; border-color: rgba(26,220,255,0.3); background: rgba(26,220,255,0.1); }
+.fc-flow:hover { border-color: rgba(14,143,204,0.3); }
+
+.fc-ekan   .fc-hero { background: #0A0614; }
+.fc-ekan   .fc-hero-icon svg { stroke: #A78BFF; }
+.fc-ekan   .fc-badge { color: #A78BFF; border-color: rgba(167,139,255,0.3); background: rgba(167,139,255,0.1); }
+.fc-ekan:hover { border-color: rgba(108,71,232,0.3); }
+
+.fc-brand  .fc-hero { background: #0A0C10; }
+.fc-brand  .fc-hero-icon svg { stroke: #1ADCFF; }
+.fc-brand  .fc-badge { color: #1ADCFF; border-color: rgba(26,220,255,0.3); background: rgba(26,220,255,0.1); }
+.fc-brand:hover { border-color: rgba(14,143,204,0.2); }
+
+.fc-family-d .fc-hero { background: #060810; }
+.fc-family-d .fc-hero-icon svg { stroke: #A78BFF; }
+.fc-family-d .fc-badge { color: #A78BFF; border-color: rgba(167,139,255,0.3); background: rgba(167,139,255,0.1); }
+.fc-family-d:hover { border-color: rgba(108,71,232,0.2); }
+
+.fc-family-l .fc-hero { background: var(--surface2); border-bottom: 1px solid var(--border); }
+.fc-family-l .fc-hero-icon svg { stroke: var(--slate); }
+.fc-family-l .fc-badge { color: var(--slate); border-color: var(--border2); background: var(--surface2); }
+.fc-family-l:hover { border-color: rgba(0,0,0,0.15); }
+
+.fc-md .fc-hero { background: var(--surface2); border-bottom: 1px solid var(--border); }
+.fc-md .fc-hero-icon svg { stroke: var(--muted); }
+.fc-md .fc-badge { color: var(--muted); border-color: var(--border2); background: var(--surface2); }
+
+/* body */
+.fc-body { padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.fc-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+.fc-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+.fc-meta  { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.fc-file  { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 5px; }
+.fc-arrow { margin-left: auto; font-size: 14px; color: var(--muted); transition: transform 0.15s, color 0.15s; }
+.file-card:hover .fc-arrow { transform: translateX(3px); color: var(--flow); }
+
+/* ── CHANGELOG / INFO ── */
+.info-strip { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.info-item { flex: 1; min-width: 180px; }
+.info-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
+.info-value { font-size: 13px; font-weight: 500; color: var(--ink); }
+.info-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.info-divider { width: 1px; background: var(--border2); align-self: stretch; }
+
+/* ── FOOTER ── */
+.footer { background: #0C0F14; padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-brand { display: flex; align-items: center; gap: 10px; }
+.footer-mark { width: 28px; height: 28px; border-radius: 7px; background: var(--flow); display: flex; align-items: center; justify-content: center; }
+.footer-mark svg { width: 16px; height: 16px; }
+.footer-name { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.6); }
+.footer-name strong { font-weight: 600; color: #fff; }
+.footer-meta { font-size: 11px; color: rgba(255,255,255,0.25); font-family: var(--mono); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.header-inner { animation: fadeUp 0.5s ease both; }
+.main > * { animation: fadeUp 0.5s ease both; }
+.section-block:nth-child(1) { animation-delay: 0.1s; }
+.section-block:nth-child(2) { animation-delay: 0.18s; }
+.section-block:nth-child(3) { animation-delay: 0.24s; }
+.section-block:nth-child(4) { animation-delay: 0.30s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .header { padding: 32px 20px 40px; }
+  .main { padding: 32px 20px 60px; }
+  .cards-grid { grid-template-columns: 1fr 1fr; }
+  .cards-grid-2 { grid-template-columns: 1fr; }
+  .footer { padding: 24px 20px; }
+}
+@media (max-width: 520px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="brand-name">elo<strong>gik</strong> <span class="sub">fine logistic</span></div>
+      </div>
+      <div class="header-tag">Design System &amp; Prototypes · v1.0</div>
+    </div>
+
+    <div class="hero-eyebrow">Portail de maquettes</div>
+    <h1 class="hero-title">Tous les livrables<br><em>au même endroit.</em></h1>
+    <p class="hero-sub">Brand kit, identité produits et dashboards interactifs pour la suite eLogik. Cliquez sur une carte pour ouvrir le fichier correspondant.</p>
+
+    <div class="product-strip">
+      <span class="prod-tag prod-flow">elo (flow)</span>
+      <span class="prod-tag prod-ekan">ekan · OMS</span>
+      <span class="prod-tag prod-transit">evo · TMS</span>
+      <span class="prod-tag prod-stock">esto · WMS</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- INFO STRIP -->
+  <div class="section-block">
+    <div class="info-strip">
+      <div class="info-item">
+        <div class="info-label">Version</div>
+        <div class="info-value">1.0</div>
+        <div class="info-sub">Mars 2026</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Fichiers</div>
+        <div class="info-value">5 livrables</div>
+        <div class="info-sub">HTML + Markdown</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Typographie</div>
+        <div class="info-value">Plus Jakarta Sans</div>
+        <div class="info-sub">+ DM Mono</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Couleurs brand</div>
+        <div class="info-value" style="display:flex;gap:6px;align-items:center;margin-top:2px">
+          <span style="width:12px;height:12px;border-radius:50%;background:#0E8FCC;display:inline-block"></span>
+          <span style="width:12px;height:12px;border-radius:50%;background:#6C47E8;display:inline-block"></span>
+          <span style="width:12px;height:12px;border-radius:50%;background:#C27B00;display:inline-block"></span>
+          <span style="width:12px;height:12px;border-radius:50%;background:#2A9554;display:inline-block"></span>
+        </div>
+        <div class="info-sub">4 produits · 1 système</div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-item">
+        <div class="info-label">Statut</div>
+        <div class="info-value" style="display:flex;align-items:center;gap:6px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#2A9554;animation:pulse 1.6s infinite;display:inline-block"></span>
+          En cours
+        </div>
+        <div class="info-sub">Prototypage actif</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARDS -->
+  <div class="section-block">
+    <div class="section-label">Dashboards — elo (flow)</div>
+    <div class="cards-grid-2">
+
+      <a href="elo-flow-dashboard.html" class="file-card fc-flow">
+        <div class="fc-hero">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Exemple — Home</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Dashboard Home</div>
+          <div class="fc-desc">Vue globale : commandes par statut et transporteur, KPIs live, alertes litiges, graphiques 7 jours. Light + Dark mode.</div>
+          <div class="fc-meta">
+            <span class="fc-file">elo-flow-dashboard.html</span>
+            <span class="fc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="elo-flow-ops-dashboard.html" class="file-card fc-flow">
+        <div class="fc-hero">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Exemple — Suivi ops</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Dashboard Suivi Opérationnel</div>
+          <div class="fc-desc">Taux de préparation, OTD, départ à J, incidents, stock-out, rotation des stocks. Sélecteur temporel jour / semaine / mois / année.</div>
+          <div class="fc-meta">
+            <span class="fc-file">elo-flow-ops-dashboard.html</span>
+            <span class="fc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- IDENTITE PRODUITS -->
+  <div class="section-block">
+    <div class="section-label">Identité produits — Famille eLogik</div>
+    <div class="cards-grid">
+
+      <a href="elogik-product-family.html" class="file-card fc-family-d">
+        <div class="fc-hero">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Dark mode</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Famille produits — Dark</div>
+          <div class="fc-desc">Les 4 solutions eLogik avec couleurs fluos, logique sémantique et palette cohérente. Version dark avec lueurs ambiantes.</div>
+          <div class="fc-meta">
+            <span class="fc-file">elogik-product-family.html</span>
+            <span class="fc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="elogik-product-family-light.html" class="file-card fc-family-l">
+        <div class="fc-hero">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Light mode</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Famille produits — Light</div>
+          <div class="fc-desc">Même contenu, version light. Couleurs assourdies pour le mode jour, tints pastels sur fond blanc.</div>
+          <div class="fc-meta">
+            <span class="fc-file">elogik-product-family-light.html</span>
+            <span class="fc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="flow-brand-kit-notion.md" class="file-card fc-md">
+        <div class="fc-hero">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Markdown · Notion</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title">Brand Kit — Notion</div>
+          <div class="fc-desc">Palette, typographie, composants, règles d'usage et nomenclature Figma. Format Markdown importable directement dans Notion.</div>
+          <div class="fc-meta">
+            <span class="fc-file">flow-brand-kit-notion.md</span>
+            <span class="fc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- NOMENCLATURE -->
+  <div class="section-block">
+    <div class="section-label">Nomenclature produits</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid #0E8FCC">
+        <div style="font-size:18px;font-weight:300;color:#0E8FCC;letter-spacing:-0.03em;margin-bottom:3px">elo <span style="font-size:11px;opacity:0.6">(flow)</span></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Data &amp; Analytics</div>
+        <div style="font-size:11px;color:var(--slate);line-height:1.55">Visualisation des flux logistiques en temps réel.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid #6C47E8">
+        <div style="font-size:18px;font-weight:300;color:#6C47E8;letter-spacing:-0.03em;margin-bottom:3px">ekan</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Order Management · OMS</div>
+        <div style="font-size:11px;color:var(--slate);line-height:1.55">Gestion centralisée des commandes multicanal.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid #C27B00">
+        <div style="font-size:18px;font-weight:300;color:#C27B00;letter-spacing:-0.03em;margin-bottom:3px">evo</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Transport Management · TMS</div>
+        <div style="font-size:11px;color:var(--slate);line-height:1.55">Planification, suivi et optimisation transport.</div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:2px solid #2A9554">
+        <div style="font-size:18px;font-weight:300;color:#2A9554;letter-spacing:-0.03em;margin-bottom:3px">esto</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:8px">Warehouse Management · WMS</div>
+        <div style="font-size:11px;color:var(--slate);line-height:1.55">Gestion opérationnelle des entrepôts et stocks.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="footer-mark">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <div class="footer-name">elo<strong>gik</strong> Fine Logistic</div>
+  </div>
+  <div class="footer-meta">Design System v1.0 · Mars 2026 · Plus Jakarta Sans · DM Mono · Lucide Icons</div>
+</footer>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+@media (max-width: 700px) {
+  div[style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+}
+</style>
+
+</body>
+</html>
