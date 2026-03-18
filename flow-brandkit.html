@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow — Brand Kit v1.0 · eLogik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cyan:#29ABE2;--cyan-dark:#075E8A;--cyan-mid:#0E8FCC;--cyan-tint:#C6EBF8;--cyan-light:#EAF6FD;
+  --lime:#8DC63F;--lime-dark:#3A6B10;--lime-mid:#78B82A;--lime-tint:#EDF7D9;
+  --anthracite:#58595B;--amber:#F5A623;--amber-tint:#FEF3DC;--red:#E2274A;--red-tint:#FDEAED;
+  --violet:#7E57C2;--ink:#1A1C1E;--slate:#4A5568;--muted:#8A95A3;
+  --surface:#EEF1F5;--canvas:#F8FAFB;--white:#FFFFFF;--border:rgba(0,0,0,0.09);
+  --dk-deep:#0B0E13;--dk-surface:#141920;--dk-elevated:#1C2330;--dk-border:#253040;
+  --dk-text:#C8D3E0;--dk-muted:#5A6478;
+  --fluo-cyan:#1ADCFF;--fluo-green:#22FF7A;--fluo-yellow:#FFE040;--fluo-red:#FF3B6A;
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-height:1.5}
+.page{max-width:1100px;margin:0 auto;padding:0 32px 80px}
+
+/* COVER */
+.cover{background:var(--dk-deep);padding:64px 32px;display:flex;align-items:center;justify-content:space-between;gap:32px;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(41,171,226,0.12) 0%,transparent 70%);top:-200px;right:-100px;pointer-events:none}
+.cover-left{position:relative;z-index:1}
+.cover-logo{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.cover-logo-mark{width:48px;height:48px;background:var(--cyan-mid);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.cover-wordmark{font-size:32px;font-weight:300;color:var(--dk-text);letter-spacing:-0.03em}
+.cover-wordmark strong{font-weight:600;color:#fff}
+.cover-title{font-size:48px;font-weight:300;color:#fff;letter-spacing:-0.04em;line-height:1.1;margin-bottom:12px}
+.cover-title em{font-style:normal;color:var(--fluo-cyan)}
+.cover-sub{font-size:15px;color:var(--dk-muted);max-width:440px}
+.cover-meta{font-size:12px;color:var(--dk-muted);margin-top:32px;font-family:var(--mono)}
+.cover-right{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.cover-pill{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);color:var(--dk-muted)}
+.cover-pill.active{border-color:var(--fluo-cyan);color:var(--fluo-cyan);background:rgba(26,220,255,0.06)}
+
+/* STICKY NAV */
+.sticky-nav{position:sticky;top:0;z-index:100;background:rgba(248,250,251,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;overflow-x:auto}
+.nav-link{font-size:12px;font-weight:500;color:var(--muted);padding:14px 16px;text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s}
+.nav-link:hover{color:var(--ink)}
+.nav-link.active{color:var(--cyan-mid);border-color:var(--cyan-mid)}
+
+/* SECTIONS */
+.section{padding:56px 0 0}
+.section-eyebrow{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan-mid);margin-bottom:6px}
+.section-title{font-size:28px;font-weight:300;letter-spacing:-0.03em;color:var(--ink);margin-bottom:6px}
+.section-desc{font-size:14px;color:var(--slate);margin-bottom:32px;max-width:640px;line-height:1.6}
+.divider{height:1px;background:var(--border);margin:48px 0 0}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.flex{display:flex;align-items:center}
+.flex-wrap{display:flex;flex-wrap:wrap;align-items:center}
+.gap4{gap:4px}.gap6{gap:6px}.gap8{gap:8px}.gap12{gap:12px}.gap16{gap:16px}.gap24{gap:24px}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card-dark{background:var(--dk-surface);border:1px solid var(--dk-border);border-radius:12px;padding:20px}
+.card-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.card-label-dark{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--dk-muted);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--dk-border)}
+
+/* PALETTE */
+.palette-row{display:flex;gap:6px}
+.swatch-tall{flex:1;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.06)}
+.swatch-color{height:72px}
+.swatch-info{padding:10px;background:var(--white)}
+.swatch-name{font-size:12px;font-weight:600;color:var(--ink)}
+.swatch-hex{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.swatch-role{font-size:9px;color:var(--muted);margin-top:2px}
+.ramp-strip{display:flex;height:36px;border-radius:8px;overflow:hidden}
+.ramp-stop{flex:1}
+
+/* BUTTONS */
+.btn{font-family:var(--font);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;border-radius:8px;transition:all 0.15s;text-decoration:none}
+.btn-primary{background:var(--cyan-mid);color:#fff;padding:9px 18px}
+.btn-primary:hover{background:var(--cyan-dark)}
+.btn-secondary{background:transparent;color:var(--ink);padding:8px 18px;border:1px solid rgba(0,0,0,0.18)}
+.btn-secondary:hover{background:var(--surface)}
+.btn-ghost{background:transparent;color:var(--cyan-mid);padding:8px 18px}
+.btn-ghost:hover{background:var(--cyan-light)}
+.btn-danger{background:transparent;color:var(--red);padding:8px 18px;border:1px solid var(--red)}
+.btn-lime{background:var(--lime-mid);color:#fff;padding:9px 18px}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:6px}
+.btn-lg{padding:12px 28px;font-size:15px;border-radius:10px}
+.btn-dis{opacity:0.35;cursor:not-allowed;pointer-events:none}
+.btn-icon{width:36px;height:36px;padding:0;justify-content:center}
+.spin{animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;font-family:var(--font)}
+.bdg-cyan{background:var(--cyan-tint);color:var(--cyan-dark)}
+.bdg-lime{background:var(--lime-tint);color:var(--lime-dark)}
+.bdg-amber{background:var(--amber-tint);color:#7A4F00}
+.bdg-red{background:var(--red-tint);color:#8C1428}
+.bdg-gray{background:var(--surface);color:var(--slate)}
+.bdg-fluo-cyan{background:rgba(26,220,255,0.12);color:var(--fluo-cyan)}
+.bdg-fluo-green{background:rgba(34,255,122,0.12);color:var(--fluo-green)}
+.bdg-fluo-red{background:rgba(255,59,106,0.12);color:var(--fluo-red)}
+.bdg-fluo-yell{background:rgba(255,224,64,0.12);color:var(--fluo-yellow)}
+.dot-live{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:400;padding:5px 12px;border-radius:7px;border:1px solid rgba(0,0,0,0.14);background:var(--white);color:var(--ink);cursor:pointer;font-family:var(--font);transition:all 0.12s}
+.tag:hover{border-color:var(--cyan-mid)}
+.tag.on{border-color:var(--cyan-mid);background:var(--cyan-light);color:var(--cyan-dark);font-weight:500}
+
+/* INPUTS */
+.field{display:flex;flex-direction:column;gap:5px}
+.field-label{font-size:11px;font-weight:600;color:var(--slate)}
+.input{font-family:var(--font);font-size:13px;color:var(--ink);background:var(--white);border:1px solid rgba(0,0,0,0.16);border-radius:8px;padding:9px 12px;outline:none;width:100%;transition:border-color 0.15s,box-shadow 0.15s}
+.input:focus{border-color:var(--cyan-mid);box-shadow:0 0 0 3px rgba(14,143,204,0.14)}
+.input.ok{border-color:var(--lime-mid)}
+.input.err{border-color:var(--red)}
+.field-hint{font-size:11px;color:var(--muted)}
+.field-err{font-size:11px;color:var(--red)}
+.field-ok{font-size:11px;color:var(--lime-mid)}
+.select{font-family:var(--font);font-size:13px;color:var(--ink);background:var(--white);border:1px solid rgba(0,0,0,0.16);border-radius:8px;padding:9px 12px;outline:none;width:100%;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A95A3' stroke-width='2' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* TOGGLE / CHECKBOX */
+.check-label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer}
+.check-box{width:17px;height:17px;border-radius:4px;border:1.5px solid rgba(0,0,0,0.22);background:var(--white);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.check-box.checked{background:var(--cyan-mid);border-color:var(--cyan-mid)}
+.toggle-wrap{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink)}
+.tog{width:34px;height:20px;border-radius:100px;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background 0.2s}
+.tog.off{background:rgba(0,0,0,0.18)}
+.tog.on{background:var(--cyan-mid)}
+.tog-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:white;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.25)}
+.tog.on .tog-knob{transform:translateX(14px)}
+
+/* SIDE NAV */
+.sidenav{background:var(--dk-surface);border:1px solid var(--dk-border);border-radius:12px;padding:12px 8px;width:220px;flex-shrink:0}
+.nav-section-head{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--dk-muted);padding:10px 10px 5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--dk-muted);cursor:pointer;transition:background 0.12s,color 0.12s}
+.nav-item:hover:not(.nav-active){background:var(--dk-elevated);color:var(--dk-text)}
+.nav-active{background:rgba(26,220,255,0.1);color:var(--fluo-cyan);font-weight:500}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;background:rgba(255,59,106,0.2);color:var(--fluo-red);padding:1px 6px;border-radius:100px}
+
+/* TOP BAR */
+.topbar{background:var(--dk-deep);border:1px solid var(--dk-border);border-radius:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:28px;height:28px;background:var(--cyan-mid);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topbar-name{font-size:15px;font-weight:500;color:#fff}
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--dk-elevated);border:1px solid var(--dk-border);border-radius:8px;padding:7px 12px;flex:1;max-width:340px}
+.topbar-search input{font-family:var(--font);font-size:13px;background:transparent;border:none;outline:none;color:var(--dk-text);flex:1}
+.topbar-search input::placeholder{color:var(--dk-muted)}
+.topbar-search .kbd{font-size:10px;color:var(--dk-muted);font-family:var(--mono);background:rgba(255,255,255,0.06);padding:2px 5px;border-radius:3px}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:8px;background:var(--dk-elevated);border:1px solid var(--dk-border);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.notif-dot{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--fluo-red);border:1.5px solid var(--dk-deep)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--cyan-mid);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* DATA TABLE */
+.data-table-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table thead{background:var(--surface)}
+.data-table th{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink)}
+.data-table tbody tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover td{background:var(--canvas)}
+.td-mono{font-family:var(--mono);font-size:12px;color:var(--slate)}
+.td-actions{display:flex;gap:6px}
+
+/* METRIC CARDS */
+.metric-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.mc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.mc-label{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted)}
+.mc-big{font-size:32px;font-weight:300;letter-spacing:-0.04em;color:var(--ink);line-height:1}
+.mc-sub{font-size:12px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px}
+.delta-pos{font-size:11px;font-weight:600;background:var(--lime-tint);color:var(--lime-dark);padding:2px 7px;border-radius:100px}
+.delta-neg{font-size:11px;font-weight:600;background:var(--red-tint);color:#8C1428;padding:2px 7px;border-radius:100px}
+.prog-bar{height:3px;background:var(--surface);border-radius:100px;margin-top:12px;overflow:hidden}
+.prog-fill{height:100%;border-radius:100px}
+.mc-dark{background:var(--dk-surface);border:1px solid var(--dk-border);border-radius:12px;padding:18px 20px}
+.mc-dark .mc-label{color:var(--dk-muted)}
+.mc-dark .mc-big{color:var(--dk-text)}
+.mc-dark .mc-sub{color:var(--dk-muted)}
+.mc-dark .prog-bar{background:var(--dk-elevated)}
+
+/* MODAL */
+.modal-overlay{background:rgba(10,14,19,0.5);border-radius:14px;padding:40px 32px;display:flex;align-items:center;justify-content:center;min-height:220px}
+.modal{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;width:360px;box-shadow:0 24px 64px rgba(0,0,0,0.12)}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.modal-title{font-size:17px;font-weight:600;color:var(--ink)}
+.modal-close{width:28px;height:28px;border-radius:6px;background:var(--surface);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
+.modal-body{font-size:13px;color:var(--slate);line-height:1.65;margin-bottom:24px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px}
+
+/* TOOLTIP */
+.tooltip-host{position:relative;display:inline-flex}
+.tooltip-box{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;white-space:nowrap;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:var(--font)}
+.tooltip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink)}
+
+/* TYPOGRAPHY SPECIMEN */
+.type-specimen{border-left:2px solid var(--border);padding-left:20px;margin-bottom:20px}
+.type-meta{font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:6px}
+.t-h1{font-size:40px;font-weight:300;letter-spacing:-0.04em;color:var(--ink);line-height:1.1}
+.t-h2{font-size:26px;font-weight:300;letter-spacing:-0.03em;color:var(--ink)}
+.t-h3{font-size:18px;font-weight:500;color:var(--ink)}
+.t-body{font-size:14px;font-weight:400;color:var(--slate);line-height:1.65}
+.t-cap{font-size:12px;color:var(--muted)}
+.t-lbl{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.t-mono{font-size:13px;font-family:var(--mono);color:var(--slate)}
+
+/* FORM */
+.form-section-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* ICONS */
+.icon-grid{display:flex;flex-wrap:wrap;gap:8px}
+.icon-chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--white);font-size:12px;color:var(--slate)}
+
+/* FOOTER */
+.footer{background:var(--dk-deep);margin-top:80px;padding:40px 32px;display:flex;align-items:center;justify-content:space-between}
+.footer-left{font-size:12px;color:var(--dk-muted);font-family:var(--mono)}
+.footer-right{display:flex;gap:8px}
+
+/* UTILS */
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb24{margin-bottom:24px}
+.text-muted{color:var(--muted);font-size:12px}
+.text-sm{font-size:12px}
+.fw500{font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-left">
+    <div class="cover-logo">
+      <div class="cover-logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M4 20 C4 20 9 6 14 14 C19 22 24 8 24 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="cover-wordmark">elo<strong>flow</strong></div>
+    </div>
+    <div class="cover-title">Brand Kit<br><em>Design System</em></div>
+    <div class="cover-sub">Palette, typographie, composants UI et regles d'usage pour l'outil de data visualization logistique de la famille eLogik.</div>
+    <div class="cover-meta">Version 1.0 · Mars 2026 · eLogik Fine Logistic</div>
+  </div>
+  <div class="cover-right">
+    <div class="cover-pill active">Foundations</div>
+    <div class="cover-pill active">Atoms</div>
+    <div class="cover-pill active">Molecules</div>
+    <div class="cover-pill active">Organisms</div>
+    <div class="cover-pill active">Dark Mode</div>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <a href="#palette" class="nav-link active">Palette</a>
+  <a href="#typo" class="nav-link">Typographie</a>
+  <a href="#spacing" class="nav-link">Spacing</a>
+  <a href="#icons" class="nav-link">Icones</a>
+  <a href="#buttons" class="nav-link">Boutons</a>
+  <a href="#badges" class="nav-link">Badges</a>
+  <a href="#inputs" class="nav-link">Inputs</a>
+  <a href="#nav-section" class="nav-link">Navigation</a>
+  <a href="#cards" class="nav-link">KPIs</a>
+  <a href="#charts" class="nav-link">Graphiques</a>
+  <a href="#table" class="nav-link">Table</a>
+  <a href="#modal" class="nav-link">Modal</a>
+  <a href="#darkmode" class="nav-link">Dark Mode</a>
+</nav>
+
+<div class="page">
+
+<!-- PALETTE -->
+<section class="section" id="palette">
+  <div class="section-eyebrow">Foundations</div>
+  <div class="section-title">Palette de couleurs</div>
+  <div class="section-desc">Heritee directement du logo eLogik. Le cyan est la couleur primaire de Flow, le lime est l'accent action/succes.</div>
+  <div class="card">
+    <div class="card-label">Couleurs brand — extraites du logo eLogik</div>
+    <div class="palette-row">
+      <div class="swatch-tall"><div class="swatch-color" style="background:#29ABE2"></div><div class="swatch-info"><div class="swatch-name">Cyan eLogik</div><div class="swatch-hex">#29ABE2</div><div class="swatch-role">Brand · Primary</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#8DC63F"></div><div class="swatch-info"><div class="swatch-name">Lime eLogik</div><div class="swatch-hex">#8DC63F</div><div class="swatch-role">Brand · Accent</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#58595B"></div><div class="swatch-info"><div class="swatch-name">Anthracite</div><div class="swatch-hex">#58595B</div><div class="swatch-role">Brand · Neutral</div></div></div>
+    </div>
+  </div>
+  <div class="g2 mt12">
+    <div class="card">
+      <div class="card-label">Declinaisons Cyan</div>
+      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#EAF6FD"></div><div class="ramp-stop" style="background:#C6EBF8"></div><div class="ramp-stop" style="background:#75CBF0"></div><div class="ramp-stop" style="background:#29ABE2"></div><div class="ramp-stop" style="background:#0E8FCC"></div><div class="ramp-stop" style="background:#075E8A"></div><div class="ramp-stop" style="background:#033A56"></div></div>
+      <div class="palette-row">
+        <div class="swatch-tall"><div class="swatch-color" style="background:#EAF6FD;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EAF6FD</div><div class="swatch-role">Tint</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#29ABE2;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#29ABE2</div><div class="swatch-role">Brand</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#0E8FCC;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#0E8FCC</div><div class="swatch-role">CTA</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#075E8A;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#075E8A</div><div class="swatch-role">Hover</div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Declinaisons Lime</div>
+      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#F0F9E2"></div><div class="ramp-stop" style="background:#EDF7D9"></div><div class="ramp-stop" style="background:#BDE47A"></div><div class="ramp-stop" style="background:#8DC63F"></div><div class="ramp-stop" style="background:#78B82A"></div><div class="ramp-stop" style="background:#3A6B10"></div><div class="ramp-stop" style="background:#1E3B06"></div></div>
+      <div class="palette-row">
+        <div class="swatch-tall"><div class="swatch-color" style="background:#EDF7D9;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EDF7D9</div><div class="swatch-role">Tint</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#8DC63F;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#8DC63F</div><div class="swatch-role">Brand</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#78B82A;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#78B82A</div><div class="swatch-role">Succes</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#3A6B10;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#3A6B10</div><div class="swatch-role">Dark</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt12">
+    <div class="card-label">Semantiques &amp; Neutrals</div>
+    <div class="palette-row">
+      <div class="swatch-tall"><div class="swatch-color" style="background:#78B82A"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#78B82A</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#F5A623"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-hex">#F5A623</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#E2274A"></div><div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#E2274A</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#7E57C2"></div><div class="swatch-info"><div class="swatch-name">Violet</div><div class="swatch-hex">#7E57C2</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#1A1C1E"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#1A1C1E</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#4A5568"></div><div class="swatch-info"><div class="swatch-name">Slate</div><div class="swatch-hex">#4A5568</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#EEF1F5;border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#EEF1F5</div></div></div>
+    </div>
+  </div>
+  <div class="card mt12" style="background:var(--dk-deep);border-color:var(--dk-border)">
+    <div class="card-label" style="color:var(--dk-muted);border-color:var(--dk-border)">Fluos — Dark Mode uniquement</div>
+    <div class="palette-row">
+      <div class="swatch-tall" style="border-color:var(--dk-border)"><div class="swatch-color" style="background:#1ADCFF;box-shadow:0 0 20px rgba(26,220,255,0.4)"></div><div class="swatch-info" style="background:var(--dk-surface);border-color:var(--dk-border)"><div class="swatch-name" style="color:var(--dk-text)">Fluo Cyan</div><div class="swatch-hex">#1ADCFF</div><div class="swatch-role">Primary DK</div></div></div>
+      <div class="swatch-tall" style="border-color:var(--dk-border)"><div class="swatch-color" style="background:#22FF7A;box-shadow:0 0 20px rgba(34,255,122,0.4)"></div><div class="swatch-info" style="background:var(--dk-surface);border-color:var(--dk-border)"><div class="swatch-name" style="color:var(--dk-text)">Fluo Green</div><div class="swatch-hex">#22FF7A</div><div class="swatch-role">Succes DK</div></div></div>
+      <div class="swatch-tall" style="border-color:var(--dk-border)"><div class="swatch-color" style="background:#FFE040;box-shadow:0 0 20px rgba(255,224,64,0.3)"></div><div class="swatch-info" style="background:var(--dk-surface);border-color:var(--dk-border)"><div class="swatch-name" style="color:var(--dk-text)">Fluo Yellow</div><div class="swatch-hex">#FFE040</div><div class="swatch-role">Warning DK</div></div></div>
+      <div class="swatch-tall" style="border-color:var(--dk-border)"><div class="swatch-color" style="background:#FF3B6A;box-shadow:0 0 20px rgba(255,59,106,0.4)"></div><div class="swatch-info" style="background:var(--dk-surface);border-color:var(--dk-border)"><div class="swatch-name" style="color:var(--dk-text)">Fluo Red</div><div class="swatch-hex">#FF3B6A</div><div class="swatch-role">Danger DK</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPO -->
+<div class="divider"></div>
+<section class="section" id="typo">
+  <div class="section-eyebrow">Foundations</div>
+  <div class="section-title">Typographie — Plus Jakarta Sans</div>
+  <div class="section-desc">Moderne, lisible, distinctive. DM Mono pour les donnees techniques.</div>
+  <div class="card">
+    <div class="type-specimen"><div class="type-meta">H1 · 40px · weight 300 · letter-spacing -0.04em</div><div class="t-h1">1 248 commandes actives</div></div>
+    <div class="type-specimen"><div class="type-meta">H2 · 26px · weight 300 · letter-spacing -0.03em</div><div class="t-h2">Vue d'ensemble des flux logistiques</div></div>
+    <div class="type-specimen"><div class="type-meta">H3 · 18px · weight 500</div><div class="t-h3">Livraisons du jour · Transporteurs actifs</div></div>
+    <div class="type-specimen"><div class="type-meta">Body · 14px · weight 400 · line-height 1.65</div><div class="t-body">Suivez vos flux logistiques en temps reel, identifiez les anomalies avant qu'elles impactent vos livraisons et prenez des decisions eclairees grace a des donnees fiables et a jour.</div></div>
+    <div class="type-specimen"><div class="type-meta">Caption · 12px · color muted</div><div class="t-cap">Mis a jour il y a 2 minutes · 1 248 commandes actives · Taux de livraison 96.4%</div></div>
+    <div class="type-specimen"><div class="type-meta">Label · 10px · weight 700 · uppercase</div><div class="t-lbl">Statut de livraison · Transporteur · Date prevue</div></div>
+    <div class="type-specimen" style="margin-bottom:0"><div class="type-meta">DM Mono · 13px · weight 400</div><div class="t-mono">CMD-48291 · TMS-FLOW-2026 · 1Z999AA10123456784</div></div>
+  </div>
+</section>
+
+<!-- SPACING -->
+<div class="divider"></div>
+<section class="section" id="spacing">
+  <div class="section-eyebrow">Foundations</div>
+  <div class="section-title">Spacing &amp; Border Radius</div>
+  <div class="section-desc">Grille 4px. 8 paliers de spacing. 6 niveaux de border radius.</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Spacing — base 4px</div>
+      <div class="flex gap16" style="align-items:flex-end;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:4px"></div><div class="text-muted" style="font-family:var(--mono)">4</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:8px"></div><div class="text-muted" style="font-family:var(--mono)">8</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:12px"></div><div class="text-muted" style="font-family:var(--mono)">12</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:16px"></div><div class="text-muted" style="font-family:var(--mono)">16</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:24px"></div><div class="text-muted" style="font-family:var(--mono)">24</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:32px"></div><div class="text-muted" style="font-family:var(--mono)">32</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:48px"></div><div class="text-muted" style="font-family:var(--mono)">48</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;background:var(--cyan-mid);border-radius:2px;height:64px"></div><div class="text-muted" style="font-family:var(--mono)">64</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Border Radius</div>
+      <div class="flex gap12 flex-wrap" style="align-items:flex-end">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:44px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:4px"></div><div class="text-muted" style="font-family:var(--mono);font-size:11px">4px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:44px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:6px"></div><div class="text-muted" style="font-family:var(--mono);font-size:11px">6px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:44px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px"></div><div class="text-muted" style="font-family:var(--mono);font-size:11px">8px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:44px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px"></div><div class="text-muted" style="font-family:var(--mono);font-size:11px">12px</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:44px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px"></div><div class="text-muted" style="font-family:var(--mono);font-size:11px">pill</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ICONS -->
+<div class="divider"></div>
+<section class="section" id="icons">
+  <div class="section-eyebrow">Foundations</div>
+  <div class="section-title">Icones — Lucide Icons</div>
+  <div class="section-desc">20x20px · stroke-width 1.5 · stroke-linecap round · couleur heritee (currentColor)</div>
+  <div class="card">
+    <div class="icon-grid">
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>dashboard</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>transport</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>flow</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>analytics</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>alertes</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>recherche</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2"/></svg>settings</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>filtres</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>export</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>livre</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>en attente</div>
+      <div class="icon-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>alerte</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<div class="divider"></div>
+<section class="section" id="buttons">
+  <div class="section-eyebrow">Atoms</div>
+  <div class="section-title">Boutons</div>
+  <div class="section-desc">4 variantes x 3 tailles x 5 etats. Un seul Primary par zone d'action.</div>
+  <div class="card">
+    <div class="card-label">Variantes</div>
+    <div class="flex gap12 flex-wrap mb16">
+      <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Exporter rapport</button>
+      <button class="btn btn-secondary">Voir detail</button>
+      <button class="btn btn-ghost">Annuler</button>
+      <button class="btn btn-danger">Supprimer</button>
+      <button class="btn btn-lime"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Valider</button>
+    </div>
+    <div class="card-label">Tailles</div>
+    <div class="flex gap12 flex-wrap mb16" style="align-items:center">
+      <button class="btn btn-primary btn-sm">Small</button>
+      <button class="btn btn-primary">Medium</button>
+      <button class="btn btn-primary btn-lg">Large</button>
+    </div>
+    <div class="card-label">Etats</div>
+    <div class="flex gap12 flex-wrap">
+      <button class="btn btn-primary">Default</button>
+      <button class="btn btn-primary" style="background:var(--cyan-dark)">Hover</button>
+      <button class="btn btn-primary" style="box-shadow:0 0 0 3px rgba(14,143,204,0.3)">Focus</button>
+      <button class="btn btn-primary btn-dis">Disabled</button>
+      <button class="btn btn-primary"><svg class="spin" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>Chargement</button>
+      <div class="tooltip-host"><button class="btn btn-secondary btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button><div class="tooltip-box">Rechercher une commande</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<div class="divider"></div>
+<section class="section" id="badges">
+  <div class="section-eyebrow">Atoms</div>
+  <div class="section-title">Badges &amp; Tags</div>
+  <div class="section-desc">Badges = statuts readonly. Tags = filtres interactifs.</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Badges statuts</div>
+      <div class="flex gap8 flex-wrap">
+        <span class="badge bdg-cyan"><span class="dot-live"></span>En transit</span>
+        <span class="badge bdg-lime"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Livre</span>
+        <span class="badge bdg-amber">En attente</span>
+        <span class="badge bdg-red"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Retard</span>
+        <span class="badge bdg-gray">Annule</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Tags filtres</div>
+      <div class="flex gap8 flex-wrap">
+        <span class="tag on">Commandes x</span>
+        <span class="tag">Transport</span>
+        <span class="tag">Entrepots</span>
+        <span class="tag">Retards</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INPUTS -->
+<div class="divider"></div>
+<section class="section" id="inputs">
+  <div class="section-eyebrow">Atoms</div>
+  <div class="section-title">Inputs &amp; Formulaires</div>
+  <div class="section-desc">Champs, selecteurs, checkbox et toggles.</div>
+  <div class="card">
+    <div class="form-section-title">Champs texte</div>
+    <div class="g3 mb24">
+      <div class="field"><div class="field-label">Reference commande</div><input class="input" placeholder="CMD-00000"/><div class="field-hint">Format CMD-xxxxx</div></div>
+      <div class="field"><div class="field-label">Numero de suivi</div><input class="input ok" value="1Z999AA10123456784"/><div class="field-ok">Numero valide</div></div>
+      <div class="field"><div class="field-label">Date de livraison</div><input class="input err" value="31/02/2026"/><div class="field-err">Date invalide</div></div>
+    </div>
+    <div class="form-section-title">Selecteurs</div>
+    <div class="g2 mb24">
+      <div class="field"><div class="field-label">Transporteur</div><select class="select"><option>Chronopost</option><option>DHL</option><option>GLS</option><option>UPS</option></select></div>
+      <div class="field"><div class="field-label">Statut</div><select class="select"><option>En transit</option><option>Livre</option><option>En attente</option><option>Retard</option></select></div>
+    </div>
+    <div class="form-section-title">Checkbox &amp; Toggle</div>
+    <div class="flex gap24 flex-wrap">
+      <label class="check-label"><div class="check-box checked"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Notifier a la livraison</label>
+      <label class="check-label"><div class="check-box"></div>Inclure signature</label>
+      <div class="toggle-wrap"><div class="tog on"><div class="tog-knob"></div></div>Tracking temps reel</div>
+      <div class="toggle-wrap"><div class="tog off"><div class="tog-knob"></div></div>Alertes SMS</div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<div class="divider"></div>
+<section class="section" id="nav-section">
+  <div class="section-eyebrow">Organisms</div>
+  <div class="section-title">Navigation</div>
+  <div class="section-desc">Top bar et side navigation — le squelette de l'application.</div>
+  <div class="card mb12">
+    <div class="card-label">Top Bar</div>
+    <div class="topbar">
+      <div class="topbar-brand"><div class="topbar-logo"><svg width="16" height="16" viewBox="0 0 28 28" fill="none"><path d="M4 20 C4 20 9 6 14 14 C19 22 24 8 24 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topbar-name">flow</div></div>
+      <div class="topbar-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A6478" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Rechercher une commande, un transporteur..."/><span class="kbd">K</span></div>
+      <div class="topbar-actions"><div class="notif-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6478" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div><div class="avatar">LM</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Side Navigation</div>
+    <div class="sidenav">
+      <div class="nav-section-head">Principal</div>
+      <div class="nav-item nav-active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/></svg>Commandes<span class="nav-badge">3</span></div>
+      <div class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Transport</div>
+      <div class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Entrepots</div>
+      <div class="nav-section-head">Analytics</div>
+      <div class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Reports</div>
+      <div class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Flux live</div>
+    </div>
+  </div>
+</section>
+
+<!-- KPIs -->
+<div class="divider"></div>
+<section class="section" id="cards">
+  <div class="section-eyebrow">Molecules</div>
+  <div class="section-title">Metric Cards &amp; KPIs</div>
+  <div class="section-desc">Les indicateurs cles du tableau de bord operationnel.</div>
+  <div class="g4">
+    <div class="metric-card"><div class="mc-top"><div class="mc-label">Commandes actives</div><span class="badge bdg-cyan"><span class="dot-live"></span>Live</span></div><div class="mc-big">1 248</div><div class="mc-sub"><span class="delta-pos">+12%</span>vs hier</div><div class="prog-bar"><div class="prog-fill" style="width:78%;background:var(--cyan-mid)"></div></div></div>
+    <div class="metric-card"><div class="mc-top"><div class="mc-label">Taux livraison</div><span class="badge bdg-lime">+0.4%</span></div><div class="mc-big">96.4<span style="font-size:18px;font-weight:400">%</span></div><div class="mc-sub" style="color:var(--muted)">7 derniers jours</div><div class="prog-bar"><div class="prog-fill" style="width:96.4%;background:var(--lime-mid)"></div></div></div>
+    <div class="metric-card"><div class="mc-top"><div class="mc-label">Retards actifs</div><span class="badge bdg-red">Urgent</span></div><div class="mc-big" style="color:var(--red)">47</div><div class="mc-sub"><span class="delta-neg">-3.8%</span>vs hier</div><div class="prog-bar"><div class="prog-fill" style="width:18%;background:var(--red)"></div></div></div>
+    <div class="metric-card"><div class="mc-top"><div class="mc-label">Transporteurs</div></div><div class="mc-big" style="color:var(--cyan-mid)">12</div><div class="mc-sub" style="color:var(--muted)">actifs · 3 en pause</div><div class="prog-bar"><div class="prog-fill" style="width:80%;background:var(--cyan-tint)"></div></div></div>
+  </div>
+</section>
+
+<!-- CHARTS -->
+<div class="divider"></div>
+<section class="section" id="charts">
+  <div class="section-eyebrow">Data Visualization</div>
+  <div class="section-title">Graphiques</div>
+  <div class="section-desc">Palette data viz a 6 couleurs. Lisibles en light et dark, daltonisme-friendly.</div>
+  <div class="g2 mb12">
+    <div class="card"><div class="card-label">Evolution commandes — 7 jours (stacked bar)</div><div style="height:220px;position:relative"><canvas id="chartBar"></canvas></div></div>
+    <div class="card"><div class="card-label">Repartition par statut — aujourd'hui (donut)</div><div style="height:220px;position:relative"><canvas id="chartDonut"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-label">Taux de livraison — 30 jours (line + objectif)</div><div style="height:200px;position:relative"><canvas id="chartLine"></canvas></div></div>
+</section>
+
+<!-- TABLE -->
+<div class="divider"></div>
+<section class="section" id="table">
+  <div class="section-eyebrow">Organisms</div>
+  <div class="section-title">Data Table</div>
+  <div class="section-desc">Le composant central de Flow. Tri, filtres, badges statuts, actions inline.</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:12px">
+    <div class="flex gap8 flex-wrap">
+      <div style="display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:7px 12px;max-width:260px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A95A3" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input placeholder="Rechercher..." style="font-family:var(--font);font-size:13px;background:transparent;border:none;outline:none;color:var(--ink)"/>
+      </div>
+      <span class="tag on">En cours x</span>
+      <span class="tag">Tous</span>
+      <span class="tag">Retards</span>
+    </div>
+    <div class="flex gap8">
+      <button class="btn btn-secondary btn-sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>Filtres</button>
+      <button class="btn btn-secondary btn-sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exporter</button>
+    </div>
+  </div>
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead><tr><th>Commande</th><th>Client</th><th>Transporteur</th><th>Trajet</th><th>Statut</th><th>Livraison prevue</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">CMD-48291</td><td><span class="fw500">Carrefour Sud</span></td><td>Chronopost</td><td class="text-muted text-sm">Lyon &rarr; Marseille</td><td><span class="badge bdg-cyan"><span class="dot-live"></span>En transit</span></td><td class="text-sm">14 mars 2026</td><td class="td-actions"><button class="btn btn-ghost btn-sm">Voir</button></td></tr>
+        <tr><td class="td-mono">CMD-48290</td><td><span class="fw500">Fnac Logistique</span></td><td>DHL</td><td class="text-muted text-sm">Paris &rarr; Bordeaux</td><td><span class="badge bdg-lime">Livre</span></td><td class="text-sm">12 mars 2026</td><td class="td-actions"><button class="btn btn-ghost btn-sm">Voir</button></td></tr>
+        <tr><td class="td-mono">CMD-48289</td><td><span class="fw500">Leroy Merlin</span></td><td>GLS</td><td class="text-muted text-sm">Lille &rarr; Nantes</td><td><span class="badge bdg-red">Retard</span></td><td class="text-sm" style="color:var(--red)">10 mars 2026</td><td class="td-actions"><button class="btn btn-ghost btn-sm" style="color:var(--red)">Traiter</button></td></tr>
+        <tr><td class="td-mono">CMD-48288</td><td><span class="fw500">Decathlon Pro</span></td><td>UPS</td><td class="text-muted text-sm">Strasbourg &rarr; Lyon</td><td><span class="badge bdg-amber">En attente</span></td><td class="text-sm">15 mars 2026</td><td class="td-actions"><button class="btn btn-ghost btn-sm">Voir</button></td></tr>
+        <tr><td class="td-mono">CMD-48287</td><td><span class="fw500">IKEA France</span></td><td>Geodis</td><td class="text-muted text-sm">Toulouse &rarr; Paris</td><td><span class="badge bdg-gray">Annule</span></td><td class="text-sm text-muted">&mdash;</td><td class="td-actions"><button class="btn btn-ghost btn-sm">Voir</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="flex mt12" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div class="text-muted">1–5 sur 1 248 resultats</div>
+    <div class="flex gap4">
+      <button class="btn btn-secondary btn-sm">&lsaquo;</button>
+      <button class="btn btn-primary btn-sm">1</button>
+      <button class="btn btn-secondary btn-sm">2</button>
+      <button class="btn btn-secondary btn-sm">3</button>
+      <button class="btn btn-secondary btn-sm" style="font-size:11px">&hellip;</button>
+      <button class="btn btn-secondary btn-sm">250</button>
+      <button class="btn btn-secondary btn-sm">&rsaquo;</button>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="divider"></div>
+<section class="section" id="modal">
+  <div class="section-eyebrow">Organisms</div>
+  <div class="section-title">Modal &amp; Feedback</div>
+  <div class="section-desc">Confirmation, alerte critique, formulaire contextuel.</div>
+  <div class="g2">
+    <div><div class="modal-overlay"><div class="modal"><div class="modal-head"><div class="modal-title">Reassigner la commande</div><button class="modal-close">x</button></div><div class="modal-body">Vous etes sur le point de reassigner <strong>CMD-48289</strong> de <strong>GLS</strong> vers <strong>UPS</strong>. Cette action declenchera une nouvelle notification au client.</div><div class="modal-footer"><button class="btn btn-ghost btn-sm">Annuler</button><button class="btn btn-primary btn-sm">Confirmer</button></div></div></div></div>
+    <div><div class="modal-overlay" style="background:rgba(226,39,74,0.12)"><div class="modal" style="border-color:var(--red-tint)"><div class="modal-head"><div class="flex gap8" style="align-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><div class="modal-title" style="color:var(--red)">Alerte critique</div></div><button class="modal-close">x</button></div><div class="modal-body">3 commandes sont en retard de plus de 48h. Des clients risquent d'etre impactes. Veuillez prendre en charge immediatement.</div><div class="modal-footer"><button class="btn btn-secondary btn-sm">Ignorer</button><button class="btn btn-danger btn-sm">Voir les retards</button></div></div></div></div>
+  </div>
+</section>
+
+<!-- DARK MODE -->
+<div class="divider"></div>
+<section class="section" id="darkmode">
+  <div class="section-eyebrow">Dark Mode</div>
+  <div class="section-title">Vue operationnelle — Dark</div>
+  <div class="section-desc">Pour les tableaux de bord utilises en continu. Fluos haute visibilite, contraste fort.</div>
+  <div style="background:var(--dk-deep);border-radius:16px;padding:24px;border:1px solid var(--dk-border)">
+    <div class="topbar mb16">
+      <div class="topbar-brand"><div class="topbar-logo"><svg width="16" height="16" viewBox="0 0 28 28" fill="none"><path d="M4 20 C4 20 9 6 14 14 C19 22 24 8 24 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="topbar-name">flow</div><span style="font-size:11px;color:var(--dk-muted);margin-left:8px;font-family:var(--mono)">/ dashboard</span></div>
+      <div class="topbar-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A6478" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Rechercher..."/><span class="kbd">K</span></div>
+      <div class="topbar-actions"><div class="notif-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A6478" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div><div class="avatar">LM</div></div>
+    </div>
+    <div class="g4 mb16">
+      <div class="mc-dark"><div class="mc-top"><div class="mc-label">Flux actifs</div><span class="badge bdg-fluo-cyan"><span class="dot-live"></span>Live</span></div><div class="mc-big" style="color:var(--fluo-cyan)">1 248</div><div class="mc-sub"><span style="font-size:11px;font-weight:600;background:rgba(34,255,122,0.12);color:var(--fluo-green);padding:2px 7px;border-radius:100px">+12%</span>vs hier</div><div class="prog-bar"><div class="prog-fill" style="width:78%;background:var(--fluo-cyan);opacity:0.7"></div></div></div>
+      <div class="mc-dark"><div class="mc-top"><div class="mc-label">Taux livraison</div></div><div class="mc-big" style="color:var(--fluo-green)">96.4<span style="font-size:18px;font-weight:400">%</span></div><div class="mc-sub">7 derniers jours</div><div class="prog-bar"><div class="prog-fill" style="width:96.4%;background:var(--fluo-green);opacity:0.7"></div></div></div>
+      <div class="mc-dark"><div class="mc-top"><div class="mc-label">Retards actifs</div><span class="badge bdg-fluo-red">Urgent</span></div><div class="mc-big" style="color:var(--fluo-red)">47</div><div class="mc-sub"><span style="font-size:11px;font-weight:600;background:rgba(255,59,106,0.12);color:var(--fluo-red);padding:2px 7px;border-radius:100px">-3.8%</span>vs hier</div><div class="prog-bar"><div class="prog-fill" style="width:18%;background:var(--fluo-red);opacity:0.8"></div></div></div>
+      <div class="mc-dark"><div class="mc-top"><div class="mc-label">En attente</div><span class="badge bdg-fluo-yell">!</span></div><div class="mc-big" style="color:var(--fluo-yellow)">23</div><div class="mc-sub">A traiter aujourd'hui</div><div class="prog-bar"><div class="prog-fill" style="width:32%;background:var(--fluo-yellow);opacity:0.7"></div></div></div>
+    </div>
+    <div class="card-dark"><div class="card-label-dark">Flux de commandes — 7 derniers jours</div><div style="height:180px;position:relative"><canvas id="chartDark"></canvas></div></div>
+  </div>
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-left">Flow Design System · eLogik Fine Logistic · v1.0 · Mars 2026<br>Plus Jakarta Sans · DM Mono · Lucide Icons</div>
+  <div class="footer-right"><span class="badge bdg-cyan">Foundations</span><span class="badge bdg-lime">Atoms</span><span class="badge bdg-gray">Organisms</span></div>
+</footer>
+
+<script>
+const labels7=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const fontOpts={family:"'Plus Jakarta Sans', sans-serif",size:11};
+const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:14,font:fontOpts,color:'#8A95A3'}}},scales:{x:{grid:{display:false},ticks:{font:fontOpts,color:'#8A95A3'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:fontOpts,color:'#8A95A3'},border:{display:false}}}};
+
+new Chart(document.getElementById('chartBar'),{type:'bar',data:{labels:labels7,datasets:[{label:'En transit',data:[380,340,410,370,420,290,260],backgroundColor:'#29ABE2',borderRadius:4,borderSkipped:false},{label:'Livre',data:[290,310,360,330,380,240,180],backgroundColor:'#8DC63F',borderRadius:4,borderSkipped:false},{label:'En attente',data:[80,60,90,70,60,40,50],backgroundColor:'#F5A623',borderRadius:4,borderSkipped:false},{label:'Retard',data:[30,20,40,25,20,10,15],backgroundColor:'#E2274A',borderRadius:4,borderSkipped:false}]},options:{...baseOpts,scales:{...baseOpts.scales,x:{...baseOpts.scales.x,stacked:true},y:{...baseOpts.scales.y,stacked:true}}}});
+
+new Chart(document.getElementById('chartDonut'),{type:'doughnut',data:{labels:['En transit','Livre','En attente','Retard','Inactif'],datasets:[{data:[380,620,80,47,121],backgroundColor:['#29ABE2','#8DC63F','#F5A623','#E2274A','#58595B'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:12,font:fontOpts,color:'#8A95A3'}}}}});
+
+const lineData=[95.2,96.0,95.8,96.4,95.1,96.8,97.1,96.4,95.9,96.2,97.0,96.7,96.4,95.8,96.1,96.9,97.2,96.8,95.5,96.3,97.0,96.4,95.7,96.2,97.1,96.8,96.0,95.8,96.4,96.4];
+const lineLabels=Array.from({length:30},(_,i)=>i%5===0?'J-'+(30-i):'');
+new Chart(document.getElementById('chartLine'),{type:'line',data:{labels:lineLabels,datasets:[{label:'Taux livraison',data:lineData,borderColor:'#29ABE2',backgroundColor:'rgba(41,171,226,0.08)',fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4},{label:'Objectif 95%',data:Array(30).fill(95),borderColor:'#8DC63F',borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:baseOpts});
+
+new Chart(document.getElementById('chartDark'),{type:'line',data:{labels:labels7,datasets:[{label:'En transit',data:[380,340,410,370,420,290,260],borderColor:'#1ADCFF',backgroundColor:'rgba(26,220,255,0.07)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#1ADCFF'},{label:'Livre',data:[290,310,360,330,380,240,180],borderColor:'#22FF7A',backgroundColor:'rgba(34,255,122,0.06)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#22FF7A'},{label:'Retard',data:[30,20,40,25,20,10,15],borderColor:'#FF3B6A',backgroundColor:'rgba(255,59,106,0.06)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#FF3B6A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:14,font:fontOpts,color:'#5A6478'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5A6478',font:fontOpts},border:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5A6478',font:fontOpts},border:{display:false}}}}});
+
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-link');
+window.addEventListener('scroll',()=>{let c='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)c=s.id});navLinks.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+c)});});
+</script>
+</body>
+</html>
