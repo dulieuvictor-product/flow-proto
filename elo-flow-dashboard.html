@@ -231,18 +231,25 @@ body {
 .legend-pct { font-size: 10px; color: var(--muted); min-width: 28px; text-align: right; }
 
 /* ── TRANSPORTEURS TABLE ── */
-.carrier-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: var(--card-shadow); }
-.carrier-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.12s; cursor: default; }
-.carrier-row:last-child { border-bottom: none; }
-.carrier-row:hover { background: var(--surface2); }
-.carrier-head { background: var(--surface2); padding: 8px 16px; display: grid; grid-template-columns: 1fr 52px 52px 52px 1fr 70px; gap: 8px; align-items: center; }
-.carrier-head span { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
-.carrier-head span:nth-child(n+2) { text-align: right; }
-.carrier-data { display: grid; grid-template-columns: 1fr 52px 52px 52px 1fr 70px; gap: 8px; align-items: center; width: 100%; }
-.c-name { font-size: 13px; font-weight: 500; color: var(--ink); }
-.c-num { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--slate); text-align: right; }
-.c-ok  { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--success); text-align: right; }
-.c-bad { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--danger); text-align: right; }
+/* carrier table */
+.carrier-table-wrap { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--surface); box-shadow: var(--card-shadow); margin-bottom: 20px; }
+.carrier-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.carrier-table thead { background: var(--surface2); }
+.carrier-table th { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; white-space: nowrap; }
+.carrier-table th:not(:first-child) { text-align: right; }
+.carrier-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: middle; }
+.carrier-table td:not(:first-child) { text-align: right; }
+.carrier-table tbody tr:last-child td { border-bottom: none; }
+.carrier-table tbody tr:hover td { background: var(--surface2); }
+.c-name { font-size: 13px; font-weight: 500; color: var(--ink); text-align: left !important; }
+.c-num { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--slate); }
+.c-ok  { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--success); }
+.c-bad { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--danger); }
+/* carrier filter tags */
+.carrier-filters { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.cf-tag { font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 7px; border: 1px solid var(--border2); background: var(--surface); color: var(--slate); cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.12s; white-space: nowrap; }
+.cf-tag:hover { border-color: var(--primary); color: var(--primary); }
+.cf-tag.active { border-color: var(--primary); background: var(--primary-tint); color: var(--primary); font-weight: 600; }
 .progress-mini { display: flex; align-items: center; gap: 6px; }
 .progress-track { flex: 1; height: 4px; background: var(--surface2); border-radius: 100px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 100px; }
@@ -358,6 +365,10 @@ body {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Dashboard
   </div>
+  <div class="nav-item" onclick="window.location='elo-flow-ops-dashboard.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    Opérations
+  </div>
   <div class="nav-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg>
     Commandes
@@ -381,16 +392,6 @@ body {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><path d="M12 2a10 10 0 0110 10"/><circle cx="12" cy="12" r="3"/></svg>
     IA &amp; Prédictif
     <span class="nav-badge-info">Bêta</span>
-  </div>
-
-  <div class="nav-section">Analyses</div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-    Rapports
-  </div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    Flux live
   </div>
 
   <div class="nav-bottom">
@@ -447,8 +448,8 @@ body {
     <div class="page-header mb20">
       <div>
         <div class="page-eyebrow">Vue globale · 16 mars 2026</div>
-        <div class="page-title">Bonjour Lucas, voici l'état <span>du réseau</span></div>
-        <div class="page-sub">1 248 commandes actives · 8 transporteurs</div>
+        <div class="page-title">Bonjour Lucas, voici votre <span>suivi e-commerce</span></div>
+        <div class="page-sub">1 248 commandes actives · 8 transporteurs · Mise à jour live</div>
       </div>
       <div class="live-badge"><div class="live-pulse"></div>Live · 2 min</div>
     </div>
@@ -546,97 +547,118 @@ body {
 
     <!-- TRANSPORTEURS -->
     <div class="section-label mb16">Par transporteur</div>
-    <div class="carrier-list">
-      <div class="carrier-head">
-        <span>Transporteur</span>
-        <span>Cmdes</span>
-        <span>OK</span>
-        <span>Retard</span>
-        <span>Taux</span>
-        <span>Statut</span>
-      </div>
 
-      <div class="carrier-row">
-        <div class="carrier-data">
-          <div class="carrier-data-top">
-            <span class="c-name">Chronopost</span>
-            <span class="badge bdg-s">Actif</span>
-          </div>
-          <div class="carrier-data-nums">
-            <div class="carrier-num-item"><span class="carrier-num-label">Cmdes</span><span class="c-num">312</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Livrés</span><span class="c-ok">298</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Retard</span><span class="c-num">8</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Litiges</span><span class="c-bad">3</span></div>
-          </div>
-          <div class="progress-mini"><div class="progress-track"><div class="progress-fill" style="width:95.5%;background:var(--success)"></div></div><span class="progress-pct">95.5%</span></div>
-        </div>
-      </div>
+    <div class="carrier-filters" id="carrierFilters">
+      <span class="cf-tag active" onclick="filterCarrier('all', this)">Tous</span>
+      <span class="cf-tag" onclick="filterCarrier('Chronopost', this)">Chronopost</span>
+      <span class="cf-tag" onclick="filterCarrier('DHL', this)">DHL</span>
+      <span class="cf-tag" onclick="filterCarrier('GLS', this)">GLS</span>
+      <span class="cf-tag" onclick="filterCarrier('UPS', this)">UPS</span>
+      <span class="cf-tag" onclick="filterCarrier('Geodis', this)">Geodis</span>
+      <span class="cf-tag" onclick="filterCarrier('Colissimo', this)">Colissimo</span>
+    </div>
 
-      <div class="carrier-row">
-        <div class="carrier-data">
-          <div class="carrier-data-top">
-            <span class="c-name">DHL</span>
-            <span class="badge bdg-w">Incident</span>
-          </div>
-          <div class="carrier-data-nums">
-            <div class="carrier-num-item"><span class="carrier-num-label">Cmdes</span><span class="c-num">287</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Livrés</span><span class="c-ok">261</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Retard</span><span class="c-bad">19</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Litiges</span><span class="c-bad">4</span></div>
-          </div>
-          <div class="progress-mini"><div class="progress-track"><div class="progress-fill" style="width:90.9%;background:var(--warning)"></div></div><span class="progress-pct">90.9%</span></div>
-        </div>
-      </div>
-
-      <div class="carrier-row">
-        <div class="carrier-data">
-          <div class="carrier-data-top">
-            <span class="c-name">GLS</span>
-            <span class="badge bdg-s">Actif</span>
-          </div>
-          <div class="carrier-data-nums">
-            <div class="carrier-num-item"><span class="carrier-num-label">Cmdes</span><span class="c-num">198</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Livrés</span><span class="c-ok">193</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Retard</span><span class="c-num">3</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Litiges</span><span class="c-bad">2</span></div>
-          </div>
-          <div class="progress-mini"><div class="progress-track"><div class="progress-fill" style="width:97.5%;background:var(--success)"></div></div><span class="progress-pct">97.5%</span></div>
-        </div>
-      </div>
-
-      <div class="carrier-row">
-        <div class="carrier-data">
-          <div class="carrier-data-top">
-            <span class="c-name">UPS</span>
-            <span class="badge bdg-s">Actif</span>
-          </div>
-          <div class="carrier-data-nums">
-            <div class="carrier-num-item"><span class="carrier-num-label">Cmdes</span><span class="c-num">176</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Livrés</span><span class="c-ok">170</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Retard</span><span class="c-num">4</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Litiges</span><span class="c-num">1</span></div>
-          </div>
-          <div class="progress-mini"><div class="progress-track"><div class="progress-fill" style="width:96.6%;background:var(--success)"></div></div><span class="progress-pct">96.6%</span></div>
-        </div>
-      </div>
-
-      <div class="carrier-row">
-        <div class="carrier-data">
-          <div class="carrier-data-top">
-            <span class="c-name">Geodis</span>
-            <span class="badge bdg-s">Actif</span>
-          </div>
-          <div class="carrier-data-nums">
-            <div class="carrier-num-item"><span class="carrier-num-label">Cmdes</span><span class="c-num">142</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Livrés</span><span class="c-ok">138</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Retard</span><span class="c-num">2</span></div>
-            <div class="carrier-num-item"><span class="carrier-num-label">Litiges</span><span class="c-num">1</span></div>
-          </div>
-          <div class="progress-mini"><div class="progress-track"><div class="progress-fill" style="width:97.2%;background:var(--success)"></div></div><span class="progress-pct">97.2%</span></div>
-        </div>
-      </div>
-
-    </div><!-- /carrier-list -->
+    <div class="carrier-table-wrap">
+      <table class="carrier-table" id="carrierTable">
+        <thead>
+          <tr>
+            <th>Transporteur</th>
+            <th>Commandes</th>
+            <th>Livrés</th>
+            <th>Retards</th>
+            <th>Litiges</th>
+            <th style="min-width:140px">Taux livraison</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-carrier="Chronopost">
+            <td class="c-name">Chronopost</td>
+            <td class="c-num">312</td>
+            <td class="c-ok">298</td>
+            <td class="c-num">8</td>
+            <td class="c-bad">3</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:95.5%;background:var(--success)"></div></div>
+                <span class="progress-pct">95.5%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-s">Actif</span></td>
+          </tr>
+          <tr data-carrier="DHL">
+            <td class="c-name">DHL</td>
+            <td class="c-num">287</td>
+            <td class="c-ok">261</td>
+            <td class="c-bad">19</td>
+            <td class="c-bad">4</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:90.9%;background:var(--warning)"></div></div>
+                <span class="progress-pct">90.9%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-w">Incident</span></td>
+          </tr>
+          <tr data-carrier="GLS">
+            <td class="c-name">GLS</td>
+            <td class="c-num">198</td>
+            <td class="c-ok">193</td>
+            <td class="c-num">3</td>
+            <td class="c-bad">2</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:97.5%;background:var(--success)"></div></div>
+                <span class="progress-pct">97.5%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-s">Actif</span></td>
+          </tr>
+          <tr data-carrier="UPS">
+            <td class="c-name">UPS</td>
+            <td class="c-num">176</td>
+            <td class="c-ok">170</td>
+            <td class="c-num">4</td>
+            <td class="c-num">1</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:96.6%;background:var(--success)"></div></div>
+                <span class="progress-pct">96.6%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-s">Actif</span></td>
+          </tr>
+          <tr data-carrier="Geodis">
+            <td class="c-name">Geodis</td>
+            <td class="c-num">142</td>
+            <td class="c-ok">138</td>
+            <td class="c-num">2</td>
+            <td class="c-num">1</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:97.2%;background:var(--success)"></div></div>
+                <span class="progress-pct">97.2%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-s">Actif</span></td>
+          </tr>
+          <tr data-carrier="Colissimo">
+            <td class="c-name">Colissimo</td>
+            <td class="c-num">133</td>
+            <td class="c-ok">128</td>
+            <td class="c-num">3</td>
+            <td class="c-num">1</td>
+            <td>
+              <div class="progress-mini">
+                <div class="progress-track"><div class="progress-fill" style="width:96.2%;background:var(--success)"></div></div>
+                <span class="progress-pct">96.2%</span>
+              </div>
+            </td>
+            <td><span class="badge bdg-s">Actif</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
   </div><!-- /content -->
 </div><!-- /main -->
@@ -724,6 +746,18 @@ function rebuildCharts() {
 }
 
 rebuildCharts();
+
+function filterCarrier(name, btn) {
+  // Update active tag
+  document.querySelectorAll('.cf-tag').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // Filter rows
+  document.querySelectorAll('#carrierTable tbody tr').forEach(row => {
+    const carrier = row.getAttribute('data-carrier');
+    row.style.display = (name === 'all' || carrier === name) ? '' : 'none';
+  });
+}
+
 </script>
 </body>
 </html>
