@@ -251,7 +251,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 
 <!-- ════ SIDENAV ════ -->
 <aside class="sidenav" id="sidenav">
-  <div class="nav-brand">
+  <div class="nav-brand" onclick="location.href=\'index.html\'" style="cursor:pointer">
     <div class="nav-brand-mark">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     </div>
@@ -260,7 +260,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <div class="nav-section">Principal</div>
+    <div class="nav-section">Principal</div>
   <div class="nav-item" onclick="location.href='elo-flow-dashboard.html'">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Dashboard
@@ -282,16 +282,18 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
     Litiges
     <span class="nav-badge">12</span>
   </div>
+
   <div class="nav-section">Opérations</div>
   <div class="nav-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>
     Stocks
   </div>
-  <div class="nav-item active">
+  <div class="nav-item active" onclick="location.href='elo-flow-ia.html'">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg>
     IA &amp; Prédictif
     <span class="nav-badge-info">Bêta</span>
   </div>
+
   <div class="nav-bottom">
     <div class="nav-user">
       <div class="nav-avatar">LM</div>
