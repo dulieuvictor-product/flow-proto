@@ -350,7 +350,7 @@ body {
 
 <!-- ════ SIDEBAR ════ -->
 <aside class="sidenav" id="sidenav">
-  <div class="nav-brand">
+  <div class="nav-brand" onclick="location.href=\'index.html\'" style="cursor:pointer">
     <div class="nav-brand-mark">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     </div>
@@ -360,17 +360,17 @@ body {
     </button>
   </div>
 
-  <div class="nav-section">Principal</div>
-  <div class="nav-item active">
+    <div class="nav-section">Principal</div>
+  <div class="nav-item active" onclick="location.href='elo-flow-dashboard.html'">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Dashboard
   </div>
-  <div class="nav-item" onclick="window.location='elo-flow-ops-dashboard.html'">
+  <div class="nav-item" onclick="location.href='elo-flow-ops-dashboard.html'">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
     Opérations
   </div>
   <div class="nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/></svg>
     Commandes
   </div>
   <div class="nav-item">
@@ -388,8 +388,8 @@ body {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>
     Stocks
   </div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><path d="M12 2a10 10 0 0110 10"/><circle cx="12" cy="12" r="3"/></svg>
+  <div class="nav-item" onclick="location.href='elo-flow-ia.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg>
     IA &amp; Prédictif
     <span class="nav-badge-info">Bêta</span>
   </div>
