@@ -195,8 +195,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
     </div>
 
     <div class="hero-eyebrow">Portail de maquettes</div>
-    <h1 class="hero-title">Tous les livrables<br><em>au même endroit.</em></h1>
-    <p class="hero-sub">Brand kit, identité produits et dashboards interactifs pour la suite eLogik. Cliquez sur une carte pour ouvrir le fichier correspondant.</p>
+    <h1 class="hero-title">Le prototype interactif<br><em>eLogik Flow.</em></h1>
+    <p class="hero-sub">Explorez les dashboards, le module IA et le design system de la suite eLogik. Tous les écrans sont interactifs — cliquez pour naviguer.</p>
 
     <div class="product-strip">
       <span class="prod-tag prod-flow">elo (flow)</span>
@@ -221,7 +221,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
       <div class="info-divider"></div>
       <div class="info-item">
         <div class="info-label">Fichiers</div>
-        <div class="info-value">5 livrables</div>
+        <div class="info-value">6 livrables</div>
         <div class="info-sub">HTML + Markdown</div>
       </div>
       <div class="info-divider"></div>
@@ -255,45 +255,42 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 
   <!-- DASHBOARDS -->
   <div class="section-block">
-    <div class="section-label">Dashboards — elo (flow)</div>
-    <div class="cards-grid-2">
+    <div class="section-label">Prototype interactif — elo (flow)</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
 
-      <a href="elo-flow-dashboard.html" class="file-card fc-flow">
-        <div class="fc-hero">
-          <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
-              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
-          </div>
-          <span class="fc-badge">Exemple — Home</span>
+      <a href="elo-flow-dashboard.html" class="file-card fc-flow" style="grid-column:span 1">
+        <div class="fc-hero" style="height:100px">
+          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <span class="fc-badge">Home</span>
         </div>
         <div class="fc-body">
           <div class="fc-title">Dashboard Home</div>
-          <div class="fc-desc">Vue globale : commandes par statut et transporteur, KPIs live, alertes litiges, graphiques 7 jours. Light + Dark mode.</div>
-          <div class="fc-meta">
-            <span class="fc-file">elo-flow-dashboard.html</span>
-            <span class="fc-arrow">→</span>
-          </div>
+          <div class="fc-desc">KPIs, litiges, commandes par transporteur. Light &amp; Dark mode.</div>
+          <div class="fc-meta"><span class="fc-file">elo-flow-dashboard.html</span><span class="fc-arrow">→</span></div>
         </div>
       </a>
 
-      <a href="elo-flow-ops-dashboard.html" class="file-card fc-flow">
-        <div class="fc-hero">
-          <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
-              <path d="M18 20V10M12 20V4M6 20v-6"/>
-            </svg>
-          </div>
-          <span class="fc-badge">Exemple — Suivi ops</span>
+      <a href="elo-flow-ops-dashboard.html" class="file-card fc-flow" style="grid-column:span 1">
+        <div class="fc-hero" style="height:100px">
+          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+          <span class="fc-badge">Opérations</span>
         </div>
         <div class="fc-body">
-          <div class="fc-title">Dashboard Suivi Opérationnel</div>
-          <div class="fc-desc">Taux de préparation, OTD, départ à J, incidents, stock-out, rotation des stocks. Sélecteur temporel jour / semaine / mois / année.</div>
-          <div class="fc-meta">
-            <span class="fc-file">elo-flow-ops-dashboard.html</span>
-            <span class="fc-arrow">→</span>
-          </div>
+          <div class="fc-title">Dashboard Opérationnel</div>
+          <div class="fc-desc">OTD, préparation, stock-out, rotation. Sélecteur temporel.</div>
+          <div class="fc-meta"><span class="fc-file">elo-flow-ops-dashboard.html</span><span class="fc-arrow">→</span></div>
+        </div>
+      </a>
+
+      <a href="elo-flow-ia.html" class="file-card" style="grid-column:span 1;border-color:rgba(108,71,232,0.15)">
+        <div class="fc-hero" style="height:100px;background:linear-gradient(135deg,#0A0614,#150B26)">
+          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#A78BFF" stroke-width="0.8" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <span class="fc-badge" style="color:#A78BFF;border-color:rgba(167,139,255,0.3);background:rgba(167,139,255,0.1)">IA &amp; Prédictif · Bêta</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title" style="color:#6C47E8">IA &amp; Prédictif</div>
+          <div class="fc-desc">LLM sur vos données, questions suggérées, analyse SKU dormants, crédits.</div>
+          <div class="fc-meta"><span class="fc-file">elo-flow-ia.html</span><span class="fc-arrow" style="color:#6C47E8">→</span></div>
         </div>
       </a>
 
@@ -347,7 +344,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
         </div>
       </a>
 
-      <a href="flow-brand-kit.html" class="file-card fc-md">
+      <a href="flow-brandkit.html" class="file-card fc-md">
         <div class="fc-hero">
           <div class="fc-hero-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
@@ -364,7 +361,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
           <div class="fc-title">Brand Kit — Notion</div>
           <div class="fc-desc">Palette, typographie, composants, règles d'usage et nomenclature Figma. Format Markdown importable directement dans Notion.</div>
           <div class="fc-meta">
-            <span class="fc-file">flow-brand-kit.html</span>
+            <span class="fc-file">flow-brandkit.html</span>
             <span class="fc-arrow">→</span>
           </div>
         </div>
