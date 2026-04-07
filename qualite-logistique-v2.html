@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elogik (flow) — Qualité Logistique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root, [data-theme="light"] {
+  --bg:#F2F4F8; --surface:#FFFFFF; --surface2:#F4F6FA;
+  --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.13);
+  --ink:#1A1C1E; --slate:#4A5568; --muted:#8A95A3;
+  --primary:#0E8FCC; --primary-tint:#EAF6FD;
+  --success:#2A9554; --success-tint:#E8F8EF;
+  --warning:#C27B00; --warning-tint:#FEF4E0;
+  --danger:#D63050; --danger-tint:#FDEAED;
+  --violet:#6C47E8; --violet-tint:#F0EDFF;
+  --nav-bg:#FFFFFF; --nav-active-bg:#ECFEFF; --nav-active-tx:#0E7490;
+  --topbar-bg:#FFFFFF; --card-shadow:0 1px 3px rgba(0,0,0,0.06);
+  --c-business:#2563EB; --c-business-t:#EFF6FF;
+  --c-qlog:#0E7490; --c-qlog-t:#ECFEFF;
+  --c-qtrans:#0284C7; --c-qtrans-t:#F0F9FF;
+  --c-savt:#6366F1; --c-savt-t:#EEF2FF;
+  --c-savl:#9333EA; --c-savl-t:#FDF4FF;
+  --c-stocks:#D97706; --c-stocks-t:#FFFBEB;
+  --nps-color:#7C3AED;
+}
+[data-theme="dark"] {
+  --bg:#0C0F14; --surface:#181E28; --surface2:#1F2736;
+  --border:rgba(255,255,255,0.10); --border2:rgba(255,255,255,0.18);
+  --ink:#E2EAF4; --slate:#9AAABB; --muted:#5A6C7D;
+  --primary:#1ADCFF; --primary-tint:rgba(26,220,255,0.13);
+  --success:#22FF7A; --success-tint:rgba(34,255,122,0.13);
+  --warning:#FFB020; --warning-tint:rgba(255,176,32,0.13);
+  --danger:#FF3B6A; --danger-tint:rgba(255,59,106,0.13);
+  --violet:#A78BFF; --violet-tint:rgba(167,139,255,0.13);
+  --nav-bg:#141A22; --nav-active-bg:rgba(14,116,144,0.18); --nav-active-tx:#22D3EE;
+  --topbar-bg:#141A22; --card-shadow:0 1px 0 rgba(255,255,255,0.04);
+  --c-business:#60A5FA; --c-business-t:rgba(96,165,250,0.13);
+  --c-qlog:#22D3EE; --c-qlog-t:rgba(34,211,238,0.13);
+  --c-qtrans:#38BDF8; --c-qtrans-t:rgba(56,189,248,0.13);
+  --c-savt:#A5B4FC; --c-savt-t:rgba(165,180,252,0.13);
+  --c-savl:#C084FC; --c-savl-t:rgba(192,132,252,0.13);
+  --c-stocks:#FCD34D; --c-stocks-t:rgba(252,211,77,0.13);
+  --nps-color:#A78BFF;
+}
+html, body { height:100%; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--ink); display:flex; transition:background 0.25s, color 0.25s; }
+
+/* ── SIDENAV ── */
+.sidenav { width:220px; flex-shrink:0; background:var(--nav-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; height:100vh; position:sticky; top:0; z-index:200; transition:background 0.25s; overflow-y:auto; }
+.nav-brand { padding:18px 14px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); }
+.nav-brand-mark { width:32px; height:32px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-brand-mark svg { width:18px; height:18px; }
+.nav-brand-name { font-size:14px; font-weight:300; color:var(--ink); letter-spacing:-0.02em; line-height:1.2; }
+.nav-brand-name strong { font-weight:600; }
+.nav-brand-sub { font-size:10px; color:var(--primary); font-family:'DM Mono',monospace; display:block; margin-top:1px; }
+.nav-section { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); padding:14px 14px 5px; font-family:'DM Mono',monospace; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 10px; margin:1px 6px; border-radius:9px; font-size:13px; color:var(--slate); cursor:pointer; transition:background 0.12s, color 0.12s; }
+.nav-item svg { width:16px; height:16px; flex-shrink:0; opacity:0.75; }
+.nav-item:hover { background:var(--surface2); color:var(--ink); }
+.nav-item.active { background:var(--nav-active-bg); color:var(--nav-active-tx); font-weight:500; }
+.nav-item.active svg { opacity:1; }
+.nav-mod-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-mod-icon svg { width:13px; height:13px; opacity:1; }
+.nav-badge { margin-left:auto; font-size:10px; font-weight:700; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nav-badge-warn { margin-left:auto; font-size:10px; font-weight:700; background:var(--warning-tint); color:var(--warning); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nav-bottom { margin-top:auto; padding:10px 6px 14px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:4px; }
+.nav-llm { margin:0 4px 2px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:9px 12px; }
+.nav-llm-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+.nav-llm-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.nav-llm-count { font-size:12px; font-weight:600; font-family:'DM Mono',monospace; color:var(--violet); }
+.nav-llm-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.nav-llm-fill { height:100%; background:var(--violet); border-radius:100px; width:62%; }
+.nav-llm-sub { font-size:10px; color:var(--muted); margin-top:4px; }
+.nav-user { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:9px; cursor:pointer; transition:background 0.12s; }
+.nav-user:hover { background:var(--surface2); }
+.nav-avatar { width:28px; height:28px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:white; flex-shrink:0; }
+.nav-user-name { font-size:12px; font-weight:500; color:var(--ink); }
+.nav-user-role { font-size:10px; color:var(--muted); }
+
+/* ── MAIN ── */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; overflow-y:auto; height:100vh; }
+.topbar { background:var(--topbar-bg); border-bottom:1px solid var(--border); padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; position:sticky; top:0; z-index:100; flex-shrink:0; transition:background 0.25s; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; }
+.bc-parent { color:var(--muted); } .bc-sep { color:var(--border2); } .bc-current { font-weight:500; color:var(--ink); }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.theme-btn { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:0 12px; height:34px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:500; color:var(--slate); white-space:nowrap; transition:all 0.12s; }
+.theme-btn:hover { background:var(--primary-tint); color:var(--primary); border-color:var(--primary); }
+.theme-btn svg { width:15px; height:15px; }
+.icon-sun { display:block; } .icon-moon { display:none; }
+[data-theme="dark"] .icon-sun { display:none; } [data-theme="dark"] .icon-moon { display:block; }
+.icon-btn { width:34px; height:34px; border-radius:8px; border:1px solid var(--border2); background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.icon-btn svg { width:16px; height:16px; color:var(--slate); }
+.notif-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--danger); border:1.5px solid var(--topbar-bg); }
+
+/* ── ELO IA — COMPOSANT IDENTIQUE BUSINESS-V2 ── */
+.time-selector { display:flex; align-items:center; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:3px; }
+.ts-btn { font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 14px; border-radius:7px; border:none; background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.ts-btn:hover { color:var(--ink); }
+.ts-btn.active { background:var(--surface); color:var(--primary); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+.date-picker-btn { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:0 12px; height:34px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; color:var(--slate); white-space:nowrap; transition:all 0.12s; }
+.date-picker-btn:hover { border-color:var(--primary); color:var(--primary); }
+.date-picker-btn svg { width:14px; height:14px; }
+.cal-dropdown { position:absolute; top:44px; right:0; background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:14px; width:248px; z-index:300; display:none; box-shadow:0 6px 24px rgba(0,0,0,0.1); }
+.cal-dropdown.open { display:block; }
+.cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.cal-nav-btn { background:var(--surface2); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--slate); font-size:14px; padding:3px 8px; font-family:'Plus Jakarta Sans',sans-serif; }
+.cal-month-lbl { font-size:12px; font-weight:600; color:var(--ink); font-family:'DM Mono',monospace; }
+.cal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; }
+.cal-dh { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-align:center; padding:2px 0; font-family:'DM Mono',monospace; }
+.cal-d { font-size:11px; text-align:center; padding:5px 2px; border-radius:5px; cursor:pointer; color:var(--slate); font-family:'DM Mono',monospace; }
+.cal-d:hover { background:var(--surface2); } .cal-d.in-range { background:var(--primary-tint); color:var(--primary); }
+.cal-d.range-start, .cal-d.range-end { background:var(--primary); color:#fff; font-weight:700; }
+.cal-d.other-month { color:var(--border2); cursor:default; } .cal-d.today { font-weight:700; color:var(--ink); }
+.cal-range-info { font-size:10px; color:var(--muted); margin-top:8px; font-family:'DM Mono',monospace; min-height:16px; }
+.cal-footer { margin-top:10px; display:flex; gap:6px; justify-content:flex-end; }
+.cal-action { font-size:11px; font-weight:500; padding:5px 12px; border-radius:7px; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; }
+.cal-action.primary { background:var(--primary); color:white; border-color:var(--primary); }
+.date-wrap { position:relative; }
+.chatbot-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
+.chatbot-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+.chatbot-av { width:30px; height:30px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.chatbot-av svg { width:16px; height:16px; }
+.chatbot-name { font-size:13px; font-weight:600; color:var(--ink); }
+.chatbot-desc { font-size:10px; color:var(--muted); margin-top:1px; font-family:'DM Mono',monospace; }
+.live-badge { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; font-family:'DM Mono',monospace; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:5px 12px; white-space:nowrap; }
+.live-pulse { width:6px; height:6px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.chat-collapsible { transition:max-height 0.3s ease, opacity 0.25s ease; max-height:2000px; opacity:1; overflow:hidden; }
+.chat-collapsible.collapsed { max-height:0; opacity:0; pointer-events:none; }
+.chat-area { padding:0 16px; display:flex; flex-direction:column; gap:10px; }
+.chat-area.open { padding:12px 16px; }
+.chat-bubble-wrap { display:flex; flex-direction:column; gap:3px; }
+.chat-bubble-wrap.user-wrap { align-items:flex-end; } .chat-bubble-wrap.ai-wrap { align-items:flex-start; }
+.chat-bubble { padding:9px 13px; border-radius:12px; font-size:12px; line-height:1.55; max-width:88%; }
+.chat-bubble.user { background:var(--violet); color:white; border-radius:12px 12px 3px 12px; }
+.chat-bubble.ai { background:var(--surface2); border:1px solid var(--border); color:var(--ink); border-radius:12px 12px 12px 3px; }
+.chat-bubble-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; padding:0 3px; }
+.ai-conclusion { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.2); border-radius:10px; padding:11px 14px; margin:8px 0; }
+[data-theme="dark"] .ai-conclusion { border-color:rgba(167,139,255,0.25); }
+.ai-conclusion-head { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:7px; }
+.ai-conclusion-body { font-size:12px; color:var(--ink); line-height:1.65; }
+.reassurance-row { display:grid; grid-template-columns:repeat(3, 1fr); }
+.re-item { padding:10px 14px; border-right:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
+.re-item:last-child { border-right:none; }
+.re-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.re-icon svg { width:12px; height:12px; }
+.re-title { font-size:11px; font-weight:600; color:var(--ink); }
+.re-sub { font-size:10px; color:var(--muted); line-height:1.3; margin-top:1px; }
+.qs-header { padding:10px 18px 6px; }
+.qs-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.qs-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:7px; padding:0 14px 12px; }
+.q-chip { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 13px; font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; overflow:hidden; }
+.q-chip:hover { border-color:var(--violet); color:var(--ink); background:var(--violet-tint); }
+.q-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.q-chip-txt { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.input-row { padding:10px 14px; border-top:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+.chat-input { flex:1; background:var(--surface2); border:1px solid var(--border2); border-radius:20px; padding:8px 14px; font-size:12px; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.chat-input:focus { border-color:var(--violet); color:var(--ink); }
+.send-btn { width:30px; height:30px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.4; transition:opacity 0.15s; }
+.send-btn.ready { opacity:1; } .send-btn:hover { opacity:0.85; } .send-btn svg { width:13px; height:13px; }
+.re-footer { border-top:1px solid var(--border); }
+.re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
+.re-toggle:hover { background:var(--surface2); }
+.re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
+
+/* ── CONTENT ── */
+.content { padding:16px 24px 40px; flex:1; display:flex; flex-direction:column; gap:12px; }
+.content > div { width:100%; }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom:4px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.page-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
+.page-title { font-size:20px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); }
+.page-title span { color:var(--c-qlog); }
+.page-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+.section-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── KPI GRID ── */
+.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
+.kpi-card:hover { transform:translateY(-2px); }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-qlog)); }
+.kpi-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+.kpi-label-wrap { display:flex; align-items:flex-start; gap:9px; }
+.kpi-mod-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.kpi-mod-icon svg { width:15px; height:15px; }
+.kpi-label { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; line-height:1.4; }
+.kpi-label-sub { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; margin-top:1px; }
+.kpi-status-badge { font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; white-space:nowrap; flex-shrink:0; }
+.kpi-status-badge.ok { background:var(--success-tint); color:var(--success); }
+.kpi-status-badge.bad { background:var(--danger-tint); color:var(--danger); }
+.kpi-status-badge.warn { background:var(--warning-tint); color:var(--warning); }
+.kpi-big { font-size:32px; font-weight:300; letter-spacing:-0.04em; line-height:1; margin-bottom:5px; }
+.kpi-big .unit { font-size:16px; font-weight:400; }
+.kpi-secondary { font-size:11px; color:var(--muted); margin-bottom:4px; line-height:1.4; }
+.kpi-sub-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.delta-up { font-size:10px; font-weight:600; background:var(--success-tint); color:var(--success); padding:1px 6px; border-radius:100px; }
+.delta-dn { font-size:10px; font-weight:600; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; }
+.kpi-bar-wrap { margin-top:12px; }
+.kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
+.kpi-split-bar { height:6px; background:var(--border2); border-radius:100px; overflow:hidden; display:flex; margin-top:10px; }
+.kpi-split-a { height:100%; background:var(--success); border-radius:100px 0 0 100px; transition:width 0.6s ease; }
+.kpi-split-b { height:100%; background:var(--warning); border-radius:0 100px 100px 0; transition:width 0.6s ease; }
+.kpi-split-legend { display:flex; gap:10px; margin-top:6px; }
+.kpi-split-leg { display:flex; align-items:center; gap:4px; font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.kpi-split-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+/* ── MODULE TABS B2C / B2B ── */
+.module-tabs { display:flex; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--card-shadow); }
+.mod-tab { flex:1; display:flex; align-items:center; justify-content:center; gap:9px; padding:14px 20px; cursor:pointer; font-size:13px; font-weight:500; color:var(--slate); border-right:1px solid var(--border); transition:background 0.15s, color 0.15s; user-select:none; }
+.mod-tab:last-child { border-right:none; }
+.mod-tab:hover { background:var(--surface2); color:var(--ink); }
+.mod-tab.active { background:var(--c-qlog-t); color:var(--c-qlog); font-weight:600; }
+.mod-tab.active.b2b { background:var(--c-business-t); color:var(--c-business); }
+.mod-tab-pill { font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
+.mod-tab.active .mod-tab-pill { background:var(--c-qlog); color:white; }
+.mod-tab.active.b2b .mod-tab-pill { background:var(--c-business); color:white; }
+.mod-tab:not(.active) .mod-tab-pill { background:var(--surface2); color:var(--muted); border:1px solid var(--border2); }
+.mod-tab-desc { font-size:10px; color:var(--muted); margin-top:1px; font-family:'DM Mono',monospace; }
+.mod-tab.active .mod-tab-desc { color:var(--c-qlog); }
+.mod-tab.active.b2b .mod-tab-desc { color:var(--c-business); }
+.tab-indicator { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* ── TAB PANELS ── */
+.tab-panel { display:none; animation:fadeIn 0.2s ease; }
+.tab-panel.active { display:flex; flex-direction:column; gap:12px; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION 2COL ── */
+.section-2col { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
+
+/* ── CANAL CHARTS CARD ── */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; width:100%; min-width:0; }
+.card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.card-title { font-size:13px; font-weight:600; color:var(--ink); }
+.card-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.card-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'DM Mono',monospace; }
+.cb-ok { background:var(--success-tint); color:var(--success); }
+.cb-warn { background:var(--warning-tint); color:var(--warning); }
+.chart-tabs { display:flex; gap:4px; padding:12px 18px 0; }
+.ct-btn { font-size:11px; font-weight:500; padding:5px 14px; border-radius:7px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
+.ct-btn:hover { color:var(--ink); }
+.ct-btn.active.qlog { background:var(--c-qlog-t); color:var(--c-qlog); border-color:var(--c-qlog); font-weight:600; }
+.ct-btn.active.biz { background:var(--c-business-t); color:var(--c-business); border-color:var(--c-business); font-weight:600; }
+.chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 18px 10px; }
+.cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+.cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
+.canal-mini-row { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--border); }
+.canal-cell { padding:12px 16px; border-right:1px solid var(--border); }
+.canal-cell:last-child { border-right:none; }
+.canal-cell-lbl { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:6px; }
+.canal-stat-row { display:flex; align-items:baseline; gap:5px; }
+.canal-stat-val { font-size:20px; font-weight:300; letter-spacing:-0.03em; }
+.canal-stat-unit { font-size:11px; color:var(--muted); }
+.canal-stat-delta { font-size:10px; font-weight:600; padding:1px 6px; border-radius:100px; }
+.d-up { background:var(--success-tint); color:var(--success); }
+.d-dn { background:var(--danger-tint); color:var(--danger); }
+.d-eq { background:var(--surface2); color:var(--muted); }
+
+/* ── SCORE SIDEBAR ── */
+.score-sidebar { display:flex; flex-direction:column; gap:10px; }
+.score-sidebar-title { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:8px; }
+.score-sidebar-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.score-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 16px; box-shadow:var(--card-shadow); position:relative; overflow:hidden; }
+.score-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--sc-color, var(--c-qlog)); }
+.score-card-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:8px; }
+.score-gauge-wrap { display:flex; align-items:baseline; gap:10px; margin-bottom:5px; }
+.score-big { font-size:26px; font-weight:300; letter-spacing:-0.04em; color:var(--sc-color, var(--c-qlog)); line-height:1; }
+.score-big .unit { font-size:12px; font-weight:400; }
+.score-trend-up { font-size:10px; font-weight:600; color:var(--success); }
+.score-trend-dn { font-size:10px; font-weight:600; color:var(--danger); }
+.score-desc { font-size:10px; color:var(--muted); line-height:1.45; }
+.score-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:8px; }
+.score-bar-fill { height:100%; border-radius:100px; background:var(--sc-color, var(--c-qlog)); transition:width 0.6s ease; }
+
+/* ── RECEPTION BLOCK ── */
+.recept-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0; }
+.recept-cell { padding:14px 16px; border-right:1px solid var(--border); }
+.recept-cell:last-child { border-right:none; }
+.recept-cell-label { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.recept-big { font-size:24px; font-weight:300; letter-spacing:-0.04em; color:var(--c-qlog); line-height:1; margin-bottom:4px; }
+.recept-big .unit { font-size:12px; font-weight:400; }
+.recept-sub { font-size:11px; color:var(--muted); line-height:1.4; }
+.recept-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:10px; }
+.recept-bar-fill { height:100%; border-radius:100px; background:var(--c-qlog); }
+.fourn-list { padding:0 16px 12px; }
+.fourn-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.fourn-row:last-child { border-bottom:none; }
+.fourn-name { font-size:12px; font-weight:500; color:var(--ink); flex:1; }
+.fourn-rdv-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
+.fourn-rdv-ok { background:var(--success-tint); color:var(--success); }
+.fourn-rdv-no { background:var(--warning-tint); color:var(--warning); }
+.fourn-date { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+.fourn-conform-bar { width:50px; height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.fourn-conform-fill { height:100%; border-radius:100px; }
+
+/* ── ANALYSES & ACTIONS ── */
+.block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
+.aa-col { background:var(--surface); border:1px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--card-shadow); min-height:280px; }
+.aa-head { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.aa-head-left { display:flex; align-items:center; gap:9px; }
+.aa-head-title { font-size:12px; font-weight:600; color:var(--ink); }
+.aa-head-sub { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
+.aa-head-badge { font-size:10px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
+.aa-body { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
+.aa-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:12px; text-align:center; padding:20px; }
+.aa-empty svg { width:28px; height:28px; opacity:0.3; }
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; cursor:default; transition:border-color 0.12s; }
+.analysis-item:hover { border-color:var(--primary); }
+.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:4px; }
+.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
+.analysis-archive-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
+.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
+.analysis-archive-btn svg { width:11px; height:11px; }
+.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
+.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
+.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; display:flex; align-items:flex-start; gap:10px; transition:border-color 0.12s; }
+.action-item:hover { border-color:var(--violet); }
+.action-check { width:16px; height:16px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.action-check:hover { border-color:var(--success); background:var(--success-tint); }
+.action-check.done { border-color:var(--success); background:var(--success); }
+.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
+.action-text { flex:1; min-width:0; }
+.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
+.action-title.done-text { text-decoration:line-through; color:var(--muted); }
+.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
+.action-controls { display:flex; align-items:center; gap:5px; flex-shrink:0; }
+.action-ctrl-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); }
+.action-ctrl-btn:hover { background:var(--surface); border-color:var(--border2); color:var(--ink); }
+.action-ctrl-btn svg { width:10px; height:10px; }
+.aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
+.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.aa-add-input:focus { border-color:var(--violet); }
+</style>
+</head>
+<body>
+
+<!-- ══ SIDENAV ══ -->
+<aside class="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
+  </div>
+  <div class="nav-section">Principal</div>
+  <div class="nav-item" onclick="location.href='elogik-home-v5.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Tableau de bord
+  </div>
+  <div class="nav-section">Modules</div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    Business
+  </div>
+  <div class="nav-item active">
+    <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    Qualité logistique
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    Qualité transport
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    SAV transport <span class="nav-badge">47</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
+    SAV logistique <span class="nav-badge-warn">24</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    Stocks <span class="nav-badge">8</span>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-llm">
+      <div class="nav-llm-top"><span class="nav-llm-label">elo · IA</span><span class="nav-llm-count">31/50</span></div>
+      <div class="nav-llm-bar"><div class="nav-llm-fill"></div></div>
+      <div class="nav-llm-sub">Questions restantes ce mois</div>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar">VL</div>
+      <div><div class="nav-user-name">Victor L.</div><div class="nav-user-role">Admin logistique</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Qualité logistique</span>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        Mode sombre
+      </button>
+      <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ══ BLOC 1 : elo · IA ══ -->
+  <div>
+    <div class="chatbot-card" style="display:flex;flex-direction:column;">
+      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Qualité Logistique</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="live-badge"><div class="live-pulse"></div>Live</div>
+          <div class="time-selector">
+            <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
+            <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
+            <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
+            <button class="ts-btn" onclick="setPeriod(this)">Année</button>
+          </div>
+          <div class="date-wrap">
+            <button class="date-picker-btn" onclick="toggleCal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span id="dpLabel">17 – 23 mars</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="cal-dropdown" id="calDrop">
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+              <div class="cal-footer">
+                <button class="cal-action" onclick="toggleCal()">Annuler</button>
+                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
+              </div>
+            </div>
+          </div>
+          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);">
+            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="chat-collapsible collapsed" id="chatCollapsible">
+        <div class="chat-area open" id="chatArea">
+          <div class="chat-bubble-wrap user-wrap">
+            <div class="chat-bubble user">Quels produits ont causé le plus d'incidents de préparation cette semaine ?</div>
+            <div class="chat-bubble-time">09h22</div>
+          </div>
+          <div class="chat-bubble-wrap ai-wrap">
+            <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
+              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Qualité Logistique · tous canaux</div>
+              <div class="ai-conclusion">
+                <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
+                <div class="ai-conclusion-body"><strong>3 incidents concentrés sur les coffrets pluriproduits</strong> (Kit Soin Pro, Set Argan). Le délai moyen de préparation B2B dépasse l'objectif de <span style="color:var(--warning);font-weight:500">+16 min vendredi</span>, corrélé au pic de volume en fin de semaine. Recommandation : réserver 2 opérateurs dédiés coffrets les jeudis–vendredis.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="re-footer">
+          <div class="re-toggle" onclick="toggleReassurance()">
+            <div class="re-toggle-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confidentialité &amp; sources</div>
+            <svg id="reChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="rePanel" style="display:none;">
+            <div class="reassurance-row">
+              <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
+              <div class="re-item"><div class="re-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Qualité Logistique actives</div></div></div>
+              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">WMS e-kan · sync toutes les 15 min</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="qs-header"><div class="qs-label">Questions contextualisées — Préparation commandes</div></div>
+        <div class="qs-grid">
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Quel produit nécessite le plus de temps de préparation ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quels produits consomment le plus de consommables ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels jours avons-nous eu des problèmes de préparation ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Délai moyen monoproduit vs pluriproduits ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Combien de commandes risquent le cut-off ce soir ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Quels fournisseurs ont eu des écarts de volume ?</span></div>
+        </div>
+        <div class="input-row">
+          <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
+          <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOC 2 : KPI MACRO (communs aux deux canaux) ══ -->
+  <div>
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow">Module</div>
+        <div class="page-title"><span>Qualité Logistique</span> — Indicateurs clés</div>
+        <div class="page-sub">Semaine 17–23 mars 2025 · tous canaux · tous entrepôts</div>
+      </div>
+    </div>
+    <div class="kpi-grid">
+      <!-- Bloquées -->
+      <div class="kpi-card" style="--module-color:var(--danger)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div><div class="kpi-label">Bloquées</div><div class="kpi-label-sub">Anomalie · att. action</div></div>
+          </div>
+          <span class="kpi-status-badge ok">✓ Sous seuil</span>
+        </div>
+        <div class="kpi-big" style="color:var(--danger)">3<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary">sur 1 204 commandes · 0.25%</div>
+        <div class="kpi-sub-row"><span class="delta-up">↓ −70%</span><span style="font-size:11px;color:var(--muted)">vs seuil alerte (10)</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:3%"></div></div></div>
+      </div>
+      <!-- Préparées -->
+      <div class="kpi-card" style="--module-color:var(--c-qlog)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+            <div><div class="kpi-label">Préparées</div><div class="kpi-label-sub">Total semaine</div></div>
+          </div>
+          <span class="kpi-status-badge ok">✓ Objectif</span>
+        </div>
+        <div class="kpi-big" style="color:var(--c-qlog)">1 201<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary">taux de service 99.75% · obj. 99.5%</div>
+        <div class="kpi-sub-row"><span class="delta-up">↑ +0.25 pts</span><span style="font-size:11px;color:var(--muted)">vs objectif</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-qlog);width:99.75%"></div></div></div>
+      </div>
+      <!-- Cut-off fusionné -->
+      <div class="kpi-card" style="--module-color:var(--success)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="kpi-label">Respect cut-off</div><div class="kpi-label-sub">Avant / après</div></div>
+          </div>
+          <span class="kpi-status-badge ok">✓ Bon niveau</span>
+        </div>
+        <div class="kpi-big" style="color:var(--success)">91.2<span class="unit">%</span></div>
+        <div class="kpi-secondary">avant cut-off · 8.8% après</div>
+        <div class="kpi-split-bar">
+          <div class="kpi-split-a" style="width:91.2%"></div>
+          <div class="kpi-split-b" style="width:8.8%"></div>
+        </div>
+        <div class="kpi-split-legend">
+          <div class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--success)"></div>Avant (91.2%)</div>
+          <div class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--warning)"></div>Après (8.8%)</div>
+        </div>
+      </div>
+      <!-- Délai moyen -->
+      <div class="kpi-card" style="--module-color:var(--c-qlog)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div><div class="kpi-label">Délai moyen prépa</div><div class="kpi-label-sub">Mono vs pluriproduits</div></div>
+          </div>
+          <span class="kpi-status-badge warn">⚠ À surveiller</span>
+        </div>
+        <div class="kpi-big" style="color:var(--c-qlog)">18<span class="unit"> min</span></div>
+        <div class="kpi-secondary">mono : 11 min · pluriproduits : 34 min</div>
+        <div class="kpi-sub-row"><span class="delta-dn">↑ +3 min</span><span style="font-size:11px;color:var(--muted)">vs sem. précédente</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:60%"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOC 3 : ONGLETS B2C / B2B ══ -->
+  <div>
+    <!-- Tabs switcher -->
+    <div class="module-tabs">
+      <div class="mod-tab active" id="tab-b2c" onclick="switchTab('b2c')">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="mod-tab-pill">B2C</span>
+            <span style="font-weight:600;">Direct consommateur</span>
+          </div>
+          <div class="mod-tab-desc">934 commandes · taux service 99.7%</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:16px;height:16px;margin-left:auto;opacity:0.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="mod-tab b2b" id="tab-b2b" onclick="switchTab('b2b')">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="mod-tab-pill">B2B</span>
+            <span style="font-weight:600;">Professionnel</span>
+          </div>
+          <div class="mod-tab-desc">267 commandes · cut-off 16h00</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:16px;height:16px;margin-left:auto;opacity:0.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- ── PANEL B2C ── -->
+    <div class="tab-panel active" id="panel-b2c">
+
+      <!-- SUIVI DE PRODUCTION B2C -->
+      <div class="section-label" style="margin-top:8px">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
+        Suivi de production — B2C
+      </div>
+
+      <div class="section-2col">
+        <!-- Graphiques -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Taux de préparation B2C</div>
+              <div class="card-sub">934 commandes · objectif 99.5% départ J</div>
+            </div>
+            <span class="card-badge cb-ok">✓ Objectif</span>
+          </div>
+          <div class="chart-tabs" id="b2cChartTabs">
+            <button class="ct-btn active qlog" onclick="switchB2CChart(this,'preparation')">Taux préparation</button>
+            <button class="ct-btn" onclick="switchB2CChart(this,'departJ')">Taux départ à J</button>
+            <button class="ct-btn" onclick="switchB2CChart(this,'cutoff')">Avant / après cut-off</button>
+          </div>
+          <div class="chart-legend">
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog)"></div>Semaine en cours</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog);opacity:0.4;border-top:2px dashed var(--c-qlog)"></div>Objectif</div>
+          </div>
+          <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2C"></canvas></div>
+          <div class="canal-mini-row">
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux préparation</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-qlog)">99.7</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up">↑ +0.2</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux départ à J</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-qlog)">98.9</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-eq">= stable</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Avant cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--success)">93.1</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up">↑ +1.1</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score qualité B2C -->
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score qualité — B2C</div>
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Taux d'incident</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)">0.5<span class="unit">%</span></div><span class="score-trend-up">↓ −0.4 pts</span></div>
+            <div class="score-desc">5 incidents · 934 préparations · seuil 1.0%</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:5%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Respect cut-off</div>
+            <div class="score-gauge-wrap"><div class="score-big">93.1<span class="unit">%</span></div><span class="score-trend-up">↑ +1.1 pts</span></div>
+            <div class="score-desc">871 expéditions avant cut-off · obj. 90%</div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:93.1%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--c-qlog)">
+            <div class="score-card-label">Erreurs imports cmd.</div>
+            <div class="score-gauge-wrap"><div class="score-big">0.8<span class="unit">%</span></div><span class="score-trend-up">↓ −0.2 pts</span></div>
+            <div class="score-desc">8 erreurs OMS · doublons (5) · format (3)</div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:8%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUIVI DE RÉCEPTION B2C -->
+      <div class="section-label">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
+        Suivi de réception — B2C
+      </div>
+
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Réception fournisseurs — Flux entrant B2C</div><div class="card-sub">8 réceptions · 2 fournisseurs actifs · sem. en cours</div></div>
+            <span class="card-badge cb-ok">✓ Conformité OK</span>
+          </div>
+          <div class="recept-metrics">
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Délai mise à quai → intégration</div>
+              <div class="recept-big">2h18<span class="unit"> moy.</span></div>
+              <div class="recept-sub">Objectif ≤ 4h · mono : 1h40 · pluri : 3h55</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="width:57%"></div></div>
+            </div>
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Conformité vol. &amp; emballage</div>
+              <div class="recept-big" style="color:var(--success)">96.8<span class="unit">%</span></div>
+              <div class="recept-sub">2 écarts détectés · emballage endommagé ×2</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--success);width:96.8%"></div></div>
+            </div>
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prise de RDV fournisseurs</div>
+              <div class="recept-big" style="color:var(--success)">7/8<span class="unit"> RDV</span></div>
+              <div class="recept-sub">87.5% de prise de RDV · 1 sans RDV préalable</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--success);width:87.5%"></div></div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding:10px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;">Fournisseurs B2C</div></div>
+          <div class="fourn-list">
+            <div class="fourn-row">
+              <div style="width:28px;height:28px;border-radius:7px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">BG</div>
+              <div class="fourn-name">Beauty Group SAS<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 1 240 unités</div></div>
+              <span class="fourn-rdv-badge fourn-rdv-ok">RDV ✓</span>
+              <div class="fourn-date">18 mars · 08h30</div>
+              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:100%;background:var(--success)"></div></div><span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace">100%</span></div>
+            </div>
+            <div class="fourn-row">
+              <div style="width:28px;height:28px;border-radius:7px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">NC</div>
+              <div class="fourn-name">Nüber Cosmetics<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 1 820 unités</div></div>
+              <span class="fourn-rdv-badge fourn-rdv-no">Sans RDV</span>
+              <div class="fourn-date">22 mars · 10h00</div>
+              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:94%;background:var(--success)"></div></div><span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace">94%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score conformité réception B2C -->
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score conformité — B2C</div>
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Taux de conformité</div>
+            <div class="score-gauge-wrap"><div class="score-big">96.8<span class="unit">%</span></div><span class="score-trend-up">↑ +3.2 pts</span></div>
+            <div class="score-desc">Attente vs réalité · vol. &amp; qualité emballage</div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:96.8%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Taux RDV fournisseurs</div>
+            <div class="score-gauge-wrap"><div class="score-big">87.5<span class="unit">%</span></div><span class="score-trend-up">↑ +4.2 pts</span></div>
+            <div class="score-desc">7 sur 8 livraisons avec RDV confirmé</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:87.5%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--c-qlog)">
+            <div class="score-card-label">Délai moyen réception</div>
+            <div class="score-gauge-wrap"><div class="score-big">2h18</div><span class="score-trend-up">↓ −22 min</span></div>
+            <div class="score-desc">Quai → WMS intégré · objectif ≤ 4h</div>
+            <div class="score-bar"><div class="score-bar-fill" style="width:57%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL B2B ── -->
+    <div class="tab-panel" id="panel-b2b">
+
+      <!-- SUIVI DE PRODUCTION B2B -->
+      <div class="section-label" style="margin-top:8px">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
+        Suivi de production — B2B
+      </div>
+
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Taux de préparation B2B</div>
+              <div class="card-sub">267 commandes · cut-off 16h00 · avg 5.3 art/cmd</div>
+            </div>
+            <span class="card-badge cb-warn">⚠ À surveiller</span>
+          </div>
+          <div class="chart-tabs" id="b2bChartTabs">
+            <button class="ct-btn active biz" onclick="switchB2BChart(this,'preparation')">Taux préparation</button>
+            <button class="ct-btn" onclick="switchB2BChart(this,'departJ')">Taux départ à J</button>
+            <button class="ct-btn" onclick="switchB2BChart(this,'cutoff')">Avant / après cut-off</button>
+          </div>
+          <div class="chart-legend">
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-business)"></div>Semaine en cours</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--warning)"></div>Objectif (départ J)</div>
+          </div>
+          <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2B"></canvas></div>
+          <div class="canal-mini-row">
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux préparation</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-business)">99.2</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −0.3</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux départ à J</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)">96.8</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −1.4</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Avant cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)">86.5</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −2.1</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score qualité B2B -->
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score qualité — B2B</div>
+          <div class="score-card" style="--sc-color:var(--warning)">
+            <div class="score-card-label">Taux d'incident</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">1.1<span class="unit">%</span></div><span class="score-trend-dn">↑ +0.3 pts</span></div>
+            <div class="score-desc">3 incidents · 267 préparations · seuil 1.0%</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:11%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--warning)">
+            <div class="score-card-label">Respect cut-off</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">86.5<span class="unit">%</span></div><span class="score-trend-dn">↓ −2.1 pts</span></div>
+            <div class="score-desc">231 expéditions avant cut-off · obj. 90%</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:86.5%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--warning)">
+            <div class="score-card-label">Erreurs imports cmd.</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">2.2<span class="unit">%</span></div><span class="score-trend-dn">↑ +0.7 pts</span></div>
+            <div class="score-desc">9 erreurs OMS · doublons (3) · format (6)</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:22%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUIVI DE RÉCEPTION B2B -->
+      <div class="section-label">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
+        Suivi de réception — B2B
+      </div>
+
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Réception fournisseurs — Flux entrant B2B</div><div class="card-sub">4 réceptions · 1 fournisseur actif · sem. en cours</div></div>
+            <span class="card-badge cb-warn">⚠ Écart détecté</span>
+          </div>
+          <div class="recept-metrics">
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Délai mise à quai → intégration</div>
+              <div class="recept-big" style="color:var(--c-business)">3h10<span class="unit"> moy.</span></div>
+              <div class="recept-sub">Objectif ≤ 4h · palettes mixtes impliquent tri manuel</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--c-business);width:79%"></div></div>
+            </div>
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Conformité vol. &amp; emballage</div>
+              <div class="recept-big" style="color:var(--warning)">87.5<span class="unit">%</span></div>
+              <div class="recept-sub">2 écarts détectés · volume manquant ×2</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--warning);width:87.5%"></div></div>
+            </div>
+            <div class="recept-cell">
+              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prise de RDV fournisseurs</div>
+              <div class="recept-big" style="color:var(--warning)">1/4<span class="unit"> RDV</span></div>
+              <div class="recept-sub">25% de prise de RDV · 3 sans RDV préalable</div>
+              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--warning);width:25%"></div></div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding:10px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;">Fournisseurs B2B</div></div>
+          <div class="fourn-list">
+            <div class="fourn-row">
+              <div style="width:28px;height:28px;border-radius:7px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">KP</div>
+              <div class="fourn-name">Kera Pro Distribution<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 860 unités B2B</div></div>
+              <span class="fourn-rdv-badge fourn-rdv-no">Sans RDV ×3</span>
+              <div class="fourn-date">20 mars · 14h15</div>
+              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:87%;background:var(--warning)"></div></div><span style="font-size:10px;color:var(--warning);font-weight:600;font-family:'DM Mono',monospace">87%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score conformité réception B2B -->
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score conformité — B2B</div>
+          <div class="score-card" style="--sc-color:var(--warning)">
+            <div class="score-card-label">Taux de conformité</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">87.5<span class="unit">%</span></div><span class="score-trend-dn">↓ −5.1 pts</span></div>
+            <div class="score-desc">Écarts volume · palettes incomplètes ×2</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:87.5%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--danger)">
+            <div class="score-card-label">Taux RDV fournisseurs</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--danger)">25<span class="unit">%</span></div><span class="score-trend-dn">↓ −12 pts</span></div>
+            <div class="score-desc">1 sur 4 livraisons avec RDV · désorganisation quai</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--danger);width:25%"></div></div>
+          </div>
+          <div class="score-card" style="--sc-color:var(--c-business)">
+            <div class="score-card-label">Délai moyen réception</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--c-business)">3h10</div><span class="score-trend-dn">↑ +28 min</span></div>
+            <div class="score-desc">Tri palettes mixtes · objectif ≤ 4h</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--c-business);width:79%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOC ANALYSES & ACTIONS ══ -->
+  <div>
+    <div class="section-label">Analyses &amp; suivi</div>
+    <div class="block-actions">
+
+      <!-- Analyses sauvegardées -->
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Qualité Logistique</div></div>
+          </div>
+          <span class="aa-head-badge" id="analysisCount">3</span>
+        </div>
+        <div class="aa-body" id="analysisList">
+          <div class="analysis-item" id="analysis-card-1">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--c-qlog)"></div>
+              <div class="analysis-q">Quel produit nécessite le plus de temps de préparation en pluriproduits ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) vs 11 min pour les monoproduits. Corrélé au tri multi-emplacements.</div>
+            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-2">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--warning)"></div>
+              <div class="analysis-q">Quels jours avons-nous eu le plus de dépassements du cut-off B2B ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Jeudi et vendredi concentrent 74 % des dépassements cut-off B2B, corrélés aux pics de volume en fin de semaine.</div>
+            <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 11h14</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-3">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--danger)"></div>
+              <div class="analysis-q">Comparer le taux de conformité B2C vs B2B sur les 4 dernières semaines</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">B2C stable autour de 95–97 %. B2B en baisse : 93 → 87.5 % sur 4 semaines. Kera Pro Distribution principal facteur.</div>
+            <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 14h30</span><span class="analysis-src">WMS e-kan · OMS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions en cours -->
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Qualité Logistique</div></div>
+          </div>
+          <span class="aa-head-badge" id="actionCount">0</span>
+        </div>
+        <div class="aa-body" id="actionList">
+          <div class="aa-empty" id="actionEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+          </div>
+        </div>
+        <div class="aa-add-row">
+          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+/* ── THEME ── */
+function toggleTheme() {
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  setTimeout(function() { rebuildCharts(); }, 50);
+}
+
+/* ── PERIOD ── */
+function setPeriod(btn) {
+  document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ── CHAT COLLAPSE ── */
+function toggleChatCollapse() {
+  var coll = document.getElementById('chatCollapsible');
+  var icon = document.getElementById('chatCollapseIcon');
+  var collapsed = coll.classList.toggle('collapsed');
+  icon.style.transform = collapsed ? 'rotate(180deg)' : '';
+}
+function toggleReassurance() {
+  var panel = document.getElementById('rePanel');
+  var chevron = document.getElementById('reChevron');
+  var visible = panel.style.display !== 'none';
+  panel.style.display = visible ? 'none' : 'block';
+  chevron.style.transform = visible ? '' : 'rotate(180deg)';
+}
+function fillChat(chip) {
+  var inp = document.getElementById('chatInputMain');
+  inp.value = chip.querySelector('.q-chip-txt').textContent;
+  toggleSendMain(inp);
+  inp.focus();
+}
+function toggleSendMain(inp) {
+  document.getElementById('sendBtnMain').classList.toggle('ready', inp.value.trim().length > 0);
+}
+function sendChatMain() {
+  var inp = document.getElementById('chatInputMain');
+  if (!inp.value.trim()) return;
+  var area = document.getElementById('chatArea');
+  var wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap user-wrap';
+  wrap.innerHTML = '<div class="chat-bubble user">' + inp.value + '</div><div class="chat-bubble-time">maintenant</div>';
+  area.appendChild(wrap);
+  inp.value = '';
+  document.getElementById('sendBtnMain').classList.remove('ready');
+  area.scrollTop = area.scrollHeight;
+}
+document.getElementById('chatInputMain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendChatMain();
+});
+
+/* ── CALENDAR ── */
+var calOpen = false, currentYear = 2025, currentMonth = 2, rangeStart = null, rangeEnd = null;
+function toggleCal() { calOpen = !calOpen; document.getElementById('calDrop').classList.toggle('open', calOpen); if (calOpen) renderCal(); }
+function moveMonth(d) { currentMonth += d; if (currentMonth < 0) { currentMonth = 11; currentYear--; } if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCal(); }
+function renderCal() {
+  var M = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  document.getElementById('calMonth').textContent = M[currentMonth] + ' ' + currentYear;
+  var g = document.getElementById('calGrid'); g.innerHTML = '';
+  ['L','M','M','J','V','S','D'].forEach(function(d) { var e = document.createElement('div'); e.className = 'cal-dh'; e.textContent = d; g.appendChild(e); });
+  var fd = new Date(currentYear, currentMonth, 1).getDay(); fd = (fd + 6) % 7;
+  var dim = new Date(currentYear, currentMonth + 1, 0).getDate();
+  var prev = new Date(currentYear, currentMonth, 0).getDate();
+  for (var i = 0; i < fd; i++) { var e = document.createElement('div'); e.className = 'cal-d other-month'; e.textContent = prev - fd + 1 + i; g.appendChild(e); }
+  for (var day = 1; day <= dim; day++) {
+    var e = document.createElement('div'); e.className = 'cal-d';
+    var dt = new Date(currentYear, currentMonth, day);
+    if (day === 24 && currentMonth === 2 && currentYear === 2025) e.classList.add('today');
+    if (rangeStart && rangeEnd) { if (dt > rangeStart && dt < rangeEnd) e.classList.add('in-range'); if (dt.toDateString() === rangeStart.toDateString()) e.classList.add('range-start'); if (dt.toDateString() === rangeEnd.toDateString()) e.classList.add('range-end'); }
+    else if (rangeStart && dt.toDateString() === rangeStart.toDateString()) e.classList.add('range-start');
+    e.textContent = day;
+    e.onclick = (function(d2) { return function() { pickDay(d2); }; })(new Date(dt));
+    g.appendChild(e);
+  }
+}
+function pickDay(date) { if (!rangeStart || (rangeStart && rangeEnd)) { rangeStart = date; rangeEnd = null; document.getElementById('rangeInfo').textContent = 'Debut : ' + fmtD(date); } else { if (date < rangeStart) { rangeEnd = rangeStart; rangeStart = date; } else rangeEnd = date; document.getElementById('rangeInfo').textContent = fmtD(rangeStart) + ' - ' + fmtD(rangeEnd); } renderCal(); }
+function fmtD(d) { var M = ['jan','fev','mar','avr','mai','juin','juil','aou','sep','oct','nov','dec']; return d.getDate() + ' ' + M[d.getMonth()]; }
+function applyRange() { if (rangeStart) document.getElementById('dpLabel').textContent = rangeEnd ? fmtD(rangeStart) + ' - ' + fmtD(rangeEnd) : fmtD(rangeStart); toggleCal(); }
+document.addEventListener('click', function(e) { if (calOpen && !document.querySelector('.date-wrap').contains(e.target)) { calOpen = false; document.getElementById('calDrop').classList.remove('open'); } });
+
+/* ── ONGLETS B2C / B2B ── */
+function switchTab(canal) {
+  ['b2c','b2b'].forEach(function(c) {
+    document.getElementById('tab-' + c).classList.toggle('active', c === canal);
+    document.getElementById('tab-b2b').classList.toggle('b2b', true);
+    document.getElementById('panel-' + c).classList.toggle('active', c === canal);
+  });
+  // retirer la classe active du mauvais onglet
+  if (canal === 'b2c') {
+    document.getElementById('tab-b2b').classList.remove('active');
+  } else {
+    document.getElementById('tab-b2c').classList.remove('active');
+  }
+  setTimeout(function() { rebuildCharts(); }, 50);
+}
+
+/* ── CHART TABS ── */
+function switchB2CChart(btn, metric) {
+  document.getElementById('b2cChartTabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active','qlog','biz'); });
+  btn.classList.add('active','qlog');
+  buildB2CChart(metric);
+}
+function switchB2BChart(btn, metric) {
+  document.getElementById('b2bChartTabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active','qlog','biz'); });
+  btn.classList.add('active','biz');
+  buildB2BChart(metric);
+}
+
+/* ── CHARTS ── */
+var chartB2CInst, chartB2BInst;
+var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
+
+var b2cData = {
+  preparation: [99.1, 99.4, 99.2, 99.6, 99.5, 99.8, 99.7, 99.5, 99.9, 100, 99.8, 99.7],
+  departJ:     [98.2, 98.5, 98.4, 98.8, 98.5, 99.0, 98.9, 98.6, 99.1, 99.2, 99.0, 98.9],
+  cutoff:      [90.1, 91.2, 90.8, 92.1, 91.5, 92.8, 92.5, 91.8, 93.0, 93.4, 93.1, 93.1]
+};
+var b2bData = {
+  preparation: [98.8, 99.0, 99.1, 99.3, 98.9, 99.2, 99.5, 99.1, 99.3, 99.4, 99.2, 99.2],
+  departJ:     [96.2, 97.0, 96.8, 97.4, 96.5, 97.8, 97.5, 97.0, 97.8, 98.1, 96.8, 96.8],
+  cutoff:      [84.0, 85.5, 85.0, 86.8, 85.2, 87.0, 87.5, 86.0, 87.8, 88.5, 86.5, 86.5]
+};
+
+function getTC() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return { grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', text: isDark ? '#5A6C7D' : '#8A95A3' };
+}
+function getCSSVal(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function buildB2CChart(metric) {
+  var ctx = document.getElementById('chartB2C');
+  if (!ctx) return;
+  if (chartB2CInst) chartB2CInst.destroy();
+  var tc = getTC();
+  var color = getCSSVal('--c-qlog');
+  var raw = b2cData[metric || 'preparation'];
+  chartB2CInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        { label: 'Réalisé', data: raw, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: color, borderWidth: 2 },
+        { label: 'Objectif', data: weeks.map(function() { return 99.5; }), borderColor: 'rgba(42,149,84,0.5)', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' } } },
+        y: { min: 84, max: 101, grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return v + '%'; } } }
+      }
+    }
+  });
+}
+
+function buildB2BChart(metric) {
+  var ctx = document.getElementById('chartB2B');
+  if (!ctx) return;
+  if (chartB2BInst) chartB2BInst.destroy();
+  var tc = getTC();
+  var color = getCSSVal('--c-business');
+  var raw = b2bData[metric || 'preparation'];
+  chartB2BInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        { label: 'Réalisé', data: raw, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: color, borderWidth: 2 },
+        { label: 'Objectif', data: weeks.map(function() { return 99.0; }), borderColor: getCSSVal('--warning') + '88', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' } } },
+        y: { min: 84, max: 101, grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return v + '%'; } } }
+      }
+    }
+  });
+}
+
+function rebuildCharts() { buildB2CChart(); buildB2BChart(); }
+
+window.addEventListener('DOMContentLoaded', function() {
+  renderCal();
+  buildB2CChart();
+  buildB2BChart();
+});
+
+var themeObserver = new MutationObserver(function(muts) {
+  muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
+});
+themeObserver.observe(document.documentElement, { attributes: true });
+
+/* ── ANALYSES ── */
+function archiveAnalysis(id) {
+  var card = document.getElementById('analysis-card-' + id);
+  if (card) {
+    card.remove();
+    document.getElementById('analysisCount').textContent =
+      document.getElementById('analysisList').querySelectorAll('.analysis-item').length;
+  }
+}
+
+/* ── ACTIONS ── */
+var actions = [];
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim();
+  if (!val) return;
+  actions.push({ id: Date.now(), text: val, done: false });
+  inp.value = '';
+  renderActions();
+}
+function toggleActionDone(id) {
+  var a = actions.find(function(x) { return x.id === id; });
+  if (a) { a.done = !a.done; renderActions(); }
+}
+function archiveAction(id) {
+  actions = actions.filter(function(x) { return x.id !== id; });
+  renderActions();
+}
+function renderActions() {
+  var list = document.getElementById('actionList');
+  var empty = document.getElementById('actionEmpty');
+  document.getElementById('actionCount').textContent = actions.length;
+  if (actions.length === 0) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  actions.forEach(function(a) {
+    var div = document.createElement('div');
+    div.className = 'action-item';
+    var check = document.createElement('div');
+    check.className = 'action-check' + (a.done ? ' done' : '');
+    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg>';
+    check.onclick = (function(aid) { return function() { toggleActionDone(aid); }; })(a.id);
+    var txt = document.createElement('div');
+    txt.className = 'action-text';
+    txt.innerHTML = '<div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div>' +
+      '<div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) + '</div>';
+    var ctrl = document.createElement('div');
+    ctrl.className = 'action-controls';
+    var archBtn = document.createElement('button');
+    archBtn.className = 'action-ctrl-btn';
+    archBtn.title = 'Archiver';
+    archBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>';
+    archBtn.onclick = (function(aid) { return function() { archiveAction(aid); }; })(a.id);
+    ctrl.appendChild(archBtn);
+    div.appendChild(check); div.appendChild(txt); div.appendChild(ctrl);
+    list.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
