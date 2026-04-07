@@ -352,32 +352,32 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
   </div>
   <div class="nav-section">Principal</div>
-  <div class="nav-item" onclick="location.href='elogik-home-v5.html'">
+  <div class="nav-item" onclick="location.href='elogik-home-v5.html'" style="cursor:pointer;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Tableau de bord
   </div>
   <div class="nav-section">Modules</div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="location.href='business-v2.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item active">
+  <div class="nav-item active" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     Qualité logistique
   </div>
-  <div class="nav-item">
+  <div class="nav-item" style="cursor:default;opacity:0.45;">
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
     Qualité transport
   </div>
-  <div class="nav-item">
+  <div class="nav-item" style="cursor:default;opacity:0.45;">
     <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-    SAV transport <span class="nav-badge">47</span>
+    Litiges transport <span class="nav-badge">47</span>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" style="cursor:default;opacity:0.45;">
     <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
-    SAV logistique <span class="nav-badge-warn">24</span>
+    Retours <span class="nav-badge-warn">24</span>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" style="cursor:default;opacity:0.45;">
     <div class="nav-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
     Stocks <span class="nav-badge">8</span>
   </div>
@@ -945,6 +945,74 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         </div>
         <div class="aa-add-row">
           <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ BLOC 4 : ANALYSES & ACTIONS ══ -->
+  <div>
+    <div class="section-label">Analyses &amp; suivi</div>
+    <div class="block-actions">
+
+      <!-- Analyses sauvegardées -->
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Qualité Logistique</div></div>
+          </div>
+          <span class="aa-head-badge" id="analysisCount">3</span>
+        </div>
+        <div class="aa-body" id="analysisList">
+          <div class="analysis-item" id="analysis-card-1">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--c-qlog)"></div>
+              <div class="analysis-q">Quel produit nécessite le plus de temps de préparation sur le canal B2B ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) — x2.3 vs monoproduit. Recommandation : opérateurs dédiés coffrets jeudi–vendredi.</div>
+            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-2">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--warning)"></div>
+              <div class="analysis-q">Quels jours concentre-t-on le plus d'incidents de préparation ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Mercredi (4 incidents) et vendredi (3 incidents) — corrélés aux pics de volume B2B en fin de semaine.</div>
+            <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 14h07</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-3">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--danger)"></div>
+              <div class="analysis-q">Pourquoi le taux de prise de RDV fournisseurs B2B est-il si bas ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Kera Pro Distribution : 3 livraisons sans RDV sur 4. Absence de processus de confirmation côté fournisseur — point à escalader en revue mensuelle.</div>
+            <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 11h45</span><span class="analysis-src">WMS e-kan · Réception</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions en cours -->
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Qualité Logistique</div></div>
+          </div>
+          <span class="aa-head-badge" id="actionCount">0</span>
+        </div>
+        <div class="aa-body" id="actionList">
+          <div class="aa-empty" id="actionEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+          </div>
+        </div>
+        <div class="aa-add-row">
+          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action de suivi…" onkeydown="if(event.key==='Enter')addAction()"/>
         </div>
       </div>
 
