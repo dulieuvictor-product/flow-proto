@@ -19,7 +19,6 @@
   --muted:    #8A95A3;
   --font:     'Plus Jakarta Sans', sans-serif;
   --mono:     'DM Mono', monospace;
-  /* product colours */
   --flow:    #0E8FCC;
   --ekan:    #6C47E8;
   --transit: #C27B00;
@@ -29,23 +28,9 @@ html { scroll-behavior: smooth; }
 body { font-family: var(--font); background: var(--bg); color: var(--ink); min-height: 100vh; }
 
 /* ── HEADER ── */
-.header {
-  background: #0C0F14;
-  padding: 48px 40px 56px;
-  position: relative; overflow: hidden;
-}
-.header::before {
-  content: ''; position: absolute;
-  width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(14,143,204,0.15) 0%, transparent 70%);
-  top: -200px; right: -80px; pointer-events: none;
-}
-.header::after {
-  content: ''; position: absolute;
-  width: 400px; height: 400px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(42,149,84,0.08) 0%, transparent 70%);
-  bottom: -150px; left: 60px; pointer-events: none;
-}
+.header { background: #0C0F14; padding: 48px 40px 56px; position: relative; overflow: hidden; }
+.header::before { content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(14,143,204,0.15) 0%, transparent 70%); top: -200px; right: -80px; pointer-events: none; }
+.header::after { content: ''; position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(42,149,84,0.08) 0%, transparent 70%); bottom: -150px; left: 60px; pointer-events: none; }
 .header-inner { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
 .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 12px; }
@@ -55,14 +40,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 .brand-name strong { font-weight: 600; }
 .brand-name .sub { color: rgba(255,255,255,0.4); font-weight: 300; }
 .header-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: var(--mono); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 5px 14px; }
-
 .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--flow); font-family: var(--mono); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
 .hero-eyebrow::after { content: ''; flex: 0 0 40px; height: 1px; background: rgba(255,255,255,0.1); }
 .hero-title { font-size: clamp(32px, 5vw, 52px); font-weight: 300; letter-spacing: -0.04em; color: #fff; line-height: 1.08; margin-bottom: 14px; }
 .hero-title em { font-style: normal; color: #1ADCFF; }
 .hero-sub { font-size: 15px; color: rgba(255,255,255,0.45); max-width: 520px; line-height: 1.65; }
-
-/* ── PRODUCT TAGS STRIP ── */
 .product-strip { display: flex; gap: 8px; margin-top: 32px; flex-wrap: wrap; }
 .prod-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 100px; border: 1px solid; font-family: var(--mono); }
 .prod-flow    { color: #1ADCFF;  border-color: rgba(26,220,255,0.3);  background: rgba(26,220,255,0.07); }
@@ -73,32 +55,45 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 /* ── MAIN ── */
 .main { max-width: 1080px; margin: 0 auto; padding: 48px 40px 80px; }
 
-/* ── SECTION LABEL ── */
+/* ── SECTION ── */
 .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
 .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
 .section-block { margin-bottom: 40px; }
 
-/* ── CARD GRID ── */
-.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+/* ── GRIDS ── */
+.cards-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .cards-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
-/* ── FILE CARD ── */
-.file-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; overflow: hidden;
-  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
-  text-decoration: none; display: flex; flex-direction: column;
+/* Full-bleed pour la section Identité produits */
+.section-block-fullbleed {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  padding-left: calc(50vw - 50% + 40px);
+  padding-right: calc(50vw - 50% + 40px);
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding-top: 32px;
+  padding-bottom: 32px;
+  margin-bottom: 40px;
 }
+.cards-grid-fullbleed {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── FILE CARD ── */
+.file-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; text-decoration: none; display: flex; flex-direction: column; }
 .file-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
 .file-card:hover .fc-hero { filter: brightness(1.04); }
-
-/* hero thumbnail */
 .fc-hero { height: 120px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .fc-hero-icon { opacity: 0.18; }
 .fc-hero-icon svg { width: 80px; height: 80px; }
 .fc-badge { position: absolute; bottom: 12px; left: 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; border: 1px solid; font-family: var(--mono); }
 
-/* theme variants */
 .fc-flow   .fc-hero { background: #020E14; }
 .fc-flow   .fc-hero-icon svg { stroke: #1ADCFF; }
 .fc-flow   .fc-badge { color: #1ADCFF; border-color: rgba(26,220,255,0.3); background: rgba(26,220,255,0.1); }
@@ -128,7 +123,6 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 .fc-md .fc-hero-icon svg { stroke: var(--muted); }
 .fc-md .fc-badge { color: var(--muted); border-color: var(--border2); background: var(--surface2); }
 
-/* body */
 .fc-body { padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .fc-title { font-size: 14px; font-weight: 500; color: var(--ink); }
 .fc-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
@@ -137,7 +131,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 .fc-arrow { margin-left: auto; font-size: 14px; color: var(--muted); transition: transform 0.15s, color 0.15s; }
 .file-card:hover .fc-arrow { transform: translateX(3px); color: var(--flow); }
 
-/* ── CHANGELOG / INFO ── */
+/* ── INFO STRIP ── */
 .info-strip { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
 .info-item { flex: 1; min-width: 180px; }
 .info-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
@@ -156,6 +150,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.35} }
 .header-inner { animation: fadeUp 0.5s ease both; }
 .main > * { animation: fadeUp 0.5s ease both; }
 .section-block:nth-child(1) { animation-delay: 0.1s; }
@@ -170,9 +165,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
   .cards-grid { grid-template-columns: 1fr 1fr; }
   .cards-grid-2 { grid-template-columns: 1fr; }
   .footer { padding: 24px 20px; }
+  .section-block-fullbleed { padding-left: 20px; padding-right: 20px; }
+  .cards-grid-fullbleed { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 520px) {
   .cards-grid { grid-template-columns: 1fr; }
+  .cards-grid-fullbleed { grid-template-columns: 1fr; }
   .hero-title { font-size: 30px; }
 }
 </style>
@@ -193,16 +191,14 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
       </div>
       <div class="header-tag">Design System &amp; Prototypes · v1.0</div>
     </div>
-
     <div class="hero-eyebrow">Portail de maquettes</div>
     <h1 class="hero-title">Le prototype interactif<br><em>eLogik Flow.</em></h1>
     <p class="hero-sub">Explorez les dashboards, le module IA et le design system de la suite eLogik. Tous les écrans sont interactifs — cliquez pour naviguer.</p>
-
     <div class="product-strip">
       <span class="prod-tag prod-flow">elo (flow)</span>
       <span class="prod-tag prod-ekan">ekan · OMS</span>
       <span class="prod-tag prod-transit">evo · TMS</span>
-      <span class="prod-tag prod-stock">esto · WMS</span>
+      <span class="prod-tag prod-stock">WMS</span>
     </div>
   </div>
 </div>
@@ -221,7 +217,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
       <div class="info-divider"></div>
       <div class="info-item">
         <div class="info-label">Fichiers</div>
-        <div class="info-value">6 livrables</div>
+        <div class="info-value">8 livrables</div>
         <div class="info-sub">HTML + Markdown</div>
       </div>
       <div class="info-divider"></div>
@@ -253,26 +249,39 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
     </div>
   </div>
 
-  <!-- DASHBOARDS -->
+  <!-- ═══ PROTOTYPE INTERACTIF ═══ -->
   <div class="section-block">
     <div class="section-label">Prototype interactif — elo (flow)</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+    <div class="cards-grid">
 
-      <a href="elogik-home-v5.html" class="file-card fc-flow" style="grid-column:span 1">
+      <!-- Tableau de bord -->
+      <a href="elogik-home-v5.html" class="file-card fc-flow">
         <div class="fc-hero" style="height:100px">
-          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          </div>
           <span class="fc-badge">Home</span>
         </div>
         <div class="fc-body">
           <div class="fc-title">Dashboard Home</div>
-          <div class="fc-desc">KPIs, litiges, commandes par transporteur. Light &amp; Dark mode.</div>
+          <div class="fc-desc">KPIs globaux, elo·IA, analyses sauvegardées, suivi des modules en temps réel. Light &amp; Dark mode.</div>
           <div class="fc-meta"><span class="fc-file">elogik-home-v5.html</span><span class="fc-arrow">→</span></div>
         </div>
       </a>
 
-      <a href="business-v2.html" class="file-card fc-flow" style="grid-column:span 1">
+      <!-- Business -->
+      <a href="business-v2.html" class="file-card fc-flow">
         <div class="fc-hero" style="height:100px">
-          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+          </div>
           <span class="fc-badge">Business</span>
         </div>
         <div class="fc-body">
@@ -282,93 +291,150 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
         </div>
       </a>
 
+      <!-- Qualité Logistique -->
       <a href="qualite-logistique-v2.html" class="file-card fc-flow">
         <div class="fc-hero" style="height:100px">
           <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round" stroke="#1ADCFF">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <span class="fc-badge">Qualité Log · v1</span>
+          <span class="fc-badge">Qualité Log · v2</span>
         </div>
         <div class="fc-body">
           <div class="fc-title">Module Qualité Logistique</div>
-          <div class="fc-desc">Suivi production B2C/B2B, réception fournisseurs, scores qualité. elo IA intégré.</div>
+          <div class="fc-desc">Suivi production B2C/B2B, réception fournisseurs, scores qualité. elo·IA intégré.</div>
           <div class="fc-meta"><span class="fc-file">qualite-logistique-v2.html</span><span class="fc-arrow">→</span></div>
         </div>
       </a>
 
-  <!-- IDENTITE PRODUITS -->
-      <div class="section-block section-block-fullbleed">
-        <div class="section-label">Identité produits — Famille eLogik</div>
-        <div class="cards-grid-fullbleed">
+      <!-- Qualité Transport -->
+      <a href="qualite-transport-v1.html" class="file-card fc-flow">
+        <div class="fc-hero" style="height:100px">
+          <div class="fc-hero-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+              <rect x="1" y="3" width="15" height="13" rx="1"/>
+              <path d="M16 8h4l3 5v3h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <span class="fc-badge">Qualité Transport · v1</span>
         </div>
+        <div class="fc-body">
+          <div class="fc-title">Module Qualité Transport</div>
+          <div class="fc-desc">OTD, retards, taux litiges, coût transport % CA, détail opérations par transporteur. elo·IA intégré.</div>
+          <div class="fc-meta"><span class="fc-file">qualite-transport-v1.html</span><span class="fc-arrow">→</span></div>
+        </div>
+      </a>
+
+      <!-- (old) IA & Prédictif -->
+      <a href="elo-flow-ia.html" class="file-card" style="grid-column:span 1;border-color:rgba(108,71,232,0.15)">
+        <div class="fc-hero" style="height:100px;background:linear-gradient(135deg,#0A0614,#150B26)">
+          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#A78BFF" stroke-width="0.8" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <span class="fc-badge" style="color:#A78BFF;border-color:rgba(167,139,255,0.3);background:rgba(167,139,255,0.1)">(old) IA &amp; Prédictif · Bêta</span>
+        </div>
+        <div class="fc-body">
+          <div class="fc-title" style="color:#6C47E8">(old) IA &amp; Prédictif</div>
+          <div class="fc-desc">LLM sur vos données, questions suggérées, analyse SKU dormants, crédits.</div>
+          <div class="fc-meta"><span class="fc-file">elo-flow-ia.html</span><span class="fc-arrow" style="color:#6C47E8">→</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ═══ IDENTITÉ PRODUITS (full-bleed) ═══ -->
+<div class="section-block-fullbleed">
+  <div class="section-label" style="max-width:1400px;margin:0 auto 16px;">Identité produits — Famille eLogik</div>
+  <div class="cards-grid-fullbleed">
+
+    <a href="elogik-product-family.html" class="file-card fc-family-d">
+      <div class="fc-hero">
+        <div class="fc-hero-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+          </svg>
+        </div>
+        <span class="fc-badge">Dark mode</span>
       </div>
-      <a href="elogik-product-family.html" class="file-card fc-family-d">
-        <div class="fc-hero">
-          <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-            </svg>
-          </div>
-          <span class="fc-badge">Dark mode</span>
-        </div>
-        <div class="fc-body">
-          <div class="fc-title">Famille produits — Dark</div>
-          <div class="fc-desc">Les 4 solutions eLogik avec couleurs fluos, logique sémantique et palette cohérente. Version dark avec lueurs ambiantes.</div>
-          <div class="fc-meta">
-            <span class="fc-file">elogik-product-family.html</span>
-            <span class="fc-arrow">→</span>
-          </div>
-        </div>
-      </a>
+      <div class="fc-body">
+        <div class="fc-title">Famille produits — Dark</div>
+        <div class="fc-desc">Les 4 solutions eLogik avec couleurs fluos, logique sémantique et palette cohérente. Version dark avec lueurs ambiantes.</div>
+        <div class="fc-meta"><span class="fc-file">elogik-product-family.html</span><span class="fc-arrow">→</span></div>
+      </div>
+    </a>
 
-      <a href="elogik-product-family-light.html" class="file-card fc-family-l">
-        <div class="fc-hero">
-          <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-            </svg>
-          </div>
-          <span class="fc-badge">Light mode</span>
+    <a href="elogik-product-family-light.html" class="file-card fc-family-l">
+      <div class="fc-hero">
+        <div class="fc-hero-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+          </svg>
         </div>
-        <div class="fc-body">
-          <div class="fc-title">Famille produits — Light</div>
-          <div class="fc-desc">Même contenu, version light. Couleurs assourdies pour le mode jour, tints pastels sur fond blanc.</div>
-          <div class="fc-meta">
-            <span class="fc-file">elogik-product-family-light.html</span>
-            <span class="fc-arrow">→</span>
-          </div>
-        </div>
-      </a>
+        <span class="fc-badge">Light mode</span>
+      </div>
+      <div class="fc-body">
+        <div class="fc-title">Famille produits — Light</div>
+        <div class="fc-desc">Même contenu, version light. Couleurs assourdies pour le mode jour, tints pastels sur fond blanc.</div>
+        <div class="fc-meta"><span class="fc-file">elogik-product-family-light.html</span><span class="fc-arrow">→</span></div>
+      </div>
+    </a>
 
-      <a href="flow-brandkit.html" class="file-card fc-md">
-        <div class="fc-hero">
-          <div class="fc-hero-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-          </div>
-          <span class="fc-badge">Markdown · Notion</span>
+    <a href="flow-brandkit.html" class="file-card fc-md">
+      <div class="fc-hero">
+        <div class="fc-hero-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
         </div>
-        <div class="fc-body">
-          <div class="fc-title">Brand Kit — Notion</div>
-          <div class="fc-desc">Palette, typographie, composants, règles d'usage et nomenclature Figma. Format Markdown importable directement dans Notion.</div>
-          <div class="fc-meta">
-            <span class="fc-file">flow-brandkit.html</span>
-            <span class="fc-arrow">→</span>
-          </div>
-        </div>
-      </a>
+        <span class="fc-badge">Markdown · Notion</span>
+      </div>
+      <div class="fc-body">
+        <div class="fc-title">Brand Kit — Notion</div>
+        <div class="fc-desc">Palette, typographie, composants, règles d'usage et nomenclature Figma. Format Markdown importable directement dans Notion.</div>
+        <div class="fc-meta"><span class="fc-file">flow-brandkit.html</span><span class="fc-arrow">→</span></div>
+      </div>
+    </a>
 
+  </div>
+</div>
+
+<!-- ═══ NOMENCLATURE ═══ -->
+<div class="main" style="padding-top:0;padding-bottom:80px;">
+  <div class="section-block">
+    <div class="section-label">Nomenclature produits</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#0E8FCC;font-family:var(--mono);margin-bottom:6px;">elo (flow)</div>
+        <div style="font-size:13px;font-weight:500;color:var(--ink)">Tableau de bord</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5">Agrégation temps réel de tous les modules · elo·IA transversal</div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#6C47E8;font-family:var(--mono);margin-bottom:6px;">ekan · OMS</div>
+        <div style="font-size:13px;font-weight:500;color:var(--ink)">Order Management</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5">Gestion des commandes, stocks, préparation et expédition</div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C27B00;font-family:var(--mono);margin-bottom:6px;">evo · TMS</div>
+        <div style="font-size:13px;font-weight:500;color:var(--ink)">Transport Management</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5">Pilotage transporteurs, suivi livraisons, gestion des litiges</div>
+      </div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2A9554;font-family:var(--mono);margin-bottom:6px;">WMS</div>
+        <div style="font-size:13px;font-weight:500;color:var(--ink)">Warehouse Management</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5">Gestion d'entrepôt, inventaires, emplacements, réceptions</div>
+      </div>
     </div>
   </div>
 </div>
@@ -383,15 +449,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
     </div>
     <div class="footer-name">elo<strong>gik</strong> Fine Logistic</div>
   </div>
-  <div class="footer-meta">Design System v1.0 · Mars 2026 · Plus Jakarta Sans · DM Mono · Lucide Icons</div>
+  <div class="footer-meta">Design System v1.0 · Avril 2026 · Plus Jakarta Sans · DM Mono · Lucide Icons</div>
 </footer>
-
-<style>
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-@media (max-width: 700px) {
-  div[style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
-}
-</style>
 
 </body>
 </html>
