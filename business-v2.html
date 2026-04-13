@@ -177,14 +177,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
 .re-toggle:hover { background:var(--surface2); }
 .re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
-.kpi-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; }
-/* ── SPLIT BAR (delivery method) ── */
-.split-bar-wrap { margin-top:12px; }
-.split-bar { display:flex; height:4px; border-radius:100px; overflow:hidden; gap:2px; }
-.split-seg { height:100%; border-radius:100px; transition:width 0.6s ease; }
-.split-legend { display:flex; flex-wrap:wrap; gap:6px 10px; margin-top:8px; }
-.split-item { display:flex; align-items:center; gap:4px; font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); }
-.split-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
 .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
 .kpi-card:hover { transform:translateY(-2px); }
 .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-business)); }
@@ -410,71 +403,49 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       </div>
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card" style="--module-color:var(--c-business)">
+      <!-- KPI 1 : Commandes vendues — primary cyan -->
+      <div class="kpi-card" style="--module-color:var(--primary)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
+            <div class="kpi-mod-icon" style="background:var(--primary-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
             <div><div class="kpi-label">Commandes vendues</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">B2C + B2B · sem. en cours</div></div>
           </div>
           <span class="kpi-status-badge ok">↑ objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-business)">2 841<span class="unit"> cmd</span></div>
+        <div class="kpi-big" style="color:var(--primary)">2 841<span class="unit"> cmd</span></div>
         <div class="kpi-secondary">Objectif semaine : 2 600 commandes</div>
         <div class="kpi-sub-row"><span class="delta-up">+9,3%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:92%;background:var(--c-business)"></div></div></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:92%;background:var(--primary)"></div></div></div>
       </div>
-      <!-- ── DELIVERY METHOD B2C ── -->
-      <div class="kpi-card" style="--module-color:var(--c-business)">
+      <!-- KPI 2 : Articles / commande — violet -->
+      <div class="kpi-card" style="--module-color:var(--violet)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-            <div><div class="kpi-label">Mode de livraison (B2C)</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Répartition mode de livraison</div></div>
-          </div>
-          <span class="kpi-status-badge ok">stable</span>
-        </div>
-        <!-- dominant mode as primary value -->
-        <div class="kpi-big" style="color:var(--c-business);font-size:26px">62<span class="unit">%</span></div>
-        <div class="kpi-secondary">Home delivery · mode dominant</div>
-        <div class="split-bar-wrap">
-          <div class="split-bar">
-            <div class="split-seg" style="width:62%;background:var(--c-business)"></div>
-            <div class="split-seg" style="width:24%;background:#7c3aed"></div>
-            <div class="split-seg" style="width:14%;background:#0ea5e9"></div>
-          </div>
-          <div class="split-legend">
-            <div class="split-item"><div class="split-dot" style="background:var(--c-business)"></div>Home 62%</div>
-            <div class="split-item"><div class="split-dot" style="background:#7c3aed"></div>Pickup 24%</div>
-            <div class="split-item"><div class="split-dot" style="background:#0ea5e9"></div>Locker 14%</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="kpi-card" style="--module-color:var(--c-business)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+            <div class="kpi-mod-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
             <div><div class="kpi-label">Articles / commande</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Moyenne hebdomadaire</div></div>
           </div>
           <span class="kpi-status-badge ok">stable</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-business)">2,4<span class="unit"> art.</span></div>
+        <div class="kpi-big" style="color:var(--violet)">2,4<span class="unit"> art.</span></div>
         <div class="kpi-secondary">B2C : 2,1 art. · B2B : 5,3 art.</div>
         <div class="kpi-sub-row"><span class="delta-up">+0,2</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:78%;background:var(--c-business)"></div></div></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:78%;background:var(--violet)"></div></div></div>
       </div>
-      <div class="kpi-card" style="--module-color:var(--c-business)">
+      <!-- KPI 3 : AOV — ambre/stocks -->
+      <div class="kpi-card" style="--module-color:var(--c-stocks)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div class="kpi-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
             <div><div class="kpi-label">Panier moyen (AOV)</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Average Order Value</div></div>
           </div>
           <span class="kpi-status-badge ok">↑ objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-business)">118<span class="unit"> €</span></div>
+        <div class="kpi-big" style="color:var(--c-stocks)">118<span class="unit"> €</span></div>
         <div class="kpi-secondary">Objectif : 105 € · B2C : 94 € · B2B : 312 €</div>
         <div class="kpi-sub-row"><span class="delta-up">+12,4%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:88%;background:var(--c-business)"></div></div></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:88%;background:var(--c-stocks)"></div></div></div>
       </div>
+      <!-- KPI 4 : CA e-commerce — business blue (KPI stratégique principal) -->
       <div class="kpi-card" style="--module-color:var(--c-business)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
