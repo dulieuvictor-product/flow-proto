@@ -177,7 +177,14 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
 .re-toggle:hover { background:var(--surface2); }
 .re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
-.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+.kpi-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; }
+/* ── SPLIT BAR (delivery method) ── */
+.split-bar-wrap { margin-top:12px; }
+.split-bar { display:flex; height:4px; border-radius:100px; overflow:hidden; gap:2px; }
+.split-seg { height:100%; border-radius:100px; transition:width 0.6s ease; }
+.split-legend { display:flex; flex-wrap:wrap; gap:6px 10px; margin-top:8px; }
+.split-item { display:flex; align-items:center; gap:4px; font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); }
+.split-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
 .kpi-card:hover { transform:translateY(-2px); }
 .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-business)); }
@@ -223,6 +230,24 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:0 18px 12px; }
 .cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
 .cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
+
+/* ── Séries optionnelles G1 ── */
+.g1-series-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:6px 18px 4px; border-top:1px solid var(--border); }
+.g1-series-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; padding:5px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); transition:all 0.12s; user-select:none; }
+.g1-series-toggle:hover { border-color:var(--border2); background:var(--surface); }
+.g1-series-toggle input[type="checkbox"] { display:none; }
+.g1-series-check { width:14px; height:14px; border-radius:4px; border:1.5px solid var(--border2); background:var(--surface); flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.g1-series-toggle input:checked ~ .g1-series-check { border-color:var(--violet); background:var(--violet); }
+.g1-series-toggle input:checked ~ .g1-series-check::after { content:''; display:block; width:8px; height:8px; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; }
+.g1-series-swatch { width:20px; height:10px; border-radius:2px; flex-shrink:0; }
+.g1-series-label { font-size:11px; font-weight:500; color:var(--ink); display:flex; flex-direction:column; gap:1px; }
+.g1-series-sub { font-size:9px; font-weight:400; color:var(--muted); font-family:'DM Mono',monospace; }
+.g1-series-optional { opacity:0.75; }
+.g1-series-optional:hover { opacity:1; }
+.g1-series-badge-opt { display:inline-block; font-size:8px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:var(--primary-tint); color:var(--primary); border-radius:4px; padding:1px 5px; margin-left:4px; vertical-align:middle; font-family:'DM Mono',monospace; }
+.g1-perf-badge { font-size:10px; font-weight:700; font-family:'DM Mono',monospace; padding:2px 7px; border-radius:100px; white-space:nowrap; display:none; }
+.g1-perf-badge.pos { display:inline-block; background:var(--success-tint); color:var(--success); }
+.g1-perf-badge.neg { display:inline-block; background:var(--warning-tint); color:var(--warning); }
 .nps-avg-row { display:flex; align-items:center; gap:16px; padding:14px 18px 0; }
 .nps-big { font-size:40px; font-weight:300; letter-spacing:-0.05em; color:var(--nps-color); line-height:1; }
 .nps-context { display:flex; flex-direction:column; gap:3px; }
@@ -247,68 +272,33 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .obj-pct { font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); white-space:nowrap; }
 .rank-num { width:22px; height:22px; border-radius:6px; background:var(--c-business-t); color:var(--c-business); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; flex-shrink:0; }
 .filter-select { font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; font-weight:600; padding:5px 10px; border-radius:8px; border:1px solid var(--border2); background:var(--surface2); color:var(--ink); cursor:pointer; outline:none; }
-.feed-panel { display:flex; flex-direction:column; gap:12px; }
-.feed-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; display:flex; flex-direction:column; }
-.feed-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.feed-panel { display:flex; flex-direction:column; }
+.feed-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; display:flex; flex-direction:column; height:298px; }
+.feed-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
 .feed-title { font-size:13px; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:7px; }
 .feed-title-dot { width:7px; height:7px; border-radius:50%; background:var(--nps-color); animation:pulse 1.6s infinite; }
 .feed-scroll { flex:1; min-height:0; overflow-y:auto; }
 .feed-scroll::-webkit-scrollbar { width:3px; }
 .feed-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
-.nps-item { padding:13px 18px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:6px; }
+.nps-item { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:7px; }
 .nps-item:last-child { border-bottom:none; }
-.nps-item-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.nps-product { font-size:12px; font-weight:600; color:var(--ink); }
-.nps-meta { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
-.nps-stars { display:flex; align-items:center; gap:3px; }
-.star { font-size:12px; } .star.on { color:#F59E0B; } .star.off { color:var(--border2); }
-.nps-score-chip { font-size:11px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nps-item-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.nps-item-id { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
+.nps-item-name { font-size:12px; font-weight:600; color:var(--ink); }
+.nps-item-location { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
+.nps-rating-row { display:flex; align-items:center; gap:8px; }
+.nps-stars { display:flex; align-items:center; gap:2px; }
+.star { font-size:11px; } .star.on { color:#F59E0B; } .star.off { color:var(--border2); }
+.nps-score-chip { font-size:10px; font-weight:700; padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
 .nps-high { background:var(--success-tint); color:var(--success); }
 .nps-mid { background:var(--warning-tint); color:var(--warning); }
 .nps-low { background:var(--danger-tint); color:var(--danger); }
-.nps-verbatim { font-size:12px; color:var(--slate); line-height:1.55; font-style:italic; border-left:2px solid var(--border2); padding-left:10px; }
+.nps-verbatim { font-size:11.5px; color:var(--slate); line-height:1.55; border-left:2px solid var(--border2); padding-left:9px; }
 .nps-verbatim em { font-style:normal; color:var(--nps-color); font-weight:500; }
-.nps-channel { font-size:10px; color:var(--muted); display:flex; align-items:center; gap:5px; }
-.ch-dot { width:5px; height:5px; border-radius:50%; background:var(--muted); }
-.block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
-.aa-col { background:var(--surface); border:1px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--card-shadow); min-height:280px; }
-.aa-head { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.aa-head-left { display:flex; align-items:center; gap:9px; }
-.aa-head-title { font-size:12px; font-weight:600; color:var(--ink); }
-.aa-head-sub { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
-.aa-head-badge { font-size:10px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
-.aa-body { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
-.aa-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:12px; text-align:center; padding:20px; }
-.aa-empty svg { width:28px; height:28px; opacity:0.3; }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; cursor:default; transition:border-color 0.12s; }
-.analysis-item:hover { border-color:var(--primary); }
-.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:4px; }
-.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
-.analysis-archive-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
-.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
-.analysis-archive-btn svg { width:11px; height:11px; }
-.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
-.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
-.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
-.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
-.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; display:flex; align-items:flex-start; gap:10px; transition:border-color 0.12s; }
-.action-item:hover { border-color:var(--violet); }
-.action-check { width:16px; height:16px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
-.action-check:hover { border-color:var(--success); background:var(--success-tint); }
-.action-check.done { border-color:var(--success); background:var(--success); }
-.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
-.action-text { flex:1; min-width:0; }
-.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
-.action-title.done-text { text-decoration:line-through; color:var(--muted); }
-.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
-.action-controls { display:flex; align-items:center; gap:5px; flex-shrink:0; }
-.action-ctrl-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); }
-.action-ctrl-btn:hover { background:var(--surface); border-color:var(--border2); color:var(--ink); }
-.action-ctrl-btn svg { width:10px; height:10px; }
-.aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
-.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
-.aa-add-input:focus { border-color:var(--violet); }
+.nps-products { display:flex; flex-wrap:wrap; gap:4px; }
+.nps-product-chip { font-size:10px; font-weight:500; padding:2px 8px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); color:var(--slate); white-space:nowrap; }
+.nps-item-footer { display:flex; align-items:center; justify-content:flex-end; }
+.nps-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
 .page-header { margin-bottom:4px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .page-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
 .page-title { font-size:20px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); }
@@ -372,6 +362,33 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Business</span>
     </div>
     <div class="topbar-right">
+      <!-- Sélecteur de fréquence — déplacé depuis le bloc IA -->
+      <div class="time-selector" id="globalTimeSel">
+        <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
+        <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Année</button>
+      </div>
+      <div class="date-wrap">
+        <button class="date-picker-btn" onclick="toggleCal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dpLabel">17 – 23 mars</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cal-dropdown" id="calDrop">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+            <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+            <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+          <div class="cal-footer">
+            <button class="cal-action" onclick="toggleCal()">Annuler</button>
+            <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
+          </div>
+        </div>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -383,104 +400,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
   <div class="content">
 
-  <!-- BLOC 1 : elo IA -->
-  <div>
-    <div class="chatbot-card" style="display:flex;flex-direction:column;">
-      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Business</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="live-badge"><div class="live-pulse"></div>Live</div>
-          <div class="time-selector">
-            <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
-            <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Année</button>
-          </div>
-          <div class="date-wrap">
-            <button class="date-picker-btn" onclick="toggleCal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span id="dpLabel">17 – 23 mars</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="cal-dropdown" id="calDrop">
-              <div class="cal-nav">
-                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-              <div class="cal-footer">
-                <button class="cal-action" onclick="toggleCal()">Annuler</button>
-                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-              </div>
-            </div>
-          </div>
-          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);">
-            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-collapsible collapsed" id="chatCollapsible">
-        <div class="chat-area open" id="chatArea">
-          <div class="chat-bubble-wrap user-wrap">
-            <div class="chat-bubble user">Quelles références tirent le CA e-commerce cette semaine ?</div>
-            <div class="chat-bubble-time">09h14</div>
-          </div>
-          <div class="chat-bubble-wrap ai-wrap">
-            <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Business · canal B2C</div>
-              <div class="ai-table-wrap">
-                <table class="ai-table">
-                  <thead><tr><th>Référence</th><th>CA semaine</th><th>Colis</th><th>AOV</th><th>vs S-1</th></tr></thead>
-                  <tbody>
-                    <tr><td class="td-name">Masque Kératine Pro 200ml</td><td class="td-good">38 420 €</td><td class="td-good">312</td><td>123 €</td><td><span class="td-badge badge-good">↑ +34%</span></td></tr>
-                    <tr><td class="td-name">Sérum Argan Intense 50ml</td><td class="td-good">24 110 €</td><td>196</td><td>123 €</td><td><span class="td-badge badge-good">↑ +18%</span></td></tr>
-                    <tr><td class="td-name">Huile Argan Intense 100ml</td><td class="td-warn">14 780 €</td><td class="td-warn">143</td><td>103 €</td><td><span class="td-badge badge-warn">↓ −8%</span></td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="ai-conclusion">
-                <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
-                <div class="ai-conclusion-body"><strong>Masque Kératine Pro concentre 50 % du CA B2C</strong> cette semaine. La montée du Sérum Argan (+18 %) confirme une opportunité de cross-sell. <span style="color:var(--warning);font-weight:500">Huile Argan : 3 semaines consécutives de baisse</span> — envisager un coup de pouce promotionnel.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="re-footer">
-          <div class="re-toggle" onclick="toggleReassurance()">
-            <div class="re-toggle-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confidentialité &amp; sources</div>
-            <svg id="reChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="rePanel" style="display:none;">
-            <div class="reassurance-row">
-              <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--primary-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données du module Business actif</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">OMS elogik · sync toutes les 15 min</div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="qs-header"><div class="qs-label">Questions contextualisées — Business</div></div>
-        <div class="qs-grid">
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-business)"></div><span class="q-chip-txt">Quel est mon AOV moyen cette semaine ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Top 5 références par CA e-commerce</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Références en dessous des objectifs ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--nps-color)"></div><span class="q-chip-txt">Comparer CA B2B vs B2C ce mois</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Coût logistique en % du CA cette semaine ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-business)"></div><span class="q-chip-txt">Évolution du nb d'articles par commande</span></div>
-        </div>
-        <div class="input-row">
-          <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
-          <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BLOC 2 : KPI MACRO -->
+  <!-- BLOC 1 : KPI MACRO — elo·IA remplacé par le dock global (bas de page) -->
   <div>
     <div class="page-header">
       <div>
@@ -503,6 +423,32 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="kpi-sub-row"><span class="delta-up">+9,3%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:92%;background:var(--c-business)"></div></div></div>
       </div>
+      <!-- ── DELIVERY METHOD B2C ── -->
+      <div class="kpi-card" style="--module-color:var(--c-business)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <div><div class="kpi-label">Mode de livraison (B2C)</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Répartition mode de livraison</div></div>
+          </div>
+          <span class="kpi-status-badge ok">stable</span>
+        </div>
+        <!-- dominant mode as primary value -->
+        <div class="kpi-big" style="color:var(--c-business);font-size:26px">62<span class="unit">%</span></div>
+        <div class="kpi-secondary">Home delivery · mode dominant</div>
+        <div class="split-bar-wrap">
+          <div class="split-bar">
+            <div class="split-seg" style="width:62%;background:var(--c-business)"></div>
+            <div class="split-seg" style="width:24%;background:#7c3aed"></div>
+            <div class="split-seg" style="width:14%;background:#0ea5e9"></div>
+          </div>
+          <div class="split-legend">
+            <div class="split-item"><div class="split-dot" style="background:var(--c-business)"></div>Home 62%</div>
+            <div class="split-item"><div class="split-dot" style="background:#7c3aed"></div>Pickup 24%</div>
+            <div class="split-item"><div class="split-dot" style="background:#0ea5e9"></div>Locker 14%</div>
+          </div>
+        </div>
+      </div>
+
       <div class="kpi-card" style="--module-color:var(--c-business)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
@@ -562,44 +508,51 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="chart-metric-tabs" id="g1MetricTabs">
       <button class="cmt-btn active" onclick="switchG1Metric(this,'colis')">Colis expédiés</button>
       <button class="cmt-btn" onclick="switchG1Metric(this,'commandes')">Commandes</button>
+      <button class="cmt-btn" onclick="switchG1Metric(this,'references')">Références expédiées</button>
       <button class="cmt-btn" onclick="switchG1Metric(this,'articles')">Articles / commande</button>
+      <button class="cmt-btn" onclick="switchG1Metric(this,'refs')">Références / commande</button>
     </div>
     <div style="padding:12px 18px 6px"><div style="height:220px;position:relative"><canvas id="chartG1"></canvas></div></div>
-    <div class="chart-legend">
-      <div class="cl-item"><div class="cl-dot" style="background:#2563EB;height:10px;width:10px;border-radius:2px"></div><span id="legG1">Colis expédiés · B2C</span></div>
-      <div class="cl-item"><div class="cl-dot" style="background:#93C5FD;height:10px;width:10px;border-radius:2px;opacity:0.7"></div>Semaine précédente</div>
+    <!-- Séries optionnelles cochables -->
+    <div class="g1-series-row" id="g1SeriesRow">
+      <!-- Y2Y -->
+      <label class="g1-series-toggle" id="tog-y2y">
+        <input type="checkbox" id="chk-y2y" checked onchange="buildG1()">
+        <span class="g1-series-check"></span>
+        <span class="g1-series-swatch" style="background:#F59E0B"></span>
+        <span class="g1-series-label">Y2Y <span class="g1-series-sub">Année précédente</span></span>
+        <span class="g1-perf-badge" id="badge-y2y"></span>
+      </label>
+      <!-- Budget -->
+      <label class="g1-series-toggle" id="tog-budget">
+        <input type="checkbox" id="chk-budget" checked onchange="buildG1()">
+        <span class="g1-series-check"></span>
+        <span class="g1-series-swatch" style="background:#F97316;height:2px;border-radius:0"></span>
+        <span class="g1-series-label">Budget <span class="g1-series-sub">Objectif période</span></span>
+        <span class="g1-perf-badge" id="badge-budget"></span>
+      </label>
+      <!-- Forecast -->
+      <label class="g1-series-toggle g1-series-optional" id="tog-forecast">
+        <input type="checkbox" id="chk-forecast" onchange="buildG1()">
+        <span class="g1-series-check"></span>
+        <span class="g1-series-swatch" style="background:#10B981;height:2px;border-radius:0;border-top:2px dashed #10B981;background:none"></span>
+        <span class="g1-series-label">Forecast <span class="g1-series-badge-opt">Optionnel</span><span class="g1-series-sub">Affiché si disponible</span></span>
+        <span class="g1-perf-badge" id="badge-forecast"></span>
+      </label>
     </div>
+
   </div>
 
 
 
     <!-- FEED -->
 
-  <!-- G2 : CA & coûts — pleine largeur -->
-  <!-- G2 : CA + Coûts -->
-  <div class="card" id="cardG2">
-    <div class="card-head">
-      <div><div class="card-title">CA &amp; coûts logistiques</div><div class="card-sub" id="g2Sub">Chiffre d'affaires et coûts · 12 dernières semaines · B2C</div></div>
-      <span class="card-badge cb-blue" id="g2Badge">B2C</span>
-    </div>
-    <div class="chart-tabs" id="g2Tabs">
-      <button class="ct-btn active" onclick="switchG2Tab(this,'b2c')">B2C</button>
-      <button class="ct-btn" onclick="switchG2Tab(this,'b2b')">B2B</button>
-    </div>
-
-    <div style="padding:12px 18px 6px"><div style="height:220px;position:relative"><canvas id="chartG2"></canvas></div></div>
-    <div class="chart-legend">
-      <div class="cl-item"><div class="cl-dot" style="background:#2563EB;height:10px;width:10px;border-radius:2px"></div><span id="legG2a">CA e-commerce (axe gauche)</span></div>
-      <div class="cl-item"><div class="cl-dot" style="background:#F97316;height:3px"></div>% coût logistique (axe droit)</div>
-      <div class="cl-item"><div class="cl-dot" style="background:#9CA3AF;height:0;border-top:1.5px dashed #9CA3AF"></div>Cible 18%</div>
-    </div>
-  </div>
 
   <!-- Tableau — pleine largeur -->
   <div class="section-label" style="margin-top:4px">Top références</div>
     <div class="card">
       <div class="card-head">
-        <div><div class="card-title">Performance par référence — Soins cheveux</div><div class="card-sub" id="tableSubLabel">Tous canaux — volumes, objectifs et tendance de la semaine</div></div>
+        <div><div class="card-title">Performance par référence</div><div class="card-sub" id="tableSubLabel">Tous canaux — volumes, objectifs et tendance de la semaine</div></div>
         <div style="display:flex;align-items:center;gap:8px">
           <select id="filterTable" onchange="applyTableFilter(this.value)" class="filter-select">
             <option value="all">Tous canaux</option>
@@ -612,13 +565,14 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       </div>
       <div class="pt-wrap">
         <table class="prod-table">
-          <thead><tr><th>#</th><th>Produit</th><th>Canal</th><th>Colis S</th><th>Objectif</th><th>Atteinte</th><th>NPS</th><th>Tendance</th></tr></thead>
+          <thead><tr><th>#</th><th>Produit</th><th>Canal</th><th>Ventes</th><th>Objectif</th><th>Atteinte</th><th>Stock 3 mois</th><th>Réappro.</th><th>Tendance</th></tr></thead>
           <tbody id="prodTableBody"></tbody>
         </table>
       </div>
     </div>
 
   <!-- NPS 2/3 + Feed 1/3 -->
+  <div class="section-label">Avis &amp; NPS</div>
   <div class="nps-feed-layout">
     <div>
       <div class="card" id="cardNPS">
@@ -643,7 +597,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
     </div>
     <div class="feed-panel">
-      <div class="section-label">Dernières notes NPS</div>
       <div class="feed-card">
     <div class="feed-head">
       <div class="feed-title"><div class="feed-title-dot"></div>Feed NPS – temps réel</div>
@@ -654,54 +607,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div>
 
-  <!-- BLOC 4 : ANALYSES & ACTIONS -->
-  <div class="section-label">Analyses &amp; suivi</div>
-  <div class="block-actions">
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Business</div></div>
-        </div>
-        <span class="aa-head-badge" id="analysisCount">3</span>
-      </div>
-      <div class="aa-body" id="analysisList">
-        <div class="analysis-item" id="analysis-card-1">
-          <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--c-business)"></div><div class="analysis-q">Quelles références ont le meilleur ratio CA / coût logistique ?</div><button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
-          <div class="analysis-answer">Masque Kératine Pro : 78 % marge logistique nette — meilleure ref. Huile Argan : 61 % — à surveiller.</div>
-          <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">OMS elogik</span></div>
-        </div>
-        <div class="analysis-item" id="analysis-card-2">
-          <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--nps-color)"></div><div class="analysis-q">Quels verbatims NPS reviennent le plus souvent cette semaine ?</div><button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
-          <div class="analysis-answer">3 thèmes dominants : délai de livraison (38 %), qualité emballage (27 %), manque info tracking (19 %).</div>
-          <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 14h07</span><span class="analysis-src">OMS + NPS feed</span></div>
-        </div>
-        <div class="analysis-item" id="analysis-card-3">
-          <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--success)"></div><div class="analysis-q">Comparer AOV B2B vs B2C sur les 4 dernières semaines</div><button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
-          <div class="analysis-answer">B2B AOV stable à 310–318 €. B2C en hausse de 88 à 94 € grâce à la montée du Sérum Argan.</div>
-          <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 11h45</span><span class="analysis-src">OMS elogik</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · module Business</div></div>
-        </div>
-        <span class="aa-head-badge" id="actionCount">0</span>
-      </div>
-      <div class="aa-body" id="actionList">
-        <div class="aa-empty" id="actionEmpty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
-        </div>
-      </div>
-      <div class="aa-add-row">
-        <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
-      </div>
-    </div>
-  </div>
 
   </div>
 </div>
@@ -721,41 +626,7 @@ function setPeriod(btn) {
   btn.classList.add('active');
 }
 
-// CHAT COLLAPSE
-function toggleChatCollapse() {
-  var coll = document.getElementById('chatCollapsible');
-  var icon = document.getElementById('chatCollapseIcon');
-  var collapsed = coll.classList.toggle('collapsed');
-  icon.style.transform = collapsed ? 'rotate(180deg)' : '';
-}
-function toggleReassurance() {
-  var panel = document.getElementById('rePanel');
-  var chevron = document.getElementById('reChevron');
-  var visible = panel.style.display !== 'none';
-  panel.style.display = visible ? 'none' : 'block';
-  chevron.style.transform = visible ? '' : 'rotate(180deg)';
-}
-function fillChat(chip) {
-  var inp = document.getElementById('chatInputMain');
-  inp.value = chip.querySelector('.q-chip-txt').textContent;
-  toggleSendMain(inp);
-  inp.focus();
-}
-function toggleSendMain(inp) {
-  document.getElementById('sendBtnMain').classList.toggle('ready', inp.value.trim().length > 0);
-}
-function sendChatMain() {
-  var inp = document.getElementById('chatInputMain');
-  if (!inp.value.trim()) return;
-  var area = document.getElementById('chatArea');
-  var wrap = document.createElement('div');
-  wrap.className = 'chat-bubble-wrap user-wrap';
-  wrap.innerHTML = '<div class="chat-bubble user">' + inp.value + '</div><div class="chat-bubble-time">maintenant</div>';
-  area.appendChild(wrap);
-  inp.value = '';
-  document.getElementById('sendBtnMain').classList.remove('ready');
-  area.scrollTop = area.scrollHeight;
-}
+// Fonctions chat inline supprimées — elo·IA migré vers le dock global
 
 // CALENDAR
 var calOpen = false, currentYear = 2025, currentMonth = 2, rangeStart = null, rangeEnd = null;
@@ -792,28 +663,67 @@ var g1Data = {
   b2c: {
     colis:     [1820,1950,2010,2140,1980,2200,2280,2100,2350,2460,2680,2841],
     commandes: [1640,1720,1800,1920,1760,1980,2050,1920,2150,2240,2420,2580],
+    references:[38,41,43,45,42,47,49,44,52,54,58,61],
     articles:  [1.9,2.0,2.0,2.1,2.0,2.1,2.2,2.1,2.2,2.3,2.4,2.4]
   },
   b2b: {
     colis:     [310,280,330,290,350,370,360,340,380,390,420,410],
     commandes: [210,195,220,185,240,255,248,230,265,270,295,285],
+    references:[18,16,19,17,21,22,21,20,23,24,26,25],
     articles:  [4.8,5.0,5.1,5.0,5.2,5.3,5.2,5.1,5.3,5.4,5.4,5.3]
   }
 };
-var g2Data = {
+
+// Y2Y — mêmes semaines, année précédente (légèrement inférieures)
+var g1Y2YData = {
   b2c: {
-    ca:   [196000,210000,218000,230000,213000,241000,248000,226000,252000,268000,289000,310000],
-    cout: [33320,35700,37060,39100,36210,40970,42160,38420,42840,45560,49130,52700]
+    colis:     [1620,1740,1800,1910,1760,1960,2020,1870,2090,2180,2340,2500],
+    commandes: [1460,1530,1610,1720,1570,1770,1830,1710,1910,1990,2160,2290],
+    references:[32,35,37,39,36,40,42,38,44,46,50,53],
+    articles:  [1.7,1.8,1.8,1.9,1.8,1.9,2.0,1.9,2.0,2.1,2.2,2.2]
   },
   b2b: {
-    ca:   [96800,87360,102960,90480,109200,115440,112320,106080,118560,121680,130920,127920],
-    cout: [16456,14851,17503,15382,18564,19625,19094,18034,20155,20686,22257,21747]
+    colis:     [275,250,295,258,312,330,320,303,338,347,374,365],
+    commandes: [187,174,196,165,214,228,221,205,236,241,263,254],
+    references:[15,14,17,15,18,19,18,17,20,21,23,22],
+    articles:  [4.5,4.7,4.8,4.7,4.9,5.0,4.9,4.8,5.0,5.1,5.1,5.0]
+  }
+};
+
+// Budget — objectif défini en début de période
+var g1BudgetData = {
+  b2c: {
+    colis:     [1900,1900,2000,2000,2100,2100,2200,2200,2300,2300,2500,2600],
+    commandes: [1700,1700,1800,1800,1900,1900,2000,2000,2100,2100,2300,2400],
+    references:[40,40,42,42,45,45,48,48,52,52,56,58],
+    articles:  [2.0,2.0,2.0,2.1,2.1,2.1,2.2,2.2,2.2,2.3,2.3,2.4]
+  },
+  b2b: {
+    colis:     [300,300,320,320,340,340,360,360,380,380,400,400],
+    commandes: [205,205,215,215,235,235,250,250,265,265,285,285],
+    references:[17,17,18,18,20,20,21,21,22,22,24,24],
+    articles:  [4.8,4.8,5.0,5.0,5.1,5.1,5.2,5.2,5.3,5.3,5.4,5.4]
+  }
+};
+
+// Forecast — optionnel, disponible seulement si client l'a configuré
+var g1ForecastData = {
+  b2c: {
+    colis:     [null,null,null,null,null,null,null,null,2380,2520,2720,2880],
+    commandes: [null,null,null,null,null,null,null,null,2180,2300,2470,2630],
+    references:[null,null,null,null,null,null,null,null,54,57,61,64],
+    articles:  [null,null,null,null,null,null,null,null,2.3,2.3,2.4,2.5]
+  },
+  b2b: {
+    colis:     [null,null,null,null,null,null,null,null,385,395,425,415],
+    commandes: [null,null,null,null,null,null,null,null,268,273,298,288],
+    references:[null,null,null,null,null,null,null,null,24,25,27,26],
+    articles:  [null,null,null,null,null,null,null,null,5.4,5.5,5.5,5.4]
   }
 };
 var npsData = [64,67,65,68,70,69,72,71,73,72,74,74];
 var g1Channel = 'b2c', g1Metric = 'colis';
-var g2Channel = 'b2c', g2Metric = 'ca';
-var chartG1Inst, chartG2Inst, chartNPSInst;
+var chartG1Inst, chartNPSInst;
 
 function getThemeColors() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -827,102 +737,119 @@ function getThemeColors() {
 function buildG1() {
   var ctx = document.getElementById('chartG1').getContext('2d');
   if (chartG1Inst) chartG1Inst.destroy();
-  var raw = g1Data[g1Channel][g1Metric];
-  var prev = raw.map(function(v, i) { return i === 0 ? v : raw[i - 1]; });
-  var tc = getThemeColors();
-  var isItems = g1Metric === 'articles';
+  var raw    = g1Data[g1Channel][g1Metric];
+  var y2y    = g1Y2YData[g1Channel][g1Metric];
+  var budget = g1BudgetData[g1Channel][g1Metric];
+  var fcast  = g1ForecastData[g1Channel][g1Metric];
+  var tc     = getThemeColors();
+  var isItems = g1Metric === 'articles';  var isDark  = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  // État des checkboxes
+  var showY2Y      = document.getElementById('chk-y2y').checked;
+  var showBudget   = document.getElementById('chk-budget').checked;
+  var showForecast = document.getElementById('chk-forecast').checked;
+
+  // ── Calcul badges de performance (sur dernière valeur réelle) ──
+  var lastIdx = raw.length - 1;
+  var lastVal = raw[lastIdx];
+
+  function setBadge(id, ref, higherIsBetter) {
+    var el = document.getElementById(id);
+    if (!ref || ref[lastIdx] == null) { el.className = 'g1-perf-badge'; el.textContent = ''; return; }
+    var refVal = ref[lastIdx];
+    var delta  = lastVal - refVal;
+    var pct    = Math.round(delta / refVal * 100);
+    var isPos  = higherIsBetter ? delta >= 0 : delta <= 0;
+    var sign   = delta >= 0 ? '+' : '';
+    el.className   = 'g1-perf-badge ' + (isPos ? 'pos' : 'neg');
+    el.textContent = sign + pct + '%';
+  }
+  setBadge('badge-y2y',      showY2Y      ? y2y    : null, true);
+  setBadge('badge-budget',   showBudget   ? budget : null, true);
+  setBadge('badge-forecast', showForecast ? fcast  : null, true);
+
+  // ── Couleurs selon dark/light ──
+  var colY2Y    = isDark ? '#FCD34D' : '#F59E0B';
+  var colBudget = '#F97316';
+  var colFcast  = '#10B981';
+
+  // ── Datasets ──
+  var datasets = [
+    { label: 'Volume', data: raw, backgroundColor: isDark ? 'rgba(96,165,250,0.75)' : 'rgba(37,99,235,0.85)', borderRadius: 4, order: 3 }
+  ];
+
+  if (showY2Y) {
+    datasets.push({
+      label: 'Y2Y',
+      data: y2y,
+      type: 'line',
+      borderColor: colY2Y,
+      backgroundColor: colY2Y + '18',
+      borderWidth: 2,
+      pointRadius: 2,
+      pointHoverRadius: 5,
+      pointBackgroundColor: colY2Y,
+      fill: false,
+      tension: 0.4,
+      order: 1
+    });
+  }
+  if (showBudget) {
+    datasets.push({
+      label: 'Budget',
+      data: budget,
+      type: 'line',
+      borderColor: colBudget,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [6, 3],
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      fill: false,
+      tension: 0,
+      order: 0
+    });
+  }
+  if (showForecast) {
+    datasets.push({
+      label: 'Forecast',
+      data: fcast,
+      type: 'line',
+      borderColor: colFcast,
+      backgroundColor: colFcast + '15',
+      borderWidth: 2,
+      borderDash: [4, 4],
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      pointBackgroundColor: colFcast,
+      fill: true,
+      tension: 0.4,
+      order: 0,
+      spanGaps: false
+    });
+  }
+
   chartG1Inst = new Chart(ctx, {
     type: 'bar',
-    data: {
-      labels: weeks,
-      datasets: [
-        { label: 'Volume', data: raw, backgroundColor: 'rgba(37,99,235,0.85)', borderRadius: 4, order: 2 },
-        { label: 'S-1', data: prev, type: 'line', borderColor: '#93C5FD', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.4, order: 1 }
-      ]
-    },
+    data: { labels: weeks, datasets: datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.raw == null) return null;
+              var v = isItems ? ctx.raw.toFixed(1) : ctx.raw.toLocaleString('fr-FR');
+              return ' ' + ctx.dataset.label + ' : ' + v;
+            }
+          }
+        }
+      },
       scales: {
         x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 10 } } },
         y: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 10 }, callback: function(v) { return isItems ? v.toFixed(1) : v.toLocaleString('fr-FR'); } } }
-      }
-    }
-  });
-}
-
-function buildG2() {
-  var ctx = document.getElementById('chartG2').getContext('2d');
-  if (chartG2Inst) chartG2Inst.destroy();
-  var tc = getThemeColors();
-  var rawCA = g2Data[g2Channel].ca;
-  var rawCout = g2Data[g2Channel].cout;
-  // % coût logistique sur CA
-  var pctCout = rawCA.map(function(v, i) { return Math.round(rawCout[i] / v * 1000) / 10; });
-  chartG2Inst = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: weeks,
-      datasets: [
-        {
-          label: 'CA e-commerce',
-          data: rawCA,
-          backgroundColor: 'rgba(37,99,235,0.80)',
-          borderRadius: 4,
-          order: 2,
-          yAxisID: 'yCA'
-        },
-        {
-          label: 'Part coût logistique',
-          data: pctCout,
-          type: 'line',
-          borderColor: '#F97316',
-          backgroundColor: 'rgba(249,115,22,0.12)',
-          borderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          pointBackgroundColor: '#F97316',
-          fill: true,
-          tension: 0.4,
-          order: 1,
-          yAxisID: 'yPct'
-        },
-        {
-          label: 'Cible 18%',
-          data: weeks.map(function() { return 18; }),
-          type: 'line',
-          borderColor: '#9CA3AF',
-          borderWidth: 1.5,
-          borderDash: [4, 4],
-          pointRadius: 0,
-          fill: false,
-          tension: 0,
-          order: 0,
-          yAxisID: 'yPct'
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 10 } } },
-        yCA: {
-          type: 'linear',
-          position: 'left',
-          grid: { color: tc.grid },
-          ticks: { color: tc.text, font: { size: 10 }, callback: function(v) { return (v / 1000).toFixed(0) + ' k\u20AC'; } }
-        },
-        yPct: {
-          type: 'linear',
-          position: 'right',
-          min: 0,
-          max: 30,
-          grid: { drawOnChartArea: false },
-          ticks: { color: '#F97316', font: { size: 10 }, callback: function(v) { return v + '%'; } }
-        }
       }
     }
   });
@@ -954,7 +881,7 @@ function buildNPS() {
   });
 }
 
-function rebuildAllCharts() { buildG1(); buildG2(); buildNPS(); }
+function rebuildAllCharts() { buildG1(); buildNPS(); }
 
 // CHART TAB SWITCHES
 function switchG1Tab(btn, channel) {
@@ -970,27 +897,21 @@ function switchG1Metric(btn, metric) {
   g1Metric = metric;
   buildG1();
 }
-function switchG2Tab(btn, channel) {
-  document.getElementById('g2Tabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  g2Channel = channel;
-  document.getElementById('g2Badge').textContent = channel.toUpperCase();
-  buildG2();
-}
+
 
 
 // PRODUCT TABLE
 var prodData = [
-  { rank:1, name:'Masque Keratine Pro', ref:'SKU-MKP-200', canal:'B2C', colis:312, obj:280, nps:82, trend:'acc' },
-  { rank:2, name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:196, obj:180, nps:78, trend:'acc' },
-  { rank:3, name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:174, obj:160, nps:74, trend:'stag' },
-  { rank:4, name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:142, obj:130, nps:71, trend:'stag' },
-  { rank:5, name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:143, obj:170, nps:66, trend:'dec' },
-  { rank:6, name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:118, obj:110, nps:79, trend:'acc' },
-  { rank:7, name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:84,  obj:90,  nps:81, trend:'stag' },
-  { rank:8, name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:96,  obj:80,  nps:70, trend:'acc' },
-  { rank:9, name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:72,  obj:90,  nps:63, trend:'dec' },
-  { rank:10, name:'Huile Brillance',     ref:'SKU-HBI-75',  canal:'B2B', colis:65,  obj:60,  nps:76, trend:'new' }
+  { rank:1,  name:'Masque Keratine Pro', ref:'SKU-MKP-200', canal:'B2C', colis:312, obj:280, trend:'acc',  stock3m:2840, reappro:'recu' },
+  { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:196, obj:180, trend:'acc',  stock3m:1540, reappro:'commande' },
+  { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:174, obj:160, trend:'stag', stock3m:3200, reappro:'recu' },
+  { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:142, obj:130, trend:'stag', stock3m:980,  reappro:'non_commande' },
+  { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:143, obj:170, trend:'dec',  stock3m:420,  reappro:'non_commande' },
+  { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:118, obj:110, trend:'acc',  stock3m:1760, reappro:'commande' },
+  { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:84,  obj:90,  trend:'stag', stock3m:640,  reappro:'recu' },
+  { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:96,  obj:80,  trend:'acc',  stock3m:2100, reappro:'commande' },
+  { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:72,  obj:90,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
+  { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:65,  obj:60,  trend:'new',  stock3m:890,  reappro:'recu' }
 ];
 
 function applyTableFilter(f) {
@@ -1002,48 +923,60 @@ function applyTableFilter(f) {
   var tbody = document.getElementById('prodTableBody');
   tbody.innerHTML = '';
   filtered.forEach(function(p) {
-    var pct = Math.min(100, Math.round(p.colis / p.obj * 100));
+    var pct = Math.round(p.colis / p.obj * 100);
+    var barPct = Math.min(pct, 100);
     var fillColor = pct >= 100 ? 'var(--success)' : pct >= 80 ? 'var(--warning)' : 'var(--danger)';
+    var pctLabel = pct >= 100 ? '+' + (pct - 100) + '%' : pct + '%';
     var trendClass = { acc:'tr-acc', stag:'tr-stag', dec:'tr-dec', new:'tr-new' }[p.trend];
     var trendLabel = { acc:'\u2191 Acc.', stag:'\u2192 Stable', dec:'\u2193 Baisse', new:'\u2605 Nouveau' }[p.trend];
     var canalBg = p.canal === 'B2C' ? 'var(--c-business-t)' : 'var(--violet-tint)';
     var canalColor = p.canal === 'B2C' ? 'var(--c-business)' : 'var(--violet)';
-    var npsColor = p.nps >= 75 ? 'var(--success)' : p.nps >= 65 ? 'var(--warning)' : 'var(--danger)';
+    var reapproCfg = {
+      non_commande: { label:'Non commandé', color:'var(--warning)',        bg:'var(--warning-tint)' },
+      commande:     { label:'Commandé',     color:'var(--muted)',          bg:'var(--surface2)' },
+      recu:         { label:'Récept. en cours', color:'var(--success)',    bg:'var(--success-tint)' }
+    };
+    var rc = reapproCfg[p.reappro] || reapproCfg['non_commande'];
     var tr = document.createElement('tr');
     var td1 = document.createElement('td'); td1.innerHTML = '<div class="rank-num">' + p.rank + '</div>'; tr.appendChild(td1);
     var td2 = document.createElement('td'); td2.innerHTML = '<div class="prod-name">' + p.name + '</div><div class="prod-ref">' + p.ref + '</div>'; tr.appendChild(td2);
     var td3 = document.createElement('td'); td3.innerHTML = '<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:' + canalBg + ';color:' + canalColor + '">' + p.canal + '</span>'; tr.appendChild(td3);
-    var td4 = document.createElement('td'); td4.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;'; td4.textContent = p.colis; tr.appendChild(td4);
-    var td5 = document.createElement('td'); td5.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;color:var(--muted);'; td5.textContent = p.obj; tr.appendChild(td5);
-    var td6 = document.createElement('td'); td6.innerHTML = '<div class="obj-bar-wrap"><div class="obj-bar"><div class="obj-fill" style="width:' + pct + '%;background:' + fillColor + '"></div></div><span class="obj-pct">' + pct + '%</span></div>'; tr.appendChild(td6);
-    var td7 = document.createElement('td'); td7.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;font-weight:600;color:' + npsColor + ';'; td7.textContent = p.nps; tr.appendChild(td7);
-    var td8 = document.createElement('td'); td8.innerHTML = '<span class="trend-chip ' + trendClass + '">' + trendLabel + '</span>'; tr.appendChild(td8);
+    var td4 = document.createElement('td'); td4.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;'; td4.textContent = p.colis.toLocaleString('fr-FR'); tr.appendChild(td4);
+    var td5 = document.createElement('td'); td5.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;color:var(--muted);'; td5.textContent = p.obj.toLocaleString('fr-FR'); tr.appendChild(td5);
+    var td6 = document.createElement('td');
+    td6.innerHTML = '<div class="obj-bar-wrap"><div class="obj-bar"><div class="obj-fill" style="width:' + barPct + '%;background:' + fillColor + '"></div></div><span class="obj-pct" style="color:' + fillColor + ';font-weight:600">' + pctLabel + '</span></div>';
+    tr.appendChild(td6);
+    var td7 = document.createElement('td'); td7.style.cssText = 'font-family:DM Mono,monospace;font-size:12px;'; td7.textContent = p.stock3m.toLocaleString('fr-FR'); tr.appendChild(td7);
+    var td8 = document.createElement('td');
+    td8.innerHTML = '<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:100px;background:' + rc.bg + ';color:' + rc.color + ';white-space:nowrap">' + rc.label + '</span>';
+    tr.appendChild(td8);
+    var td9 = document.createElement('td'); td9.innerHTML = '<span class="trend-chip ' + trendClass + '">' + trendLabel + '</span>'; tr.appendChild(td9);
     tbody.appendChild(tr);
   });
 }
 
 // NPS FEED
 var npsItems = [
-  { product:'Masque Keratine Pro', ref:'SKU-MKP-200', stars:5, score:92, verbatim:'Texture incroyable, mes cheveux sont transform\u00e9s apr\u00e8s la premi\u00e8re utilisation.', highlight:'transform\u00e9s', channel:'Amazon', time:'il y a 12 min' },
-  { product:'Serum Argan Intense', ref:'SKU-SAI-050', stars:4, score:78, verbatim:'Bonne absorption, l\u00e9ger parfum agr\u00e9able. Livraison tr\u00e8s rapide, satisfait.', highlight:'Livraison tr\u00e8s rapide', channel:'Site web', time:'il y a 28 min' },
-  { product:'Huile Argan Intense', ref:'SKU-HAI-100', stars:2, score:35, verbatim:'Produit correct mais le colis \u00e9tait abim\u00e9 \u00e0 r\u00e9ception. Emballage insuffisant.', highlight:'colis \u00e9tait abim\u00e9', channel:'Cdiscount', time:'il y a 45 min' },
-  { product:'Shampoing Eclat Pro', ref:'SKU-SEP-250', stars:5, score:88, verbatim:'Je recommande ! Sent bon, mousse bien, cheveux brillants. 5 \u00e9toiles.', highlight:'Sent bon, mousse bien', channel:'Site web', time:'il y a 1h04' },
-  { product:'Baume Lissant Ultra', ref:'SKU-BLU-100', stars:3, score:58, verbatim:'Pas convaincue, effet lissant trop l\u00e9ger pour mes cheveux \u00e9pais.', highlight:'effet lissant trop l\u00e9ger', channel:'Amazon', time:'il y a 1h32' },
-  { product:'Masque Hydra Repair', ref:'SKU-MHR-150', stars:5, score:91, verbatim:'Masque tr\u00e8s nourrissant, parfait pour mes cheveux abim\u00e9s. Relance la brillance en une seule application.', highlight:'Relance la brillance', channel:'Site web', time:'il y a 2h11' },
-  { product:'Kit Soin Pro', ref:'SKU-KSP-SET', stars:4, score:81, verbatim:'Excellent rapport qualit\u00e9-prix pour un kit complet. Livraison soign\u00e9e et rapide.', highlight:'Livraison soign\u00e9e et rapide', channel:'B2B direct', time:'il y a 2h38' },
-  { product:'Spray Thermoprotect', ref:'SKU-STP-150', stars:5, score:87, verbatim:'Indispensable avant le lissage. Aucune br\u00fblure, cheveux parfaitement prot\u00e9g\u00e9s.', highlight:'parfaitement prot\u00e9g\u00e9s', channel:'Amazon', time:'il y a 3h05' },
-  { product:'Masque Keratine Pro', ref:'SKU-MKP-200', stars:1, score:18, verbatim:'D\u00e9\u00e7u. Produit arriv\u00e9 avec le bouchon d\u00e9viss\u00e9, moiti\u00e9 du contenu renvers\u00e9 dans le colis.', highlight:'bouchon d\u00e9viss\u00e9', channel:'Cdiscount', time:'il y a 3h47' },
-  { product:'Conditionnateur Liss', ref:'SKU-CL-200', stars:4, score:76, verbatim:'Bonne tenue, d\u00e9m\u00ealage facilit\u00e9. Un peu lourd sur cheveux fins mais efficace sur pointes.', highlight:'d\u00e9m\u00ealage facilit\u00e9', channel:'Site web', time:'il y a 4h12' },
-  { product:'Serum Argan Intense', ref:'SKU-SAI-050', stars:5, score:94, verbatim:'Mon s\u00e9rum pr\u00e9f\u00e9r\u00e9 depuis 2 ans. Toujours aussi efficace, cheveux soyeux en 5 minutes.', highlight:'cheveux soyeux', channel:'Amazon', time:'il y a 4h55' },
-  { product:'Huile Brillance', ref:'SKU-HBI-75', stars:3, score:54, verbatim:'R\u00e9sultat correct mais l\u2019huile est tr\u00e8s fluide, difficile \u00e0 doser sans en mettre trop.', highlight:'difficile \u00e0 doser', channel:'Site web', time:'il y a 5h20' },
-  { product:'Masque Hydra Repair', ref:'SKU-MHR-150', stars:2, score:40, verbatim:'D\u00e9lai de livraison de 6 jours alors que j\u2019avais command\u00e9 en express. Produit OK mais retard incompr\u00e9hensible.', highlight:'retard incompr\u00e9hensible', channel:'Cdiscount', time:'il y a 5h58' },
-  { product:'Shampoing Eclat Pro', ref:'SKU-SEP-250', stars:4, score:80, verbatim:'Bon shampoing quotidien, cheveux propres et l\u00e9gers. Odeur agr\u00e9able et discr\u00e8te.', highlight:'cheveux propres et l\u00e9gers', channel:'Amazon', time:'il y a 6h14' },
-  { product:'Masque Keratine Pro', ref:'SKU-MKP-200', stars:5, score:96, verbatim:'Je l\u2019offre \u00e0 toutes mes amies ! Cheveux transform\u00e9s en professionnel. Le meilleur masque du march\u00e9.', highlight:'meilleur masque', channel:'Site web', time:'il y a 6h42' },
-  { product:'Baume Lissant Ultra', ref:'SKU-BLU-100', stars:2, score:32, verbatim:'Trop parf\u00fam\u00e9 \u00e0 mon go\u00fbt. Et l\u2019effet lissant dure \u00e0 peine quelques heures. Pas convaincu.', highlight:'Trop parf\u00fam\u00e9', channel:'Amazon', time:'il y a 7h03' },
-  { product:'Kit Soin Pro', ref:'SKU-KSP-SET', stars:5, score:89, verbatim:'Parfait pour mon salon. Mes clients voient la diff\u00e9rence imm\u00e9diatement. Commandons d\u00e9j\u00e0 3 fois.', highlight:'voient la diff\u00e9rence', channel:'B2B direct', time:'il y a 7h30' },
-  { product:'Spray Thermoprotect', ref:'SKU-STP-150', stars:3, score:61, verbatim:'Efficace mais le flacon fuit un peu au niveau du bouchon. \u00c0 corriger pour le prochain achat.', highlight:'flacon fuit', channel:'Site web', time:'il y a 8h05' },
-  { product:'Huile Argan Intense', ref:'SKU-HAI-100', stars:4, score:72, verbatim:'Produit de qualit\u00e9. La formule est riche. Dommage que la contenance soit si petite pour le prix.', highlight:'formule est riche', channel:'Amazon', time:'il y a 8h22' },
-  { product:'Serum Argan Intense', ref:'SKU-SAI-050', stars:1, score:22, verbatim:'Produit re\u00e7u avec une date de p\u00e9remption d\u00e9pass\u00e9e. Inacceptable, contact SAV en attente.', highlight:'date de p\u00e9remption d\u00e9pass\u00e9e', channel:'Cdiscount', time:'il y a 9h14' }
+  { order:'CMD-28471', firstName:'Camille', lastName:'Marchand', location:'Paris, FRA', stars:5, score:92, verbatim:'Texture incroyable, mes cheveux sont transform\u00e9s apr\u00e8s la premi\u00e8re utilisation.', highlight:'transform\u00e9s', products:['Masque Keratine Pro', 'S\u00e9rum Argan Intense'], time:'il y a 12 min' },
+  { order:'CMD-28465', firstName:'Thomas', lastName:'Leroy', location:'Lyon, FRA', stars:4, score:78, verbatim:'Bonne absorption, l\u00e9ger parfum agr\u00e9able. Livraison tr\u00e8s rapide, satisfait.', highlight:'Livraison tr\u00e8s rapide', products:['S\u00e9rum Argan Intense'], time:'il y a 28 min' },
+  { order:'CMD-28453', firstName:'Sophie', lastName:'Durand', location:'Bordeaux, FRA', stars:2, score:35, verbatim:'Produit correct mais le colis \u00e9tait abim\u00e9 \u00e0 r\u00e9ception. Emballage insuffisant.', highlight:'colis \u00e9tait abim\u00e9', products:['Huile Argan Intense'], time:'il y a 45 min' },
+  { order:'CMD-28441', firstName:'Liam', lastName:'Murphy', location:'Dublin, IRL', stars:5, score:88, verbatim:'Je recommande ! Sent bon, mousse bien, cheveux brillants.', highlight:'Sent bon, mousse bien', products:['Shampoing Eclat Pro', 'Baume Lissant Ultra'], time:'il y a 1h04' },
+  { order:'CMD-28438', firstName:'Emma', lastName:'Bernard', location:'Nantes, FRA', stars:3, score:58, verbatim:'Pas convaincue, effet lissant trop l\u00e9ger pour mes cheveux \u00e9pais.', highlight:'effet lissant trop l\u00e9ger', products:['Baume Lissant Ultra'], time:'il y a 1h32' },
+  { order:'CMD-28422', firstName:'Hugo', lastName:'Petit', location:'Toulouse, FRA', stars:5, score:91, verbatim:'Masque tr\u00e8s nourrissant, parfait pour mes cheveux abim\u00e9s. Relance la brillance.', highlight:'Relance la brillance', products:['Masque Hydra Repair'], time:'il y a 2h11' },
+  { order:'CMD-28418', firstName:'Charlotte', lastName:'Fontaine', location:'Bruxelles, BEL', stars:4, score:81, verbatim:'Excellent rapport qualit\u00e9-prix pour un kit complet. Livraison soign\u00e9e et rapide.', highlight:'Livraison soign\u00e9e et rapide', products:['Kit Soin Pro', 'Spray Thermoprotect'], time:'il y a 2h38' },
+  { order:'CMD-28407', firstName:'Noah', lastName:'Wilson', location:'London, GBR', stars:5, score:87, verbatim:'Indispensable avant le lissage. Aucune br\u00fblure, cheveux parfaitement prot\u00e9g\u00e9s.', highlight:'parfaitement prot\u00e9g\u00e9s', products:['Spray Thermoprotect'], time:'il y a 3h05' },
+  { order:'CMD-28394', firstName:'Inès', lastName:'Garnier', location:'Marseille, FRA', stars:1, score:18, verbatim:'D\u00e9\u00e7ue. Produit arriv\u00e9 avec le bouchon d\u00e9viss\u00e9, moiti\u00e9 du contenu renvers\u00e9.', highlight:'bouchon d\u00e9viss\u00e9', products:['Masque Keratine Pro'], time:'il y a 3h47' },
+  { order:'CMD-28381', firstName:'Antoine', lastName:'Simon', location:'Strasbourg, FRA', stars:4, score:76, verbatim:'Bonne tenue, d\u00e9m\u00ealage facilit\u00e9. Un peu lourd sur cheveux fins mais efficace sur pointes.', highlight:'d\u00e9m\u00ealage facilit\u00e9', products:['Conditionnateur Liss', 'Huile Brillance'], time:'il y a 4h12' },
+  { order:'CMD-28376', firstName:'Lucie', lastName:'Moreau', location:'Nice, FRA', stars:5, score:94, verbatim:'Mon s\u00e9rum pr\u00e9f\u00e9r\u00e9 depuis 2 ans. Toujours aussi efficace, cheveux soyeux en 5 minutes.', highlight:'cheveux soyeux', products:['S\u00e9rum Argan Intense'], time:'il y a 4h55' },
+  { order:'CMD-28361', firstName:'Romain', lastName:'Dubois', location:'Lille, FRA', stars:3, score:54, verbatim:'R\u00e9sultat correct mais l\u2019huile est tr\u00e8s fluide, difficile \u00e0 doser sans en mettre trop.', highlight:'difficile \u00e0 doser', products:['Huile Brillance'], time:'il y a 5h20' },
+  { order:'CMD-28349', firstName:'Amelia', lastName:'Clarke', location:'Manchester, GBR', stars:2, score:40, verbatim:'D\u00e9lai de livraison de 6 jours alors que j\u2019avais command\u00e9 en express. Retard incompr\u00e9hensible.', highlight:'retard incompr\u00e9hensible', products:['Masque Hydra Repair'], time:'il y a 5h58' },
+  { order:'CMD-28337', firstName:'Julien', lastName:'Laurent', location:'Rennes, FRA', stars:4, score:80, verbatim:'Bon shampoing quotidien, cheveux propres et l\u00e9gers. Odeur agr\u00e9able et discr\u00e8te.', highlight:'cheveux propres et l\u00e9gers', products:['Shampoing Eclat Pro'], time:'il y a 6h14' },
+  { order:'CMD-28324', firstName:'Manon', lastName:'Rousseau', location:'Montpellier, FRA', stars:5, score:96, verbatim:'Je l\u2019offre \u00e0 toutes mes amies ! Cheveux transform\u00e9s, le meilleur masque du march\u00e9.', highlight:'meilleur masque', products:['Masque Keratine Pro', 'S\u00e9rum Argan Intense', 'Conditionnateur Liss'], time:'il y a 6h42' },
+  { order:'CMD-28312', firstName:'Elias', lastName:'Weber', location:'Genève, CHE', stars:2, score:32, verbatim:'Trop parf\u00fam\u00e9 \u00e0 mon go\u00fbt. Et l\u2019effet lissant dure \u00e0 peine quelques heures.', highlight:'Trop parf\u00fam\u00e9', products:['Baume Lissant Ultra'], time:'il y a 7h03' },
+  { order:'CMD-28298', firstName:'Claire', lastName:'Bonnet', location:'Grenoble, FRA', stars:5, score:89, verbatim:'Parfait pour mon salon. Mes clients voient la diff\u00e9rence imm\u00e9diatement.', highlight:'voient la diff\u00e9rence', products:['Kit Soin Pro', 'Spray Thermoprotect', 'Masque Hydra Repair'], time:'il y a 7h30' },
+  { order:'CMD-28287', firstName:'Marc', lastName:'Girard', location:'Dijon, FRA', stars:3, score:61, verbatim:'Efficace mais le flacon fuit un peu au niveau du bouchon. \u00c0 corriger.', highlight:'flacon fuit', products:['Spray Thermoprotect'], time:'il y a 8h05' },
+  { order:'CMD-28274', firstName:'Sara', lastName:'Navarro', location:'Barcelona, ESP', stars:4, score:72, verbatim:'Produit de qualit\u00e9. La formule est riche. Dommage que la contenance soit si petite.', highlight:'formule est riche', products:['Huile Argan Intense', 'Huile Brillance'], time:'il y a 8h22' },
+  { order:'CMD-28261', firstName:'Kevin', lastName:'André', location:'Caen, FRA', stars:1, score:22, verbatim:'Produit re\u00e7u avec une date de p\u00e9remption d\u00e9pass\u00e9e. Inacceptable, contact SAV en attente.', highlight:'date de p\u00e9remption d\u00e9pass\u00e9e', products:['S\u00e9rum Argan Intense'], time:'il y a 9h14' }
 ];
 
 function buildNPSFeed() {
@@ -1051,90 +984,507 @@ function buildNPSFeed() {
   npsItems.forEach(function(item) {
     var div = document.createElement('div');
     div.className = 'nps-item';
+    // Étoiles
     var stars = '';
     for (var i = 1; i <= 5; i++) stars += '<span class="star ' + (i <= item.stars ? 'on' : 'off') + '">\u2605</span>';
+    // Score chip
     var scoreClass = item.score >= 75 ? 'nps-high' : item.score >= 50 ? 'nps-mid' : 'nps-low';
+    // Verbatim avec highlight
     var verbatim = item.verbatim.replace(item.highlight, '<em>' + item.highlight + '</em>');
+    // Initiale du nom
+    var initial = item.lastName.charAt(0).toUpperCase() + '.';
+    // Vignettes produits
+    var chips = item.products.map(function(p) {
+      return '<span class="nps-product-chip">' + p + '</span>';
+    }).join('');
+
     div.innerHTML =
-      '<div class="nps-item-top"><div class="nps-product">' + item.product + '</div><div class="nps-meta">' + item.ref + '</div></div>' +
-      '<div style="display:flex;align-items:center;gap:8px;"><div class="nps-stars">' + stars + '</div><span class="nps-score-chip ' + scoreClass + '">' + item.score + '</span></div>' +
+      '<div class="nps-item-header">' +
+        '<div>' +
+          '<div class="nps-item-id">' + item.order + '</div>' +
+          '<div class="nps-item-name">' + item.firstName + ' ' + initial + ' <span class="nps-item-location">(' + item.location + ')</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="nps-rating-row"><div class="nps-stars">' + stars + '</div><span class="nps-score-chip ' + scoreClass + '">' + item.score + '/100</span></div>' +
       '<div class="nps-verbatim">' + verbatim + '</div>' +
-      '<div class="nps-channel"><div class="ch-dot"></div>' + item.channel + ' \u00b7 ' + item.time + '</div>';
+      '<div class="nps-products">' + chips + '</div>' +
+      '<div class="nps-item-footer"><span class="nps-time">' + item.time + '</span></div>';
     feed.appendChild(div);
   });
 }
 
 // ANALYSES
-function archiveAnalysis(id) {
-  var card = document.getElementById('analysis-card-' + id);
-  if (card) { card.remove(); document.getElementById('analysisCount').textContent = document.getElementById('analysisList').querySelectorAll('.analysis-item').length; }
-}
-
-// ACTIONS
-var actions = [];
-function addAction() {
-  var inp = document.getElementById('actionInput');
-  var val = inp.value.trim();
-  if (!val) return;
-  actions.push({ id: Date.now(), text: val, done: false });
-  inp.value = '';
-  renderActions();
-}
-function toggleActionDone(id) {
-  var a = actions.find(function(x) { return x.id === id; });
-  if (a) { a.done = !a.done; renderActions(); }
-}
-function archiveAction(id) {
-  actions = actions.filter(function(x) { return x.id !== id; });
-  renderActions();
-}
-function renderActions() {
-  var list = document.getElementById('actionList');
-  var empty = document.getElementById('actionEmpty');
-  document.getElementById('actionCount').textContent = actions.length;
-  if (actions.length === 0) { empty.style.display = 'flex'; return; }
-  empty.style.display = 'none';
-  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
-  actions.forEach(function(a) {
-    var div = document.createElement('div');
-    div.className = 'action-item';
-    var check = document.createElement('div');
-    check.className = 'action-check' + (a.done ? ' done' : '');
-    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg>';
-    check.onclick = (function(aid) { return function() { toggleActionDone(aid); }; })(a.id);
-    var txt = document.createElement('div');
-    txt.className = 'action-text';
-    txt.innerHTML = '<div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div><div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) + '</div>';
-    var ctrl = document.createElement('div');
-    ctrl.className = 'action-controls';
-    var archBtn = document.createElement('button');
-    archBtn.className = 'action-ctrl-btn';
-    archBtn.title = 'Archiver';
-    archBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>';
-    archBtn.onclick = (function(aid) { return function() { archiveAction(aid); }; })(a.id);
-    ctrl.appendChild(archBtn);
-    div.appendChild(check); div.appendChild(txt); div.appendChild(ctrl);
-    list.appendChild(div);
-  });
-}
-
 // INIT
 window.addEventListener('DOMContentLoaded', function() {
   buildG1();
-  buildG2();
   buildNPS();
   buildNPSFeed();
   applyTableFilter('all');
   renderCal();
-  // Sync feed height to NPS card height
-  setTimeout(function() {
+  // Sync hauteur feed-card sur cardNPS après rendu du canvas
+  function syncFeedHeight() {
     var npsCard = document.getElementById('cardNPS');
     var feedCard = document.querySelector('.feed-card');
     if (npsCard && feedCard) {
-      feedCard.style.height = npsCard.offsetHeight + 'px';
+      feedCard.style.height = npsCard.getBoundingClientRect().height + 'px';
     }
-  }, 200);
+  }
+  setTimeout(syncFeedHeight, 300);
+  window.addEventListener('resize', syncFeedHeight);
+  // Dock IA init
+  updateDockHeight();
+  window.addEventListener('resize', updateDockHeight);
 });
+</script>
+
+<!-- ════════════════════════════════════════════
+     IA DOCK — nouveau composant (home-v9 / ia-dock-component v1.0)
+     Positionné hors du .main, fixed en bas de l'écran
+     ════════════════════════════════════════════ -->
+<style>
+/* ── ANCRE DE POSITIONNEMENT ── */
+:root { --dock-left: 220px; }
+@media (max-width: 640px) { :root { --dock-left: 0px; } }
+@keyframes signalIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes signalOut { to{opacity:0;transform:translateY(-6px);max-height:0;overflow:hidden;} }
+
+.ia-dock-anchor { position:fixed; bottom:0; left:var(--dock-left); right:0; z-index:150; pointer-events:none; }
+.ia-dock-inner { width:100%; pointer-events:none; display:flex; flex-direction:column; }
+
+/* Signal zone */
+.ia-signal-zone { pointer-events:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:6px; }
+.signal-ia { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--dock-shadow,0 -4px 32px rgba(0,0,0,0.10)); position:relative; pointer-events:auto; animation:signalIn 0.35s ease both; }
+.signal-ia.dismissing { animation:signalOut 0.28s ease forwards; }
+.signal-ia::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0; }
+.signal-ia[data-severity="danger"]::before  { background:var(--danger); }
+.signal-ia[data-severity="warning"]::before { background:var(--warning); }
+.signal-ia[data-severity="info"]::before    { background:var(--primary); }
+.signal-ia[data-severity="success"]::before { background:var(--success); }
+.signal-ia-head { display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px; gap:10px; }
+.signal-ia-head-left { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
+.signal-ia-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon { background:var(--danger-tint); }
+.signal-ia[data-severity="warning"] .signal-ia-icon { background:var(--warning-tint); }
+.signal-ia[data-severity="info"]    .signal-ia-icon { background:var(--primary-tint); }
+.signal-ia[data-severity="success"] .signal-ia-icon { background:var(--success-tint); }
+.signal-ia-icon svg { width:13px; height:13px; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon svg { stroke:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-icon svg { stroke:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-icon svg { stroke:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-icon svg { stroke:var(--success); }
+.signal-ia-meta { min-width:0; flex:1; }
+.signal-ia-source { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px; }
+.signal-ia[data-severity="danger"]  .signal-ia-source { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source { color:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source { color:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-source { color:var(--success); }
+.signal-ia-source-dot { width:5px; height:5px; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+.signal-ia[data-severity="danger"]  .signal-ia-source-dot { background:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source-dot { background:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source-dot { background:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-source-dot { background:var(--success); }
+.signal-ia-text-inline { font-size:12px; color:var(--ink); line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.signal-ia-text-inline strong { font-weight:600; }
+.signal-ia[data-severity="danger"]  .signal-ia-text-inline strong { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-text-inline strong { color:var(--primary); }
+.signal-ia-head-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.signal-ia-reco { padding:0 14px 12px; }
+.signal-ia-reco-inner { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.15); border-radius:10px; padding:9px 12px; }
+[data-theme="dark"] .signal-ia-reco-inner { border-color:rgba(167,139,255,0.18); }
+.signal-ia-reco-head { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:5px; }
+.signal-ia-reco-head svg { width:10px; height:10px; }
+.signal-ia-reco-body { font-size:11.5px; color:var(--ink); line-height:1.6; }
+.signal-ia-reco-body strong { color:var(--violet); font-weight:600; }
+.signal-ia-btn { font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 12px; border-radius:100px; border:none; cursor:pointer; display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap; }
+.signal-ia-btn svg { width:10px; height:10px; }
+.signal-ia-btn-primary { background:var(--violet); color:white; }
+.signal-ia-btn-primary:hover { background:#5535D0; }
+.signal-ia-btn-save { background:var(--surface2); border:1px solid var(--border2); color:var(--slate); }
+.signal-ia-btn-save:hover { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
+.signal-ia-btn-save.saved { background:var(--success-tint); border-color:rgba(42,149,84,0.2); color:var(--success); cursor:default; }
+.signal-ia-dismiss { width:22px; height:22px; border-radius:6px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0; }
+.signal-ia-dismiss:hover { background:var(--surface2); color:var(--ink); }
+.signal-ia-dismiss svg { width:11px; height:11px; }
+
+/* Dock principal */
+.ia-dock { pointer-events:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:0; box-shadow:0 -4px 32px rgba(0,0,0,0.10); transition:background 0.25s,border-color 0.25s; overflow:hidden; display:flex; flex-direction:column-reverse; }
+[data-theme="dark"] .ia-dock { box-shadow:0 -4px 32px rgba(0,0,0,0.40); }
+.ia-dock-bar { display:flex; align-items:stretch; min-height:52px; border-top:1px solid var(--border); }
+.ia-dock-zone { display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--border); min-width:0; flex-shrink:0; }
+.ia-dock-zone.ia-dock-input-zone { flex:1; flex-shrink:1; min-width:0; order:10; border-right:none; gap:8px; }
+.ia-dock-toggle { order:11; width:44px; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:background 0.12s,transform 0.25s; flex-shrink:0; }
+.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
+.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; }
+.ia-dock.open .ia-dock-toggle svg { transform:rotate(180deg); }
+.ia-dock-zone:first-child { order:0; }
+
+/* Brand */
+.ia-dock-brand { display:flex; align-items:center; gap:9px; }
+.ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ia-dock-av svg { width:14px; height:14px; }
+.ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+
+/* Preview zones */
+.ia-dock-preview { cursor:pointer; align-items:center; padding:0 16px; min-width:120px; transition:background 0.12s; }
+.ia-dock-preview:hover { background:var(--surface2); }
+.ia-dock-preview-head { display:flex; align-items:center; gap:6px; }
+.ia-dock-preview-title { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:600; color:var(--slate); }
+.ia-dock-preview-title svg { width:11px; height:11px; }
+.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+
+/* Input */
+.ia-dock-input-wrap { flex:1; display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 14px; transition:border-color 0.15s,background 0.25s; }
+.ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
+.ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
+.ia-dock-input::placeholder { color:var(--muted); }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s,transform 0.12s; }
+.ia-dock-send.ready { opacity:1; }
+.ia-dock-send:hover.ready { transform:scale(1.08); }
+.ia-dock-send svg { width:11px; height:11px; }
+
+/* Saved pill */
+.ia-saved-pill { display:none; align-items:center; gap:5px; background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:4px 10px; font-size:11px; font-weight:600; color:var(--success); cursor:pointer; white-space:nowrap; flex-shrink:0; }
+.ia-saved-pill svg { width:10px; height:10px; }
+.ia-saved-pill.visible { display:flex; }
+
+/* Body expandable */
+.ia-dock-body { display:none; flex-direction:column; max-height:320px; }
+.ia-dock.open .ia-dock-body { display:flex; }
+.ia-dock-tabs { display:flex; border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-dock-tab-btn { display:flex; align-items:center; gap:6px; padding:9px 18px; font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; color:var(--muted); background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.15s; }
+.ia-dock-tab-btn svg { width:12px; height:12px; }
+.ia-dock-tab-btn:hover { color:var(--ink); background:var(--surface2); }
+.ia-dock-tab-btn.active { color:var(--violet); border-bottom-color:var(--violet); }
+.ia-dock-panel { display:none; flex:1; flex-direction:column; overflow:hidden; min-height:0; }
+.ia-dock-panel.active { display:flex; }
+.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:10px 16px; display:flex; flex-direction:column; gap:8px; }
+.ia-dock-panel-footer { padding:8px 16px 10px; border-top:1px solid var(--border); flex-shrink:0; }
+
+/* Messages */
+.ia-msg-user { align-self:flex-end; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:12px; line-height:1.5; max-width:80%; }
+.ia-msg-ai-wrap { display:flex; flex-direction:column; gap:3px; }
+.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; }
+.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:9px 12px; font-size:12px; line-height:1.6; color:var(--ink); }
+.ia-msg-ai strong { font-weight:600; }
+.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.ia-typing { display:flex; gap:4px; padding:10px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
+.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--muted); animation:pulse 1.2s infinite; }
+.ia-tdot:nth-child(2) { animation-delay:0.2s; }
+.ia-tdot:nth-child(3) { animation-delay:0.4s; }
+
+/* Suggestions */
+.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.ia-sugg { display:inline-flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:5px 12px; font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.ia-sugg:hover { border-color:var(--violet); color:var(--violet); background:var(--violet-tint); }
+.ia-sugg-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* Analyses & actions panneau */
+.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-merged-section-title { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:600; color:var(--slate); }
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 10px; cursor:pointer; transition:border-color 0.12s; }
+.analysis-item:hover { border-color:var(--violet); }
+.analysis-item.highlight { border-color:var(--primary); background:var(--primary-tint); }
+.analysis-item-head { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.analysis-q { font-size:11px; font-weight:500; color:var(--ink); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.analysis-archive-btn { width:16px; height:16px; border-radius:4px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); flex-shrink:0; }
+.analysis-archive-btn svg { width:10px; height:10px; }
+.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
+.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
+.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
+.dock-empty svg { width:24px; height:24px; opacity:0.3; }
+.ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.ia-dock-add-input:focus { border-color:var(--violet); }
+</style>
+
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+    <!-- Zone Signal IA -->
+    <div class="ia-signal-zone" id="iaSignalZone"></div>
+    <!-- Dock principal -->
+    <div class="ia-dock" id="iaDock">
+      <!-- BARRE PRINCIPALE -->
+      <div class="ia-dock-bar">
+        <!-- Zone 1 : Brand -->
+        <div class="ia-dock-zone">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+        <!-- Zone 2 : Analyses -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewAnalyses">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Analyses
+            </div>
+            <span class="ia-count" id="analysisCount">2</span>
+          </div>
+        </div>
+        <!-- Zone 3 : Actions -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewActions">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Actions
+            </div>
+            <span class="ia-count-action" id="actionCount">0</span>
+          </div>
+        </div>
+        <!-- Zone 4 : Champ IA -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput"
+              placeholder="Posez une question sur vos données Business…"
+              oninput="toggleSend(this)"
+              onkeydown="if(event.key==='Enter')sendIA()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+        <!-- Zone 5 : Toggle -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+      </div><!-- /ia-dock-bar -->
+
+      <!-- CORPS -->
+      <div class="ia-dock-body" id="iaDockBody">
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">2</span>
+            <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+            <div class="ia-msg-user">Quelles références tirent le CA e-commerce cette semaine ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · contexte Business · 09h14
+              </div>
+              <div class="ia-msg-ai"><strong>Masque Kératine Pro</strong> concentre 50 % du CA B2C (38 420 €, +34 % vs S-1). Sérum Argan en forte croissance (+18 %). <span style="color:var(--warning);font-weight:500">Huile Argan : 3 semaines consécutives de baisse (−8 %)</span> — opportunité promotionnelle à considérer.</div>
+              <div class="ia-msg-time">09h14</div>
+            </div>
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div class="ia-sugg-label" style="margin-bottom:6px">Suggestions Business</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSend('Top 5 références par CA e-commerce')"><div class="ia-sugg-dot" style="background:var(--c-business)"></div>Top 5 références CA</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comparer CA B2B vs B2C ce mois')"><div class="ia-sugg-dot" style="background:var(--primary)"></div>B2B vs B2C</div>
+              <div class="ia-sugg" onclick="fillAndSend('Coût logistique en % du CA cette semaine')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Coût logistique %CA</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountPanel">2</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--c-business)"></div><div class="analysis-q">CA B2C — top références semaine</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">Masque Kératine Pro : 38 420 € (+34 %) · Sérum Argan : 24 110 € (+18 %)</div>
+                  <div class="analysis-footer"><span class="analysis-time">aujourd'hui · 09h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-2" onclick="loadAnalysisInIA(2)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--warning)"></div><div class="analysis-q">Huile Argan — baisse 3 semaines</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">−8 % vs S-1 · 143 colis · AOV 103 €. Action promo recommandée.</div>
+                  <div class="analysis-footer"><span class="analysis-time">aujourd'hui · 09h16</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountPanel">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="dockActionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addDockAction()" style="width:100%"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /ia-dock-body -->
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
+<script>
+/* ── DOCK IA — Script composant ── */
+function updateDockHeight() {
+  var anchor = document.getElementById('iaDockAnchor');
+  var h = anchor ? anchor.getBoundingClientRect().height : 60;
+  var main = document.querySelector('.main');
+  if (main) main.style.paddingBottom = (h + 8) + 'px';
+}
+function toggleDock() {
+  document.getElementById('iaDock').classList.toggle('open');
+  setTimeout(updateDockHeight, 320);
+}
+function openDock() {
+  document.getElementById('iaDock').classList.add('open');
+  setTimeout(updateDockHeight, 320);
+}
+var currentDockTab = 'chat';
+function switchDockTab(tab) {
+  if (tab === 'actions') tab = 'analyses';
+  currentDockTab = tab;
+  ['chat','analyses'].forEach(function(t) {
+    var btn = document.getElementById('tab-'+t);
+    var panel = document.getElementById('panel-'+t);
+    if (btn) btn.classList.toggle('active', t===tab);
+    if (panel) panel.classList.toggle('active', t===tab);
+  });
+  openDock();
+}
+function toggleSend(inp) {
+  document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length>0);
+}
+var _dockAiResponses = {
+  'aov': "AOV moyen cette semaine : <strong>112 €</strong> (B2C) · 248 € (B2B). B2C en hausse de +4 € vs S-1.",
+  'ca': "<strong>Top 3 :</strong> Masque Kératine Pro 38 420 € · Sérum Argan 24 110 € · Huile Argan 14 780 €.",
+  'b2b': "CA B2B : 284 000 € · CA B2C : 76 900 €. Ratio 78/22 — stable vs mois précédent.",
+  'logistique': "Coût logistique : <strong>6,2 % du CA</strong> cette semaine. Objectif cible : ≤7 %. Dans les normes.",
+  'articles': "Nb moyen d'articles/commande : 2,3 (stable). B2B : 4,1 articles. B2C : 1,6 article.",
+  'objectif': "3 références sous objectif : Huile Argan (−8 %), Pack Duo Argan (−3 %), Baume Lissant (−12 %).",
+};
+function _getDockResponse(q) {
+  var ql = q.toLowerCase();
+  for (var k in _dockAiResponses) { if (ql.indexOf(k)>-1) return _dockAiResponses[k]; }
+  return "Analyse en cours… <strong>Aucune anomalie supplémentaire</strong> sur le module Business pour la période sélectionnée.";
+}
+var _nextDockAnalysisId = 3;
+var _dockActions = [];
+function appendDockMsg(type, text) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var div = document.createElement('div');
+  if (type==='user') {
+    div.className='ia-msg-user'; div.textContent=text;
+  } else {
+    var now=new Date(); var hm=now.getHours()+'h'+String(now.getMinutes()).padStart(2,'0');
+    div.className='ia-msg-ai-wrap';
+    div.innerHTML='<div class="ia-msg-ai-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> elo·IA · Business · '+hm+'</div><div class="ia-msg-ai">'+text+'</div><div class="ia-msg-time">'+hm+'</div>';
+  }
+  scroll.appendChild(div); scroll.scrollTop=scroll.scrollHeight;
+}
+function showDockTyping() {
+  var scroll=document.getElementById('iaConvoScroll');
+  var t=document.createElement('div'); t.className='ia-typing'; t.id='iaDockTyping';
+  t.innerHTML='<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop=scroll.scrollHeight;
+}
+function hideDockTyping() { var t=document.getElementById('iaDockTyping'); if(t) t.remove(); }
+function sendIA() {
+  var inp=document.getElementById('iaDockInput');
+  var val=inp.value.trim(); if(!val) return;
+  inp.value=''; document.getElementById('iaSendBtn').classList.remove('ready');
+  switchDockTab('chat'); appendDockMsg('user',val); showDockTyping();
+  var resp=_getDockResponse(val);
+  setTimeout(function() { hideDockTyping(); appendDockMsg('ai',resp); injectDockAnalysis(val,resp); }, 800+Math.random()*500);
+}
+function askIA(q) { document.getElementById('iaDockInput').value=q; document.getElementById('iaSendBtn').classList.add('ready'); openDock(); setTimeout(sendIA,150); }
+function fillAndSend(q) { document.getElementById('iaDockInput').value=q; document.getElementById('iaSendBtn').classList.add('ready'); sendIA(); }
+function _syncDockCounts() {
+  var list=document.getElementById('analysesList');
+  var n=list?list.querySelectorAll('.analysis-item').length:0;
+  ['analysisCount','analysisCountFull','analysisCountPanel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=n; });
+}
+function injectDockAnalysis(q, answer) {
+  var clean=answer.replace(/<[^>]+>/g,'');
+  var list=document.getElementById('analysesList');
+  var id=_nextDockAnalysisId++;
+  var cols=['var(--c-business)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col=cols[(id-1)%cols.length];
+  var now=new Date(); var hm=now.getHours()+'h'+String(now.getMinutes()).padStart(2,'0');
+  var card=document.createElement('div');
+  card.className='analysis-item'; card.id='analysis-card-'+id;
+  card.onclick=function(){loadAnalysisInIA(id);};
+  card.innerHTML='<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:'+col+'"></div><div class="analysis-q">'+q+'</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,'+id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">'+clean.slice(0,120)+(clean.length>120?'…':'')+'</div><div class="analysis-footer"><span class="analysis-time">aujourd\'hui · '+hm+'</span><span class="analysis-src">elo·IA</span></div>';
+  list.insertBefore(card, list.querySelector('.analysis-item')||null);
+  _syncDockCounts();
+  setTimeout(function(){card.classList.add('highlight');},20);
+  setTimeout(function(){card.classList.remove('highlight');},2000);
+  var pill=document.getElementById('iaSavedPill');
+  if(pill){pill.classList.add('visible');setTimeout(function(){pill.classList.remove('visible');},3500);}
+  switchDockTab('analyses');
+}
+function archiveAnalysis(e, id) {
+  e.stopPropagation();
+  var card=document.getElementById('analysis-card-'+id);
+  if(card){card.remove();_syncDockCounts();}
+}
+function loadAnalysisInIA(id) {
+  var card=document.getElementById('analysis-card-'+id); if(!card) return;
+  document.getElementById('iaDockInput').value='↩ '+card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  switchDockTab('chat'); document.getElementById('iaDockInput').focus();
+}
+function addDockAction() {
+  var inp=document.getElementById('dockActionInput');
+  var val=inp.value.trim(); if(!val) return;
+  inp.value='';
+  _dockActions.push({id:Date.now(),text:val,done:false});
+  _renderDockActions();
+}
+function _renderDockActions() {
+  var list=document.getElementById('actionsList');
+  var empty=document.getElementById('actionsEmpty');
+  ['actionCount','actionCountFull','actionCountPanel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=_dockActions.length; });
+  list.querySelectorAll('.action-item').forEach(function(el){el.remove();});
+  if(_dockActions.length===0){if(empty)empty.style.display='';return;}
+  if(empty)empty.style.display='none';
+  _dockActions.forEach(function(a){
+    var div=document.createElement('div'); div.className='action-item';
+    div.innerHTML='<div class="action-check'+(a.done?' done':'')+'" onclick="_toggleDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="action-text"><div class="action-title'+(a.done?' done-text':'')+'">'+a.text+'</div><div class="action-meta">'+new Date(a.id).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div><button class="action-ctrl-btn" onclick="_removeDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
+    list.appendChild(div);
+  });
+}
+function _toggleDockAction(id){ var a=_dockActions.find(function(x){return x.id===id;}); if(a){a.done=!a.done;_renderDockActions();} }
+function _removeDockAction(id){ _dockActions=_dockActions.filter(function(x){return x.id!==id;}); _renderDockActions(); }
+function dismissSignal(id){ var el=document.getElementById(id); if(!el)return; el.classList.add('dismissing'); setTimeout(function(){el.remove();updateDockHeight();},300); }
 </script>
 </body>
 </html>
