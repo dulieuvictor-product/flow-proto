@@ -207,8 +207,58 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
 .kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
 
+/* ── FUNNEL TRANSPORT ── */
+.funnel-section { display:flex; flex-direction:column; gap:10px; margin-bottom:4px; }
+.funnel-total-bar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--card-shadow); }
+.funnel-total-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.funnel-total-value { font-size:22px; font-weight:300; letter-spacing:-0.04em; color:var(--ink); }
+.funnel-total-value strong { color:var(--c-qtrans); font-weight:600; }
+.funnel-total-sub { font-size:11px; color:var(--muted); }
+.funnel-grid { display:grid; grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr 28px 1fr; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); align-items:stretch; }
+.funnel-step { padding:16px 18px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:6px; position:relative; transition:background 0.12s; }
+.funnel-step:last-child { border-right:none; }
+.funnel-step:hover { background:var(--surface2); }
+.funnel-step::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.funnel-step.step-exp::before  { background:var(--c-qtrans); }
+.funnel-step.step-otd::before  { background:var(--success); }
+.funnel-step.step-late::before { background:var(--warning); }
+.funnel-step.step-rate::before { background:var(--primary); }
+.funnel-step.step-nok::before  { background:var(--danger); }
+.funnel-step-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:2px; }
+.funnel-step-icon svg { width:14px; height:14px; }
+.funnel-step-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.funnel-step-value { font-size:28px; font-weight:300; letter-spacing:-0.04em; line-height:1; }
+.funnel-step-sub { font-size:10px; color:var(--muted); line-height:1.4; }
+.funnel-step-pct { display:inline-flex; align-items:center; padding:1px 7px; border-radius:100px; font-size:9px; font-weight:700; font-family:'DM Mono',monospace; margin-top:2px; width:fit-content; }
+.funnel-arrow { display:flex; align-items:center; justify-content:center; padding:0 4px; }
+.funnel-arrow svg { width:14px; height:14px; color:var(--border2); }
+
 /* ── LAYOUT INCIDENTS ── */
 .incidents-layout { display:grid; grid-template-columns:1fr 2fr; gap:12px; align-items:start; }
+
+/* ── TABLEAU OFFRES DE TRANSPORT ── */
+.carrier-table-wrap { overflow-x:auto; }
+.transp-table { width:100%; border-collapse:collapse; font-size:11px; }
+.transp-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
+.transp-table th:first-child { text-align:left; padding-left:16px; }
+.transp-table td { padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); vertical-align:middle; color:var(--ink); font-family:'DM Mono',monospace; font-size:11px; }
+.transp-table td:first-child { text-align:left; padding-left:16px; font-family:'Plus Jakarta Sans',sans-serif; }
+.transp-table tr:last-child td { border-bottom:none; }
+.transp-table tr.family-row > td { background:var(--surface2); font-weight:600; font-size:11px; color:var(--ink); }
+.transp-table tr.family-row > td:first-child { display:flex; align-items:center; gap:7px; }
+.transp-table tr.offer-row > td { background:var(--surface); color:var(--slate); }
+.transp-table tr.offer-row > td:first-child { padding-left:32px; font-size:11px; color:var(--muted); }
+.transp-table tr.offer-row:hover > td { background:var(--surface2); }
+.transp-table tr.offers-collapse { display:none; }
+.t-family-chevron { width:13px; height:13px; cursor:pointer; color:var(--muted); transition:transform 0.2s; flex-shrink:0; }
+.t-family-chevron.open { transform:rotate(90deg); }
+.ts-badge { display:inline-flex; align-items:center; justify-content:center; min-width:28px; padding:2px 7px; border-radius:100px; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
+.ts-exp  { background:var(--c-qtrans-t); color:var(--c-qtrans); }
+.ts-otd  { background:var(--success-tint); color:var(--success); }
+.ts-late { background:var(--warning-tint); color:var(--warning); }
+.ts-nok  { background:var(--danger-tint); color:var(--danger); }
+.ts-zero { color:var(--border2); font-size:10px; }
+.th-sep  { border-left:1px solid var(--border2); }
 
 /* ── TAUX LITIGES CARD ── */
 .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
@@ -334,21 +384,21 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
   <div class="nav-item" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-    Qualité logistique
+    Logistique
   </div>
-  <div class="nav-item active">
+  <div class="nav-item active" onclick="location.href='qualite-transport-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-    Qualité transport
+    Transports
   </div>
-  <div class="nav-item" style="cursor:default;opacity:0.45;">
+  <div class="nav-item" onclick="location.href='litiges-transport-v1_1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-    Litiges transport <span class="nav-badge">47</span>
+    Litiges <span class="nav-badge">47</span>
   </div>
-  <div class="nav-item" style="cursor:default;opacity:0.45;">
+  <div class="nav-item" onclick="location.href='retours-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
     Retours <span class="nav-badge-warn">24</span>
   </div>
-  <div class="nav-item" style="cursor:default;opacity:0.45;">
+  <div class="nav-item" onclick="location.href='stocks-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
     Stocks <span class="nav-badge">8</span>
   </div>
@@ -470,304 +520,548 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div>
 
-  <!-- ══ BLOC 2 : KPI MACRO ══ -->
+  <!-- ══ BLOC 2 : FUNNEL TRANSPORT ══ -->
   <div>
     <div class="page-header">
       <div>
         <div class="page-eyebrow">Module</div>
-        <div class="page-title"><span>Qualité Transport</span> — Indicateurs clés</div>
+        <div class="page-title"><span>Transports</span> — Indicateurs clés</div>
         <div class="page-sub">Semaine 17–23 mars 2025 · tous transporteurs · tous réseaux</div>
       </div>
     </div>
-    <div class="kpi-grid">
-      <!-- Expédiées -->
-      <div class="kpi-card" style="--module-color:var(--c-qtrans)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-            <div><div class="kpi-label">Expédiées</div><div class="kpi-label-sub">Total semaine</div></div>
+
+    <div class="funnel-section">
+      <!-- Barre totale -->
+      <div class="funnel-total-bar">
+        <div>
+          <div class="funnel-total-label">Volume total — Semaine 17–23 mars 2025</div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:3px;">
+            <div class="funnel-total-value"><strong>12 847</strong> commandes expédiées</div>
+            <div class="funnel-total-sub">tous transporteurs · B2C + B2B</div>
           </div>
-          <span class="kpi-status-badge ok">✓ Objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-qtrans)">12 847<span class="unit"> cmd.</span></div>
-        <div class="kpi-secondary">tous transporteurs · B2C + B2B</div>
-        <div class="kpi-sub-row"><span class="delta-up">↑ +11.7%</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-qtrans);width:100%"></div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="kpi-status-badge warn">⚠ OTD sous objectif</span>
+          <span class="kpi-status-badge bad">↑ +312 retards</span>
+        </div>
       </div>
-      <!-- Livrées -->
-      <div class="kpi-card" style="--module-color:var(--success)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-            <div><div class="kpi-label">Livrées</div><div class="kpi-label-sub">Confirmées réceptionnées</div></div>
+
+      <!-- Grille funnel 5 étapes -->
+      <div class="funnel-grid">
+
+        <!-- Étape 1 : Expédiées -->
+        <div class="funnel-step step-exp">
+          <div class="funnel-step-icon" style="background:var(--c-qtrans-t)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
-          <span class="kpi-status-badge ok">✓ Objectif</span>
+          <div class="funnel-step-label">Expédiées</div>
+          <div class="funnel-step-value" style="color:var(--c-qtrans)">12 847</div>
+          <div class="funnel-step-sub">commandes expédiées<br>cette semaine</div>
+          <span class="funnel-step-pct" style="background:var(--c-qtrans-t);color:var(--c-qtrans)">100%</span>
         </div>
-        <div class="kpi-big" style="color:var(--success)">11 204<span class="unit"> cmd.</span></div>
-        <div class="kpi-secondary">87.2% du volume expédié · 1 643 en transit</div>
-        <div class="kpi-sub-row"><span class="delta-up">↑ +9.4%</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--success);width:87.2%"></div></div></div>
-      </div>
-      <!-- OTD -->
-      <div class="kpi-card" style="--module-color:var(--warning)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="kpi-label">OTD</div><div class="kpi-label-sub">On-Time Delivery</div></div>
+
+        <!-- Flèche -->
+        <div class="funnel-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <!-- Étape 2 : Livrées à l'heure -->
+        <div class="funnel-step step-otd">
+          <div class="funnel-step-icon" style="background:var(--success-tint)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
           </div>
-          <span class="kpi-status-badge warn">⚠ Sous objectif</span>
+          <div class="funnel-step-label">Livrées à l'heure</div>
+          <div class="funnel-step-value" style="color:var(--success)">9 445</div>
+          <div class="funnel-step-sub">dans les délais<br>ETA respecté</div>
+          <span class="funnel-step-pct" style="background:var(--success-tint);color:var(--success)">73,5%</span>
         </div>
-        <div class="kpi-big" style="color:var(--warning)">84.3<span class="unit">%</span></div>
-        <div class="kpi-secondary">objectif 92% · écart −7.7 pts</div>
-        <div class="kpi-sub-row"><span class="delta-dn">↓ −2.1 pts</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:84.3%"></div></div></div>
-      </div>
-      <!-- Retards -->
-      <div class="kpi-card" style="--module-color:var(--danger)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-            <div><div class="kpi-label">Retards livraison</div><div class="kpi-label-sub">Dépassement ETA</div></div>
+
+        <!-- Flèche -->
+        <div class="funnel-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <!-- Étape 3 : Livrées en retard -->
+        <div class="funnel-step step-late">
+          <div class="funnel-step-icon" style="background:var(--warning-tint)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
-          <span class="kpi-status-badge bad">⚠ Action requise</span>
+          <div class="funnel-step-label">Livrées en retard</div>
+          <div class="funnel-step-value" style="color:var(--warning)">1 762</div>
+          <div class="funnel-step-sub">ETA dépassé<br>réception confirmée</div>
+          <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">13,7%</span>
         </div>
-        <div class="kpi-big" style="color:var(--danger)">1 762<span class="unit"> cmd.</span></div>
-        <div class="kpi-secondary">15.7% du volume · GLS : 58% des retards</div>
-        <div class="kpi-sub-row"><span class="delta-dn">↑ +312</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:15.7%"></div></div></div>
+
+        <!-- Flèche -->
+        <div class="funnel-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <!-- Étape 4 : Non livrées en retard -->
+        <div class="funnel-step step-nok">
+          <div class="funnel-step-icon" style="background:var(--danger-tint)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="funnel-step-label">Non livrées · en retard</div>
+          <div class="funnel-step-value" style="color:var(--danger)">387</div>
+          <div class="funnel-step-sub">en transit<br>ETA dépassé</div>
+          <span class="funnel-step-pct" style="background:var(--danger-tint);color:var(--danger)">3,0%</span>
+        </div>
+
+        <!-- Flèche -->
+        <div class="funnel-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <!-- Étape 5 : Taux OTD -->
+        <div class="funnel-step step-rate">
+          <div class="funnel-step-icon" style="background:var(--warning-tint)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="funnel-step-label">Taux OTD</div>
+          <div class="funnel-step-value" style="color:var(--warning)">84,3<span style="font-size:16px;font-weight:400">%</span></div>
+          <div class="funnel-step-sub">objectif 92%<br>écart −7,7 pts</div>
+          <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">⚠ Sous objectif</span>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ══ BLOC 3 : INCIDENTS & QUALITÉ ══ -->
-  <div>
-    <div class="section-label">
-      <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qtrans-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
-      Incidents &amp; qualité
-    </div>
-    <div class="incidents-layout">
 
-      <!-- 1/3 : taux litiges -->
-      <div class="card">
-        <div class="card-head">
-          <div><div class="card-title">Taux de litiges</div><div class="card-sub">Semaine en cours · tous réseaux</div></div>
-          <span class="card-badge cb-bad">⚠ Dépassé</span>
-        </div>
-        <div class="litige-gauge-wrap">
-          <div style="text-align:center;">
-            <div class="litige-big" style="color:var(--danger)">3.7<span class="unit">%</span></div>
-            <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:4px;">OBJECTIF ≤ 1.5%</div>
-          </div>
-          <div class="litige-bar-wrap">
-            <div class="litige-bar"><div class="litige-bar-fill" style="width:73%;background:var(--danger)"></div></div>
-            <div class="litige-seuil">
-              <span class="litige-seuil-label">0%</span>
-              <span class="litige-seuil-label" style="color:var(--danger)">Seuil 1.5%</span>
-              <span class="litige-seuil-label">5%</span>
-            </div>
-          </div>
-          <div class="litige-sub">47 litiges ouverts sur 12 847 expéditions<br>+12 cette semaine · 8 clôturés</div>
-        </div>
-        <div class="litige-by-trans">
-          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">Répartition par transporteur</div>
-          <div class="litige-row">
-            <div class="litige-row-name">GLS</div>
-            <div class="litige-row-bar"><div class="litige-row-fill" style="width:49%;background:var(--danger)"></div></div>
-            <div class="litige-row-val" style="color:var(--danger)">23</div>
-          </div>
-          <div class="litige-row">
-            <div class="litige-row-name">Chronopost</div>
-            <div class="litige-row-bar"><div class="litige-row-fill" style="width:30%;background:var(--warning)"></div></div>
-            <div class="litige-row-val" style="color:var(--warning)">14</div>
-          </div>
-          <div class="litige-row">
-            <div class="litige-row-name">Colissimo</div>
-            <div class="litige-row-bar"><div class="litige-row-fill" style="width:15%;background:var(--warning)"></div></div>
-            <div class="litige-row-val" style="color:var(--warning)">7</div>
-          </div>
-          <div class="litige-row">
-            <div class="litige-row-name">DHL Express</div>
-            <div class="litige-row-bar"><div class="litige-row-fill" style="width:6%;background:var(--success)"></div></div>
-            <div class="litige-row-val" style="color:var(--success)">3</div>
-          </div>
-          <div class="litige-row">
-            <div class="litige-row-name">Colis Privé</div>
-            <div class="litige-row-bar"><div class="litige-row-fill" style="width:0%;background:var(--success)"></div></div>
-            <div class="litige-row-val" style="color:var(--success)">0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2/3 : coût transport -->
-      <div class="card">
-        <div class="card-head">
-          <div><div class="card-title">Évolution du coût transport</div><div class="card-sub">% du CA · 12 dernières semaines</div></div>
-          <span class="card-badge cb-warn">⚠ 18.2% ce mois</span>
-        </div>
-        <div class="chart-tabs" id="coutChartTabs">
-          <button class="ct-btn active" onclick="switchCoutChart(this,'pct')">% du CA</button>
-          <button class="ct-btn" onclick="switchCoutChart(this,'offre')">Par offre transport</button>
-        </div>
-        <div class="chart-legend" id="coutLegend">
-          <div class="cl-item"><div class="cl-dot" style="background:var(--c-qtrans)"></div>Coût transport % CA</div>
-          <div class="cl-item"><div class="cl-dot" style="background:var(--border2);border-top:2px dashed #9CA3AF"></div>Cible 15%</div>
-        </div>
-        <div style="padding:4px 16px 14px;position:relative;height:200px;"><canvas id="chartCout"></canvas></div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ══ BLOC 4 : OPÉRATIONS — TABLEAU TRANSPORTEURS ══ -->
+  <!-- ══ BLOC 4 : TABLEAU OFFRES DE TRANSPORT ══ -->
   <div>
     <div class="section-label">
       <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qtrans-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/></svg></div>
-      Opérations — Détail par transporteur
+      Performance livraison par offre de transport
     </div>
     <div class="card">
       <div class="card-head">
-        <div><div class="card-title">Performance opérationnelle par transporteur</div><div class="card-sub">Semaine 17–23 mars 2025 · tous réseaux · tous canaux</div></div>
-        <span class="card-badge cb-qtrans">5 transporteurs actifs</span>
+        <div>
+          <div class="card-title">Performance livraison par offre de transport</div>
+          <div class="card-sub">Semaine 17–23 mars 2025 · tous canaux</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="card-badge cb-qtrans">5 transporteurs</span>
+          <a href="litiges-transport-v1_1.html" style="font-size:10px;font-weight:600;font-family:'DM Mono',monospace;color:var(--c-savt);background:var(--c-savt-t);padding:3px 10px;border-radius:100px;text-decoration:none;border:1px solid rgba(99,102,241,0.2);white-space:nowrap;">→ Voir les litiges</a>
+        </div>
       </div>
-      <div class="ops-table-wrap">
-        <table class="ops-table">
+      <div class="carrier-table-wrap">
+        <table class="transp-table">
           <thead>
             <tr>
-              <th rowspan="2" style="vertical-align:bottom;min-width:130px;">Transporteur</th>
-              <th colspan="3" class="th-group center" style="border-bottom:1px solid var(--border2);">Lead Time expédition</th>
-              <th rowspan="2" class="th-group center" style="vertical-align:bottom;">En transit</th>
-              <th colspan="2" class="th-group center" style="border-bottom:1px solid var(--border2);">Livraisons</th>
-              <th rowspan="2" class="th-group center" style="vertical-align:bottom;">OTD<br><span style="font-size:8px;font-weight:400;">%</span></th>
-              <th rowspan="2" class="th-group center" style="vertical-align:bottom;">Non livrées<br><span style="font-size:8px;font-weight:400;">retard</span></th>
-              <th colspan="3" class="th-group center" style="border-bottom:1px solid var(--border2);">Litiges</th>
-            </tr>
-            <tr>
-              <th class="th-group center">J</th>
-              <th class="center">J+1</th>
-              <th class="center">J+2</th>
-              <th class="th-group center">On time</th>
-              <th class="center">Retard</th>
-              <th class="th-group center">Total</th>
-              <th class="center">En cours</th>
-              <th class="center">Taux</th>
+              <th style="text-align:left;min-width:200px;">Transporteur / Offre</th>
+              <th>Expédiées</th>
+              <th>En cours<br><span style="font-weight:400;font-size:8px;">à l'heure</span></th>
+              <th>En cours<br><span style="font-weight:400;font-size:8px;">en retard</span></th>
+              <th class="th-sep">Livrées J</th>
+              <th>J+1</th>
+              <th>J+2</th>
+              <th>Retard<br><span style="font-weight:400;font-size:8px;">&gt; 3J</span></th>
+              <th class="th-sep">OTD</th>
+              <th class="th-sep">Litiges</th>
             </tr>
           </thead>
           <tbody>
+
             <!-- GLS -->
-            <tr>
+            <tr class="family-row">
               <td>
-                <div class="trans-name">GLS</div>
-                <div class="trans-sub">4 820 expéditions · 37.5%</div>
+                <svg class="t-family-chevron open" id="chev-gls" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('gls',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>GLS</span>
               </td>
-              <td class="center th-group"><span class="num-bad">12%</span></td>
-              <td class="center"><span class="num-warn">41%</span></td>
-              <td class="center"><span class="num-mono">47%</span></td>
-              <td class="center th-group"><span class="num-mono">1 402</span></td>
-              <td class="center th-group"><span class="num-warn">3 418</span></td>
-              <td class="center"><span class="num-bad">1 023</span></td>
-              <td class="center th-group"><span class="num-bad">71.0%</span></td>
-              <td class="center"><span class="num-bad">379</span></td>
-              <td class="center th-group"><span class="num-bad">23</span></td>
-              <td class="center"><span class="num-bad">15</span></td>
-              <td class="center"><span class="badge-pill badge-bad">4.8%</span></td>
+              <td><span class="ts-exp">4 820</span></td>
+              <td><span class="ts-otd">1 023</span></td>
+              <td><span class="ts-nok">379</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td><span class="ts-late">41%</span></td>
+              <td><span class="ts-badge" style="background:var(--surface2);color:var(--slate)">47%</span></td>
+              <td><span class="ts-nok">312</span></td>
+              <td class="th-sep"><span class="ts-nok">71,0%</span></td>
+              <td class="th-sep"><span class="ts-nok">23</span></td>
             </tr>
+            <tr class="offer-row" id="gls">
+              <td>GLS Business</td>
+              <td>2 940</td>
+              <td><span class="ts-otd">620</span></td>
+              <td><span class="ts-nok">248</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>38%</td>
+              <td>50%</td>
+              <td><span class="ts-nok">192</span></td>
+              <td class="th-sep"><span class="ts-nok">68,4%</span></td>
+              <td class="th-sep"><span class="ts-nok">14</span></td>
+            </tr>
+            <tr class="offer-row" id="gls">
+              <td>GLS Express</td>
+              <td>1 880</td>
+              <td><span class="ts-otd">403</span></td>
+              <td><span class="ts-late">131</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>46%</td>
+              <td>42%</td>
+              <td><span class="ts-nok">120</span></td>
+              <td class="th-sep"><span class="ts-late">75,4%</span></td>
+              <td class="th-sep"><span class="ts-late">9</span></td>
+            </tr>
+
             <!-- Chronopost -->
-            <tr>
+            <tr class="family-row">
               <td>
-                <div class="trans-name">Chronopost</div>
-                <div class="trans-sub">2 960 expéditions · 23.0%</div>
+                <svg class="t-family-chevron open" id="chev-chrono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Chronopost</span>
               </td>
-              <td class="center th-group"><span class="num-good">68%</span></td>
-              <td class="center"><span class="num-mono">24%</span></td>
-              <td class="center"><span class="num-mono">8%</span></td>
-              <td class="center th-group"><span class="num-mono">622</span></td>
-              <td class="center th-group"><span class="num-mono">2 141</span></td>
-              <td class="center"><span class="num-warn">197</span></td>
-              <td class="center th-group"><span class="num-warn">91.6%</span></td>
-              <td class="center"><span class="num-warn">98</span></td>
-              <td class="center th-group"><span class="num-warn">14</span></td>
-              <td class="center"><span class="num-warn">8</span></td>
-              <td class="center"><span class="badge-pill badge-warn">2.1%</span></td>
+              <td><span class="ts-exp">2 960</span></td>
+              <td><span class="ts-otd">524</span></td>
+              <td><span class="ts-late">98</span></td>
+              <td class="th-sep"><span class="ts-otd">68%</span></td>
+              <td>24%</td>
+              <td><span class="ts-badge" style="background:var(--surface2);color:var(--slate)">8%</span></td>
+              <td><span class="ts-late">58</span></td>
+              <td class="th-sep"><span class="ts-late">91,6%</span></td>
+              <td class="th-sep"><span class="ts-late">14</span></td>
             </tr>
+            <tr class="offer-row" id="chrono">
+              <td>Chronopost Express J+1</td>
+              <td>1 920</td>
+              <td><span class="ts-otd">348</span></td>
+              <td><span class="ts-late">64</span></td>
+              <td class="th-sep"><span class="ts-otd">70%</span></td>
+              <td>22%</td>
+              <td>8%</td>
+              <td><span class="ts-late">38</span></td>
+              <td class="th-sep"><span class="ts-late">91,8%</span></td>
+              <td class="th-sep"><span class="ts-late">9</span></td>
+            </tr>
+            <tr class="offer-row" id="chrono">
+              <td>Chronopost 13h</td>
+              <td>1 040</td>
+              <td><span class="ts-otd">176</span></td>
+              <td><span class="ts-late">34</span></td>
+              <td class="th-sep"><span class="ts-otd">64%</span></td>
+              <td>28%</td>
+              <td>8%</td>
+              <td><span class="ts-late">20</span></td>
+              <td class="th-sep"><span class="ts-late">91,3%</span></td>
+              <td class="th-sep"><span class="ts-late">5</span></td>
+            </tr>
+
             <!-- Colissimo -->
-            <tr>
+            <tr class="family-row">
               <td>
-                <div class="trans-name">Colissimo</div>
-                <div class="trans-sub">3 214 expéditions · 25.0%</div>
+                <svg class="t-family-chevron open" id="chev-colissimo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('colissimo',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>Colissimo</span>
               </td>
-              <td class="center th-group"><span class="num-mono">34%</span></td>
-              <td class="center"><span class="num-good">52%</span></td>
-              <td class="center"><span class="num-mono">14%</span></td>
-              <td class="center th-group"><span class="num-mono">890</span></td>
-              <td class="center th-group"><span class="num-good">2 147</span></td>
-              <td class="center"><span class="num-warn">177</span></td>
-              <td class="center th-group"><span class="num-mono">92.4%</span></td>
-              <td class="center"><span class="num-warn">107</span></td>
-              <td class="center th-group"><span class="num-warn">7</span></td>
-              <td class="center"><span class="num-warn">4</span></td>
-              <td class="center"><span class="badge-pill badge-warn">1.4%</span></td>
+              <td><span class="ts-exp">3 214</span></td>
+              <td><span class="ts-otd">783</span></td>
+              <td><span class="ts-late">107</span></td>
+              <td class="th-sep"><span class="ts-late">34%</span></td>
+              <td><span class="ts-otd">52%</span></td>
+              <td><span class="ts-badge" style="background:var(--surface2);color:var(--slate)">14%</span></td>
+              <td><span class="ts-late">94</span></td>
+              <td class="th-sep"><span class="ts-badge" style="background:var(--surface2);color:var(--ink);font-weight:700;">92,4%</span></td>
+              <td class="th-sep"><span class="ts-late">7</span></td>
             </tr>
+            <tr class="offer-row" id="colissimo">
+              <td>Colissimo Domicile J+1</td>
+              <td>2 140</td>
+              <td><span class="ts-otd">524</span></td>
+              <td><span class="ts-late">70</span></td>
+              <td class="th-sep">32%</td>
+              <td>54%</td>
+              <td>14%</td>
+              <td><span class="ts-late">62</span></td>
+              <td class="th-sep">92,6%</td>
+              <td class="th-sep"><span class="ts-late">5</span></td>
+            </tr>
+            <tr class="offer-row" id="colissimo">
+              <td>Colissimo Expert</td>
+              <td>1 074</td>
+              <td><span class="ts-otd">259</span></td>
+              <td><span class="ts-late">37</span></td>
+              <td class="th-sep">38%</td>
+              <td>48%</td>
+              <td>14%</td>
+              <td><span class="ts-late">32</span></td>
+              <td class="th-sep">92,1%</td>
+              <td class="th-sep"><span class="ts-late">2</span></td>
+            </tr>
+
             <!-- DHL Express -->
-            <tr>
+            <tr class="family-row">
               <td>
-                <div class="trans-name">DHL Express</div>
-                <div class="trans-sub">1 284 expéditions · 10.0%</div>
+                <svg class="t-family-chevron open" id="chev-dhl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('dhl',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>DHL Express</span>
               </td>
-              <td class="center th-group"><span class="num-good">81%</span></td>
-              <td class="center"><span class="num-good">17%</span></td>
-              <td class="center"><span class="num-mono">2%</span></td>
-              <td class="center th-group"><span class="num-mono">129</span></td>
-              <td class="center th-group"><span class="num-good">1 244</span></td>
-              <td class="center"><span class="num-good">37</span></td>
-              <td class="center th-group"><span class="num-good">97.1%</span></td>
-              <td class="center"><span class="num-good">19</span></td>
-              <td class="center th-group"><span class="num-good">3</span></td>
-              <td class="center"><span class="num-good">2</span></td>
-              <td class="center"><span class="badge-pill badge-ok">0.5%</span></td>
+              <td><span class="ts-exp">1 284</span></td>
+              <td><span class="ts-otd">110</span></td>
+              <td><span class="ts-otd">19</span></td>
+              <td class="th-sep"><span class="ts-otd">81%</span></td>
+              <td><span class="ts-otd">17%</span></td>
+              <td><span class="ts-badge" style="background:var(--surface2);color:var(--slate)">2%</span></td>
+              <td><span class="ts-otd">12</span></td>
+              <td class="th-sep"><span class="ts-otd">97,1%</span></td>
+              <td class="th-sep"><span class="ts-otd">3</span></td>
             </tr>
+            <tr class="offer-row" id="dhl">
+              <td>DHL Express Worldwide</td>
+              <td>820</td>
+              <td><span class="ts-otd">70</span></td>
+              <td>12</td>
+              <td class="th-sep">79%</td>
+              <td>19%</td>
+              <td>2%</td>
+              <td>8</td>
+              <td class="th-sep">97,0%</td>
+              <td class="th-sep">2</td>
+            </tr>
+            <tr class="offer-row" id="dhl">
+              <td>DHL Express 12h</td>
+              <td>464</td>
+              <td><span class="ts-otd">40</span></td>
+              <td>7</td>
+              <td class="th-sep">85%</td>
+              <td>13%</td>
+              <td>2%</td>
+              <td>4</td>
+              <td class="th-sep">97,2%</td>
+              <td class="th-sep">1</td>
+            </tr>
+
             <!-- Colis Privé -->
-            <tr>
+            <tr class="family-row">
               <td>
-                <div class="trans-name" style="color:var(--primary)">Colis Privé <span style="font-size:9px;font-family:'DM Mono',monospace;background:var(--primary-tint);color:var(--primary);padding:1px 6px;border-radius:100px;font-weight:700;margin-left:4px;">Réseau elogik</span></div>
-                <div class="trans-sub">569 expéditions · 4.4%</div>
+                <svg class="t-family-chevron open" id="chev-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('cp',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span style="color:var(--primary)">Colis Privé <span style="font-size:9px;font-family:'DM Mono',monospace;background:var(--primary-tint);color:var(--primary);padding:1px 6px;border-radius:100px;font-weight:700;margin-left:4px;">Réseau elogik</span></span>
               </td>
-              <td class="center th-group"><span class="num-good">71%</span></td>
-              <td class="center"><span class="num-good">25%</span></td>
-              <td class="center"><span class="num-mono">4%</span></td>
-              <td class="center th-group"><span class="num-mono">80</span></td>
-              <td class="center th-group"><span class="num-good">535</span></td>
-              <td class="center"><span class="num-good">9</span></td>
-              <td class="center th-group"><span class="num-good">98.3%</span></td>
-              <td class="center"><span class="num-good">5</span></td>
-              <td class="center th-group"><span class="num-good">0</span></td>
-              <td class="center"><span class="num-good">0</span></td>
-              <td class="center"><span class="badge-pill badge-ok">0.0%</span></td>
+              <td><span class="ts-exp">569</span></td>
+              <td><span class="ts-otd">64</span></td>
+              <td><span class="ts-otd">5</span></td>
+              <td class="th-sep"><span class="ts-otd">71%</span></td>
+              <td><span class="ts-otd">25%</span></td>
+              <td><span class="ts-badge" style="background:var(--surface2);color:var(--slate)">4%</span></td>
+              <td><span class="ts-otd">3</span></td>
+              <td class="th-sep"><span class="ts-otd">98,3%</span></td>
+              <td class="th-sep"><span class="ts-otd">0</span></td>
             </tr>
+            <tr class="offer-row" id="cp">
+              <td>CP Domicile J+1</td>
+              <td>380</td>
+              <td><span class="ts-otd">42</span></td>
+              <td>3</td>
+              <td class="th-sep">72%</td>
+              <td>24%</td>
+              <td>4%</td>
+              <td>2</td>
+              <td class="th-sep">98,4%</td>
+              <td class="th-sep">0</td>
+            </tr>
+            <tr class="offer-row" id="cp">
+              <td>CP Point relais</td>
+              <td>189</td>
+              <td><span class="ts-otd">22</span></td>
+              <td>2</td>
+              <td class="th-sep">69%</td>
+              <td>27%</td>
+              <td>4%</td>
+              <td>1</td>
+              <td class="th-sep">98,1%</td>
+              <td class="th-sep">0</td>
+            </tr>
+
             <!-- TOTAL -->
             <tr style="background:var(--surface2);font-weight:600;">
-              <td>
-                <div class="trans-name">Total</div>
-                <div class="trans-sub">12 847 expéditions · 100%</div>
-              </td>
-              <td class="center th-group"><span class="num-mono">38%</span></td>
-              <td class="center"><span class="num-mono">39%</span></td>
-              <td class="center"><span class="num-mono">23%</span></td>
-              <td class="center th-group"><span class="num-mono">3 123</span></td>
-              <td class="center th-group"><span class="num-mono">9 485</span></td>
-              <td class="center"><span class="num-warn">1 443</span></td>
-              <td class="center th-group"><span class="num-warn">84.3%</span></td>
-              <td class="center"><span class="num-bad">608</span></td>
-              <td class="center th-group"><span class="num-bad">47</span></td>
-              <td class="center"><span class="num-warn">29</span></td>
-              <td class="center"><span class="badge-pill badge-warn">3.7%</span></td>
+              <td style="font-size:12px;font-weight:700;">Total</td>
+              <td><span class="ts-exp">12 847</span></td>
+              <td><span class="ts-otd">2 504</span></td>
+              <td><span class="ts-nok">608</span></td>
+              <td class="th-sep">38%</td>
+              <td>39%</td>
+              <td>23%</td>
+              <td><span class="ts-nok">479</span></td>
+              <td class="th-sep"><span class="ts-late">84,3%</span></td>
+              <td class="th-sep"><span class="ts-late">47</span></td>
             </tr>
+
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ══ BLOC 5 : ANALYSES & SUIVI ══ -->
+
+  <!-- ══ BLOC 5 : TABLEAU PAR RÉGION ══ -->
+  <div>
+    <div class="section-label">
+      <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qtrans-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+      Performance livraison par pays &amp; région
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Performance livraison par pays &amp; région</div>
+          <div class="card-sub">Semaine 17–23 mars 2025 · toutes offres · tous transporteurs</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="card-badge cb-qtrans">6 régions actives</span>
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;font-style:italic;">Seules les régions avec activité sont affichées</span>
+        </div>
+      </div>
+      <div class="carrier-table-wrap">
+        <table class="transp-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:200px;">Région / Transporteur</th>
+              <th>Expédiées</th>
+              <th>En cours<br><span style="font-weight:400;font-size:8px;">à l'heure</span></th>
+              <th>En cours<br><span style="font-weight:400;font-size:8px;">en retard</span></th>
+              <th class="th-sep">Livrées J</th>
+              <th>J+1</th>
+              <th>J+2</th>
+              <th>Retard<br><span style="font-weight:400;font-size:8px;">&gt; 3J</span></th>
+              <th class="th-sep">OTD</th>
+              <th class="th-sep">Litiges</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- FRANCE -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-fr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('fr',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🇫🇷 France</span>
+              </td>
+              <td><span class="ts-exp">8 214</span></td>
+              <td><span class="ts-otd">1 680</span></td>
+              <td><span class="ts-nok">412</span></td>
+              <td class="th-sep">36%</td>
+              <td>40%</td>
+              <td>24%</td>
+              <td><span class="ts-nok">310</span></td>
+              <td class="th-sep"><span class="ts-late">83,1%</span></td>
+              <td class="th-sep"><span class="ts-late">31</span></td>
+            </tr>
+            <tr class="offer-row" id="fr"><td>Colissimo</td><td>2 980</td><td><span class="ts-otd">720</span></td><td><span class="ts-late">98</span></td><td class="th-sep">34%</td><td>52%</td><td>14%</td><td><span class="ts-late">84</span></td><td class="th-sep">92,4%</td><td class="th-sep"><span class="ts-late">6</span></td></tr>
+            <tr class="offer-row" id="fr"><td>GLS</td><td>2 840</td><td><span class="ts-otd">560</span></td><td><span class="ts-nok">218</span></td><td class="th-sep">12%</td><td>41%</td><td>47%</td><td><span class="ts-nok">172</span></td><td class="th-sep"><span class="ts-nok">71,0%</span></td><td class="th-sep"><span class="ts-nok">14</span></td></tr>
+            <tr class="offer-row" id="fr"><td>Chronopost</td><td>1 824</td><td><span class="ts-otd">312</span></td><td><span class="ts-late">68</span></td><td class="th-sep">68%</td><td>24%</td><td>8%</td><td><span class="ts-late">36</span></td><td class="th-sep">91,8%</td><td class="th-sep"><span class="ts-late">8</span></td></tr>
+            <tr class="offer-row" id="fr"><td>Colis Privé</td><td>570</td><td><span class="ts-otd">88</span></td><td><span class="ts-otd">28</span></td><td class="th-sep">71%</td><td>25%</td><td>4%</td><td><span class="ts-otd">18</span></td><td class="th-sep"><span class="ts-otd">98,3%</span></td><td class="th-sep"><span class="ts-otd">3</span></td></tr>
+
+            <!-- EUROPE -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-eu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('eu',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🇪🇺 Europe</span>
+              </td>
+              <td><span class="ts-exp">2 840</span></td>
+              <td><span class="ts-otd">510</span></td>
+              <td><span class="ts-late">124</span></td>
+              <td class="th-sep">22%</td>
+              <td>44%</td>
+              <td>34%</td>
+              <td><span class="ts-late">98</span></td>
+              <td class="th-sep"><span class="ts-late">88,2%</span></td>
+              <td class="th-sep"><span class="ts-late">9</span></td>
+            </tr>
+            <tr class="offer-row" id="eu"><td>GLS</td><td>1 680</td><td><span class="ts-otd">298</span></td><td><span class="ts-late">82</span></td><td class="th-sep">18%</td><td>42%</td><td>40%</td><td><span class="ts-nok">64</span></td><td class="th-sep"><span class="ts-late">86,4%</span></td><td class="th-sep"><span class="ts-late">6</span></td></tr>
+            <tr class="offer-row" id="eu"><td>DHL Express</td><td>820</td><td><span class="ts-otd">148</span></td><td><span class="ts-otd">28</span></td><td class="th-sep">32%</td><td>48%</td><td>20%</td><td><span class="ts-late">22</span></td><td class="th-sep">92,4%</td><td class="th-sep"><span class="ts-otd">2</span></td></tr>
+            <tr class="offer-row" id="eu"><td>Chronopost</td><td>340</td><td><span class="ts-otd">64</span></td><td><span class="ts-late">14</span></td><td class="th-sep">28%</td><td>48%</td><td>24%</td><td><span class="ts-late">12</span></td><td class="th-sep">91,2%</td><td class="th-sep"><span class="ts-otd">1</span></td></tr>
+
+            <!-- APAC -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-apac" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('apac',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🌏 APAC</span>
+              </td>
+              <td><span class="ts-exp">684</span></td>
+              <td><span class="ts-otd">104</span></td>
+              <td><span class="ts-late">42</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>18%</td>
+              <td>62%</td>
+              <td><span class="ts-late">38</span></td>
+              <td class="th-sep"><span class="ts-late">86,0%</span></td>
+              <td class="th-sep"><span class="ts-late">4</span></td>
+            </tr>
+            <tr class="offer-row" id="apac"><td>DHL Express</td><td>498</td><td><span class="ts-otd">76</span></td><td><span class="ts-late">30</span></td><td class="th-sep">—</td><td>20%</td><td>60%</td><td><span class="ts-late">28</span></td><td class="th-sep">86,3%</td><td class="th-sep"><span class="ts-late">3</span></td></tr>
+            <tr class="offer-row" id="apac"><td>GLS</td><td>186</td><td><span class="ts-otd">28</span></td><td><span class="ts-late">12</span></td><td class="th-sep">—</td><td>14%</td><td>66%</td><td><span class="ts-late">10</span></td><td class="th-sep">85,5%</td><td class="th-sep"><span class="ts-otd">1</span></td></tr>
+
+            <!-- NORAM -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-noram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('noram',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🌎 NORAM</span>
+              </td>
+              <td><span class="ts-exp">542</span></td>
+              <td><span class="ts-otd">88</span></td>
+              <td><span class="ts-late">24</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>14%</td>
+              <td>68%</td>
+              <td><span class="ts-late">20</span></td>
+              <td class="th-sep"><span class="ts-late">89,3%</span></td>
+              <td class="th-sep"><span class="ts-otd">2</span></td>
+            </tr>
+            <tr class="offer-row" id="noram"><td>DHL Express</td><td>420</td><td><span class="ts-otd">68</span></td><td><span class="ts-late">18</span></td><td class="th-sep">—</td><td>15%</td><td>67%</td><td><span class="ts-late">16</span></td><td class="th-sep">89,8%</td><td class="th-sep"><span class="ts-otd">2</span></td></tr>
+            <tr class="offer-row" id="noram"><td>Chronopost</td><td>122</td><td><span class="ts-otd">20</span></td><td><span class="ts-late">6</span></td><td class="th-sep">—</td><td>12%</td><td>71%</td><td><span class="ts-late">4</span></td><td class="th-sep">88,1%</td><td class="th-sep"><span class="ts-zero">—</span></td></tr>
+
+            <!-- LATAM -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-latam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('latam',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🌎 LATAM</span>
+              </td>
+              <td><span class="ts-exp">318</span></td>
+              <td><span class="ts-otd">44</span></td>
+              <td><span class="ts-nok">28</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>8%</td>
+              <td>54%</td>
+              <td><span class="ts-nok">24</span></td>
+              <td class="th-sep"><span class="ts-nok">79,4%</span></td>
+              <td class="th-sep"><span class="ts-otd">1</span></td>
+            </tr>
+            <tr class="offer-row" id="latam"><td>DHL Express</td><td>318</td><td><span class="ts-otd">44</span></td><td><span class="ts-nok">28</span></td><td class="th-sep">—</td><td>8%</td><td>54%</td><td><span class="ts-nok">24</span></td><td class="th-sep"><span class="ts-nok">79,4%</span></td><td class="th-sep"><span class="ts-otd">1</span></td></tr>
+
+            <!-- MEA -->
+            <tr class="family-row">
+              <td>
+                <svg class="t-family-chevron open" id="chev-mea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('mea',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                <span>🌍 MEA</span>
+              </td>
+              <td><span class="ts-exp">249</span></td>
+              <td><span class="ts-otd">38</span></td>
+              <td><span class="ts-late">18</span></td>
+              <td class="th-sep"><span class="ts-badge ts-zero">—</span></td>
+              <td>10%</td>
+              <td>58%</td>
+              <td><span class="ts-late">16</span></td>
+              <td class="th-sep"><span class="ts-late">84,7%</span></td>
+              <td class="th-sep"><span class="ts-zero">—</span></td>
+            </tr>
+            <tr class="offer-row" id="mea"><td>DHL Express</td><td>184</td><td><span class="ts-otd">28</span></td><td><span class="ts-late">12</span></td><td class="th-sep">—</td><td>12%</td><td>56%</td><td><span class="ts-late">11</span></td><td class="th-sep">85,3%</td><td class="th-sep"><span class="ts-zero">—</span></td></tr>
+            <tr class="offer-row" id="mea"><td>GLS</td><td>65</td><td><span class="ts-otd">10</span></td><td><span class="ts-late">6</span></td><td class="th-sep">—</td><td>6%</td><td>62%</td><td><span class="ts-late">5</span></td><td class="th-sep">83,1%</td><td class="th-sep"><span class="ts-zero">—</span></td></tr>
+
+            <!-- TOTAL -->
+            <tr style="background:var(--surface2);font-weight:600;">
+              <td style="font-size:12px;font-weight:700;">Total</td>
+              <td><span class="ts-exp">12 847</span></td>
+              <td><span class="ts-otd">2 464</span></td>
+              <td><span class="ts-nok">648</span></td>
+              <td class="th-sep">—</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="ts-nok">506</span></td>
+              <td class="th-sep"><span class="ts-late">84,3%</span></td>
+              <td class="th-sep"><span class="ts-late">47</span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOC 6 : ANALYSES & SUIVI ══ -->
   <div>
     <div class="section-label">Analyses &amp; suivi</div>
     <div class="block-actions">
@@ -822,6 +1116,16 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
 <script>
 /* ── THEME ── */
+function toggleCarrier(groupId, chevron) {
+  var rows = document.querySelectorAll('tr.offer-row[id="' + groupId + '"]');
+  var isOpen = chevron.classList.contains('open');
+  rows.forEach(function(r) {
+    if (isOpen) { r.classList.add('offers-collapse'); }
+    else { r.classList.remove('offers-collapse'); }
+  });
+  chevron.classList.toggle('open', !isOpen);
+}
+
 function toggleTheme() {
   var h = document.documentElement;
   h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
