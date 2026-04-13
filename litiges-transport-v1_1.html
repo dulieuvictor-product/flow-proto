@@ -203,6 +203,81 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
 .kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
 
+/* ── FUNNEL LITIGES ── */
+.funnel-section { display:flex; flex-direction:column; gap:10px; margin-bottom:4px; }
+.funnel-total-bar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--card-shadow); }
+.funnel-total-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.funnel-total-value { font-size:22px; font-weight:300; letter-spacing:-0.04em; color:var(--ink); }
+.funnel-total-value strong { color:var(--c-savt); font-weight:600; }
+.funnel-total-sub { font-size:11px; color:var(--muted); }
+.funnel-grid { display:grid; grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); align-items:stretch; }
+.funnel-connector { display:flex; align-items:center; justify-content:center; width:32px; flex-shrink:0; color:var(--border2); }
+.funnel-step { padding:16px 18px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:6px; position:relative; transition:background 0.12s; }
+.funnel-step:last-child { border-right:none; }
+.funnel-step:hover { background:var(--surface2); }
+.funnel-step::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.funnel-step.step-req::before { background:var(--c-savt); }
+.funnel-step.step-enq::before { background:var(--warning); }
+.funnel-step.step-ind::before { background:var(--success); }
+.funnel-step.step-nind::before { background:var(--danger); }
+.funnel-step-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:2px; }
+.funnel-step-icon svg { width:14px; height:14px; }
+.funnel-step-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.funnel-step-value { font-size:28px; font-weight:300; letter-spacing:-0.04em; line-height:1; }
+.funnel-step-sub { font-size:10px; color:var(--muted); line-height:1.4; }
+.funnel-step-pct { display:inline-flex; align-items:center; padding:1px 7px; border-radius:100px; font-size:9px; font-weight:700; font-family:'DM Mono',monospace; margin-top:2px; width:fit-content; }
+.funnel-arrow { display:flex; align-items:center; justify-content:center; padding:0 4px; }
+.funnel-arrow svg { width:14px; height:14px; color:var(--border2); }
+
+/* ── INDEMNITÉS CARD ── */
+.indem-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 20px; box-shadow:var(--card-shadow); display:flex; align-items:stretch; gap:0; overflow:hidden; }
+.indem-main { flex:1; }
+.indem-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.indem-icon { width:30px; height:30px; border-radius:8px; background:var(--success-tint); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.indem-icon svg { width:15px; height:15px; }
+.indem-title { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.indem-amount { font-size:32px; font-weight:300; letter-spacing:-0.04em; color:var(--success); line-height:1; margin-bottom:4px; }
+.indem-amount .unit { font-size:16px; font-weight:400; }
+.indem-sub { font-size:11px; color:var(--muted); }
+.indem-toggle-group { display:flex; gap:6px; margin-top:12px; border-top:1px solid var(--border); padding-top:10px; }
+.indem-toggle { display:flex; align-items:center; gap:6px; padding:5px 10px; border-radius:7px; border:1px solid var(--border2); background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; font-weight:500; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.indem-toggle:hover { border-color:var(--success); color:var(--ink); }
+.indem-toggle.active { background:var(--success-tint); color:var(--success); border-color:rgba(42,149,84,0.3); font-weight:600; }
+.indem-toggle input[type=checkbox] { display:none; }
+.indem-toggle .check-box { width:13px; height:13px; border-radius:3px; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.indem-toggle.active .check-box::after { content:'✓'; font-size:8px; line-height:1; }
+.indem-split { display:flex; gap:16px; margin-top:10px; }
+.indem-split-item { display:flex; flex-direction:column; gap:2px; }
+.indem-split-label { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.indem-split-val { font-size:14px; font-weight:600; }
+
+/* ── TRANSP-OFFER TABLE ── */
+.carrier-table-wrap { overflow-x:auto; }
+.transp-table { width:100%; border-collapse:collapse; font-size:12px; }
+.transp-table th { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:9px 12px; text-align:center; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
+.transp-table th:first-child { text-align:left; }
+.transp-table td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; }
+.transp-table td:first-child { text-align:left; }
+.transp-table tbody tr:last-child td { border-bottom:none; }
+.transp-table tbody tr:hover td { background:var(--surface2); }
+.t-family-row td { background:var(--surface2); font-weight:600; font-size:12px; color:var(--ink); }
+.t-family-chevron { width:14px; height:14px; cursor:pointer; color:var(--muted); margin-right:6px; display:inline-block; vertical-align:middle; transition:transform 0.2s; flex-shrink:0; }
+.t-family-chevron.open { transform:rotate(90deg); }
+.offer-row td { font-size:11px; color:var(--slate); padding-left:36px !important; }
+.offer-row td:first-child { padding-left:36px; }
+.t-total-row td { font-weight:700; font-size:12px; background:var(--surface2); border-top:1px solid var(--border2); }
+.ts-badge { display:inline-flex; align-items:center; justify-content:center; min-width:32px; padding:2px 7px; border-radius:6px; font-size:11px; font-weight:600; font-family:'DM Mono',monospace; }
+.ts-ok { background:var(--success-tint); color:var(--success); }
+.ts-none { background:var(--danger-tint); color:var(--danger); }
+.ts-wip { background:var(--warning-tint); color:var(--warning); }
+.ts-zero { color:var(--muted); background:transparent; }
+.ts-mono { color:var(--slate); }
+.ts-bad { background:var(--danger-tint); color:var(--danger); font-weight:700; }
+
+/* ── SAVE PILL ── */
+.save-pill { display:none; align-items:center; gap:5px; font-size:10px; font-weight:600; color:var(--success); background:var(--success-tint); border-radius:6px; padding:4px 10px; margin-top:2px; width:fit-content; font-family:'DM Mono',monospace; }
+.save-pill.show { display:flex; }
+
 /* ── MAIN LAYOUT 2/3 + 1/3 ── */
 .main-layout { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
 
@@ -531,62 +606,136 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div class="page-sub">Semaine 17–23 mars 2025 · tous transporteurs · tous canaux</div>
     </div>
   </div>
-  <div class="kpi-grid">
-    <!-- Résolus -->
-    <div class="kpi-card" style="--module-color:var(--success)">
-      <div class="kpi-header">
-        <div class="kpi-label-wrap">
-          <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div><div class="kpi-label">Résolus</div><div class="kpi-label-sub">Sur la période</div></div>
+  <!-- ══ FUNNEL LITIGES ══ -->
+  <div class="funnel-section">
+
+    <!-- Barre totale -->
+    <div class="funnel-total-bar">
+      <div>
+        <div class="funnel-total-label">Volume total de litiges — Semaine 17–23 mars 2025</div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:3px;">
+          <div class="funnel-total-value"><strong>47</strong> litiges</div>
+          <div class="funnel-total-sub">tous transporteurs · tous canaux</div>
         </div>
-        <span class="kpi-status-badge ok">✓ En hausse</span>
       </div>
-      <div class="kpi-big" style="color:var(--success)">8<span class="unit"> litiges</span></div>
-      <div class="kpi-secondary">sur 55 créés cette semaine · taux résolution 14.5%</div>
-      <div class="kpi-sub-row"><span class="delta-up">↑ +3</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-      <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--success);width:14.5%"></div></div></div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="kpi-status-badge warn">⚠ En hausse</span>
+        <span style="font-size:11px;color:var(--muted)"><span class="delta-dn">↑ +8</span> vs S16</span>
+      </div>
     </div>
-    <!-- Ouverts -->
-    <div class="kpi-card" style="--module-color:var(--danger)">
-      <div class="kpi-header">
-        <div class="kpi-label-wrap">
-          <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-          <div><div class="kpi-label">Litiges ouverts</div><div class="kpi-label-sub">En attente traitement</div></div>
+
+    <!-- Funnel steps -->
+    <div class="funnel-grid">
+      <!-- Requêtes -->
+      <div class="funnel-step step-req">
+        <div class="funnel-step-icon" style="background:var(--c-savt-t)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
         </div>
-        <span class="kpi-status-badge bad">⚠ Dépassé</span>
+        <div class="funnel-step-label">Requêtes</div>
+        <div class="funnel-step-value" style="color:var(--c-savt)">47</div>
+        <div class="funnel-step-sub">litiges déclarés<br>cette semaine</div>
+        <span class="funnel-step-pct" style="background:var(--c-savt-t);color:var(--c-savt)">100%</span>
       </div>
-      <div class="kpi-big" style="color:var(--danger)">12<span class="unit"> litiges</span></div>
-      <div class="kpi-secondary">objectif ≤ 30 · +4 ouverts cette semaine</div>
-      <div class="kpi-sub-row"><span class="delta-dn">↑ +57%</span><span style="font-size:11px;color:var(--muted)">vs objectif</span></div>
-      <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:78%"></div></div></div>
+
+      <!-- Arrow -->
+      <div class="funnel-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- Enquête -->
+      <div class="funnel-step step-enq">
+        <div class="funnel-step-icon" style="background:var(--warning-tint)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="funnel-step-label">Enquête</div>
+        <div class="funnel-step-value" style="color:var(--warning)">28</div>
+        <div class="funnel-step-sub">en cours de traitement<br>ou att. réponse transp.</div>
+        <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">59,6%</span>
+      </div>
+
+      <!-- Arrow -->
+      <div class="funnel-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- Indemnisés -->
+      <div class="funnel-step step-ind">
+        <div class="funnel-step-icon" style="background:var(--success-tint)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="funnel-step-label">Indemnisés</div>
+        <div class="funnel-step-value" style="color:var(--success)">12</div>
+        <div class="funnel-step-sub">remboursements reçus<br>litige clôturé</div>
+        <span class="funnel-step-pct" style="background:var(--success-tint);color:var(--success)">25,5%</span>
+      </div>
+
+      <!-- Arrow -->
+      <div class="funnel-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- Non indemnisés -->
+      <div class="funnel-step step-nind">
+        <div class="funnel-step-icon" style="background:var(--danger-tint)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="funnel-step-label">Non indemnisés</div>
+        <div class="funnel-step-value" style="color:var(--danger)">7</div>
+        <div class="funnel-step-sub">refusés ou pertes<br>définitives</div>
+        <span class="funnel-step-pct" style="background:var(--danger-tint);color:var(--danger)">14,9%</span>
+      </div>
     </div>
-    <!-- Coût commandes -->
-    <div class="kpi-card" style="--module-color:var(--c-savt)">
-      <div class="kpi-header">
-        <div class="kpi-label-wrap">
-          <div class="kpi-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
-          <div><div class="kpi-label">Coût commandes litiges</div><div class="kpi-label-sub">Période en cours</div></div>
+
+    <!-- Row : Indemnités + TPS moyen -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+
+      <!-- Card indemnités -->
+      <div class="indem-card">
+        <div class="indem-main">
+          <div class="indem-header">
+            <div class="indem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div><div class="indem-title">Indemnités totales reçues</div><div style="font-size:10px;color:var(--muted)">Semaine 17–23 mars 2025</div></div>
+          </div>
+          <div class="indem-amount" id="indemAmount">3 240<span class="unit"> €</span></div>
+          <div class="indem-sub" id="indemSub">12 litiges clôturés avec remboursement</div>
+          <div class="indem-split" id="indemSplit" style="display:none;">
+            <div class="indem-split-item">
+              <div class="indem-split-label">Transporteur</div>
+              <div class="indem-split-val" style="color:var(--c-qtrans)">2 180 €</div>
+            </div>
+            <div class="indem-split-item">
+              <div class="indem-split-label">e-logik</div>
+              <div class="indem-split-val" style="color:var(--violet)">1 060 €</div>
+            </div>
+          </div>
+          <div class="indem-toggle-group">
+            <button class="indem-toggle active" id="toggleTransp" onclick="toggleIndem('transp')">
+              <span class="check-box"></span>
+              Transporteur
+            </button>
+            <button class="indem-toggle active" id="toggleElogik" onclick="toggleIndem('elogik')">
+              <span class="check-box"></span>
+              e-logik
+            </button>
+          </div>
         </div>
-        <span class="kpi-status-badge warn">⚠ À surveiller</span>
       </div>
-      <div class="kpi-big" style="color:var(--c-savt)">18 420<span class="unit">€</span></div>
-      <div class="kpi-secondary">dont <strong style="color:var(--success)">3 240€</strong> résolus · <span style="color:var(--danger)">15 180€</span> en cours</div>
-      <div class="kpi-sub-row"><span class="delta-dn">↑ +4 120€</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-      <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-savt);width:62%"></div></div></div>
-    </div>
-    <!-- TPS résolution -->
-    <div class="kpi-card" style="--module-color:var(--warning)">
-      <div class="kpi-header">
-        <div class="kpi-label-wrap">
-          <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div><div class="kpi-label">TPS résolution moyen</div><div class="kpi-label-sub">Tous transporteurs</div></div>
+
+      <!-- TPS résolution -->
+      <div class="kpi-card" style="--module-color:var(--warning);align-self:stretch;display:flex;flex-direction:column;justify-content:center;">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="kpi-label">TPS résolution moyen</div><div class="kpi-label-sub">Tous transporteurs</div></div>
+          </div>
+          <span class="kpi-status-badge warn">⚠ Hors cible</span>
         </div>
-        <span class="kpi-status-badge warn">⚠ Hors cible</span>
+        <div class="kpi-big" style="color:var(--warning)">8.2<span class="unit"> jours</span></div>
+        <div class="kpi-secondary">objectif ≤ 5 jours · GLS : 11.4j · DHL : 2.1j</div>
+        <div class="kpi-sub-row"><span class="delta-dn">↑ +1.4j</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:61%"></div></div></div>
       </div>
-      <div class="kpi-big" style="color:var(--warning)">8.2<span class="unit"> jours</span></div>
-      <div class="kpi-secondary">objectif ≤ 5 jours · GLS : 11.4j · DHL : 2.1j</div>
-      <div class="kpi-sub-row"><span class="delta-dn">↑ +1.4j</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-      <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:61%"></div></div></div>
+
     </div>
   </div>
 
@@ -691,103 +840,197 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           </div>
         </div>
 
-        <!-- Tableau répartition par transporteur -->
+        <!-- Tableau répartition par transporteur et offre -->
         <div class="card">
           <div class="card-head">
-            <div><div class="card-title">Répartition par transporteur</div><div class="card-sub">TPS résolution moyen · sources d'ouverture</div></div>
+            <div><div class="card-title">Répartition par transporteur et offre</div><div class="card-sub">Litiges · TPS · sources d'ouverture · par offre de transport</div></div>
             <span class="card-badge cb-savt">5 transporteurs</span>
           </div>
-          <div class="tbl-wrap">
-            <table class="tbl">
+          <div class="carrier-table-wrap">
+            <table class="transp-table">
               <thead>
                 <tr>
-                  <th>Transporteur</th>
-                  <th class="center">Total litiges</th>
-                  <th class="center">Ouverts</th>
-                  <th class="center">En cours</th>
-                  <th class="center">Résolus</th>
-                  <th class="center">TPS moy.</th>
-                  <th class="center">Source client</th>
-                  <th class="center">Source transp.</th>
-                  <th class="center">Coût cumulé</th>
+                  <th style="text-align:left;">Transporteur / Offre</th>
+                  <th>Total litiges</th>
+                  <th>Requêtes</th>
+                  <th>Enquête</th>
+                  <th>Indemnisés</th>
+                  <th>Non indem.</th>
+                  <th>TPS moy.</th>
+                  <th>Coût cumulé</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><span style="font-weight:600">GLS</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 820 expéd.</div></td>
-                  <td class="center"><span class="num-bad">23</span></td>
-                  <td class="center"><span class="num-bad">18</span></td>
-                  <td class="center"><span class="num-warn">4</span></td>
-                  <td class="center"><span class="num-good">1</span></td>
-                  <td class="center"><span class="num-bad">11.4j</span></td>
-                  <td class="center"><span class="num-mono">71%</span></td>
-                  <td class="center"><span class="num-mono">29%</span></td>
-                  <td class="center"><span class="num-bad">8 840€</span></td>
+
+                <!-- GLS -->
+                <tr class="t-family-row">
+                  <td>
+                    <svg class="t-family-chevron open" id="chev-gls" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('gls',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>GLS</span>
+                    <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;">4 820 expéd.</span>
+                  </td>
+                  <td><span class="ts-badge ts-none">23</span></td>
+                  <td><span class="ts-badge ts-none">23</span></td>
+                  <td><span class="ts-badge ts-wip">18</span></td>
+                  <td><span class="ts-badge ts-ok">1</span></td>
+                  <td><span class="ts-badge ts-none">4</span></td>
+                  <td><span class="ts-badge ts-none">11.4j</span></td>
+                  <td><span class="ts-badge ts-none">8 840€</span></td>
                 </tr>
-                <tr>
-                  <td><span style="font-weight:600">Chronopost</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">2 960 expéd.</div></td>
-                  <td class="center"><span class="num-warn">14</span></td>
-                  <td class="center"><span class="num-warn">10</span></td>
-                  <td class="center"><span class="num-warn">3</span></td>
-                  <td class="center"><span class="num-good">1</span></td>
-                  <td class="center"><span class="num-warn">7.8j</span></td>
-                  <td class="center"><span class="num-mono">43%</span></td>
-                  <td class="center"><span class="num-mono">57%</span></td>
-                  <td class="center"><span class="num-warn">5 320€</span></td>
+                <tr class="offer-row" id="gls">
+                  <td>GLS BusinessParcel</td>
+                  <td><span class="ts-badge ts-none">14</span></td>
+                  <td><span class="ts-badge ts-none">14</span></td>
+                  <td><span class="ts-badge ts-wip">10</span></td>
+                  <td><span class="ts-badge ts-ok">1</span></td>
+                  <td><span class="ts-badge ts-none">3</span></td>
+                  <td><span class="ts-badge ts-none">12.1j</span></td>
+                  <td><span class="ts-badge ts-none">5 120€</span></td>
                 </tr>
-                <tr>
-                  <td><span style="font-weight:600">Colissimo</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">3 214 expéd.</div></td>
-                  <td class="center"><span class="num-warn">7</span></td>
-                  <td class="center"><span class="num-warn">4</span></td>
-                  <td class="center"><span class="num-mono">2</span></td>
-                  <td class="center"><span class="num-good">1</span></td>
-                  <td class="center"><span class="num-mono">5.2j</span></td>
-                  <td class="center"><span class="num-mono">57%</span></td>
-                  <td class="center"><span class="num-mono">43%</span></td>
-                  <td class="center"><span class="num-mono">2 140€</span></td>
+                <tr class="offer-row" id="gls">
+                  <td>GLS EuroBusinessParcel</td>
+                  <td><span class="ts-badge ts-wip">9</span></td>
+                  <td><span class="ts-badge ts-wip">9</span></td>
+                  <td><span class="ts-badge ts-wip">8</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-none">1</span></td>
+                  <td><span class="ts-badge ts-none">10.4j</span></td>
+                  <td><span class="ts-badge ts-none">3 720€</span></td>
                 </tr>
-                <tr>
-                  <td><span style="font-weight:600">DHL Express</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">1 284 expéd.</div></td>
-                  <td class="center"><span class="num-mono">3</span></td>
-                  <td class="center"><span class="num-mono">1</span></td>
-                  <td class="center"><span class="num-mono">2</span></td>
-                  <td class="center"><span class="num-good">0</span></td>
-                  <td class="center"><span class="num-good">2.1j</span></td>
-                  <td class="center"><span class="num-mono">100%</span></td>
-                  <td class="center"><span class="num-mono">0%</span></td>
-                  <td class="center"><span class="num-mono">1 357€</span></td>
+
+                <!-- CHRONOPOST -->
+                <tr class="t-family-row">
+                  <td>
+                    <svg class="t-family-chevron open" id="chev-chrono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>Chronopost</span>
+                    <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;">2 960 expéd.</span>
+                  </td>
+                  <td><span class="ts-badge ts-wip">14</span></td>
+                  <td><span class="ts-badge ts-wip">14</span></td>
+                  <td><span class="ts-badge ts-wip">10</span></td>
+                  <td><span class="ts-badge ts-ok">1</span></td>
+                  <td><span class="ts-badge ts-none">3</span></td>
+                  <td><span class="ts-badge ts-wip">7.8j</span></td>
+                  <td><span class="ts-badge ts-wip">5 320€</span></td>
                 </tr>
-                <tr>
-                  <td><span style="font-weight:600;color:var(--primary)">Colis Privé <span style="font-size:9px;font-family:'DM Mono',monospace;background:var(--primary-tint);color:var(--primary);padding:1px 6px;border-radius:100px;">Réseau elogik</span></span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">569 expéd.</div></td>
-                  <td class="center"><span class="num-good">0</span></td>
-                  <td class="center"><span class="num-good">0</span></td>
-                  <td class="center"><span class="num-mono">0</span></td>
-                  <td class="center"><span class="num-good">0</span></td>
-                  <td class="center"><span class="num-good">—</span></td>
-                  <td class="center"><span class="num-mono">—</span></td>
-                  <td class="center"><span class="num-mono">—</span></td>
-                  <td class="center"><span class="num-good">0€</span></td>
+                <tr class="offer-row" id="chrono">
+                  <td>Chronopost Express J+1</td>
+                  <td><span class="ts-badge ts-wip">10</span></td>
+                  <td><span class="ts-badge ts-wip">10</span></td>
+                  <td><span class="ts-badge ts-wip">7</span></td>
+                  <td><span class="ts-badge ts-ok">1</span></td>
+                  <td><span class="ts-badge ts-none">2</span></td>
+                  <td><span class="ts-badge ts-wip">8.2j</span></td>
+                  <td><span class="ts-badge ts-wip">3 840€</span></td>
                 </tr>
+                <tr class="offer-row" id="chrono">
+                  <td>Chronopost 13h</td>
+                  <td><span class="ts-badge ts-mono">4</span></td>
+                  <td><span class="ts-badge ts-mono">4</span></td>
+                  <td><span class="ts-badge ts-mono">3</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-none">1</span></td>
+                  <td><span class="ts-badge ts-mono">6.8j</span></td>
+                  <td><span class="ts-badge ts-mono">1 480€</span></td>
+                </tr>
+
+                <!-- COLISSIMO -->
+                <tr class="t-family-row">
+                  <td>
+                    <svg class="t-family-chevron open" id="chev-colissimo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('colissimo',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>Colissimo</span>
+                    <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;">3 214 expéd.</span>
+                  </td>
+                  <td><span class="ts-badge ts-wip">7</span></td>
+                  <td><span class="ts-badge ts-wip">7</span></td>
+                  <td><span class="ts-badge ts-wip">4</span></td>
+                  <td><span class="ts-badge ts-ok">2</span></td>
+                  <td><span class="ts-badge ts-mono">1</span></td>
+                  <td><span class="ts-badge ts-mono">5.2j</span></td>
+                  <td><span class="ts-badge ts-mono">2 140€</span></td>
+                </tr>
+                <tr class="offer-row" id="colissimo">
+                  <td>Colissimo Domicile J+1</td>
+                  <td><span class="ts-badge ts-mono">5</span></td>
+                  <td><span class="ts-badge ts-mono">5</span></td>
+                  <td><span class="ts-badge ts-wip">3</span></td>
+                  <td><span class="ts-badge ts-ok">2</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-mono">4.8j</span></td>
+                  <td><span class="ts-badge ts-mono">1 560€</span></td>
+                </tr>
+                <tr class="offer-row" id="colissimo">
+                  <td>Colissimo Expert</td>
+                  <td><span class="ts-badge ts-mono">2</span></td>
+                  <td><span class="ts-badge ts-mono">2</span></td>
+                  <td><span class="ts-badge ts-mono">1</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-none">1</span></td>
+                  <td><span class="ts-badge ts-mono">6.1j</span></td>
+                  <td><span class="ts-badge ts-mono">580€</span></td>
+                </tr>
+
+                <!-- DHL -->
+                <tr class="t-family-row">
+                  <td>
+                    <svg class="t-family-chevron open" id="chev-dhl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('dhl',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span>DHL Express</span>
+                    <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;">1 284 expéd.</span>
+                  </td>
+                  <td><span class="ts-badge ts-mono">3</span></td>
+                  <td><span class="ts-badge ts-mono">3</span></td>
+                  <td><span class="ts-badge ts-mono">2</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-ok">2.1j</span></td>
+                  <td><span class="ts-badge ts-mono">1 357€</span></td>
+                </tr>
+                <tr class="offer-row" id="dhl">
+                  <td>DHL Express J+1</td>
+                  <td><span class="ts-badge ts-mono">3</span></td>
+                  <td><span class="ts-badge ts-mono">3</span></td>
+                  <td><span class="ts-badge ts-mono">2</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-ok">2.1j</span></td>
+                  <td><span class="ts-badge ts-mono">1 357€</span></td>
+                </tr>
+
+                <!-- COLIS PRIVÉ -->
+                <tr class="t-family-row">
+                  <td>
+                    <svg class="t-family-chevron" id="chev-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('cp',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span style="color:var(--primary)">Colis Privé</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--primary-tint);color:var(--primary);padding:1px 6px;border-radius:100px;margin-left:6px;">Réseau elogik</span>
+                    <span style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;">569 expéd.</span>
+                  </td>
+                  <td><span class="ts-badge ts-ok">0</span></td>
+                  <td><span class="ts-badge ts-ok">0</span></td>
+                  <td><span class="ts-badge ts-ok">0</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-zero">—</span></td>
+                  <td><span class="ts-badge ts-ok">—</span></td>
+                  <td><span class="ts-badge ts-ok">0€</span></td>
+                </tr>
+
+                <!-- TOTAL -->
+                <tr class="t-total-row">
+                  <td>Total</td>
+                  <td><span class="ts-badge ts-none">47</span></td>
+                  <td><span class="ts-badge ts-none">47</span></td>
+                  <td><span class="ts-badge ts-wip">34</span></td>
+                  <td><span class="ts-badge ts-ok">4</span></td>
+                  <td><span class="ts-badge ts-none">8</span></td>
+                  <td><span class="ts-badge ts-wip">8.2j</span></td>
+                  <td><span class="ts-badge ts-none">17 657€</span></td>
+                </tr>
+
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Graphe évolution -->
-        <div class="card">
-          <div class="card-head">
-            <div><div class="card-title">Évolution sur la période</div><div class="card-sub">Volume de colis concernés et coût des commandes litiges</div></div>
-          </div>
-          <div class="chart-tabs" id="litChartTabs">
-            <button class="ct-btn active" onclick="switchLitChart(this,'volume')">Volume colis</button>
-            <button class="ct-btn" onclick="switchLitChart(this,'cout')">Coût commandes</button>
-          </div>
-          <div class="chart-legend" id="litLegend">
-            <div class="cl-item"><div class="cl-dot" style="background:var(--c-savt)"></div>Litiges ouverts</div>
-            <div class="cl-item"><div class="cl-dot" style="background:var(--success)"></div>Litiges résolus</div>
-          </div>
-          <div style="padding:4px 16px 14px;position:relative;height:180px;"><canvas id="chartLitiges"></canvas></div>
-        </div>
+
 
       </div>
 
@@ -795,7 +1038,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div class="card" style="position:sticky;top:12px;">
         <div class="feed-header">
           <div class="feed-title"><div class="feed-pulse"></div>Alertes litiges</div>
-          <span class="feed-count">12 actives</span>
+          <span class="feed-count">5 actives</span>
         </div>
         <div class="alert-feed" id="alertFeed">
 
@@ -812,17 +1055,13 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
               <span class="alert-meta-chip client">Beauté Pro Paris</span>
             </div>
             <div class="alert-actions">
-              <button class="alert-btn primary">Traiter</button>
-              <button class="alert-btn ghost">Voir CMD</button>
+              <button class="alert-btn primary" onclick="window.open('#','_blank')">Voir dans ekan</button>
               <button class="alert-btn save" id="save-1" onclick="saveAlert(1)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                 Enregistrer
               </button>
             </div>
-            <div class="save-pill" id="pill-1">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
+            <div class="save-pill" id="pill-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>Ajouté aux analyses</div>
           </div>
 
           <!-- Critique 2 -->
@@ -831,124 +1070,86 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
               <div class="alert-icon critical"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
               <div class="alert-title critical">Colis endommagé — CMD-48199</div>
             </div>
-            <div class="alert-desc">Photo de preuve reçue. Remboursement à initier auprès de Chronopost. Délai SLA : 2 jours restants.</div>
+            <div class="alert-desc">Photo de preuve reçue. Remboursement à initier auprès de Chronopost. SLA : 2 jours restants.</div>
             <div class="alert-meta">
               <span class="alert-meta-chip">Chronopost · 13 mars</span>
               <span class="alert-meta-chip amount">612 €</span>
+              <span class="alert-meta-chip client">Salon Kera Bordeaux</span>
             </div>
             <div class="alert-actions">
-              <button class="alert-btn primary">Traiter</button>
-              <button class="alert-btn ghost">Voir CMD</button>
+              <button class="alert-btn primary" onclick="window.open('#','_blank')">Voir dans ekan</button>
               <button class="alert-btn save" id="save-2" onclick="saveAlert(2)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                 Enregistrer
               </button>
             </div>
-            <div class="save-pill" id="pill-2">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
+            <div class="save-pill" id="pill-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>Ajouté aux analyses</div>
           </div>
 
-          <!-- Warning retard -->
+          <!-- Warning retard CMD-48240 -->
           <div class="alert-card warn" id="alert-3">
             <div class="alert-card-top">
               <div class="alert-icon warn"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-              <div class="alert-title warn">Retard 24h — 3 commandes DHL</div>
+              <div class="alert-title warn">Retard livraison 24h — CMD-48240</div>
             </div>
-            <div class="alert-desc">CMD-48240, CMD-48241, CMD-48255 — incident réseau DHL Île-de-France. Mise à jour attendue ce soir.</div>
+            <div class="alert-desc">Incident réseau DHL Île-de-France. Mise à jour attendue ce soir.</div>
             <div class="alert-meta">
               <span class="alert-meta-chip">DHL · Ce matin</span>
-              <span class="alert-meta-chip amount">1 357 €</span>
-              <span class="alert-meta-chip" style="color:var(--warning);background:var(--warning-tint)">Impact client</span>
+              <span class="alert-meta-chip amount">289 €</span>
+              <span class="alert-meta-chip client">ProCoiff Lyon</span>
             </div>
             <div class="alert-actions">
-              <button class="alert-btn warn-primary">Voir</button>
-              <button class="alert-btn ghost">Contacter DHL</button>
+              <button class="alert-btn warn-primary" onclick="window.open('#','_blank')">Voir dans ekan</button>
               <button class="alert-btn save" id="save-3" onclick="saveAlert(3)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                 Enregistrer
               </button>
             </div>
-            <div class="save-pill" id="pill-3">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
+            <div class="save-pill" id="pill-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>Ajouté aux analyses</div>
           </div>
 
-          <!-- Critique 3 GLS -->
+          <!-- Critique GLS non répondu -->
           <div class="alert-card critical" id="alert-4">
             <div class="alert-card-top">
               <div class="alert-icon critical"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-              <div class="alert-title critical">Litige GLS non répondu — 11 jours</div>
+              <div class="alert-title critical">Litige non répondu 11j — CMD-48190</div>
             </div>
-            <div class="alert-desc">CMD-48190 — adresse incorrecte signalée par GLS. Aucune réponse depuis l'ouverture. Escalade contractuelle requise.</div>
+            <div class="alert-desc">Adresse incorrecte signalée par GLS. Aucune réponse depuis ouverture. Escalade contractuelle requise.</div>
             <div class="alert-meta">
               <span class="alert-meta-chip">GLS · 12 mars</span>
               <span class="alert-meta-chip amount">412 €</span>
               <span class="alert-meta-chip client">Beauty Group SAS</span>
             </div>
             <div class="alert-actions">
-              <button class="alert-btn primary">Escalader</button>
-              <button class="alert-btn ghost">Historique</button>
+              <button class="alert-btn primary" onclick="window.open('#','_blank')">Voir dans ekan</button>
               <button class="alert-btn save" id="save-4" onclick="saveAlert(4)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                 Enregistrer
               </button>
             </div>
-            <div class="save-pill" id="pill-4">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
+            <div class="save-pill" id="pill-4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>Ajouté aux analyses</div>
           </div>
 
-          <!-- Info -->
+          <!-- Info résolu -->
           <div class="alert-card info" id="alert-5">
             <div class="alert-card-top">
               <div class="alert-icon info"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
-              <div class="alert-title info">Remboursement Colissimo reçu — CMD-48312</div>
+              <div class="alert-title info">Remboursement reçu — CMD-48312</div>
             </div>
-            <div class="alert-desc">Litige clôturé. Remboursement de 198€ reçu. TPS : 13 jours — au-delà de l'objectif mais résolu.</div>
+            <div class="alert-desc">Litige clôturé. Remboursement de 198€ reçu. TPS : 13 jours — résolu.</div>
             <div class="alert-meta">
               <span class="alert-meta-chip">Colissimo · 23 mars</span>
               <span class="alert-meta-chip amount">198 €</span>
               <span class="alert-meta-chip" style="color:var(--success);background:var(--success-tint)">Résolu ✓</span>
             </div>
             <div class="alert-actions">
-              <button class="alert-btn info-primary">Voir détail</button>
+              <button class="alert-btn info-primary" onclick="window.open('#','_blank')">Voir dans ekan</button>
               <button class="alert-btn save" id="save-5" onclick="saveAlert(5)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                 Enregistrer
               </button>
             </div>
-            <div class="save-pill" id="pill-5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
-          </div>
-
-          <!-- Warning Chronopost -->
-          <div class="alert-card warn" id="alert-6">
-            <div class="alert-card-top">
-              <div class="alert-icon warn"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-              <div class="alert-title warn">Taux litige Chronopost en hausse</div>
-            </div>
-            <div class="alert-desc">+4 litiges cette semaine vs 2 la semaine précédente. Taux 2.1% — à surveiller, seuil critique 3%.</div>
-            <div class="alert-meta">
-              <span class="alert-meta-chip">Chronopost · Tendance</span>
-              <span class="alert-meta-chip" style="color:var(--warning);background:var(--warning-tint)">Surveillance</span>
-            </div>
-            <div class="alert-actions">
-              <button class="alert-btn warn-primary">Analyser</button>
-              <button class="alert-btn save" id="save-6" onclick="saveAlert(6)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;margin-right:3px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                Enregistrer
-              </button>
-            </div>
-            <div class="save-pill" id="pill-6">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>
-              Ajouté aux analyses
-            </div>
+            <div class="save-pill" id="pill-5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg>Ajouté aux analyses</div>
           </div>
 
         </div>
@@ -1092,7 +1293,7 @@ var savedAlerts = {};
 var alertData = {
   1: { q: 'Alerte critique — CMD-48221 (GLS, non réceptionné)', a: 'Colis non réceptionné depuis 9 jours. Client récurrent Beauté Pro Paris. Montant : 847€. Action requise : escalade GLS.', src: 'Feed litiges · TMS' },
   2: { q: 'Alerte critique — CMD-48199 (Chronopost, endommagé)', a: 'Colis endommagé, photo de preuve reçue. Remboursement à initier. Montant : 612€. Délai SLA : 2 jours.', src: 'Feed litiges · TMS' },
-  3: { q: 'Retard 24h — 3 commandes DHL Île-de-France', a: 'Incident réseau DHL. 3 commandes impactées : CMD-48240, 48241, 48255. Coût total : 1 357€.', src: 'Feed litiges · TMS' },
+  3: { q: 'Retard livraison 24h — CMD-48240 (DHL)', a: 'Incident réseau DHL Île-de-France. CMD-48240 impactée (289€). ProCoiff Lyon. Mise à jour attendue ce soir.', src: 'Feed litiges · TMS' },
   4: { q: 'Litige GLS sans réponse depuis 11 jours — CMD-48190', a: 'Adresse incorrecte signalée. Aucune réponse GLS. Beauty Group SAS. 412€. Escalade contractuelle requise.', src: 'Feed litiges · TMS' },
   5: { q: 'Résolution Colissimo — CMD-48312 (198€)', a: 'Remboursement reçu. TPS 13j, au-delà objectif mais résolu. Point d\'amélioration pour les prochains litiges Colissimo.', src: 'Feed litiges' },
   6: { q: 'Tendance hausse litiges Chronopost', a: '+4 litiges cette semaine. Taux 2.1%, proche seuil critique 3%. À surveiller : potentiel signal faible avant dégradation.', src: 'Feed litiges · TMS' }
@@ -1109,7 +1310,7 @@ function saveAlert(id) {
   btn.onclick = null;
 
   var pill = document.getElementById('pill-' + id);
-  pill.classList.add('visible');
+  pill.classList.add('show');
 
   // Ajouter dans le bloc Analyses
   var data = alertData[id];
@@ -1143,6 +1344,47 @@ function updateAnalysisCount() {
 function archiveAnalysis(id) {
   var card = document.getElementById('analysis-card-' + id);
   if (card) { card.remove(); updateAnalysisCount(); }
+}
+
+/* ── INDEMNITÉS TOGGLE ── */
+var indemState = { transp: true, elogik: true };
+function toggleIndem(type) {
+  indemState[type] = !indemState[type];
+  var btn = document.getElementById('toggle' + (type === 'transp' ? 'Transp' : 'Elogik'));
+  btn.classList.toggle('active', indemState[type]);
+  updateIndemDisplay();
+}
+function updateIndemDisplay() {
+  var transpVal = 2180;
+  var elogikVal = 1060;
+  var total = 0;
+  if (indemState.transp) total += transpVal;
+  if (indemState.elogik) total += elogikVal;
+  var amtEl = document.getElementById('indemAmount');
+  var subEl = document.getElementById('indemSub');
+  var splitEl = document.getElementById('indemSplit');
+  amtEl.innerHTML = total.toLocaleString('fr-FR') + '<span class="unit"> €</span>';
+  if (indemState.transp && indemState.elogik) {
+    subEl.textContent = '12 litiges clôturés avec remboursement';
+    splitEl.style.display = 'none';
+  } else if (indemState.transp) {
+    subEl.textContent = 'Indemnités transporteur uniquement';
+    splitEl.style.display = 'flex';
+  } else if (indemState.elogik) {
+    subEl.textContent = 'Indemnités e-logik uniquement';
+    splitEl.style.display = 'flex';
+  } else {
+    subEl.textContent = 'Aucune source sélectionnée';
+    splitEl.style.display = 'none';
+  }
+}
+
+/* ── CARRIER COLLAPSE ── */
+function toggleCarrier(id, chevron) {
+  var rows = document.querySelectorAll('.offer-row[id="' + id + '"]');
+  var isOpen = chevron.classList.contains('open');
+  chevron.classList.toggle('open', !isOpen);
+  rows.forEach(function(r) { r.style.display = isOpen ? 'none' : ''; });
 }
 
 /* ── ACTIONS ── */
