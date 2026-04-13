@@ -203,12 +203,29 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
 .kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
 
+/* ── COMPOSANT TAUX DE LITIGES ── */
+.litige-gauge-wrap { padding:16px 18px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.litige-big { font-size:32px; font-weight:300; letter-spacing:-0.04em; color:var(--danger); line-height:1; }
+.litige-big .unit { font-size:16px; font-weight:400; }
+.litige-sub { font-size:11px; color:var(--muted); line-height:1.5; }
+.litige-bar-wrap { width:100%; }
+.litige-bar { height:5px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.litige-bar-fill { height:100%; background:var(--danger); border-radius:100px; transition:width 0.6s ease; }
+.litige-seuil { display:flex; justify-content:space-between; margin-top:5px; }
+.litige-seuil-label { font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); }
+.litige-by-trans { border-top:1px solid var(--border); padding:10px 18px; display:flex; flex-direction:column; gap:7px; }
+.litige-row { display:flex; align-items:center; gap:10px; }
+.litige-row-name { font-size:11px; font-weight:500; color:var(--ink); width:80px; flex-shrink:0; }
+.litige-row-bar { flex:1; height:4px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.litige-row-fill { height:100%; border-radius:100px; }
+.litige-row-val { font-size:10px; font-weight:700; font-family:'DM Mono',monospace; width:30px; text-align:right; flex-shrink:0; }
+
 /* ── FUNNEL LITIGES ── */
 .funnel-section { display:flex; flex-direction:column; gap:10px; margin-bottom:4px; }
 .funnel-total-bar { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--card-shadow); }
 .funnel-total-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
 .funnel-total-value { font-size:22px; font-weight:300; letter-spacing:-0.04em; color:var(--ink); }
-.funnel-total-value strong { color:var(--c-savt); font-weight:600; }
+.funnel-total-value strong { color:var(--c-savt); font-weight:300; }
 .funnel-total-sub { font-size:11px; color:var(--muted); }
 .funnel-grid { display:grid; grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); align-items:stretch; }
 .funnel-connector { display:flex; align-items:center; justify-content:center; width:32px; flex-shrink:0; color:var(--border2); }
@@ -223,7 +240,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .funnel-step-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:2px; }
 .funnel-step-icon svg { width:14px; height:14px; }
 .funnel-step-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
-.funnel-step-value { font-size:28px; font-weight:300; letter-spacing:-0.04em; line-height:1; }
+.funnel-step-value { font-size:32px; font-weight:300; letter-spacing:-0.04em; line-height:1; }
 .funnel-step-sub { font-size:10px; color:var(--muted); line-height:1.4; }
 .funnel-step-pct { display:inline-flex; align-items:center; padding:1px 7px; border-radius:100px; font-size:9px; font-weight:700; font-family:'DM Mono',monospace; margin-top:2px; width:fit-content; }
 .funnel-arrow { display:flex; align-items:center; justify-content:center; padding:0 4px; }
@@ -468,7 +485,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
     Transports
   </div>
-  <div class="nav-item active" onclick="location.href='litiges-transport-v1_1.html'" style="cursor:pointer;">
+  <div class="nav-item active">
     <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
     Litiges <span class="nav-badge">12</span>
   </div>
@@ -497,7 +514,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 <div class="main">
   <div class="topbar">
     <div class="breadcrumb">
-      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Litiges transport</span>
+      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Litiges</span>
     </div>
     <div class="topbar-right">
       <button class="theme-btn" onclick="toggleTheme()">
@@ -612,9 +629,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <!-- Barre totale -->
     <div class="funnel-total-bar">
       <div>
-        <div class="funnel-total-label">Volume total de litiges — Semaine 17–23 mars 2025</div>
+        <div class="funnel-total-label">Volume total — Semaine 17–23 mars 2025</div>
         <div style="display:flex;align-items:baseline;gap:10px;margin-top:3px;">
-          <div class="funnel-total-value"><strong>47</strong> litiges</div>
+          <div class="funnel-total-value"><strong>68</strong> réclamations · dont <strong>47</strong> litiges</div>
           <div class="funnel-total-sub">tous transporteurs · tous canaux</div>
         </div>
       </div>
@@ -626,14 +643,14 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
     <!-- Funnel steps -->
     <div class="funnel-grid">
-      <!-- Requêtes -->
+      <!-- Réclamations sans litiges -->
       <div class="funnel-step step-req">
         <div class="funnel-step-icon" style="background:var(--c-savt-t)">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
         </div>
-        <div class="funnel-step-label">Requêtes</div>
-        <div class="funnel-step-value" style="color:var(--c-savt)">47</div>
-        <div class="funnel-step-sub">litiges déclarés<br>cette semaine</div>
+        <div class="funnel-step-label">Réclamations sans litiges</div>
+        <div class="funnel-step-value" style="color:var(--c-savt)">68</div>
+        <div class="funnel-step-sub">réclamations reçues<br>non qualifiées en litige</div>
         <span class="funnel-step-pct" style="background:var(--c-savt-t);color:var(--c-savt)">100%</span>
       </div>
 
@@ -642,15 +659,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
-      <!-- Enquête -->
+      <!-- Litiges ouverts -->
       <div class="funnel-step step-enq">
         <div class="funnel-step-icon" style="background:var(--warning-tint)">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-        <div class="funnel-step-label">Enquête</div>
-        <div class="funnel-step-value" style="color:var(--warning)">28</div>
-        <div class="funnel-step-sub">en cours de traitement<br>ou att. réponse transp.</div>
-        <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">59,6%</span>
+        <div class="funnel-step-label">Litiges ouverts</div>
+        <div class="funnel-step-value" style="color:var(--warning)">47</div>
+        <div class="funnel-step-sub">litiges actifs<br>en attente de résolution</div>
+        <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">69,1%</span>
       </div>
 
       <!-- Arrow -->
@@ -666,7 +683,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="funnel-step-label">Indemnisés</div>
         <div class="funnel-step-value" style="color:var(--success)">12</div>
         <div class="funnel-step-sub">remboursements reçus<br>litige clôturé</div>
-        <span class="funnel-step-pct" style="background:var(--success-tint);color:var(--success)">25,5%</span>
+        <span class="funnel-step-pct" style="background:var(--success-tint);color:var(--success)">17,6%</span>
       </div>
 
       <!-- Arrow -->
@@ -682,15 +699,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="funnel-step-label">Non indemnisés</div>
         <div class="funnel-step-value" style="color:var(--danger)">7</div>
         <div class="funnel-step-sub">refusés ou pertes<br>définitives</div>
-        <span class="funnel-step-pct" style="background:var(--danger-tint);color:var(--danger)">14,9%</span>
+        <span class="funnel-step-pct" style="background:var(--danger-tint);color:var(--danger)">10,3%</span>
       </div>
     </div>
 
-    <!-- Row : Indemnités + TPS moyen -->
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+    <!-- Row : 4 colonnes, même hauteur -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:stretch;">
 
-      <!-- Card indemnités -->
-      <div class="indem-card">
+      <!-- Col 1 : Indemnités -->
+      <div class="indem-card" style="height:100%;">
         <div class="indem-main">
           <div class="indem-header">
             <div class="indem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
@@ -710,19 +727,17 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           </div>
           <div class="indem-toggle-group">
             <button class="indem-toggle active" id="toggleTransp" onclick="toggleIndem('transp')">
-              <span class="check-box"></span>
-              Transporteur
+              <span class="check-box"></span>Transporteur
             </button>
             <button class="indem-toggle active" id="toggleElogik" onclick="toggleIndem('elogik')">
-              <span class="check-box"></span>
-              e-logik
+              <span class="check-box"></span>e-logik
             </button>
           </div>
         </div>
       </div>
 
-      <!-- TPS résolution -->
-      <div class="kpi-card" style="--module-color:var(--warning);align-self:stretch;display:flex;flex-direction:column;justify-content:center;">
+      <!-- Col 2 : TPS résolution -->
+      <div class="kpi-card" style="--module-color:var(--warning);display:flex;flex-direction:column;">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
             <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -736,7 +751,49 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:61%"></div></div></div>
       </div>
 
+      <!-- Col 3+4 : Taux de litiges — composant unique avec deux colonnes internes -->
+      <div class="card" style="grid-column:span 2;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--danger);"></div>
+        <!-- Header commun -->
+        <div class="kpi-header" style="padding:16px 18px 12px;border-bottom:1px solid var(--border);">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div><div class="kpi-label">Taux de litiges</div><div class="kpi-label-sub">Semaine en cours · tous transporteurs</div></div>
+          </div>
+          <span class="kpi-status-badge bad">⚠ Dépassé</span>
+        </div>
+        <!-- Corps en deux colonnes -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0;">
+          <!-- Gauche : taux global + jauge -->
+          <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--border);">
+            <div>
+              <div class="litige-big">3,7<span class="unit">%</span></div>
+              <div style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:3px;">OBJECTIF ≤ 1,5%</div>
+            </div>
+            <div class="litige-bar-wrap">
+              <div class="litige-bar"><div class="litige-bar-fill" style="width:73%"></div></div>
+              <div class="litige-seuil">
+                <span class="litige-seuil-label">0%</span>
+                <span class="litige-seuil-label" style="color:var(--danger)">Seuil 1,5%</span>
+                <span class="litige-seuil-label">5%</span>
+              </div>
+            </div>
+            <div class="litige-sub">47 litiges · 68 réclamations · 12 847 expéditions<br>+12 cette semaine · 8 clôturés</div>
+          </div>
+          <!-- Droite : par transporteur -->
+          <div style="padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;">Par transporteur</div>
+            <div class="litige-row"><div class="litige-row-name">GLS</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:49%;background:var(--danger)"></div></div><div class="litige-row-val" style="color:var(--danger)">23</div></div>
+            <div class="litige-row"><div class="litige-row-name">Chronopost</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:30%;background:var(--warning)"></div></div><div class="litige-row-val" style="color:var(--warning)">14</div></div>
+            <div class="litige-row"><div class="litige-row-name">Colissimo</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:15%;background:var(--warning)"></div></div><div class="litige-row-val" style="color:var(--warning)">7</div></div>
+            <div class="litige-row"><div class="litige-row-name">DHL Express</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:6%;background:var(--success)"></div></div><div class="litige-row-val" style="color:var(--success)">3</div></div>
+            <div class="litige-row"><div class="litige-row-name">Colis Privé</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:0%"></div></div><div class="litige-row-val" style="color:var(--success)">0</div></div>
+          </div>
+        </div>
+      </div>
+
     </div>
+
   </div>
 
   <!-- ══ BLOC 3 : GRAPHIQUES & TABLEAUX + FEED ══ -->
@@ -767,6 +824,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <th>Ouverture</th>
                   <th class="center">Montant cmd.</th>
                   <th class="center">Ancienneté</th>
+                  <th class="center">Dernière màj</th>
                   <th>Source</th>
                 </tr>
               </thead>
@@ -779,6 +837,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">14 mars</span></td>
                   <td class="center"><span class="num-bad">847 €</span></td>
                   <td class="center"><span class="num-bad">9j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">22 mars · 14h</span></td>
                   <td><span class="source-chip sc-client">Client</span></td>
                 </tr>
                 <tr>
@@ -789,6 +848,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">13 mars</span></td>
                   <td class="center"><span class="num-warn">612 €</span></td>
                   <td class="center"><span class="num-warn">10j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">21 mars · 09h</span></td>
                   <td><span class="source-chip sc-trans">Transporteur</span></td>
                 </tr>
                 <tr>
@@ -799,6 +859,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">18 mars</span></td>
                   <td class="center"><span class="num-warn">534 €</span></td>
                   <td class="center"><span class="num-mono">5j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">23 mars · 11h</span></td>
                   <td><span class="source-chip sc-client">Client</span></td>
                 </tr>
                 <tr>
@@ -809,6 +870,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">18 mars</span></td>
                   <td class="center"><span class="num-mono">289 €</span></td>
                   <td class="center"><span class="num-mono">5j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">22 mars · 16h</span></td>
                   <td><span class="source-chip sc-client">Client</span></td>
                 </tr>
                 <tr>
@@ -819,6 +881,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">12 mars</span></td>
                   <td class="center"><span class="num-warn">412 €</span></td>
                   <td class="center"><span class="num-bad">11j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">20 mars · 10h</span></td>
                   <td><span class="source-chip sc-trans">Transporteur</span></td>
                 </tr>
                 <tr>
@@ -829,6 +892,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                   <td><span class="num-mono" style="color:var(--muted)">10 mars</span></td>
                   <td class="center"><span class="num-mono">198 €</span></td>
                   <td class="center"><span class="num-good">13j</span></td>
+                  <td class="center"><span class="num-mono" style="color:var(--muted)">23 mars · 08h</span></td>
                   <td><span class="source-chip sc-client">Client</span></td>
                 </tr>
               </tbody>
@@ -852,8 +916,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                 <tr>
                   <th style="text-align:left;">Transporteur / Offre</th>
                   <th>Total litiges</th>
-                  <th>Requêtes</th>
-                  <th>Enquête</th>
+                  <th>Réclamations sans litiges</th>
+                  <th>Litiges ouverts</th>
                   <th>Indemnisés</th>
                   <th>Non indem.</th>
                   <th>TPS moy.</th>
@@ -1017,7 +1081,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
                 <tr class="t-total-row">
                   <td>Total</td>
                   <td><span class="ts-badge ts-none">47</span></td>
-                  <td><span class="ts-badge ts-none">47</span></td>
+                  <td><span class="ts-badge ts-none">68</span></td>
                   <td><span class="ts-badge ts-wip">34</span></td>
                   <td><span class="ts-badge ts-ok">4</span></td>
                   <td><span class="ts-badge ts-none">8</span></td>
