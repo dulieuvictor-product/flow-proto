@@ -97,7 +97,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .icon-btn svg { width:16px; height:16px; color:var(--slate); }
 .notif-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--danger); border:1.5px solid var(--topbar-bg); }
 
-/* ── ELO IA — COMPOSANT IDENTIQUE BUSINESS-V2 ── */
+/* ── TIME SELECTOR & CALENDAR ── */
 .time-selector { display:flex; align-items:center; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:3px; }
 .ts-btn { font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 14px; border-radius:7px; border:none; background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
 .ts-btn:hover { color:var(--ink); }
@@ -121,6 +121,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .cal-action { font-size:11px; font-weight:500; padding:5px 12px; border-radius:7px; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; }
 .cal-action.primary { background:var(--primary); color:white; border-color:var(--primary); }
 .date-wrap { position:relative; }
+
+/* ── ELO IA CHATBOT ── */
 .chatbot-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
 .chatbot-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
 .chatbot-av { width:30px; height:30px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -181,8 +183,50 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .section-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
 .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
 
-/* ── KPI GRID ── */
-.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+/* ── KPI GRID — 5 colonnes ── */
+.kpi-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; }
+
+/* ── TABLEAU TRANSPORTEUR ── */
+.transp-table-wrap { overflow-x:auto; }
+.transp-table { width:100%; border-collapse:collapse; font-size:11px; }
+.transp-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
+.transp-table th:first-child { text-align:left; padding-left:16px; }
+.transp-table td { padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); vertical-align:middle; color:var(--ink); font-family:'DM Mono',monospace; font-size:11px; }
+.transp-table td:first-child { text-align:left; padding-left:16px; font-family:'Plus Jakarta Sans',sans-serif; }
+.transp-table tr:last-child td { border-bottom:none; }
+.transp-table tr.family-row > td { background:var(--surface2); font-weight:600; font-size:11px; color:var(--ink); }
+.transp-table tr.family-row > td:first-child { display:flex; align-items:center; gap:7px; }
+.transp-table tr.offer-row > td { background:var(--surface); color:var(--slate); }
+.transp-table tr.offer-row > td:first-child { padding-left:32px; font-size:11px; color:var(--muted); }
+.transp-table tr.offer-row:hover > td { background:var(--surface2); }
+.t-family-chevron { width:13px; height:13px; cursor:pointer; color:var(--muted); transition:transform 0.2s; flex-shrink:0; }
+.t-family-chevron.open { transform:rotate(90deg); }
+.t-total-row > td { background:var(--surface); font-weight:700; color:var(--ink); border-top:2px solid var(--border2); }
+/* Badges statut */
+.ts-badge { display:inline-flex; align-items:center; justify-content:center; min-width:28px; padding:2px 7px; border-radius:100px; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
+.ts-stock   { background:var(--warning-tint); color:var(--warning); }
+.ts-none    { background:var(--surface2); color:var(--muted); border:1px solid var(--border2); }
+.ts-wip     { background:var(--primary-tint); color:var(--primary); }
+.ts-ok      { background:var(--success-tint); color:var(--success); }
+.ts-anomaly { background:var(--danger-tint); color:var(--danger); }
+.ts-carrier { background:var(--violet-tint); color:var(--violet); }
+.ts-cancel  { background:var(--surface2); color:var(--muted); text-decoration:line-through; }
+.ts-zero    { color:var(--border2); font-size:10px; }
+/* Toggle collapse offres */
+.offers-collapse { display:none; }
+.canal-toggle { display:flex; align-items:center; gap:2px; margin-bottom:2px; }
+.canal-toggle-btn { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px; border:none; background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:500; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.canal-toggle-btn .canal-toggle-sub { font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); opacity:0.7; }
+.canal-toggle-btn:hover { color:var(--ink); background:var(--surface2); }
+.canal-toggle-btn.active { color:var(--c-qlog); font-weight:600; background:var(--c-qlog-t); }
+.canal-toggle-btn.active .canal-toggle-sub { color:var(--c-qlog); opacity:0.8; }
+.canal-toggle-btn.active-b2b { color:var(--c-business); font-weight:600; background:var(--c-business-t); }
+.canal-toggle-btn.active-b2b .canal-toggle-sub { color:var(--c-business); opacity:0.8; }
+.reapro-bar { height:6px; background:var(--border2); border-radius:100px; overflow:hidden; display:flex; margin-top:10px; }
+.reapro-seg { height:100%; transition:width 0.6s ease; }
+.reapro-legend { display:flex; gap:10px; margin-top:7px; flex-wrap:wrap; }
+.reapro-leg { display:flex; align-items:center; gap:5px; font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.reapro-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
 .kpi-card:hover { transform:translateY(-2px); }
 .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-qlog)); }
@@ -226,7 +270,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .mod-tab-desc { font-size:10px; color:var(--muted); margin-top:1px; font-family:'DM Mono',monospace; }
 .mod-tab.active .mod-tab-desc { color:var(--c-qlog); }
 .mod-tab.active.b2b .mod-tab-desc { color:var(--c-business); }
-.tab-indicator { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
 /* ── TAB PANELS ── */
 .tab-panel { display:none; animation:fadeIn 0.2s ease; }
@@ -236,7 +279,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 /* ── SECTION 2COL ── */
 .section-2col { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
 
-/* ── CANAL CHARTS CARD ── */
+/* ── CARDS ── */
 .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; width:100%; min-width:0; }
 .card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .card-title { font-size:13px; font-weight:600; color:var(--ink); }
@@ -293,7 +336,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .fourn-list { padding:0 16px 12px; }
 .fourn-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
 .fourn-row:last-child { border-bottom:none; }
-.fourn-name { font-size:12px; font-weight:500; color:var(--ink); flex:1; }
+.fourn-name { font-size:12px; font-weight:500; color:var(--ink); flex:1; min-width:0; }
+.fourn-name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
 .fourn-rdv-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
 .fourn-rdv-ok { background:var(--success-tint); color:var(--success); }
 .fourn-rdv-no { background:var(--warning-tint); color:var(--warning); }
@@ -361,11 +405,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item active" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
+  <div class="nav-item active" onclick="location.href='qualite-logistique-v3.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     Qualité logistique
   </div>
-<div class="nav-item" onclick="location.href='qualite-transport-v1.html'" style="cursor:pointer;">
+  <div class="nav-item" onclick="location.href='qualite-transport-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
     Qualité transport
   </div>
@@ -499,7 +543,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div>
 
-  <!-- ══ BLOC 2 : KPI MACRO (communs aux deux canaux) ══ -->
+  <!-- ══ BLOC 2 : KPI MACRO — 3 cards ══ -->
   <div>
     <div class="page-header">
       <div>
@@ -509,21 +553,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       </div>
     </div>
     <div class="kpi-grid">
-      <!-- Bloquées -->
-      <div class="kpi-card" style="--module-color:var(--danger)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-            <div><div class="kpi-label">Bloquées</div><div class="kpi-label-sub">Anomalie · att. action</div></div>
-          </div>
-          <span class="kpi-status-badge ok">✓ Sous seuil</span>
-        </div>
-        <div class="kpi-big" style="color:var(--danger)">3<span class="unit"> cmd.</span></div>
-        <div class="kpi-secondary">sur 1 204 commandes · 0.25%</div>
-        <div class="kpi-sub-row"><span class="delta-up">↓ −70%</span><span style="font-size:11px;color:var(--muted)">vs seuil alerte (10)</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:3%"></div></div></div>
-      </div>
-      <!-- Préparées -->
+
+      <!-- 1 — Préparées -->
       <div class="kpi-card" style="--module-color:var(--c-qlog)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
@@ -537,7 +568,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="kpi-sub-row"><span class="delta-up">↑ +0.25 pts</span><span style="font-size:11px;color:var(--muted)">vs objectif</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-qlog);width:99.75%"></div></div></div>
       </div>
-      <!-- Cut-off fusionné -->
+
+      <!-- 2 — Cut-off -->
       <div class="kpi-card" style="--module-color:var(--success)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
@@ -557,338 +589,705 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <div class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--warning)"></div>Après (8.8%)</div>
         </div>
       </div>
-      <!-- Délai moyen -->
+
+      <!-- 3 — Bloquées (toutes causes) -->
+      <div class="kpi-card" style="--module-color:var(--danger)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div><div class="kpi-label">Bloquées</div><div class="kpi-label-sub">Anomalie · att. action</div></div>
+          </div>
+          <span class="kpi-status-badge ok">✓ Sous seuil</span>
+        </div>
+        <div class="kpi-big" style="color:var(--danger)">3<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary">sur 1 204 commandes · 0.25%</div>
+        <div class="kpi-sub-row"><span class="delta-up">↓ −70%</span><span style="font-size:11px;color:var(--muted)">vs seuil alerte (10)</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:3%"></div></div></div>
+      </div>
+
+      <!-- 4 — Bloquées attente stock + jauge réapro -->
+      <div class="kpi-card" style="--module-color:var(--warning)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
+            <div><div class="kpi-label">Att. stock</div><div class="kpi-label-sub">Bloquées · réapro</div></div>
+          </div>
+          <span class="kpi-status-badge warn">⚠ À traiter</span>
+        </div>
+        <div class="kpi-big" style="color:var(--warning)">2<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary">sur 3 bloquées · att. réapprovisionnement</div>
+        <div class="reapro-bar">
+          <div class="reapro-seg" style="width:45%;background:#22D3EE;opacity:0.85;border-radius:100px 0 0 100px;"></div>
+          <div class="reapro-seg" style="width:20%;background:var(--success);"></div>
+          <div class="reapro-seg" style="width:35%;background:var(--warning);border-radius:0 100px 100px 0;"></div>
+        </div>
+        <div class="reapro-legend">
+          <div class="reapro-leg"><div class="reapro-dot" style="background:#22D3EE;opacity:0.85;"></div>Commandé (45%)</div>
+          <div class="reapro-leg"><div class="reapro-dot" style="background:var(--success)"></div>Récept. en cours (20%)</div>
+          <div class="reapro-leg"><div class="reapro-dot" style="background:var(--warning)"></div>Non commandé (35%)</div>
+        </div>
+      </div>
+
+      <!-- 5 — Colis & articles par commande -->
       <div class="kpi-card" style="--module-color:var(--c-qlog)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-            <div><div class="kpi-label">Délai moyen prépa</div><div class="kpi-label-sub">Mono vs pluriproduits</div></div>
+            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+            <div><div class="kpi-label">Colis / commande</div><div class="kpi-label-sub">Moy. sem. · tous canaux</div></div>
           </div>
-          <span class="kpi-status-badge warn">⚠ À surveiller</span>
+          <span class="kpi-status-badge ok">✓ Stable</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-qlog)">18<span class="unit"> min</span></div>
-        <div class="kpi-secondary">mono : 11 min · pluriproduits : 34 min</div>
-        <div class="kpi-sub-row"><span class="delta-dn">↑ +3 min</span><span style="font-size:11px;color:var(--muted)">vs sem. précédente</span></div>
-        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:60%"></div></div></div>
+        <!-- Valeur principale : colis mis en avant -->
+        <div class="kpi-big" style="color:var(--c-qlog)">1.05<span class="unit"> col.</span></div>
+        <!-- Valeur secondaire : articles, hiérarchiquement effacée -->
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:5px;">
+          <span style="font-size:18px;font-weight:300;letter-spacing:-0.03em;color:var(--muted);">3.2</span>
+          <span style="font-size:11px;color:var(--muted);">art. / cmd.</span>
+        </div>
+        <div class="kpi-secondary">majorité mono-colis · ratio colis/art. stable</div>
+        <!-- Mini tiles comparatif -->
+        <div style="margin-top:10px;display:flex;gap:8px;">
+          <div style="flex:1;background:var(--c-qlog-t);border:1px solid rgba(14,116,144,0.15);border-radius:8px;padding:7px 10px;">
+            <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--c-qlog);font-family:'DM Mono',monospace;margin-bottom:3px;">Colis moy.</div>
+            <div style="font-size:15px;font-weight:600;color:var(--c-qlog);font-family:'DM Mono',monospace;">1.05</div>
+          </div>
+          <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+            <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:3px;">Art. moy.</div>
+            <div style="font-size:15px;font-weight:600;color:var(--muted);font-family:'DM Mono',monospace;">3.2</div>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 
   <!-- ══ BLOC 3 : ONGLETS B2C / B2B ══ -->
   <div>
-    <!-- Tabs switcher -->
-    <div class="module-tabs">
-      <div class="mod-tab active" id="tab-b2c" onclick="switchTab('b2c')">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="mod-tab-pill">B2C</span>
-            <span style="font-weight:600;">Direct consommateur</span>
-          </div>
-          <div class="mod-tab-desc">934 commandes · taux service 99.7%</div>
-        </div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:16px;height:16px;margin-left:auto;opacity:0.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="mod-tab b2b" id="tab-b2b" onclick="switchTab('b2b')">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="mod-tab-pill">B2B</span>
-            <span style="font-weight:600;">Professionnel</span>
-          </div>
-          <div class="mod-tab-desc">267 commandes · cut-off 16h00</div>
-        </div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:16px;height:16px;margin-left:auto;opacity:0.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+    <!-- ── SOUS-TOGGLE B2C / B2B ── -->
+    <div class="canal-toggle">
+      <button class="canal-toggle-btn active" id="tab-b2c" onclick="switchTab('b2c')">B2C <span class="canal-toggle-sub">934 cmd.</span></button>
+      <button class="canal-toggle-btn" id="tab-b2b" onclick="switchTab('b2b')">B2B <span class="canal-toggle-sub">267 cmd.</span></button>
     </div>
 
     <!-- ── PANEL B2C ── -->
     <div class="tab-panel active" id="panel-b2c">
 
-      <!-- SUIVI DE PRODUCTION B2C -->
       <div class="section-label" style="margin-top:8px">
         <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
-        Suivi de production — B2C
+        Suivi de la préparation — B2C
       </div>
 
       <div class="section-2col">
-        <!-- Graphiques -->
         <div class="card">
           <div class="card-head">
             <div>
-              <div class="card-title">Taux de préparation B2C</div>
-              <div class="card-sub">934 commandes · objectif 99.5% départ J</div>
+              <div class="card-title">Suivi de la préparation B2C</div>
+              <div class="card-sub">934 commandes · objectif cut-off 99.5%</div>
             </div>
             <span class="card-badge cb-ok">✓ Objectif</span>
           </div>
           <div class="chart-tabs" id="b2cChartTabs">
             <button class="ct-btn active qlog" onclick="switchB2CChart(this,'preparation')">Taux préparation</button>
-            <button class="ct-btn" onclick="switchB2CChart(this,'departJ')">Taux départ à J</button>
-            <button class="ct-btn" onclick="switchB2CChart(this,'cutoff')">Avant / après cut-off</button>
+            <button class="ct-btn" onclick="switchB2CChart(this,'cutoff')">Respect cut-off</button>
           </div>
           <div class="chart-legend">
             <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog)"></div>Semaine en cours</div>
-            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog);opacity:0.4;border-top:2px dashed var(--c-qlog)"></div>Objectif</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog);opacity:0.4;"></div>Objectif</div>
           </div>
           <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2C"></canvas></div>
+          <!-- Cartons utilisés -->
+          <div style="border-top:1px solid var(--border);padding:10px 18px 12px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              <span style="font-size:11px;color:var(--muted);">Cartons utilisés cette semaine</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--c-qlog);">1 847</span>
+              <span style="font-size:10px;color:var(--muted);">cartons</span>
+              <span class="canal-stat-delta d-up" style="font-size:10px;">↑ +4.2%</span>
+            </div>
+          </div>
+          <!-- Mini stats cut-off + préparation -->
           <div class="canal-mini-row">
             <div class="canal-cell">
               <div class="canal-cell-lbl">Taux préparation</div>
               <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-qlog)">99.7</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up">↑ +0.2</span></div>
             </div>
             <div class="canal-cell">
-              <div class="canal-cell-lbl">Taux départ à J</div>
-              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-qlog)">98.9</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-eq">= stable</span></div>
+              <div class="canal-cell-lbl">Respect cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--success)">93.1</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up">↑ +1.1</span></div>
             </div>
             <div class="canal-cell">
-              <div class="canal-cell-lbl">Avant cut-off</div>
-              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--success)">93.1</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up">↑ +1.1</span></div>
+              <div class="canal-cell-lbl">Cmd. intégrées bloquées</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--danger)">1</span><span class="canal-stat-unit"> cmd.</span><span class="canal-stat-delta d-dn">⚠ OMS</span></div>
             </div>
           </div>
         </div>
 
-        <!-- Score qualité B2C -->
         <div class="score-sidebar">
           <div class="score-sidebar-title">Score qualité — B2C</div>
+          <!-- Cmd intégrées bloquées -->
+          <div class="score-card" style="--sc-color:var(--danger)">
+            <div class="score-card-label">Cmd. intégrées bloquées</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--danger)">1<span class="unit"> cmd.</span></div><span style="font-size:10px;font-weight:600;color:var(--muted)">sem. en cours</span></div>
+            <div class="score-desc">Erreur format OMS · en attente de correction</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--danger);width:10%"></div></div>
+          </div>
+          <!-- Cmd en anomalie -->
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Commandes en anomalie</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)">0<span class="unit"> cmd.</span></div><span class="score-trend-up">✓ RAS</span></div>
+            <div class="score-desc">Aucune anomalie détectée cette semaine</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:0%"></div></div>
+          </div>
+          <!-- Taux incident -->
           <div class="score-card" style="--sc-color:var(--success)">
             <div class="score-card-label">Taux d'incident</div>
             <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)">0.5<span class="unit">%</span></div><span class="score-trend-up">↓ −0.4 pts</span></div>
             <div class="score-desc">5 incidents · 934 préparations · seuil 1.0%</div>
             <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:5%"></div></div>
           </div>
-          <div class="score-card" style="--sc-color:var(--success)">
-            <div class="score-card-label">Respect cut-off</div>
-            <div class="score-gauge-wrap"><div class="score-big">93.1<span class="unit">%</span></div><span class="score-trend-up">↑ +1.1 pts</span></div>
-            <div class="score-desc">871 expéditions avant cut-off · obj. 90%</div>
-            <div class="score-bar"><div class="score-bar-fill" style="width:93.1%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--c-qlog)">
-            <div class="score-card-label">Erreurs imports cmd.</div>
-            <div class="score-gauge-wrap"><div class="score-big">0.8<span class="unit">%</span></div><span class="score-trend-up">↓ −0.2 pts</span></div>
-            <div class="score-desc">8 erreurs OMS · doublons (5) · format (3)</div>
-            <div class="score-bar"><div class="score-bar-fill" style="width:8%"></div></div>
-          </div>
         </div>
       </div>
 
-      <!-- SUIVI DE RÉCEPTION B2C -->
       <div class="section-label">
-        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
-        Suivi de réception — B2C
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        Suivi de la préparation par transporteur — B2C
       </div>
 
-      <div class="section-2col">
-        <div class="card">
-          <div class="card-head">
-            <div><div class="card-title">Réception fournisseurs — Flux entrant B2C</div><div class="card-sub">8 réceptions · 2 fournisseurs actifs · sem. en cours</div></div>
-            <span class="card-badge cb-ok">✓ Conformité OK</span>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Préparation par offre de transport</div>
+            <div class="card-sub">934 commandes · semaine 17–23 mars · B2C</div>
           </div>
-          <div class="recept-metrics">
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Délai mise à quai → intégration</div>
-              <div class="recept-big">2h18<span class="unit"> moy.</span></div>
-              <div class="recept-sub">Objectif ≤ 4h · mono : 1h40 · pluri : 3h55</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="width:57%"></div></div>
-            </div>
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Conformité vol. &amp; emballage</div>
-              <div class="recept-big" style="color:var(--success)">96.8<span class="unit">%</span></div>
-              <div class="recept-sub">2 écarts détectés · emballage endommagé ×2</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--success);width:96.8%"></div></div>
-            </div>
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prise de RDV fournisseurs</div>
-              <div class="recept-big" style="color:var(--success)">7/8<span class="unit"> RDV</span></div>
-              <div class="recept-sub">87.5% de prise de RDV · 1 sans RDV préalable</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--success);width:87.5%"></div></div>
-            </div>
-          </div>
-          <div style="border-top:1px solid var(--border);padding:10px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;">Fournisseurs B2C</div></div>
-          <div class="fourn-list">
-            <div class="fourn-row">
-              <div style="width:28px;height:28px;border-radius:7px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">BG</div>
-              <div class="fourn-name">Beauty Group SAS<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 1 240 unités</div></div>
-              <span class="fourn-rdv-badge fourn-rdv-ok">RDV ✓</span>
-              <div class="fourn-date">18 mars · 08h30</div>
-              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:100%;background:var(--success)"></div></div><span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace">100%</span></div>
-            </div>
-            <div class="fourn-row">
-              <div style="width:28px;height:28px;border-radius:7px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">NC</div>
-              <div class="fourn-name">Nüber Cosmetics<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 1 820 unités</div></div>
-              <span class="fourn-rdv-badge fourn-rdv-no">Sans RDV</span>
-              <div class="fourn-date">22 mars · 10h00</div>
-              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:94%;background:var(--success)"></div></div><span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace">94%</span></div>
-            </div>
-          </div>
+          <span class="card-badge cb-ok">✓ Majoritairement préparées</span>
         </div>
+        <div class="carrier-table-wrap">
+          <table class="transp-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Transporteur / Offre</th>
+                <th>Att. stock</th>
+                <th>Non traitée</th>
+                <th>En cours</th>
+                <th>Préparée</th>
+                <th>Anomalie</th>
+                <th>Prise en charge</th>
+                <th>Annulée</th>
+                <th style="border-left:1px solid var(--border);">Total</th>
+              </tr>
+            </thead>
+            <tbody>
 
-        <!-- Score conformité réception B2C -->
-        <div class="score-sidebar">
-          <div class="score-sidebar-title">Score conformité — B2C</div>
-          <div class="score-card" style="--sc-color:var(--success)">
-            <div class="score-card-label">Taux de conformité</div>
-            <div class="score-gauge-wrap"><div class="score-big">96.8<span class="unit">%</span></div><span class="score-trend-up">↑ +3.2 pts</span></div>
-            <div class="score-desc">Attente vs réalité · vol. &amp; qualité emballage</div>
-            <div class="score-bar"><div class="score-bar-fill" style="width:96.8%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--success)">
-            <div class="score-card-label">Taux RDV fournisseurs</div>
-            <div class="score-gauge-wrap"><div class="score-big">87.5<span class="unit">%</span></div><span class="score-trend-up">↑ +4.2 pts</span></div>
-            <div class="score-desc">7 sur 8 livraisons avec RDV confirmé</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:87.5%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--c-qlog)">
-            <div class="score-card-label">Délai moyen réception</div>
-            <div class="score-gauge-wrap"><div class="score-big">2h18</div><span class="score-trend-up">↓ −22 min</span></div>
-            <div class="score-desc">Quai → WMS intégré · objectif ≤ 4h</div>
-            <div class="score-bar"><div class="score-bar-fill" style="width:57%"></div></div>
-          </div>
+              <!-- COLISSIMO -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-colissimo-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('colissimo-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Colissimo</span>
+                </td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">12</span></td>
+                <td><span class="ts-badge ts-wip">38</span></td>
+                <td><span class="ts-badge ts-ok">310</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">192</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">552</td>
+              </tr>
+              <tr class="offer-row" id="colissimo-b2c">
+                <td>Colissimo Domicile J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">8</span></td>
+                <td><span class="ts-badge ts-wip">24</span></td>
+                <td><span class="ts-badge ts-ok">198</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">120</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">350</td>
+              </tr>
+              <tr class="offer-row" id="colissimo-b2c">
+                <td>Colissimo Expert</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">14</span></td>
+                <td><span class="ts-badge ts-ok">112</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">72</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">202</td>
+              </tr>
+
+              <!-- CHRONOPOST -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-chrono-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Chronopost</span>
+                </td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">6</span></td>
+                <td><span class="ts-badge ts-wip">18</span></td>
+                <td><span class="ts-badge ts-ok">156</span></td>
+                <td><span class="ts-badge ts-anomaly">2</span></td>
+                <td><span class="ts-badge ts-carrier">98</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">280</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2c">
+                <td>Chronopost Express J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">12</span></td>
+                <td><span class="ts-badge ts-ok">104</span></td>
+                <td><span class="ts-badge ts-anomaly">2</span></td>
+                <td><span class="ts-badge ts-carrier">64</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">186</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2c">
+                <td>Chronopost 13h</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">6</span></td>
+                <td><span class="ts-badge ts-ok">52</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">34</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">94</td>
+              </tr>
+
+              <!-- MONDIAL RELAY -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-mr-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('mr-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Mondial Relay</span>
+                </td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">10</span></td>
+                <td><span class="ts-badge ts-ok">72</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">14</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">102</td>
+              </tr>
+              <tr class="offer-row" id="mr-b2c">
+                <td>Point Relais 5j</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">10</span></td>
+                <td><span class="ts-badge ts-ok">72</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">14</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);">102</td>
+              </tr>
+
+              <!-- TOTAL -->
+              <tr class="t-total-row">
+                <td>Total B2C</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">22</span></td>
+                <td><span class="ts-badge ts-wip">66</span></td>
+                <td><span class="ts-badge ts-ok">538</span></td>
+                <td><span class="ts-badge ts-anomaly">2</span></td>
+                <td><span class="ts-badge ts-carrier">304</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;font-size:12px;color:var(--ink);">934</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
+      </div>
+
       </div>
     </div>
 
     <!-- ── PANEL B2B ── -->
     <div class="tab-panel" id="panel-b2b">
 
-      <!-- SUIVI DE PRODUCTION B2B -->
       <div class="section-label" style="margin-top:8px">
         <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
-        Suivi de production — B2B
+        Suivi de la préparation — B2B
       </div>
 
       <div class="section-2col">
         <div class="card">
           <div class="card-head">
             <div>
-              <div class="card-title">Taux de préparation B2B</div>
+              <div class="card-title">Suivi de la préparation B2B</div>
               <div class="card-sub">267 commandes · cut-off 16h00 · avg 5.3 art/cmd</div>
             </div>
             <span class="card-badge cb-warn">⚠ À surveiller</span>
           </div>
           <div class="chart-tabs" id="b2bChartTabs">
             <button class="ct-btn active biz" onclick="switchB2BChart(this,'preparation')">Taux préparation</button>
-            <button class="ct-btn" onclick="switchB2BChart(this,'departJ')">Taux départ à J</button>
-            <button class="ct-btn" onclick="switchB2BChart(this,'cutoff')">Avant / après cut-off</button>
+            <button class="ct-btn" onclick="switchB2BChart(this,'cutoff')">Respect cut-off</button>
           </div>
           <div class="chart-legend">
             <div class="cl-item"><div class="cl-dot" style="background:var(--c-business)"></div>Semaine en cours</div>
-            <div class="cl-item"><div class="cl-dot" style="background:var(--warning)"></div>Objectif (départ J)</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--warning)"></div>Objectif</div>
           </div>
           <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2B"></canvas></div>
+          <!-- Cartons utilisés -->
+          <div style="border-top:1px solid var(--border);padding:10px 18px 12px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              <span style="font-size:11px;color:var(--muted);">Cartons utilisés cette semaine</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--c-business);">412</span>
+              <span style="font-size:10px;color:var(--muted);">cartons</span>
+              <span class="canal-stat-delta d-dn" style="font-size:10px;">↑ +8.1%</span>
+            </div>
+          </div>
+          <!-- Mini stats -->
           <div class="canal-mini-row">
             <div class="canal-cell">
               <div class="canal-cell-lbl">Taux préparation</div>
               <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-business)">99.2</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −0.3</span></div>
             </div>
             <div class="canal-cell">
-              <div class="canal-cell-lbl">Taux départ à J</div>
-              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)">96.8</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −1.4</span></div>
+              <div class="canal-cell-lbl">Respect cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)">86.5</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −2.1</span></div>
             </div>
             <div class="canal-cell">
-              <div class="canal-cell-lbl">Avant cut-off</div>
-              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)">86.5</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn">↓ −2.1</span></div>
+              <div class="canal-cell-lbl">Cmd. intégrées bloquées</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--danger)">1</span><span class="canal-stat-unit"> cmd.</span><span class="canal-stat-delta d-dn">⚠ OMS</span></div>
             </div>
           </div>
         </div>
 
-        <!-- Score qualité B2B -->
         <div class="score-sidebar">
           <div class="score-sidebar-title">Score qualité — B2B</div>
+          <!-- Cmd intégrées bloquées -->
+          <div class="score-card" style="--sc-color:var(--danger)">
+            <div class="score-card-label">Cmd. intégrées bloquées</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--danger)">1<span class="unit"> cmd.</span></div><span style="font-size:10px;font-weight:600;color:var(--muted)">sem. en cours</span></div>
+            <div class="score-desc">Format EDI non reconnu · en attente de retraitement</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--danger);width:10%"></div></div>
+          </div>
+          <!-- Cmd en anomalie -->
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Commandes en anomalie</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)">0<span class="unit"> cmd.</span></div><span class="score-trend-up">✓ RAS</span></div>
+            <div class="score-desc">Aucune anomalie détectée cette semaine</div>
+            <div class="score-bar"><div class="score-bar-fill" style="background:var(--success);width:0%"></div></div>
+          </div>
+          <!-- Taux incident -->
           <div class="score-card" style="--sc-color:var(--warning)">
             <div class="score-card-label">Taux d'incident</div>
             <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">1.1<span class="unit">%</span></div><span class="score-trend-dn">↑ +0.3 pts</span></div>
             <div class="score-desc">3 incidents · 267 préparations · seuil 1.0%</div>
             <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:11%"></div></div>
           </div>
-          <div class="score-card" style="--sc-color:var(--warning)">
-            <div class="score-card-label">Respect cut-off</div>
-            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">86.5<span class="unit">%</span></div><span class="score-trend-dn">↓ −2.1 pts</span></div>
-            <div class="score-desc">231 expéditions avant cut-off · obj. 90%</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:86.5%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--warning)">
-            <div class="score-card-label">Erreurs imports cmd.</div>
-            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">2.2<span class="unit">%</span></div><span class="score-trend-dn">↑ +0.7 pts</span></div>
-            <div class="score-desc">9 erreurs OMS · doublons (3) · format (6)</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:22%"></div></div>
-          </div>
         </div>
       </div>
 
-      <!-- SUIVI DE RÉCEPTION B2B -->
       <div class="section-label">
-        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
-        Suivi de réception — B2B
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        Suivi de la préparation par transporteur — B2B
       </div>
 
-      <div class="section-2col">
-        <div class="card">
-          <div class="card-head">
-            <div><div class="card-title">Réception fournisseurs — Flux entrant B2B</div><div class="card-sub">4 réceptions · 1 fournisseur actif · sem. en cours</div></div>
-            <span class="card-badge cb-warn">⚠ Écart détecté</span>
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Préparation par offre de transport</div>
+            <div class="card-sub">267 commandes · semaine 17–23 mars · B2B</div>
           </div>
-          <div class="recept-metrics">
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Délai mise à quai → intégration</div>
-              <div class="recept-big" style="color:var(--c-business)">3h10<span class="unit"> moy.</span></div>
-              <div class="recept-sub">Objectif ≤ 4h · palettes mixtes impliquent tri manuel</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--c-business);width:79%"></div></div>
-            </div>
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Conformité vol. &amp; emballage</div>
-              <div class="recept-big" style="color:var(--warning)">87.5<span class="unit">%</span></div>
-              <div class="recept-sub">2 écarts détectés · volume manquant ×2</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--warning);width:87.5%"></div></div>
-            </div>
-            <div class="recept-cell">
-              <div class="recept-cell-label"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Prise de RDV fournisseurs</div>
-              <div class="recept-big" style="color:var(--warning)">1/4<span class="unit"> RDV</span></div>
-              <div class="recept-sub">25% de prise de RDV · 3 sans RDV préalable</div>
-              <div class="recept-bar"><div class="recept-bar-fill" style="background:var(--warning);width:25%"></div></div>
-            </div>
-          </div>
-          <div style="border-top:1px solid var(--border);padding:10px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;">Fournisseurs B2B</div></div>
-          <div class="fourn-list">
-            <div class="fourn-row">
-              <div style="width:28px;height:28px;border-radius:7px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">KP</div>
-              <div class="fourn-name">Kera Pro Distribution<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réceptions · 860 unités B2B</div></div>
-              <span class="fourn-rdv-badge fourn-rdv-no">Sans RDV ×3</span>
-              <div class="fourn-date">20 mars · 14h15</div>
-              <div style="display:flex;align-items:center;gap:4px"><div class="fourn-conform-bar"><div class="fourn-conform-fill" style="width:87%;background:var(--warning)"></div></div><span style="font-size:10px;color:var(--warning);font-weight:600;font-family:'DM Mono',monospace">87%</span></div>
-            </div>
-          </div>
+          <span class="card-badge cb-warn">⚠ Anomalie Chronopost</span>
         </div>
+        <div class="carrier-table-wrap">
+          <table class="transp-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Transporteur / Offre</th>
+                <th>Att. stock</th>
+                <th>Non traitée</th>
+                <th>En cours</th>
+                <th>Préparée</th>
+                <th>Anomalie</th>
+                <th>Prise en charge</th>
+                <th>Annulée</th>
+                <th style="border-left:1px solid var(--border);">Total</th>
+              </tr>
+            </thead>
+            <tbody>
 
-        <!-- Score conformité réception B2B -->
-        <div class="score-sidebar">
-          <div class="score-sidebar-title">Score conformité — B2B</div>
-          <div class="score-card" style="--sc-color:var(--warning)">
-            <div class="score-card-label">Taux de conformité</div>
-            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--warning)">87.5<span class="unit">%</span></div><span class="score-trend-dn">↓ −5.1 pts</span></div>
-            <div class="score-desc">Écarts volume · palettes incomplètes ×2</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--warning);width:87.5%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--danger)">
-            <div class="score-card-label">Taux RDV fournisseurs</div>
-            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--danger)">25<span class="unit">%</span></div><span class="score-trend-dn">↓ −12 pts</span></div>
-            <div class="score-desc">1 sur 4 livraisons avec RDV · désorganisation quai</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--danger);width:25%"></div></div>
-          </div>
-          <div class="score-card" style="--sc-color:var(--c-business)">
-            <div class="score-card-label">Délai moyen réception</div>
-            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--c-business)">3h10</div><span class="score-trend-dn">↑ +28 min</span></div>
-            <div class="score-desc">Tri palettes mixtes · objectif ≤ 4h</div>
-            <div class="score-bar"><div class="score-bar-fill" style="background:var(--c-business);width:79%"></div></div>
-          </div>
+              <!-- DHL -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-dhl-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('dhl-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>DHL</span>
+                </td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">5</span></td>
+                <td><span class="ts-badge ts-wip">14</span></td>
+                <td><span class="ts-badge ts-ok">88</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">22</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">130</td>
+              </tr>
+              <tr class="offer-row" id="dhl-b2b">
+                <td>DHL Express 9h</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">3</span></td>
+                <td><span class="ts-badge ts-wip">8</span></td>
+                <td><span class="ts-badge ts-ok">54</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">14</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">80</td>
+              </tr>
+              <tr class="offer-row" id="dhl-b2b">
+                <td>DHL Freight Pallet</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">6</span></td>
+                <td><span class="ts-badge ts-ok">34</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">8</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">50</td>
+              </tr>
+
+              <!-- CHRONOPOST B2B -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-chrono-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Chronopost</span>
+                </td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">3</span></td>
+                <td><span class="ts-badge ts-wip">8</span></td>
+                <td><span class="ts-badge ts-ok">56</span></td>
+                <td><span class="ts-badge ts-anomaly">3</span></td>
+                <td><span class="ts-badge ts-carrier">12</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">83</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2b">
+                <td>Chronopost Business 13h</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">5</span></td>
+                <td><span class="ts-badge ts-ok">38</span></td>
+                <td><span class="ts-badge ts-anomaly">3</span></td>
+                <td><span class="ts-badge ts-carrier">8</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);">57</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2b">
+                <td>Chronopost Express J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">1</span></td>
+                <td><span class="ts-badge ts-wip">3</span></td>
+                <td><span class="ts-badge ts-ok">18</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">4</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">26</td>
+              </tr>
+
+              <!-- GLS -->
+              <tr class="family-row">
+                <td>
+                  <svg class="t-family-chevron open" id="chev-gls-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('gls-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>GLS</span>
+                </td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">4</span></td>
+                <td><span class="ts-badge ts-ok">42</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">6</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">54</td>
+              </tr>
+              <tr class="offer-row" id="gls-b2b">
+                <td>GLS Business Parcel</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">4</span></td>
+                <td><span class="ts-badge ts-ok">42</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">6</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">54</td>
+              </tr>
+
+              <!-- TOTAL -->
+              <tr class="t-total-row">
+                <td>Total B2B</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">10</span></td>
+                <td><span class="ts-badge ts-wip">26</span></td>
+                <td><span class="ts-badge ts-ok">186</span></td>
+                <td><span class="ts-badge ts-anomaly">3</span></td>
+                <td><span class="ts-badge ts-carrier">40</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;font-size:12px;color:var(--ink);">267</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-  </div>
+  </div><!-- /bloc onglets -->
+
+  <!-- ══ BLOC 4 : SUIVI DE RÉCEPTION (commun B2C + B2B) ══ -->
+  <div>
+    <div class="section-label">
+      <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
+      Suivi de réception — tous canaux
+    </div>
+
+    <!-- Layout 3 colonnes : fournisseurs | délai CF→quai | CF sans BL -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start;">
+
+      <!-- Colonne 1 : liste fournisseurs consolidée -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Fournisseurs actifs</div>
+            <div class="card-sub">12 réceptions · 3 fournisseurs · sem. en cours</div>
+          </div>
+          <span class="card-badge cb-warn">⚠ 1 sans BL</span>
+        </div>
+        <div style="padding:8px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">B2C</div></div>
+        <div class="fourn-list">
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">BG</div>
+            <div class="fourn-name"><span class="fourn-name-text">Beauty Group SAS</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réc. · 1 240 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-ok" style="flex-shrink:0;">BL ✓</span>
+            <span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;">100%</span>
+          </div>
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">NC</div>
+            <div class="fourn-name"><span class="fourn-name-text">Nüber Cosmetics</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réc. · 1 820 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-no" style="flex-shrink:0;">Sans BL</span>
+            <span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;">94%</span>
+          </div>
+        </div>
+        <div style="padding:8px 16px 4px;border-top:1px solid var(--border);"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">B2B</div></div>
+        <div class="fourn-list">
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">KP</div>
+            <div class="fourn-name"><span class="fourn-name-text">Kera Pro Distribution</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">4 réc. · 860 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-no" style="flex-shrink:0;">Sans BL ×3</span>
+            <span style="font-size:10px;color:var(--warning);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;">87%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 2 : Délai CF → mise à quai -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Délai CF → mise à quai</div>
+            <div class="card-sub">Moy. émission commande fournisseur → réception quai</div>
+          </div>
+        </div>
+        <div style="padding:20px 20px 8px;">
+          <!-- B2C -->
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2C</span>
+                <span style="font-size:9px;background:var(--c-qlog-t);color:var(--c-qlog);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">Beauty Group · Nüber</span>
+              </div>
+              <span class="delta-up" style="font-size:10px;">↓ −0.3 j</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--success);line-height:1;">2.4</span>
+              <span style="font-size:14px;color:var(--muted);">jours</span>
+              <span style="font-size:11px;color:var(--muted);">· obj. ≤ 3 j</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:80%;background:var(--success);border-radius:100px;"></div>
+            </div>
+          </div>
+          <!-- B2B -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2B</span>
+                <span style="font-size:9px;background:var(--warning-tint);color:var(--warning);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">Kera Pro</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +0.8 j</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--warning);line-height:1;">4.1</span>
+              <span style="font-size:14px;color:var(--muted);">jours</span>
+              <span style="font-size:11px;color:var(--muted);">· obj. ≤ 3 j</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:100%;background:var(--warning);border-radius:100px;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Palettes mixtes · tri manuel · délai dépassé</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 3 : CF sans bon de livraison -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">CF sans bon de livraison</div>
+            <div class="card-sub">% de réceptions arrivées sans BL préalable · obj. 0%</div>
+          </div>
+        </div>
+        <div style="padding:20px 20px 8px;">
+          <!-- B2C -->
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2C</span>
+                <span style="font-size:9px;background:var(--warning-tint);color:var(--warning);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">1/8 réceptions</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +4.2 pts</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--warning);line-height:1;">12.5</span>
+              <span style="font-size:14px;color:var(--muted);">%</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:12.5%;background:var(--warning);border-radius:100px;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Nüber Cosmetics · 22 mars</div>
+          </div>
+          <!-- B2B -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2B</span>
+                <span style="font-size:9px;background:var(--danger-tint);color:var(--danger);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">3/4 réceptions</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +12 pts</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--danger);line-height:1;">75</span>
+              <span style="font-size:14px;color:var(--muted);">%</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:75%;background:var(--danger);border-radius:100px;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Kera Pro Distribution · absence processus BL</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /suivi réception -->
 
   <!-- ══ BLOC ANALYSES & ACTIONS ══ -->
   <div>
     <div class="section-label">Analyses &amp; suivi</div>
     <div class="block-actions">
 
-      <!-- Analyses sauvegardées -->
       <div class="aa-col">
         <div class="aa-head">
           <div class="aa-head-left">
@@ -928,7 +1327,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         </div>
       </div>
 
-      <!-- Actions en cours -->
       <div class="aa-col">
         <div class="aa-head">
           <div class="aa-head-left">
@@ -951,78 +1349,38 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div>
 
-  <!-- ══ BLOC 4 : ANALYSES & ACTIONS ══ -->
-  <div>
-    <div class="section-label">Analyses &amp; suivi</div>
-    <div class="block-actions">
-
-      <!-- Analyses sauvegardées -->
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Qualité Logistique</div></div>
-          </div>
-          <span class="aa-head-badge" id="analysisCount">3</span>
-        </div>
-        <div class="aa-body" id="analysisList">
-          <div class="analysis-item" id="analysis-card-1">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--c-qlog)"></div>
-              <div class="analysis-q">Quel produit nécessite le plus de temps de préparation sur le canal B2B ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) — x2.3 vs monoproduit. Recommandation : opérateurs dédiés coffrets jeudi–vendredi.</div>
-            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">WMS e-kan</span></div>
-          </div>
-          <div class="analysis-item" id="analysis-card-2">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--warning)"></div>
-              <div class="analysis-q">Quels jours concentre-t-on le plus d'incidents de préparation ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">Mercredi (4 incidents) et vendredi (3 incidents) — corrélés aux pics de volume B2B en fin de semaine.</div>
-            <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 14h07</span><span class="analysis-src">WMS e-kan</span></div>
-          </div>
-          <div class="analysis-item" id="analysis-card-3">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--danger)"></div>
-              <div class="analysis-q">Pourquoi le taux de prise de RDV fournisseurs B2B est-il si bas ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">Kera Pro Distribution : 3 livraisons sans RDV sur 4. Absence de processus de confirmation côté fournisseur — point à escalader en revue mensuelle.</div>
-            <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 11h45</span><span class="analysis-src">WMS e-kan · Réception</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Actions en cours -->
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Qualité Logistique</div></div>
-          </div>
-          <span class="aa-head-badge" id="actionCount">0</span>
-        </div>
-        <div class="aa-body" id="actionList">
-          <div class="aa-empty" id="actionEmpty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
-          </div>
-        </div>
-        <div class="aa-add-row">
-          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action de suivi…" onkeydown="if(event.key==='Enter')addAction()"/>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   </div><!-- /content -->
 </div><!-- /main -->
 
 <script>
+/* ── TOGGLE TRANSPORTEUR (collapse offres) ── */
+function toggleCarrier(groupId, chevron) {
+  var rows = document.querySelectorAll('tr.offer-row[id="' + groupId + '"]');
+  var isOpen = chevron.classList.contains('open');
+  rows.forEach(function(r) {
+    if (isOpen) {
+      r.classList.add('offers-collapse');
+    } else {
+      r.classList.remove('offers-collapse');
+    }
+  });
+  chevron.classList.toggle('open', !isOpen);
+}
+/* Init : toutes les offres visibles au chargement */
+window.addEventListener('DOMContentLoaded', function() {
+  /* Init toggleCarrier */
+  document.querySelectorAll('tr.offer-row').forEach(function(r) {
+    r.classList.remove('offers-collapse');
+  });
+  document.querySelectorAll('.t-family-chevron').forEach(function(c) {
+    c.classList.add('open');
+  });
+  /* Init calendrier et graphiques */
+  renderCal();
+  buildB2CChart();
+  buildB2BChart();
+});
+
 /* ── THEME ── */
 function toggleTheme() {
   var h = document.documentElement;
@@ -1106,16 +1464,20 @@ document.addEventListener('click', function(e) { if (calOpen && !document.queryS
 
 /* ── ONGLETS B2C / B2B ── */
 function switchTab(canal) {
-  ['b2c','b2b'].forEach(function(c) {
-    document.getElementById('tab-' + c).classList.toggle('active', c === canal);
-    document.getElementById('tab-b2b').classList.toggle('b2b', true);
-    document.getElementById('panel-' + c).classList.toggle('active', c === canal);
-  });
-  // retirer la classe active du mauvais onglet
+  var b2cBtn = document.getElementById('tab-b2c');
+  var b2bBtn = document.getElementById('tab-b2b');
+  // reset
+  b2cBtn.classList.remove('active','active-b2b');
+  b2bBtn.classList.remove('active','active-b2b');
+  document.getElementById('panel-b2c').classList.remove('active');
+  document.getElementById('panel-b2b').classList.remove('active');
+  // set
   if (canal === 'b2c') {
-    document.getElementById('tab-b2b').classList.remove('active');
+    b2cBtn.classList.add('active');
+    document.getElementById('panel-b2c').classList.add('active');
   } else {
-    document.getElementById('tab-b2c').classList.remove('active');
+    b2bBtn.classList.add('active-b2b');
+    document.getElementById('panel-b2b').classList.add('active');
   }
   setTimeout(function() { rebuildCharts(); }, 50);
 }
@@ -1135,7 +1497,6 @@ function switchB2BChart(btn, metric) {
 /* ── CHARTS ── */
 var chartB2CInst, chartB2BInst;
 var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
-
 var b2cData = {
   preparation: [99.1, 99.4, 99.2, 99.6, 99.5, 99.8, 99.7, 99.5, 99.9, 100, 99.8, 99.7],
   departJ:     [98.2, 98.5, 98.4, 98.8, 98.5, 99.0, 98.9, 98.6, 99.1, 99.2, 99.0, 98.9],
@@ -1151,14 +1512,14 @@ function getTC() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   return { grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', text: isDark ? '#5A6C7D' : '#8A95A3' };
 }
-function getCSSVal(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
 function buildB2CChart(metric) {
   var ctx = document.getElementById('chartB2C');
   if (!ctx) return;
   if (chartB2CInst) chartB2CInst.destroy();
   var tc = getTC();
-  var color = getCSSVal('--c-qlog');
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var color = isDark ? '#22D3EE' : '#0E7490';
   var raw = b2cData[metric || 'preparation'];
   chartB2CInst = new Chart(ctx, {
     type: 'line',
@@ -1186,7 +1547,8 @@ function buildB2BChart(metric) {
   if (!ctx) return;
   if (chartB2BInst) chartB2BInst.destroy();
   var tc = getTC();
-  var color = getCSSVal('--c-business');
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var color = isDark ? '#60A5FA' : '#2563EB';
   var raw = b2bData[metric || 'preparation'];
   chartB2BInst = new Chart(ctx, {
     type: 'line',
@@ -1194,7 +1556,7 @@ function buildB2BChart(metric) {
       labels: weeks,
       datasets: [
         { label: 'Réalisé', data: raw, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: color, borderWidth: 2 },
-        { label: 'Objectif', data: weeks.map(function() { return 99.0; }), borderColor: getCSSVal('--warning') + '88', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
+        { label: 'Objectif', data: weeks.map(function() { return 99.0; }), borderColor: isDark ? 'rgba(255,176,32,0.55)' : 'rgba(194,123,0,0.55)', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
       ]
     },
     options: {
@@ -1210,12 +1572,6 @@ function buildB2BChart(metric) {
 }
 
 function rebuildCharts() { buildB2CChart(); buildB2BChart(); }
-
-window.addEventListener('DOMContentLoaded', function() {
-  renderCal();
-  buildB2CChart();
-  buildB2BChart();
-});
 
 var themeObserver = new MutationObserver(function(muts) {
   muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
