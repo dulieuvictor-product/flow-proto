@@ -177,7 +177,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
 .re-toggle:hover { background:var(--surface2); }
 .re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
-.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+.kpi-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; }
 .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
 .kpi-card:hover { transform:translateY(-2px); }
 .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-business)); }
@@ -197,6 +197,12 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .delta-dn { font-size:10px; font-weight:600; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; }
 .kpi-bar-wrap { margin-top:12px; }
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.kpi-split-bar { height:4px; border-radius:100px; overflow:hidden; display:flex; margin-top:10px; }
+.kpi-split-a { height:100%; background:var(--primary); transition:width 0.6s ease; }
+.kpi-split-b { height:100%; background:var(--success); transition:width 0.6s ease; }
+.kpi-split-legend { display:flex; justify-content:space-between; margin-top:5px; }
+.kpi-split-leg { font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); display:flex; align-items:center; gap:3px; }
+.kpi-split-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 .kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
 .section-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
 .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
@@ -461,6 +467,37 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="kpi-secondary">Objectif semaine : 310 k€ · YTD : 3,8 M€</div>
         <div class="kpi-sub-row"><span class="delta-up">+8,1%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:94%;background:var(--c-business)"></div></div></div>
+      </div>
+      <!-- KPI 5 : Répartition des livraisons -->
+      <div class="kpi-card" style="--module-color:var(--c-qtrans)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <div><div class="kpi-label">Répartition livraisons</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Domicile vs. point relais</div></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">
+          <div class="kpi-big" style="color:var(--primary)">68<span class="unit">%</span></div>
+          <div style="font-size:13px;font-weight:300;color:var(--success);letter-spacing:-0.02em;">32<span style="font-size:11px;">%</span></div>
+        </div>
+        <div class="kpi-split-bar">
+          <div class="kpi-split-a" style="width:68%;"></div>
+          <div class="kpi-split-b" style="width:32%;"></div>
+        </div>
+        <div class="kpi-split-legend">
+          <span class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--primary)"></div>Domicile</span>
+          <span class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--success)"></div>Point relais</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);">
+            <span>Frais moy. payés</span>
+            <span style="font-weight:700;color:var(--ink);font-family:'DM Mono',monospace;">4,20 €</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);">
+            <span>Livraison offerte</span>
+            <span style="font-weight:700;color:var(--success);font-family:'DM Mono',monospace;">41%</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
