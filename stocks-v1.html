@@ -389,11 +389,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-fill { height:100%; border-radius:100px; }
 
 /* SECTION SEPARATOR */
-.section-sep { display:flex; align-items:center; gap:12px; margin:4px 0 16px; }
-.section-sep-icon { width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.section-sep-icon svg { width:13px; height:13px; }
-.section-sep-title { font-size:11px; font-weight:700; color:var(--ink); letter-spacing:-0.01em; }
-.section-sep-sub { font-size:10px; color:var(--muted); margin-top:1px; }
+.section-sep { display:flex; align-items:center; gap:10px; margin:4px 0 16px; }
+.section-sep-title { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
 .section-sep-line { flex:1; height:1px; background:var(--border); }
 
 /* CARDS */
@@ -527,23 +524,23 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     Tableau de bord
   </div>
   <div class="nav-section">Modules</div>
-  <div class="nav-item" onclick="location.href='business-v2.html'" style="cursor:pointer;">
+  <div class="nav-item" onclick="location.href='business-v3.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
+  <div class="nav-item" onclick="location.href='qualite-logistique-v6_4.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-    Qualité logistique
+    Logistique
   </div>
   <div class="nav-item" onclick="location.href='qualite-transport-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-    Qualité transport
+    Transports
   </div>
-  <div class="nav-item" onclick="location.href='litiges-transport-v1.html'" style="cursor:pointer">
+  <div class="nav-item" onclick="location.href='litiges-transport-v1_1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-    Litiges transport <span class="nav-badge">12</span>
+    Litiges <span class="nav-badge">47</span>
   </div>
-  <div class="nav-item" style="cursor:default;opacity:0.45;">
+  <div class="nav-item" onclick="location.href='retours-v2.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
     Retours <span class="nav-badge-warn">24</span>
   </div>
@@ -744,11 +741,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
   <!-- ══ SEPARATEUR STOCKS & RUPTURES ══ -->
   <div class="section-sep">
-    <div class="section-sep-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-    <div>
-      <div class="section-sep-title">Stocks &amp; Ruptures</div>
-      <div class="section-sep-sub">État des ruptures et rotation des références</div>
-    </div>
+    <div class="section-sep-title">Stocks &amp; Ruptures</div>
     <div class="section-sep-line"></div>
   </div>
 
@@ -878,35 +871,287 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <tbody id="rot-table"></tbody>
         </table>
       </div>
+      <div style="padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;">
+        <button id="rot-export-btn" onclick="exportRotation()" disabled style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:not-allowed;transition:all 0.12s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter <span id="rot-export-count">0</span> références
+        </button>
+      </div>
     </div>
+  </div>
+
+  <!-- ══ BLOC DLC + RUPTURES ══ -->
+  <div class="g2">
+
+    <!-- #1 Références à DLC courte (< 30j) -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">DLC courte — &lt; 30 jours</div>
+          <div class="card-sub">Références à écouler en priorité · semaine en cours</div>
+        </div>
+        <span class="card-badge cb-bad">10 réf.</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <div style="overflow-y:auto;max-height:225px;">
+          <table class="tbl" style="min-width:100%;">
+            <thead style="position:sticky;top:0;z-index:2;background:var(--surface2);">
+              <tr>
+                <th>Référence</th>
+                <th>Désignation</th>
+                <th class="center">Stock</th>
+                <th class="center">DLC</th>
+                <th class="center">Jours restants</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-mono">COS-10337</td>
+                <td class="td-bold">Crème solaire SPF50 100ml</td>
+                <td class="center"><span class="num-bad">42</span></td>
+                <td class="center"><span class="num-mono">08/04/25</span></td>
+                <td class="center"><span class="num-bad">7j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10582</td>
+                <td class="td-bold">Masque détox argile 75ml</td>
+                <td class="center"><span class="num-warn">118</span></td>
+                <td class="center"><span class="num-mono">12/04/25</span></td>
+                <td class="center"><span class="num-bad">11j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10994</td>
+                <td class="td-bold">Sérum vitamine C 30ml</td>
+                <td class="center"><span class="num-warn">67</span></td>
+                <td class="center"><span class="num-mono">16/04/25</span></td>
+                <td class="center"><span class="num-bad">15j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10118</td>
+                <td class="td-bold">Lotion tonique florale 200ml</td>
+                <td class="center"><span class="num-warn">204</span></td>
+                <td class="center"><span class="num-mono">18/04/25</span></td>
+                <td class="center"><span class="num-warn">17j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-11203</td>
+                <td class="td-bold">Exfoliant corps 150ml</td>
+                <td class="center"><span class="num-mono">89</span></td>
+                <td class="center"><span class="num-mono">20/04/25</span></td>
+                <td class="center"><span class="num-warn">19j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10774</td>
+                <td class="td-bold">Huile corps amande douce 100ml</td>
+                <td class="center"><span class="num-mono">156</span></td>
+                <td class="center"><span class="num-mono">22/04/25</span></td>
+                <td class="center"><span class="num-warn">21j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10456</td>
+                <td class="td-bold">BB crème teintée 30ml</td>
+                <td class="center"><span class="num-mono">73</span></td>
+                <td class="center"><span class="num-mono">24/04/25</span></td>
+                <td class="center"><span class="num-warn">23j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-11087</td>
+                <td class="td-bold">Contour yeux anti-âge 15ml</td>
+                <td class="center"><span class="num-mono">31</span></td>
+                <td class="center"><span class="num-mono">25/04/25</span></td>
+                <td class="center"><span class="num-warn">24j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10661</td>
+                <td class="td-bold">Fond de teint fluide 30ml</td>
+                <td class="center"><span class="num-mono">48</span></td>
+                <td class="center"><span class="num-mono">27/04/25</span></td>
+                <td class="center"><span class="num-warn">26j</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10902</td>
+                <td class="td-bold">Crème hydratante nuit 50ml</td>
+                <td class="center"><span class="num-mono">112</span></td>
+                <td class="center"><span class="num-mono">30/04/25</span></td>
+                <td class="center"><span class="num-warn">29j</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="padding:7px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;display:flex;gap:16px;flex-wrap:wrap;">
+        <span style="color:var(--danger);font-weight:700;">≤ 15j</span> critique &nbsp;·&nbsp;
+        <span style="color:var(--warning);font-weight:700;">16–30j</span> à surveiller
+      </div>
+    </div>
+
+    <!-- #2 Références en rupture -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Références en rupture</div>
+          <div class="card-sub">Commandes bloquées · statut réapprovisionnement</div>
+        </div>
+        <span class="card-badge cb-bad">8 réf.</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Référence</th>
+              <th>Désignation</th>
+              <th class="center">Cmd. bloquées</th>
+              <th class="center">Réappro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-mono">COS-10421</td>
+              <td class="td-bold">Shampoing Hydra+ 250ml</td>
+              <td class="center"><span class="num-bad">24</span></td>
+              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10187</td>
+              <td class="td-bold">Mousse coiffante Volume 150ml</td>
+              <td class="center"><span class="num-bad">17</span></td>
+              <td class="center"><span class="badge bdg-g">Commandé</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10822</td>
+              <td class="td-bold">Laque Brillance Extra 300ml</td>
+              <td class="center"><span class="num-warn">11</span></td>
+              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10539</td>
+              <td class="td-bold">Gel douche Éclat 250ml</td>
+              <td class="center"><span class="num-bad">19</span></td>
+              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10711</td>
+              <td class="td-bold">Démaquillant biphasé 150ml</td>
+              <td class="center"><span class="num-warn">8</span></td>
+              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10348</td>
+              <td class="td-bold">Eau micellaire 400ml</td>
+              <td class="center"><span class="num-warn">13</span></td>
+              <td class="center"><span class="badge bdg-g">Commandé</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10963</td>
+              <td class="td-bold">Baume lèvres protection 4ml</td>
+              <td class="center"><span class="num-mono">6</span></td>
+              <td class="center"><span class="badge bdg-g">Commandé</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-11124</td>
+              <td class="td-bold">Poudre libre translucide 10g</td>
+              <td class="center"><span class="num-bad">21</span></td>
+              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <!-- ══ SEPARATEUR ÉVOLUTIONS ══ -->
   <div class="section-sep">
-    <div class="section-sep-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div>
-      <div class="section-sep-title">Suivi des évolutions de stocks</div>
-      <div class="section-sep-sub">Tendances stock et répartition par emplacement</div>
-    </div>
+    <div class="section-sep-title">Répartition et coûts</div>
     <div class="section-sep-line"></div>
   </div>
 
   <!-- ══ BLOC 2 : HISTORIQUE + PIE ══ -->
   <div class="g-pie">
 
-    <!-- Histogramme stock + facture logistique -->
+    <!-- Tableau factures stockage reçues -->
     <div class="card">
       <div class="card-head">
         <div>
-          <div class="card-title">Évolution du stock &amp; facture logistique</div>
-          <div class="card-sub">12 dernières semaines · unités en entrepôt et coût WMS</div>
+          <div class="card-title">Factures stockage reçues</div>
+          <div class="card-sub">Janvier · Février · Mars 2025 — WMS elogik</div>
+        </div>
+        <span class="card-badge" style="background:var(--c-stocks-t);color:var(--c-stocks)">3 factures</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Réf. facture</th>
+              <th>Période</th>
+              <th class="center">Montant total</th>
+              <th class="center">Vol. étagères</th>
+              <th class="center">Vol. palettes</th>
+              <th class="center">Mouvements</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Janvier -->
+            <tr>
+              <td>
+                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-001</div>
+                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/01/25</div>
+              </td>
+              <td><span style="font-size:11px;color:var(--slate);">Janvier 2025</span></td>
+              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">4 820 €</span></td>
+              <td class="center"><span class="num-mono">1 240 €</span></td>
+              <td class="center"><span class="num-mono">2 960 €</span></td>
+              <td class="center"><span class="num-mono">620 €</span></td>
+            </tr>
+            <!-- Février -->
+            <tr>
+              <td>
+                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-002</div>
+                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 28/02/25</div>
+              </td>
+              <td><span style="font-size:11px;color:var(--slate);">Février 2025</span></td>
+              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">5 140 €</span></td>
+              <td class="center"><span class="num-mono">1 380 €</span></td>
+              <td class="center"><span class="num-mono">3 120 €</span></td>
+              <td class="center"><span class="num-mono">640 €</span></td>
+            </tr>
+            <!-- Mars -->
+            <tr>
+              <td>
+                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-003</div>
+                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/03/25</div>
+              </td>
+              <td><span style="font-size:11px;color:var(--slate);">Mars 2025</span></td>
+              <td class="center"><span class="num-warn" style="font-weight:700;">5 680 €</span></td>
+              <td class="center"><span class="num-mono">1 520 €</span></td>
+              <td class="center"><span class="num-mono">3 440 €</span></td>
+              <td class="center"><span class="num-mono">720 €</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Ligne totaux -->
+      <div style="display:grid;grid-template-columns:1fr repeat(4,auto);gap:0;border-top:1px solid var(--border2);padding:10px 16px;align-items:center;background:var(--surface2);">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">Total T1 2025</span>
+        <div style="display:flex;gap:24px;margin-left:auto;align-items:baseline;">
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:300;letter-spacing:-0.03em;color:var(--c-stocks);">15 640 €</div>
+            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Total</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">4 140 €</div>
+            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Étagères</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">9 520 €</div>
+            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Palettes</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">1 980 €</div>
+            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Mouvements</div>
+          </div>
         </div>
       </div>
-      <div class="chart-legend">
-        <div class="cl-item"><div class="cl-dot" style="background:#D97706;height:8px;border-radius:2px"></div>Unités en stock</div>
-        <div class="cl-item"><div class="cl-dot" style="background:#6C47E8"></div>Facture logistique (€)</div>
-      </div>
-      <div style="padding:4px 16px 14px;position:relative;height:190px"><canvas id="chartEvol"></canvas></div>
     </div>
 
     <!-- Pie chart répartition palette / magasin -->
@@ -914,7 +1159,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div class="card-head">
         <div>
           <div class="card-title">Répartition emplacement</div>
-          <div class="card-sub">Palette · Magasin · Consignes</div>
+          <div class="card-sub">Palette · Étagères · Consignes</div>
         </div>
       </div>
       <div style="padding:8px 16px 0;position:relative;height:160px"><canvas id="chartPie"></canvas></div>
@@ -924,7 +1169,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">58% · 14 200 u</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#0E8FCC;flex-shrink:0"></div>Magasin</div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#0E8FCC;flex-shrink:0"></div>Étagères</div>
           <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">34% · 8 320 u</span>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
@@ -937,11 +1182,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
   <!-- ══ SEPARATEUR ANALYSES ══ -->
   <div class="section-sep">
-    <div class="section-sep-icon" style="background:var(--primary-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-    <div>
-      <div class="section-sep-title">Analyses &amp; suivi</div>
-      <div class="section-sep-sub">Analyses sauvegardées et actions en cours</div>
-    </div>
+    <div class="section-sep-title">Analyses &amp; suivi</div>
     <div class="section-sep-line"></div>
   </div>
 
@@ -1102,12 +1343,42 @@ function renderRotation(threshold) {
   var avg = filtered.length ? Math.round(filtered.reduce(function(s,r){ return s+r.days; },0)/filtered.length) : 0;
   document.getElementById('rot-avg').textContent = avg + 'j';
   var tbody = document.getElementById('rot-table');
-  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);font-size:12px;padding:16px">Aucune référence immobile au-delà de ce seuil</td></tr>'; return; }
-  tbody.innerHTML = filtered.map(function(r) {
-    var cls = r.days >= 90 ? 'days-bad' : r.days >= 60 ? 'days-warn' : 'days-ok';
-    var rowCls = 'stock-alert-row';
-    return '<tr class="' + rowCls + '"><td class="td-mono">' + r.ref + '</td><td style="font-weight:500">' + r.name + '</td><td class="td-mono">' + r.qty + '</td><td class="td-mono">' + r.lastMove + '</td><td><span class="days-chip ' + cls + '">' + r.days + 'j</span></td></tr>';
-  }).join('');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);font-size:12px;padding:16px">Aucune référence immobile au-delà de ce seuil</td></tr>'; }
+  else {
+    tbody.innerHTML = filtered.map(function(r) {
+      var cls = r.days >= 90 ? 'days-bad' : r.days >= 60 ? 'days-warn' : 'days-ok';
+      return '<tr class="stock-alert-row"><td class="td-mono">' + r.ref + '</td><td style="font-weight:500">' + r.name + '</td><td class="td-mono">' + r.qty + '</td><td class="td-mono">' + r.lastMove + '</td><td><span class="days-chip ' + cls + '">' + r.days + 'j</span></td></tr>';
+    }).join('');
+  }
+  /* CTA export */
+  var btn = document.getElementById('rot-export-btn');
+  var cnt = document.getElementById('rot-export-count');
+  cnt.textContent = filtered.length;
+  if (filtered.length > 0) {
+    btn.disabled = false;
+    btn.style.cursor = 'pointer';
+    btn.style.color = 'var(--primary)';
+    btn.style.borderColor = 'var(--primary)';
+    btn.style.background = 'var(--primary-tint)';
+  } else {
+    btn.disabled = true;
+    btn.style.cursor = 'not-allowed';
+    btn.style.color = 'var(--muted)';
+    btn.style.borderColor = 'var(--border2)';
+    btn.style.background = 'var(--surface2)';
+  }
+}
+function exportRotation() {
+  var threshold = parseInt(document.getElementById('rotSlider').value);
+  var filtered = rotData.filter(function(r) { return r.days >= threshold; });
+  if (!filtered.length) return;
+  var rows = [['Référence','Désignation','Qté','Dernier mouvement','Immobile (j)']];
+  filtered.forEach(function(r){ rows.push([r.ref, r.name, r.qty, r.lastMove, r.days]); });
+  var csv = rows.map(function(r){ return r.join(';'); }).join('\n');
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'rotation-stocks-' + threshold + 'j.csv';
+  a.click();
 }
 function updateRotation(val) {
   document.getElementById('rotVal').textContent = val + 'j';
@@ -1122,53 +1393,6 @@ var factureLog  = [4200, 4050, 4380, 3980, 3820, 4150, 4020, 3890, 3740, 3620, 3
 
 function buildCharts() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  var gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-  var textColor = isDark ? '#5A6C7D' : '#8A95A3';
-
-  /* Évolution stock + facture */
-  var ctxE = document.getElementById('chartEvol');
-  if (!ctxE) return;
-  if (chartEvol) { chartEvol.destroy(); chartEvol = null; }
-  chartEvol = new Chart(ctxE.getContext('2d'), {
-    data: {
-      labels: weeks,
-      datasets: [
-        {
-          type: 'bar',
-          label: 'Unités en stock',
-          data: stockUnits,
-          backgroundColor: isDark ? 'rgba(252,211,77,0.7)' : 'rgba(217,119,6,0.7)',
-          borderRadius: 4,
-          yAxisID: 'y',
-          order: 2
-        },
-        {
-          type: 'line',
-          label: 'Facture logistique (€)',
-          data: factureLog,
-          borderColor: isDark ? '#A78BFF' : '#6C47E8',
-          backgroundColor: isDark ? 'rgba(167,139,255,0.1)' : 'rgba(108,71,232,0.1)',
-          fill: true,
-          tension: 0.4,
-          pointRadius: 3,
-          pointBackgroundColor: isDark ? '#A78BFF' : '#6C47E8',
-          borderWidth: 2,
-          yAxisID: 'y2',
-          order: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, family: 'DM Mono' } } },
-        y:  { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return (v/1000).toFixed(0) + 'k'; } }, position: 'left' },
-        y2: { grid: { display: false }, ticks: { color: textColor, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return v + '€'; } }, position: 'right' }
-      }
-    }
-  });
 
   /* Pie répartition */
   var ctxP = document.getElementById('chartPie');
@@ -1177,7 +1401,7 @@ function buildCharts() {
   chartPie = new Chart(ctxP.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Palette', 'Magasin', 'Consignes / Transit'],
+      labels: ['Palette', 'Étagères', 'Consignes / Transit'],
       datasets: [{
         data: [58, 34, 8],
         backgroundColor: [
