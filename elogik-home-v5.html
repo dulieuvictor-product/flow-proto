@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elogik (flow) — Tableau de bord</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -370,6 +371,586 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .conv-pill svg { width: 11px; height: 11px; }
 .conv-pill .conv-pill-close { margin-left: 6px; cursor: pointer; opacity: 0.6; }
 .conv-pill .conv-pill-close:hover { opacity: 1; }
+
+
+/* ════════════════════════════════════════════
+   FLOATING IA DOCK
+   ════════════════════════════════════════════ */
+
+/* À droite de la sidebar — ne la recouvre pas */
+.ia-dock-anchor {
+  position: fixed;
+  bottom: 0;
+  left: 220px;   /* largeur exacte de .sidenav */
+  right: 0;
+  z-index: 150;  /* sous sidenav z-index:200, sous nav-overlay z-index:190 */
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .ia-dock-anchor { left: 0; z-index: 140; }
+  .signal-overlay { left: 0; }
+}
+
+.ia-dock-inner {
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ── SIGNAL IA CARD (flottant au-dessus du dock) ── */
+.signal-ia-float-zone {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 0 20px;          /* marge avec les bords de la bottom bar */
+}
+
+/* Overlay de mise au second plan — actif quand des signaux sont visibles */
+.signal-overlay {
+  position: fixed;
+  top: 0; left: 220px; right: 0; bottom: 0;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  z-index: 149; /* sous le dock (150) mais au-dessus du contenu */
+  transition: background 0.4s ease;
+}
+body.signals-active .signal-overlay {
+  background: rgba(0,0,0,0.22);
+  pointer-events: auto;
+}
+[data-theme="dark"] body.signals-active .signal-overlay {
+  background: rgba(0,0,0,0.35);
+}
+
+/* Au chargement : les signaux sont masqués, révélés via .toast-in */
+.signal-ia {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.signal-ia {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--dock-shadow);
+  position: relative;
+  transition: background 0.25s, border-color 0.25s, opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: auto;
+}
+/* État visible après l'animation toast */
+.signal-ia.toast-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.signal-ia.dismissing {
+  animation: signalOut 0.28s ease forwards;
+}
+.signal-ia::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 14px 14px 0 0;
+}
+.signal-ia[data-severity="danger"]::before  { background: var(--danger); }
+.signal-ia[data-severity="warning"]::before { background: var(--warning); }
+.signal-ia[data-severity="info"]::before    { background: var(--primary); }
+
+.signal-ia-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px 9px; gap: 10px; }
+.signal-ia-head-left { display: flex; align-items: center; gap: 9px; flex: 1; min-width: 0; }
+.signal-ia-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon { background: var(--danger-tint); }
+.signal-ia[data-severity="warning"] .signal-ia-icon { background: var(--warning-tint); }
+.signal-ia[data-severity="info"]    .signal-ia-icon { background: var(--primary-tint); }
+.signal-ia-icon svg { width: 13px; height: 13px; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon svg { stroke: var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-icon svg { stroke: var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-icon svg { stroke: var(--primary); }
+.signal-ia-meta { min-width: 0; flex: 1; }
+.signal-ia-source {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 5px; margin-bottom: 1px;
+}
+.signal-ia[data-severity="danger"]  .signal-ia-source { color: var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source { color: var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source { color: var(--primary); }
+.signal-ia-source-dot { width: 5px; height: 5px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+.signal-ia[data-severity="danger"]  .signal-ia-source-dot { background: var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source-dot { background: var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source-dot { background: var(--primary); }
+.signal-ia-text-inline {
+  font-size: 12px; color: var(--ink); line-height: 1.45;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.signal-ia-text-inline strong { font-weight: 600; }
+.signal-ia[data-severity="danger"]  .signal-ia-text-inline strong { color: var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color: var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-text-inline strong { color: var(--primary); }
+.signal-ia-head-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.signal-ia-btn {
+  font-size: 11px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 5px 12px; border-radius: 100px; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 4px; white-space: nowrap; transition: all 0.12s;
+}
+.signal-ia-btn svg { width: 10px; height: 10px; }
+.signal-ia-btn-primary { background: var(--violet); color: white; }
+.signal-ia-btn-primary:hover { background: #5535D0; }
+.signal-ia-btn-save {
+  background: var(--surface2); border: 1px solid var(--border2); color: var(--slate);
+}
+.signal-ia-btn-save:hover { background: var(--violet-tint); border-color: rgba(108,71,232,0.2); color: var(--violet); }
+.signal-ia-btn-save.saved { background: var(--success-tint); border-color: rgba(42,149,84,0.2); color: var(--success); cursor: default; }
+.signal-ia-dismiss {
+  width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border2);
+  background: transparent; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); transition: all 0.12s; flex-shrink: 0;
+}
+.signal-ia-dismiss:hover { background: var(--surface2); color: var(--ink); }
+.signal-ia-dismiss svg { width: 11px; height: 11px; }
+
+/* Reco body — toujours visible, pas de toggle */
+.signal-ia-reco {
+  padding: 0 14px 12px;
+  display: block;  /* toujours visible */
+}
+.signal-ia-reco-inner {
+  background: var(--violet-tint); border: 1px solid rgba(108,71,232,0.15);
+  border-radius: 10px; padding: 9px 12px;
+}
+[data-theme="dark"] .signal-ia-reco-inner { border-color: rgba(167,139,255,0.18); }
+.signal-ia-reco-head {
+  display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet);
+  font-family: 'DM Mono', monospace; margin-bottom: 5px;
+}
+.signal-ia-reco-head svg { width: 10px; height: 10px; }
+.signal-ia-reco-body { font-size: 11.5px; color: var(--ink); line-height: 1.6; }
+.signal-ia-reco-body strong { color: var(--violet); font-weight: 600; }
+.signal-ia-expand-toggle {
+  font-size: 10px; font-weight: 500; color: var(--muted); background: none;
+  border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 2px 4px; transition: color 0.12s; white-space: nowrap; flex-shrink: 0;
+}
+.signal-ia-expand-toggle:hover { color: var(--ink); }
+
+
+/* ════════════════════════════════════════════
+   DOCK : IA COMMAND BAR + ANALYSES
+   ════════════════════════════════════════════ */
+.ia-dock {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: var(--dock-shadow);
+  transition: background 0.25s, border-color 0.25s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;  /* barre EN BAS, corps AU-DESSUS */
+}
+
+/* ─────────────────────────────────────────────
+   BARRE PRINCIPALE (toujours visible)
+   Flexbox : [brand fixe] [Analyses fixe] [Actions fixe] [champ flex] [toggle fixe]
+   ───────────────────────────────────────────── */
+.ia-dock-bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 52px;
+  border-top: 1px solid var(--border);  /* séparation avec le corps ouvert */
+}
+
+/* zone générique */
+.ia-dock-zone {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+  flex-shrink: 0;
+}
+/* champ IA : flex-grow pour prendre tout l'espace restant, positionné à droite */
+.ia-dock-zone.ia-dock-input-zone {
+  flex: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  order: 10;          /* après les zones preview */
+  border-right: none; /* plus de border-right, le toggle s'en charge */
+}
+/* toggle : tout à droite */
+/* brand : tout à gauche */
+.ia-dock-zone:first-child { order: 0; }
+.ia-dock-zone:last-child { border-right: none; }
+
+/* zone brand */
+.ia-dock-brand {
+  display: flex; align-items: center; gap: 9px;
+}
+.ia-dock-av {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--violet);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ia-dock-av svg { width: 14px; height: 14px; }
+.ia-dock-label { font-size: 11px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.ia-dock-status {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--success); font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 4px;
+}
+.ia-status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--success); animation: pulse 1.6s infinite; }
+
+/* zone champ IA */
+.ia-dock-input-zone { gap: 8px; }
+.ia-dock-input-wrap {
+  flex: 1;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 100px; padding: 7px 14px;
+  transition: border-color 0.15s, background 0.25s;
+}
+.ia-dock-input-wrap:focus-within { border-color: var(--violet); box-shadow: 0 0 0 3px var(--violet-tint); }
+.ia-dock-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 12.5px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--ink);
+}
+.ia-dock-input::placeholder { color: var(--muted); }
+.ia-dock-send {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--violet);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; opacity: 0.35; transition: opacity 0.15s, transform 0.12s;
+}
+.ia-dock-send.ready { opacity: 1; }
+.ia-dock-send:hover.ready { transform: scale(1.08); }
+.ia-dock-send svg { width: 11px; height: 11px; }
+
+/* Saved pill inline dans zone champ */
+.ia-saved-pill {
+  display: none; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 500; color: var(--success);
+  background: var(--success-tint); border: 1px solid rgba(42,149,84,0.2);
+  border-radius: 100px; padding: 3px 9px; font-family: 'DM Mono', monospace;
+  cursor: pointer; transition: all 0.12s; white-space: nowrap; flex-shrink: 0;
+}
+.ia-saved-pill.visible { display: flex; }
+.ia-saved-pill svg { width: 10px; height: 10px; }
+.ia-saved-pill:hover { background: rgba(42,149,84,0.15); }
+
+/* ─────────────────────────────────────────────
+   ZONES PREVIEW — Analyses & Actions
+   Visible en permanence dans la barre fermée
+   ───────────────────────────────────────────── */
+.ia-dock-preview {
+  align-items: center !important;   /* centré verticalement — titre seul */
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 0 16px !important;
+  cursor: pointer;
+  gap: 10px;
+  width: 200px;                      /* largeur fixe compacte */
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+.ia-dock-preview:hover { background: rgba(0,0,0,0.025); }
+[data-theme="dark"] .ia-dock-preview:hover { background: rgba(255,255,255,0.03); }
+
+.ia-dock-preview-head {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  margin-bottom: 0;
+}
+.ia-dock-preview-title {
+  font-size: 10px; font-weight: 600;
+  color: var(--slate); font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.ia-dock-preview-title svg { width: 13px; height: 13px; opacity: 0.6; }
+
+/* mini badge count */
+.ia-count {
+  font-size: 9px; font-weight: 700; background: var(--primary-tint); color: var(--primary);
+  padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace;
+}
+.ia-count-action {
+  font-size: 9px; font-weight: 700; background: var(--violet-tint); color: var(--violet);
+  padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace;
+}
+
+/* preview items + input action — jamais affichés dans la barre */
+.ia-dock-preview-items { display: none !important; }
+.ia-dock-preview-input-row { display: none !important; }
+.ia-dock-preview-item {
+  display: flex; align-items: center; gap: 6px;
+  /* flat row — clairement différent des .ia-sugg chips */
+  font-size: 11px; color: var(--muted); line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0; width: 100%;
+  background: none; border: none; padding: 0;
+}
+.ia-dock-preview-item-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; opacity: 0.7; }
+.ia-dock-preview-item-txt {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 11px; color: var(--muted); min-width: 0; flex: 1;
+}
+.ia-dock-preview-more {
+  font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; white-space: nowrap;
+}
+
+/* input prise de note directe — géré ci-dessus via .ia-dock.open */
+.ia-dock-preview-input-row { align-items: center; gap: 6px; margin-top: 5px; }
+.ia-dock-preview-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 9px; font-size: 11px;
+  font-family: 'Plus Jakarta Sans', sans-serif; color: var(--ink); outline: none;
+  transition: border-color 0.15s;
+  min-width: 0;
+}
+.ia-dock-preview-input:focus { border-color: var(--violet); }
+.ia-dock-preview-input::placeholder { color: var(--muted); }
+.ia-dock-preview-add {
+  width: 22px; height: 22px; border-radius: 6px; background: var(--violet);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; opacity: 0.5; transition: opacity 0.12s;
+}
+.ia-dock-preview-add.ready { opacity: 1; }
+.ia-dock-preview-add svg { width: 10px; height: 10px; }
+
+/* toggle */
+.ia-dock-toggle {
+  order: 11;
+  width: 44px;
+  flex-shrink: 0;
+  border: none;
+  border-left: 1px solid var(--border);
+  background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: all 0.12s;
+}
+.ia-dock-toggle:hover { background: var(--surface2); color: var(--ink); }
+.ia-dock-toggle svg { width: 14px; height: 14px; transition: transform 0.25s; transform: rotate(180deg); }
+.ia-dock.open .ia-dock-toggle svg { transform: rotate(0deg); }  /* chevron vers le haut par défaut = ouvrir */
+
+/* ─────────────────────────────────────────────
+   CORPS EXPANDABLE — vue tabbée pleine largeur
+   ───────────────────────────────────────────── */
+.ia-dock-body {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+  border-bottom: 1px solid var(--border);
+}
+.ia-dock.open .ia-dock-body { max-height: 360px; }
+
+/* Tabbar horizontale */
+.ia-dock-tabs {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.ia-dock-tab-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 20px;
+  height: 38px;
+  font-size: 12px; font-weight: 500;
+  color: var(--muted);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; transition: all 0.12s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.ia-dock-tab-btn svg { width: 13px; height: 13px; opacity: 0.6; }
+.ia-dock-tab-btn:hover { color: var(--ink); }
+.ia-dock-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: var(--surface);
+}
+.ia-dock-tab-btn.active svg { opacity: 1; }
+/* badge dans onglet */
+.ia-dock-tab-btn .ia-count,
+.ia-dock-tab-btn .ia-count-action { margin-left: 2px; }
+
+/* Panneau unique pleine largeur */
+.ia-dock-panel {
+  display: none;
+  flex-direction: column;
+  height: 322px; /* 360 - 38 tabbar */
+  overflow: hidden;
+}
+.ia-dock-panel.active { display: flex; }
+
+/* scroll commun à tous les panneaux */
+.ia-dock-panel-scroll {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.ia-dock-panel-scroll::-webkit-scrollbar { width: 3px; }
+.ia-dock-panel-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 100px; }
+/* Header de section dans le panneau fusionné */
+.ia-merged-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px 4px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* footer d'action en bas du panneau */
+.ia-dock-panel-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+  padding: 8px 14px;
+}
+
+/* messages */
+.ia-msg-user {
+  align-self: flex-end; max-width: 88%;
+  background: var(--violet); color: white;
+  border-radius: 12px 12px 3px 12px;
+  padding: 8px 12px; font-size: 11.5px; line-height: 1.5;
+}
+.ia-msg-ai-wrap { align-self: flex-start; width: 100%; display: flex; flex-direction: column; gap: 5px; }
+.ia-msg-ai-meta { font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; display: flex; align-items: center; gap: 4px; }
+.ia-msg-ai-meta svg { width: 9px; height: 9px; }
+.ia-msg-ai {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 3px 12px 12px 12px;
+  padding: 8px 11px; font-size: 11.5px; line-height: 1.6; color: var(--ink);
+}
+.ia-msg-ai strong { font-weight: 600; color: var(--violet); }
+.ia-msg-time { font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; align-self: flex-end; }
+
+/* typing */
+.ia-typing { display: flex; align-items: center; gap: 4px; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px 12px 12px 12px; width: fit-content; }
+.ia-tdot { width: 5px; height: 5px; border-radius: 50%; background: var(--violet); animation: pulse 1.2s infinite; }
+.ia-tdot:nth-child(2) { animation-delay: 0.2s; }
+.ia-tdot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Suggestions bas de col conversation */
+.ia-dock-sugg { padding: 7px 12px 8px; border-top: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; background: var(--surface2); }
+.ia-sugg-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 2px; }
+.ia-sugg { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); font-size: 11px; color: var(--slate); cursor: pointer; transition: all 0.12s; }
+.ia-sugg:hover { border-color: var(--violet); background: var(--violet-tint); color: var(--ink); }
+.ia-sugg-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+/* analysis / action items */
+.analysis-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.25s; }
+.analysis-item:hover { border-color: var(--primary); }
+.analysis-item.highlight { border-color: var(--violet) !important; box-shadow: 0 0 0 3px var(--violet-tint); }
+.analysis-item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; margin-bottom: 3px; }
+.analysis-mod-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.analysis-q { font-size: 11px; font-weight: 500; color: var(--ink); line-height: 1.4; flex: 1; }
+.analysis-archive-btn { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.12s; color: var(--muted); }
+.analysis-archive-btn:hover { background: var(--danger-tint); border-color: var(--danger); color: var(--danger); }
+.analysis-archive-btn svg { width: 10px; height: 10px; }
+.analysis-answer { font-size: 10px; color: var(--slate); line-height: 1.5; margin-top: 2px; }
+.analysis-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.analysis-time { font-size: 9px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.analysis-src { font-size: 9px; color: var(--primary); font-family: 'DM Mono', monospace; }
+
+/* action items */
+.action-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; display: flex; align-items: flex-start; gap: 9px; transition: border-color 0.12s; }
+.action-item:hover { border-color: var(--violet); }
+.action-check { width: 15px; height: 15px; border: 1.5px solid var(--border2); border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+.action-check:hover { border-color: var(--success); background: var(--success-tint); }
+.action-check.done { border-color: var(--success); background: var(--success); }
+.action-check.done svg { display: block; } .action-check svg { display: none; width: 9px; height: 9px; }
+.action-text { flex: 1; min-width: 0; }
+.action-title { font-size: 11px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.action-title.done-text { text-decoration: line-through; color: var(--muted); }
+.action-meta { font-size: 9px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+.action-ctrl-btn { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; color: var(--muted); flex-shrink: 0; }
+.action-ctrl-btn svg { width: 10px; height: 10px; }
+
+/* add action in actions col */
+.ia-dock-add-row { padding: 8px 12px; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--surface2); }
+.ia-dock-add-input { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 6px 10px; font-size: 11px; color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color 0.15s; }
+.ia-dock-add-input:focus { border-color: var(--violet); }
+
+/* Empty state */
+.dock-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--muted); font-size: 11px; text-align: center; padding: 16px; }
+.dock-empty svg { width: 24px; height: 24px; opacity: 0.3; }
+
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); border-top: 1px solid var(--border); padding: 6px 0 max(6px, env(safe-area-inset-bottom)); z-index: 150; transition: background 0.25s, border-color 0.25s; }
+.bottom-nav-inner { display: flex; justify-content: space-around; }
+.bn-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; position: relative; color: var(--muted); border: none; background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+.bn-item svg { width: 20px; height: 20px; }
+.bn-item span { font-size: 10px; font-weight: 500; }
+.bn-item.active { color: var(--primary); }
+.bn-dot { position: absolute; top: 6px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--danger); border: 1.5px solid var(--nav-bg); }
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .search-wrap { width: 160px; }
+  .search-kbd { display: none; }
+}
+@media (max-width: 640px) {
+  .sidenav { position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+  .sidenav.open { transform: translateX(0); }
+  .nav-close-btn { display: flex; }
+  .nav-overlay.open { display: block; }
+  .menu-btn { display: flex; }
+  .search-wrap { display: none; }
+  .bottom-nav { display: block; }
+  .content { padding: 16px 16px 20px; }
+  .page-header { flex-direction: column; gap: 10px; }
+  .page-title { font-size: 18px; }
+  .kpi-big { font-size: 24px; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .theme-btn .theme-label { display: none; }
+  .theme-btn { padding: 0 10px; }
+  /* On mobile dock takes full width */
+  .ia-dock-anchor { left: 0; }
+  .ia-dock-body-inner { grid-template-columns: 1fr; }
+  .ia-dock-convo-col { border-right: none; border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 380px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .kpi-big { font-size: 22px; }
+  .kpi-label { font-size: 9px; }
+}
+
+/* ── CTA "Enregistrer cette analyse" ── */
+.ia-save-convo-btn {
+  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+  font-size: 11px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--violet); background: var(--violet-tint);
+  border: 1px solid rgba(108,71,232,0.22); border-radius: 100px;
+  padding: 6px 14px; cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.ia-save-convo-btn:hover:not(:disabled) {
+  background: var(--violet); color: white; border-color: var(--violet);
+  box-shadow: 0 2px 8px rgba(108,71,232,0.3);
+}
+.ia-save-convo-btn.saving {
+  background: var(--violet); color: white; border-color: var(--violet);
+  cursor: default; opacity: 0.85;
+  animation: saveConvoPulse 0.6s ease infinite alternate;
+}
+.ia-save-convo-btn.saved {
+  background: var(--success-tint); color: var(--success);
+  border-color: rgba(42,149,84,0.25); cursor: default;
+}
+@keyframes saveConvoPulse { from{opacity:0.75} to{opacity:1} }
+
+/* Bouton export CSV inline dans bulle IA */
+.ia-msg-actions { display:flex; gap:6px; margin-top:4px; }
+.ia-msg-export-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:10.5px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif;
+  color:var(--success); background:var(--success-tint);
+  border:1px solid rgba(42,149,84,0.22); border-radius:100px;
+  padding:5px 13px; cursor:pointer; white-space:nowrap; transition:all 0.15s;
+}
+.ia-msg-export-btn:hover { background:var(--success); color:white; border-color:var(--success); }
+.ia-msg-export-btn.downloaded { background:var(--surface2); color:var(--muted); border-color:var(--border2); cursor:default; }
 </style>
 </head>
 <body>
@@ -463,6 +1044,28 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <span class="bc-current">Tableau de bord</span>
     </div>
     <div class="topbar-right">
+      <div class="time-selector">
+        <button class="ts-btn" onclick="setPeriod(this,'jour')">Jour</button>
+        <button class="ts-btn active" onclick="setPeriod(this,'semaine')">Semaine</button>
+        <button class="ts-btn" onclick="setPeriod(this,'mois')">Mois</button>
+        <button class="ts-btn" onclick="setPeriod(this,'annee')">Année</button>
+      </div>
+      <div class="date-wrap">
+        <button class="date-picker-btn" onclick="toggleCal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dpLabel">17 – 23 mars</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cal-dropdown" id="calDrop">
+          <div class="cal-nav"><button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+          <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+          <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+          <div class="cal-footer"><button class="cal-action" onclick="toggleCal()">Annuler</button>
+          <button class="cal-action primary" onclick="applyRange()">Appliquer</button></div>
+        </div>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -477,220 +1080,17 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 
   <div class="content">
 
-  <!-- ══════════════════════════════════
-       BLOC 1 : elo · IA chatbot
-  ══════════════════════════════════ -->
-  <div class="block-chat">
-    <div class="chatbot-card" style="display:flex;flex-direction:column;">
+  
 
-      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div>
-            <div class="chatbot-name">elo · IA</div>
-            <div class="chatbot-desc">claude-sonnet · données temps réel</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="live-badge"><div class="live-pulse"></div>Live</div>
-          <div class="time-selector">
-            <button class="ts-btn" onclick="setPeriod(this,'jour')">Jour</button>
-            <button class="ts-btn active" onclick="setPeriod(this,'semaine')">Semaine</button>
-            <button class="ts-btn" onclick="setPeriod(this,'mois')">Mois</button>
-            <button class="ts-btn" onclick="setPeriod(this,'annee')">Année</button>
-          </div>
-          <div class="date-wrap">
-            <button class="date-picker-btn" onclick="toggleCal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span id="dpLabel">17 – 23 mars</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="cal-dropdown" id="calDrop">
-              <div class="cal-nav">
-                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-              <div class="cal-footer">
-                <button class="cal-action" onclick="toggleCal()">Annuler</button>
-                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-              </div>
-            </div>
-          </div>
-          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" title="Réduire / Agrandir" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.12s;color:var(--muted);">
-            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-      </div>
 
-      <div class="chat-collapsible collapsed" id="chatCollapsible">
-      <!-- Pill : conversation enregistrée (visible après save) -->
-      <div class="conv-pill" id="convPill" style="margin:8px 16px 0;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-        Conversation enregistrée dans Analyses
-        <span class="conv-pill-close" onclick="document.getElementById('convPill').classList.remove('visible')">&#x2715;</span>
-      </div>
-
-      <!-- Chat conversation area -->
-      <div class="chat-area open" id="chatArea">
-
-        <div class="chat-bubble-wrap user-wrap">
-          <div class="chat-bubble user">Quels transporteurs ont le plus de litiges&nbsp;?</div>
-          <div class="chat-bubble-time">10h42</div>
-        </div>
-
-        <div class="chat-bubble-wrap ai-wrap">
-          <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              Analyse S17&#x2013;S23 mars 2025 · module Litiges transport
-            </div>
-            <div class="ai-table-wrap">
-              <table class="ai-table">
-                <thead><tr><th>Transporteur</th><th>Litiges ouverts</th><th>Qualité de service</th><th>Lead time moy.</th><th>Tendance</th></tr></thead>
-                <tbody>
-                  <tr>
-                    <td class="td-name">GLS</td>
-                    <td><span class="td-badge badge-bad">&#x26A0; 23</span></td>
-                    <td class="td-bad">78 %</td>
-                    <td class="td-bad">3.4 j</td>
-                    <td><span class="td-badge badge-bad">&#x2191; +8 vs S-1</span></td>
-                  </tr>
-                  <tr>
-                    <td class="td-name">Chronopost</td>
-                    <td><span class="td-badge badge-warn">&#x26A0; 14</span></td>
-                    <td class="td-warn">86 %</td>
-                    <td class="td-warn">2.9 j</td>
-                    <td><span class="td-badge badge-warn">&#x2192; stable</span></td>
-                  </tr>
-                  <tr>
-                    <td class="td-name">Colissimo</td>
-                    <td><span class="td-badge badge-warn">&#x26A0; 7</span></td>
-                    <td class="td-warn">91 %</td>
-                    <td class="td-neutral">2.2 j</td>
-                    <td><span class="td-badge badge-warn">&#x2193; &#x2212;2 vs S-1</span></td>
-                  </tr>
-                  <tr>
-                    <td class="td-name">DHL Express</td>
-                    <td><span class="td-badge badge-good">&#x2713; 3</span></td>
-                    <td class="td-good">97 %</td>
-                    <td class="td-good">1.6 j</td>
-                    <td><span class="td-badge badge-good">&#x2193; &#x2212;1 vs S-1</span></td>
-                  </tr>
-                  <tr style="background:var(--primary-tint);">
-                    <td class="td-name" style="color:var(--primary);">Colis Priv&#xe9; <span class="td-badge badge-new" style="margin-left:4px;">R&#xe9;seau elogik</span></td>
-                    <td><span class="td-badge badge-good">&#x2713; 1.2 moy.</span></td>
-                    <td class="td-good">98 %</td>
-                    <td class="td-good">1.8 j</td>
-                    <td><span class="td-badge badge-new">Non utilis&#xe9;</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="ai-conclusion">
-              <div class="ai-conclusion-head">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                Pr&#xe9;conisation elo&#x202f;&#xb7;&#x202f;IA
-              </div>
-              <div class="ai-conclusion-body">
-                <strong>GLS concentre 49&nbsp;% de vos litiges</strong> (23/sem.) avec le pire lead time de votre mix (3.4&nbsp;j, +8 vs S-1). La tendance est en hausse.<br><br>
-                Sur le <strong>r&#xe9;seau elogik</strong> (27 entrep&#xf4;ts, donn&#xe9;es anonymis&#xe9;es), <strong>Colis Priv&#xe9;</strong> affiche en moyenne 1.2 litige/semaine et 98&nbsp;% de qualit&#xe9; de service &#x2014; soit 19&#xd7; moins de litiges que GLS. Aucune de vos exp&#xe9;ditions ne leur est actuellement confi&#xe9;e.<br><br>
-                Recommandation&nbsp;: <strong>basculer 30&#x2013;40&nbsp;% des flux GLS vers Colis Priv&#xe9;</strong> en priorit&#xe9; sur les zones &#xcele;-de-France et Grand-Est. Estimation&#x202f;: &#x2248;&nbsp;15&#x2013;20 litiges/semaine &#xe9;vit&#xe9;s.
-              </div>
-              <div class="ai-source-row">
-                <span class="ai-source-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>OMS &middot; TMS elogik</span>
-                <span class="ai-source-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20"/></svg>R&#xe9;seau elogik &middot; 27 entrep&#xf4;ts</span>
-                <span class="ai-source-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>S17&#x2013;S23 mars 2025</span>
-              </div>
-            </div>
-          </div>
-          <div class="chat-bubble-time">10h42</div>
-        </div>
-
-      </div><!-- /chat-area -->
-
-      <!-- Save bar -->
-      <div class="chat-save-bar" id="chatSaveBar">
-        <div class="chat-save-hint">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-          Enregistrer cette analyse dans votre tableau de bord
-        </div>
-        <button class="chat-save-btn" id="chatSaveBtn" onclick="saveAnalysis()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-          Enregistrer l'analyse
-        </button>
-      </div>
-
-      <!-- Banner confirmation (visible après save) -->
-      <div class="chat-saved-banner" id="chatSavedBanner">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg>
-        Analyse enregistr&#xe9;e &#x2014; visible dans le bloc Analyses
-        <span class="open-link" onclick="scrollToAnalysis()">Voir &#x2192;</span>
-      </div>
-
-      <!-- Input full-width -->
-      <div class="input-row" style="padding:10px 16px 10px;">
-        <input class="chat-input" id="homeInput" placeholder="Posez une question de suivi…" oninput="toggleHomeSend(this)" style="font-size:13px;padding:10px 16px;border-radius:24px;"/>
-        <button class="send-btn" id="homeSendBtn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-      </div>
-
-      </div><!-- /chat-collapsible -->
-
-      <!-- Toggle 1 : Questions fréquentes -->
-      <div class="chat-toggle-row">
-        <div class="chat-toggle-item" onclick="toggleQs()">
-          <div class="chat-toggle-item-left">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
-            Questions fréquentes
-          </div>
-          <svg id="qsChevron" class="chat-toggle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="chat-toggle-body" id="qsBody" style="display:none;">
-          <div class="qs-panel">
-            <div class="qs-grid" style="padding:0;">
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Quelles commandes sont bloquées depuis +24h ?</span></div>
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-savt)"></div><span class="q-chip-txt">Quels transporteurs ont le plus de litiges ?</span></div>
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-qtrans)"></div><span class="q-chip-txt">Quel est le lead time moyen par transporteur ?</span></div>
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-stocks)"></div><span class="q-chip-txt">Quelles références sont en rupture imminente ?</span></div>
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-savl)"></div><span class="q-chip-txt">Combien de retours non traités depuis 48h ?</span></div>
-              <div class="q-chip" onclick="fillInput(this.querySelector('.q-chip-txt').textContent)"><div class="q-dot" style="background:var(--c-business)"></div><span class="q-chip-txt">Compare les perfs de préparation S vs S-1</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Toggle 2 : Confidentialité & sources -->
-      <div class="chat-toggle-row" style="border-top:none;">
-        <div class="chat-toggle-item" onclick="toggleReHome()">
-          <div class="chat-toggle-item-left">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Confidentialité &amp; sources
-          </div>
-          <svg id="homeReChevron" class="chat-toggle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="chat-toggle-body" id="homeReBody" style="display:none;">
-          <div class="reassurance-row" style="border-top:1px solid var(--border);">
-            <div class="re-item">
-              <div class="re-icon" style="background:var(--primary-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-              <div><div class="re-title">Données sécurisées</div><div class="re-sub">Vos données restent dans votre espace elogik, elles ne sont jamais partagées.</div></div>
-            </div>
-            <div class="re-item">
-              <div class="re-icon" style="background:var(--success-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-              <div><div class="re-title">Temps réel</div><div class="re-sub">OMS · TMS · Stocks synchronisés en continu pour des réponses actualisées.</div></div>
-            </div>
-            <div class="re-item">
-              <div class="re-icon" style="background:var(--violet-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg></div>
-              <div><div class="re-title">Réponses sourcées</div><div class="re-sub">Chaque réponse cite la source de données utilisée pour la générer.</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /chatbot-card -->
-  </div><!-- /block-chat -->
-
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">elogik (flow)</div>
+      <div class="page-title">Tableau de bord <span>en temps réel</span></div>
+      <div class="page-sub">Semaine 17 – 23 mars 2025 · données synchronisées</div>
+    </div>
+    <div class="live-badge"><div class="live-pulse"></div>Live</div>
+  </div>
 
   <!-- ══════════════════════════════════
        BLOC 2 : KPI Cards
@@ -792,56 +1192,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
   </div><!-- /block-kpis -->
 
 
-  <!-- ══════════════════════════════════
-       BLOC 3 : Analyses & Actions
-  ══════════════════════════════════ -->
-  <div class="block-actions">
-
-    <!-- Colonne gauche : Analyses bookmarkées -->
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round" style="width:15px;height:15px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-          <div>
-            <div class="aa-head-title">Analyses</div>
-            <div class="aa-head-sub">bookmarkées depuis elo · IA</div>
-          </div>
-        </div>
-        <span class="aa-head-badge" id="analysisCount">0</span>
-      </div>
-      <div class="aa-body" id="analysisList">
-        <div class="aa-empty" id="analysisEmpty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-          <div>Posez une question à elo · IA<br>et enregistrez les analyses importantes.</div>
-        </div>
-        <!-- Les analysis-card sont injectées par JS après saveAnalysis() -->
-      </div>
-    </div>
-
-    <!-- Colonne droite : Actions -->
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <div>
-            <div class="aa-head-title">Actions</div>
-            <div class="aa-head-sub">issues de vos analyses</div>
-          </div>
-        </div>
-        <span class="aa-head-badge" id="actionCount" style="background:var(--violet-tint);color:var(--violet);">0</span>
-      </div>
-      <div class="aa-body" id="actionList">
-        <div class="aa-empty" id="actionEmpty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <div>Notez ici les actions à mener<br>depuis vos analyses.</div>
-        </div>
-      </div>
-      <div class="aa-add-row">
-        <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
-      </div>
-    </div>
-
-  </div><!-- /block-actions -->
+  
 
 </div><!-- /content -->
 </div><!-- /main wrapper -->
@@ -1147,8 +1498,8 @@ function scrollToAnalysis() {
 /* ============================================================
    ACTIONS
 ============================================================ */
-var actions = [];
-function addAction() {
+/* actions[] déclaré dans dock v9 */
+function addAction_v5_unused() {
   var inp = document.getElementById('actionInput');
   var val = inp.value.trim();
   if (!val) return;
@@ -1271,6 +1622,836 @@ renderCal();
   if (zone) zone.classList.add('collapsed');
   if (icon) icon.style.transform = 'rotate(180deg)';
 })();
+
+
+/* ════ IA DOCK v9 ════ */
+/* ── DOCK HEIGHT ── */
+function updateDockHeight() {
+  const anchor = document.getElementById('iaDockAnchor');
+  const h = anchor ? anchor.getBoundingClientRect().height : 68;
+  document.querySelector('.main').style.paddingBottom = (h + 8) + 'px';
+}
+
+/* ── DOCK OPEN / CLOSE ── */
+function toggleDock() {
+  document.getElementById('iaDock').classList.toggle('open');
+  setTimeout(updateDockHeight, 320);
+}
+function openDock() {
+  document.getElementById('iaDock').classList.add('open');
+  setTimeout(updateDockHeight, 320);
+}
+
+/* ── SEND ── */
+function toggleSend(inp) {
+  document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0);
+}
+
+var nextAnalysisId = 4;
+var actions = [];
+
+var aiResponses = {
+  'incident dhl':    "L'incident DHL Île-de-France est lié à une <strong>panne de tri sur le hub de Roissy</strong> depuis 06h00. CMD-48240, 48241 et 48255 sont bloquées. Recommandation : rebooker vers GLS (délai +4h max). Résolution DHL estimée à 18h.",
+  'analyser l\'incident dhl': "Analyse complète — <strong>DHL IDF : 19 retards actifs</strong>, dont 3 commandes à risque client élevé (CMD-48240, 48241, 48255). Cause confirmée : panne hub Roissy depuis 06h00. Actions recommandées :<br>① Rebooker CMD-48240 et 48241 vers GLS (couverture IDF : 97,5 %)<br>② Notifier les clients concernés par email proactif<br>③ Ouvrir un ticket SAV DHL pour compensation tarifaire<br>Délai résolution estimé : 18h aujourd'hui.",
+  'taux de livraison': "<strong>DHL concentre 86 % du recul</strong> du taux de livraison (96,8 % → 96,4 %). Hors DHL : taux remonte à 98,2 %. Chronopost et GLS sont stables. Action prioritaire : résoudre l'incident DHL IDF.",
+  'impact client':   "3 commandes impactées · ~3 clients concernés. Risque de <strong>3 réclamations SAV</strong> si non résolues avant 18h. NPS estimé : −2 pts. Recommandation : email proactif + rebooking GLS.",
+  'litige':          "DHL : 1,4 % (4/287) · Chronopost : 1,0 % (3/312) · GLS : 1,0 % (2/198) · UPS : 0,6 % · Geodis : 0,7 %. <strong>DHL seul au-dessus du seuil cible 1,0 %.</strong>",
+  'comparer':        "Taux livraison : 96,8 % (S-1) → 96,4 % (−0,4 pt). Commandes actives : 1 112 → 1 248 (+12 %). Litiges : 9 → 12 (+33 %, lié à incident DHL). <strong>Hors incident DHL, toutes les métriques s'améliorent.</strong>",
+  'retard':          "<strong>DHL</strong> en tête avec 19 retards (6,6 %) — incident hub IDF. Chronopost : 8 retards (2,6 %). GLS, UPS, Geodis, Colissimo : dans les normes (< 1 %).",
+  'gls':             "GLS affiche un <strong>taux de livraison de 97,5 %</strong> cette semaine — le meilleur du mix. 3 retards mineurs sur 198 commandes, aucun litige ouvert. Zone IDF particulièrement performante : recommandé pour rebooker les commandes DHL bloquées.",
+  'mouvement':       "<strong>247 références</strong> sans mouvement depuis ≥ 6 semaines identifiées. Stock immobilisé estimé : <strong>34 820 €</strong> valeur achat. Répartition : 142 réf. B2C · 73 réf. B2B · 32 réf. cross-canal.<br><br>Fichier CSV prêt à l’export — colonnes : SKU · Désignation · Dernière sortie · Jours sans mouvement · Qté · Valeur stock.",
+  'dormant':         "<strong>247 références</strong> sans mouvement depuis ≥ 6 semaines identifiées. Stock immobilisé estimé : <strong>34 820 €</strong> valeur achat. Répartition : 142 réf. B2C · 73 réf. B2B · 32 réf. cross-canal.<br><br>Fichier CSV prêt à l’export — colonnes : SKU · Désignation · Dernière sortie · Jours sans mouvement · Qté · Valeur stock.",
+  'export':          "<strong>247 références</strong> sans mouvement depuis ≥ 6 semaines identifiées. Stock immobilisé estimé : <strong>34 820 €</strong> valeur achat. Répartition : 142 réf. B2C · 73 réf. B2B · 32 réf. cross-canal.<br><br>Fichier CSV prêt à l’export — colonnes : SKU · Désignation · Dernière sortie · Jours sans mouvement · Qté · Valeur stock.",
+  'rebooker':        "Pour rebooker les 3 commandes DHL bloquées vers GLS : délai de prise en charge estimé à +4h. GLS couvre l'Île-de-France avec un taux de 97,5 % cette semaine. <strong>Coût additionnel estimé : ~12 € / colis.</strong> Voulez-vous que je génère un bon de réexpédition ?",
+};
+
+function getResponse(q) {
+  var ql = q.toLowerCase();
+  for (var k in aiResponses) { if (ql.indexOf(k) > -1) return aiResponses[k]; }
+  return "J'analyse vos données logistiques du 16 mars 2026… <strong>Aucune anomalie supplémentaire détectée</strong> au-delà des signaux déjà remontés. Vous pouvez me poser une question précise sur un transporteur, une commande ou un indicateur.";
+}
+
+function isExportQuery(q) {
+  var ql = q.toLowerCase();
+  return ql.indexOf('mouvement') > -1 || ql.indexOf('dormant') > -1 || ql.indexOf('export') > -1;
+}
+
+function triggerCSVExport(btn) {
+  if (btn) {
+    btn.classList.add('downloaded');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> CSV téléchargé';
+    btn.onclick = null;
+  }
+  var rows = [
+    ['SKU','Désignation','Dernière sortie','Jours sans mouvement','Qté','Valeur stock (€)'],
+    ['REF-00412','Boîte cadeau kraft M','2025-02-24','49','84','1260.00'],
+    ['REF-00589','Pochette bulle 20x30','2025-02-17','56','312','624.00'],
+    ['REF-00731','Ruban satin ivoire 5m','2025-01-30','74','200','180.00'],
+    ['REF-00802','Intercalaire rigide A4','2025-02-10','63','450','337.50'],
+    ['REF-01044','Étiquette personnalisée XL','2025-02-03','70','720','576.00'],
+    ['REF-01198','Sachet plastique 30x40','2025-01-15','88','1800','900.00'],
+    ['REF-01356','Film étirable machine','2025-02-28','45','6','198.00'],
+    ['REF-01502','Carton double cannelure 50x40x30','2025-01-22','81','130','1170.00'],
+    ['REF-01677','Languette arrachable dorée','2025-02-14','59','560','392.00'],
+    ['REF-01890','Calage papier kraft 70g','2025-01-08','95','400','360.00'],
+  ];
+  var csv = rows.map(function(r) { return r.join(';'); }).join('\n');
+  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'references-sans-mouvement-6semaines.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+
+function appendMsg(type, text, withExport) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var div = document.createElement('div');
+  if (type === 'user') {
+    div.className = 'ia-msg-user';
+    div.textContent = text;
+  } else {
+    div.className = 'ia-msg-ai-wrap';
+    var iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    var now = new Date();
+    var hm = now.getHours() + "h" + String(now.getMinutes()).padStart(2,"0");
+    div.innerHTML = "<div class=\"ia-msg-ai-meta\">" + iconSvg + " elo·IA · " + hm + "</div><div class=\"ia-msg-ai\">" + text + "</div><div class=\"ia-msg-time\">" + hm + "</div>";
+  }
+  scroll.appendChild(div);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function showTyping() {
+  var scroll = document.getElementById('iaConvoScroll');
+  var t = document.createElement('div');
+  t.className = 'ia-typing'; t.id = 'iaTyping';
+  t.innerHTML = '<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop = scroll.scrollHeight;
+}
+function hideTyping() { var t = document.getElementById('iaTyping'); if (t) t.remove(); }
+
+function sendIA() {
+  var inp = document.getElementById('iaDockInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = '';
+  document.getElementById('iaSendBtn').classList.remove('ready');
+  /* Ouvrir le dock sur l'onglet chat */
+  switchDockTab('chat');
+  appendMsg('user', val);
+  showTyping();
+  var resp = getResponse(val);
+  setTimeout(function() {
+    hideTyping();
+    appendMsg('ai', resp, isExportQuery(val));
+    resetSaveConvoBtn();
+    /* Afficher la pill de sauvegarde sans basculer d'onglet */
+    showSavePill(val, resp);
+  }, 900 + Math.random() * 500);
+}
+
+/* Affiche un bouton "Enregistrer" discret sous la dernière réponse IA */
+function showSavePill(q, answer) {
+  var scroll = document.getElementById('iaConvoScroll');
+  /* Supprimer le précédent s'il existe */
+  var old = document.getElementById('iaChatSaveRow');
+  if (old) old.remove();
+  var row = document.createElement('div');
+  row.id = 'iaChatSaveRow';
+  row.style.cssText = 'display:flex;justify-content:flex-end;padding:2px 0 4px';
+  row.innerHTML = '<button onclick="saveChatAnalysis()" style="font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.12s" onmouseover="this.style.background=\'var(--violet-tint)\';this.style.color=\'var(--violet)\';this.style.borderColor=\'rgba(108,71,232,0.2)\'" onmouseout="this.style.background=\'var(--surface2)\';this.style.color=\'var(--muted)\';this.style.borderColor=\'var(--border2)\'">'
+    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>'
+    + 'Enregistrer l\'analyse</button>';
+  /* Stocker q/answer pour le save */
+  row._q = q; row._answer = answer;
+  scroll.appendChild(row);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+var _lastQ = ''; var _lastAnswer = '';
+function saveChatAnalysis() {
+  var row = document.getElementById('iaChatSaveRow');
+  if (!row) return;
+  /* Récupérer la dernière question et réponse depuis le DOM */
+  var msgs = document.getElementById('iaConvoScroll').querySelectorAll('.ia-msg-user');
+  var aiMsgs = document.getElementById('iaConvoScroll').querySelectorAll('.ia-msg-ai');
+  var q = msgs.length ? msgs[msgs.length - 1].textContent : 'Analyse IA';
+  var a = aiMsgs.length ? aiMsgs[aiMsgs.length - 1].innerText : '';
+  /* Transition du bouton */
+  var btn = row.querySelector('button');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+  btn.style.cssText = 'font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;padding:4px 12px;border-radius:100px;border:1px solid rgba(42,149,84,0.2);background:var(--success-tint);color:var(--success);cursor:default;display:flex;align-items:center;gap:5px;pointer-events:none';
+  injectAnalysis(q, a);
+}
+function askIA(q) { document.getElementById('iaDockInput').value = q; document.getElementById('iaSendBtn').classList.add('ready'); openDock(); setTimeout(sendIA, 150); }
+function fillAndSend(q) { document.getElementById('iaDockInput').value = q; document.getElementById('iaSendBtn').classList.add('ready'); sendIA(); }
+
+/* ── TABS ── */
+var currentDockTab = 'chat';
+function switchDockTab(tab) {
+  /* 'actions' redirige vers 'analyses' (panneau fusionné) */
+  if (tab === 'actions') tab = 'analyses';
+  currentDockTab = tab;
+  ['chat','analyses'].forEach(function(t) {
+    var btn = document.getElementById('tab-' + t);
+    var panel = document.getElementById('panel-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+    if (panel) panel.classList.toggle('active', t === tab);
+  });
+  openDock();
+}
+
+/* ── ANALYSES ── */
+function syncAnalysisCounts() {
+  var list = document.getElementById('analysesList');
+  var n = list ? list.querySelectorAll('.analysis-item').length : 0;
+  ['analysisCount','analysisCountFull'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=n; });
+  updateAnalysesPreview();
+}
+function updateAnalysesPreview() {
+  var list = document.getElementById('analysesList');
+  var preview = document.getElementById('analysesPreview');
+  if (!preview || !list) return;
+  preview.innerHTML = '';
+  var items = list.querySelectorAll('.analysis-item');
+  var shown = 0;
+  items.forEach(function(item) {
+    if (shown >= 2) return;
+    var q = item.querySelector('.analysis-q');
+    var dot = item.querySelector('.analysis-mod-dot');
+    var row = document.createElement('div');
+    row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:' + (dot ? dot.style.background : 'var(--primary)') + '"></div><span class="ia-dock-preview-item-txt">' + (q ? q.textContent : '') + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (items.length > 2) {
+    var more = document.createElement('div'); more.className = 'ia-dock-preview-more';
+    more.textContent = '+' + (items.length - 2) + ' autres'; preview.appendChild(more);
+  }
+}
+function injectAnalysis(q, answer) {
+  var cleanAnswer = answer.replace(/<[^>]+>/g,'');
+  var list = document.getElementById('analysesList');
+  var newId = nextAnalysisId++;
+  var colors = ['var(--primary)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col = colors[(newId - 1) % colors.length];
+  var now = new Date();
+  var hm = now.getHours() + "h" + String(now.getMinutes()).padStart(2,"0");
+  var card = document.createElement('div');
+  card.className = 'analysis-item'; card.id = 'analysis-card-' + newId;
+  card.onclick = function() { loadAnalysisInIA(newId); };
+  card.innerHTML = '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:' + col + '"></div><div class="analysis-q">' + q + '</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,' + newId + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">' + cleanAnswer.slice(0,120) + (cleanAnswer.length > 120 ? '…' : '') + '</div><div class="analysis-footer"><span class="analysis-time">16 mars · ' + hm + '</span><span class="analysis-src">elo·IA</span></div>';
+  var first = list.querySelector('.analysis-item');
+  list.insertBefore(card, first || null);
+  syncAnalysisCounts();
+  setTimeout(function() { card.classList.add('highlight'); }, 20);
+  setTimeout(function() { card.classList.remove('highlight'); }, 2000);
+  var pill = document.getElementById('iaSavedPill');
+  if (pill) { pill.classList.add('visible'); setTimeout(function() { pill.classList.remove('visible'); }, 3500); }
+  /* Auto-switch to analyses tab to show new card */
+  switchDockTab('analyses');
+}
+function archiveAnalysis(e, id) {
+  e.stopPropagation();
+  var card = document.getElementById('analysis-card-' + id);
+  if (card) { card.remove(); syncAnalysisCounts(); }
+}
+function loadAnalysisInIA(id) {
+  var card = document.getElementById('analysis-card-' + id); if (!card) return;
+  var q = card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaDockInput').value = '↩ ' + q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  switchDockTab('chat');
+  document.getElementById('iaDockInput').focus();
+}
+
+/* ── ACTIONS ── */
+function syncActionCounts() {
+  ['actionCount','actionCountFull'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=actions.length; });
+  updateActionsPreview();
+}
+function updateActionsPreview() {
+  var preview = document.getElementById('actionsPreview');
+  var hint = document.getElementById('actionsEmptyHint');
+  if (!preview) return;
+  preview.querySelectorAll('.ia-dock-preview-item').forEach(function(el) { el.remove(); });
+  if (actions.length === 0) { if (hint) hint.style.display = ''; return; }
+  if (hint) hint.style.display = 'none';
+  var shown = 0;
+  actions.forEach(function(a) {
+    if (shown >= 2) return;
+    var row = document.createElement('div'); row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:' + (a.done ? 'var(--success)' : 'var(--violet)') + '"></div><span class="ia-dock-preview-item-txt' + (a.done ? '" style="text-decoration:line-through;color:var(--muted)' : '') + '">' + a.text + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (actions.length > 2) {
+    var more = document.createElement('div'); more.className = 'ia-dock-preview-more';
+    more.textContent = '+' + (actions.length - 2) + ' en cours'; preview.appendChild(more);
+  }
+}
+function renderActions() {
+  var list = document.getElementById('actionsList');
+  var empty = document.getElementById('actionsEmpty');
+  syncActionCounts();
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  if (actions.length === 0) { if (empty) empty.style.display = ''; return; }
+  if (empty) empty.style.display = 'none';
+  actions.forEach(function(a) {
+    var div = document.createElement('div'); div.className = 'action-item';
+    div.innerHTML = '<div class="action-check' + (a.done?' done':'') + '" onclick="toggleAction(' + a.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="action-text"><div class="action-title' + (a.done?' done-text':'') + '">' + a.text + '</div><div class="action-meta">' + new Date(a.id).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}) + '</div></div><button class="action-ctrl-btn" onclick="removeAction(' + a.id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
+    list.appendChild(div);
+  });
+}
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = ''; actions.push({ id: Date.now(), text: val, done: false }); renderActions();
+}
+function toggleQuickAdd(inp) { document.getElementById('quickAddBtn').classList.toggle('ready', inp.value.trim().length > 0); }
+function addQuickAction() {
+  var inp = document.getElementById('quickActionInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = ''; document.getElementById('quickAddBtn').classList.remove('ready');
+  actions.push({ id: Date.now(), text: val, done: false }); renderActions();
+}
+function toggleAction(id) { var a = actions.find(function(x){return x.id===id;}); if(a){a.done=!a.done; renderActions();} }
+function removeAction(id) { actions = actions.filter(function(x){return x.id!==id;}); renderActions(); }
+
+/* ── SIGNAL IA ── */
+var signalSaved = {};
+function dismissSignal(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() {
+    el.remove();
+    updateDockHeight();
+    updateSignalOverlay();
+  }, 300);
+}
+
+/* Active/désactive l'overlay selon les signaux encore visibles */
+function updateSignalOverlay() {
+  var remaining = document.querySelectorAll('#signalZone .signal-ia:not(.dismissing)');
+  document.body.classList.toggle('signals-active', remaining.length > 0);
+}
+function toggleSignalExpand(id) {
+  var sig = document.getElementById(id);
+  var toggle = document.getElementById(id + '-toggle');
+  var expanded = sig.classList.toggle('expanded');
+  if (toggle) toggle.textContent = expanded ? 'Masquer ↑' : 'Voir reco ↓';
+  updateDockHeight();
+}
+function saveSignal(sigId, analysisText) {
+  if (signalSaved[sigId]) return; signalSaved[sigId] = true;
+  var btn = document.getElementById('save-' + sigId);
+  if (btn) {
+    btn.style.cssText = 'background:var(--success-tint);border:1px solid rgba(42,149,84,0.2);color:var(--success);font-size:11px;font-weight:600;font-family:Plus Jakarta Sans,sans-serif;padding:5px 12px;border-radius:100px;cursor:default;display:flex;align-items:center;gap:4px;white-space:nowrap;';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+    btn.onclick = null;
+  }
+  injectAnalysis('Signal · ' + analysisText.split('·')[0], analysisText);
+}
+
+/* ── CHARTS ── */
+let donutChart, lineChart;
+function rebuildCharts() {
+  if (donutChart) donutChart.destroy();
+  if (lineChart) lineChart.destroy();
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const tick = isDark ? '#4A5568' : '#8A95A3';
+  const grid = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
+  const font = { family: "'Plus Jakarta Sans', sans-serif", size: 10 };
+  donutChart = new Chart(document.getElementById('chartDonut'), {
+    type: 'doughnut',
+    data: { datasets: [{ data: [487,412,238,111], backgroundColor: ['#0E8FCC','#2A9554','#C27B00','#D63050'], borderWidth: 0, hoverOffset: 3 }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } }
+  });
+  lineChart = new Chart(document.getElementById('chartLine'), {
+    type: 'line',
+    data: {
+      labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+      datasets: [
+        { label: 'Livrés',     data: [580,620,590,680,710,540,634], borderColor: '#2A9554', backgroundColor: 'rgba(42,149,84,0.08)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 2, pointBackgroundColor: '#2A9554' },
+        { label: 'En transit', data: [420,380,450,400,380,320,487], borderColor: '#0E8FCC', backgroundColor: 'rgba(14,143,204,0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 2, pointBackgroundColor: '#0E8FCC' },
+        { label: 'Retards',    data: [28,22,35,19,24,14,18],        borderColor: '#D63050', fill: false, tension: 0.4, borderWidth: 1.5, borderDash: [4,3], pointRadius: 2, pointBackgroundColor: '#D63050' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 8, boxHeight: 8, borderRadius: 2, padding: 10, font: font, color: tick } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: font, color: tick }, border: { display: false } },
+        y: { grid: { color: grid }, ticks: { font: font, color: tick }, border: { display: false } }
+      }
+    }
+  });
+}
+rebuildCharts();
+
+function filterCarrier(name, btn) {
+  document.querySelectorAll('.cf-tag').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#carrierTable tbody tr').forEach(function(row) {
+    row.style.display = (name === 'all' || row.getAttribute('data-carrier') === name) ? '' : 'none';
+  });
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  updateDockHeight();
+  syncAnalysisCounts();
+  window.addEventListener('resize', updateDockHeight);
+  setTimeout(showDemoAlert, 800);
+
+  /* Toast d'entrée des signaux IA — apparition échelonnée */
+  var signals = document.querySelectorAll('#signalZone .signal-ia');
+  signals.forEach(function(sig, i) {
+    setTimeout(function() {
+      sig.classList.add('toast-in');
+      updateDockHeight();
+      /* Activer l'overlay dès le premier signal visible */
+      updateSignalOverlay();
+    }, 600 + i * 220);
+  });
+});
+
+/* ── Alerte démo GLS ── */
+function showDemoAlert() {
+  var zone = document.getElementById('signalZone');
+  if (!zone || document.getElementById('sig-gls')) return;
+  var div = document.createElement('div');
+  div.className = 'signal-ia';
+  div.setAttribute('data-severity', 'danger');
+  div.id = 'sig-gls';
+
+  var head = document.createElement('div');
+  head.className = 'signal-ia-head';
+
+  var left = document.createElement('div');
+  left.className = 'signal-ia-head-left';
+  left.innerHTML =
+    '<div class="signal-ia-icon">'
+    + '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">'
+    + '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>'
+    + '<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+    + '</svg></div>'
+    + '<div class="signal-ia-meta">'
+    + '<div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo\u00b7IA \u00b7 Litiges transport</div>'
+    + '<div class="signal-ia-text-inline"><strong>Seuil critique franchi</strong>'
+    + ' \u2014 GLS\u00a0: +8 litiges en 2h, objectif semaine d\u00e9pass\u00e9 de 57\u00a0%</div>'
+    + '</div>';
+
+  var right = document.createElement('div');
+  right.className = 'signal-ia-head-right';
+
+  var btnAnalyse = document.createElement('button');
+  btnAnalyse.className = 'signal-ia-btn signal-ia-btn-primary';
+  btnAnalyse.textContent = 'Analyser elo\u00b7IA';
+  btnAnalyse.onclick = function() {
+    askIA('Analyser les litiges GLS de cette semaine');
+  };
+
+  var btnSave = document.createElement('button');
+  btnSave.className = 'signal-ia-btn signal-ia-btn-save';
+  btnSave.id = 'save-sig-gls';
+  btnSave.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder';
+  btnSave.onclick = function() {
+    saveSignal('sig-gls', 'GLS \u00b7 Seuil critique litiges \u00b7 +57\u00a0% vs objectif');
+  };
+
+  var btnDismiss = document.createElement('button');
+  btnDismiss.className = 'signal-ia-dismiss';
+  btnDismiss.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  btnDismiss.onclick = function() { dismissSignal('sig-gls'); };
+
+  right.appendChild(btnAnalyse);
+  right.appendChild(btnSave);
+  right.appendChild(btnDismiss);
+  head.appendChild(left);
+  head.appendChild(right);
+
+  var reco = document.createElement('div');
+  reco.className = 'signal-ia-reco';
+  reco.innerHTML =
+    '<div class="signal-ia-reco-inner">'
+    + '<div class="signal-ia-reco-head">'
+    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">'
+    + '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
+    + '</svg>Pr\u00e9conisation elo\u00b7IA</div>'
+    + '<div class="signal-ia-reco-body"><strong>Action recommand\u00e9e</strong>'
+    + ' \u2014 basculer 30\u201340\u00a0% des flux GLS vers Colis Priv\u00e9 (IDF & Grand-Est).'
+    + ' Estimation\u00a0: \u224815\u201320 litiges/semaine \u00e9vit\u00e9s.</div>'
+    + '</div>';
+
+  div.appendChild(head);
+  div.appendChild(reco);
+  zone.appendChild(div);
+  updateDockHeight();
+  setTimeout(function() {
+    div.classList.add('toast-in');
+    updateDockHeight();
+    updateSignalOverlay();
+  }, 80);
+}
+
+
+/* ── Enregistrer la conversation ── */
+var _convoSaved = false;
+function resetSaveConvoBtn() {
+  var btn = document.getElementById('saveConvoBtn');
+  if (!btn) return;
+  _convoSaved = false;
+  btn.classList.remove('saved', 'saving');
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Enregistrer cette analyse';
+}
+function saveConversation() {
+  if (_convoSaved) return;
+  var btn = document.getElementById('saveConvoBtn');
+  var scroll = document.getElementById('iaConvoScroll');
+  var userMsgs = scroll.querySelectorAll('.ia-msg-user');
+  var aiMsgs   = scroll.querySelectorAll('.ia-msg-ai');
+  if (!userMsgs.length && !aiMsgs.length) return;
+  var title  = userMsgs.length ? userMsgs[0].textContent.trim() : 'Conversation elo·IA';
+  var lastAi = aiMsgs.length ? aiMsgs[aiMsgs.length - 1].innerHTML : '';
+  _convoSaved = true;
+  if (btn) {
+    btn.classList.add('saving'); btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> Enregistrement…';
+  }
+  setTimeout(function() {
+    if (btn) {
+      btn.classList.remove('saving'); btn.classList.add('saved');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> Analyse enregistrée';
+    }
+    injectAnalysis(title, lastAi);
+  }, 420);
+}
 </script>
+
+<!-- ════════════════════════════════════════════
+     FLOATING IA DOCK
+     Positionné en dehors du .app pour ne pas être
+     contraint par l'overflow du layout.
+     ════════════════════════════════════════════ -->
+<!-- Overlay signal IA — grise la page quand des alertes sont actives -->
+<div class="signal-overlay" id="signalOverlay"></div>
+
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+
+    <!-- ── SIGNAL IA (au-dessus du dock, fermable) ── -->
+    <div class="signal-ia-float-zone" id="signalZone">
+
+      <!-- Signal 1 : Danger litiges DHL -->
+      <div class="signal-ia" data-severity="danger" id="sig1">
+        <div class="signal-ia-head">
+          <div class="signal-ia-head-left">
+            <div class="signal-ia-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="signal-ia-meta">
+              <div class="signal-ia-source">
+                <div class="signal-ia-source-dot"></div>
+                elo · IA · Signal Litiges
+              </div>
+              <div class="signal-ia-text-inline">
+                <strong>DHL concentre 33 % des retards</strong> (incident IDF confirmé) — action recommandée sur 3 commandes actives
+              </div>
+            </div>
+          </div>
+          <div class="signal-ia-head-right">
+            <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser l\'incident DHL IDF et proposer des actions pour les 3 commandes impactées')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              Analyser IA
+            </button>
+            <button class="signal-ia-btn-save" id="save-sig1" onclick="saveSignal('sig1','Incident DHL IDF · 3 commandes retardées · Reco: bascule vers GLS zones concernées')" style="font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:all 0.12s;background:var(--surface2);border:1px solid var(--border2);color:var(--slate)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Sauvegarder
+            </button>
+            <button class="signal-ia-dismiss" onclick="dismissSignal('sig1')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="signal-ia-reco" id="sig1-reco">
+          <div class="signal-ia-reco-inner">
+            <div class="signal-ia-reco-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Préconisation elo · IA
+            </div>
+            <div class="signal-ia-reco-body">
+              <strong>Contacter DHL</strong> pour estimer délai de résolution sur hub IDF. En parallèle, <strong>rebooker CMD-48240, 48241, 48255 vers GLS</strong> (taux livraison 97,5 % sur IDF cette semaine). Notifier les 3 clients concernés sans attendre.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal 2 : Warning coût logistique -->
+      <div class="signal-ia" data-severity="warning" id="sig2">
+        <div class="signal-ia-head">
+          <div class="signal-ia-head-left">
+            <div class="signal-ia-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="signal-ia-meta">
+              <div class="signal-ia-source">
+                <div class="signal-ia-source-dot"></div>
+                elo · IA · Signal Coûts
+              </div>
+              <div class="signal-ia-text-inline">
+                <strong>Taux livraison global en recul de −0,4 pt</strong> sur 7 jours — trajectoire vers seuil d'alerte 95 %
+              </div>
+            </div>
+          </div>
+          <div class="signal-ia-head-right">
+            <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser la baisse du taux de livraison et identifier les transporteurs responsables')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              Analyser IA
+            </button>
+            <button class="signal-ia-dismiss" onclick="dismissSignal('sig2')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /signal zone -->
+
+    <!-- ── IA DOCK ── -->
+    <div class="ia-dock" id="iaDock">
+
+      <!-- ════ BARRE PRINCIPALE (toujours visible) ════
+           Zones : [brand] | [champ IA] | [aperçu Analyses] | [aperçu Actions] | [toggle]
+      -->
+      <div class="ia-dock-bar">
+
+        <!-- Zone 1 : brand elo·IA -->
+        <div class="ia-dock-zone">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 2 : champ de saisie IA -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput" placeholder="Posez une question sur vos données…" oninput="toggleSend(this)" onkeydown="if(event.key==='Enter')sendIA()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="openDock()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+
+        <!-- Zone 3 : aperçu Analyses (cliquable pour ouvrir) -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewAnalyses">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Analyses
+            </div>
+            <span class="ia-count" id="analysisCount">3</span>
+          </div>
+          <div class="ia-dock-preview-items" id="analysesPreview">
+            <div class="ia-dock-preview-item">
+              <div class="ia-dock-preview-item-dot" style="background:var(--danger)"></div>
+              <span class="ia-dock-preview-item-txt">Transporteurs avec le plus de retards</span>
+            </div>
+            <div class="ia-dock-preview-item">
+              <div class="ia-dock-preview-item-dot" style="background:var(--warning)"></div>
+              <span class="ia-dock-preview-item-txt">Évolution du taux de livraison</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 4 : aperçu Actions + prise de note directe -->
+        <div class="ia-dock-zone ia-dock-preview" id="previewActions">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Actions
+            </div>
+            <span class="ia-count-action" id="actionCount">0</span>
+          </div>
+          <div class="ia-dock-preview-items" id="actionsPreview">
+            <div class="ia-dock-preview-item" style="color:var(--muted);font-size:10px;font-style:italic" id="actionsEmptyHint">Aucune action — ajoutez-en ci-dessous</div>
+          </div>
+          <!-- Prise de note directe depuis la barre -->
+          <div class="ia-dock-preview-input-row">
+            <input class="ia-dock-preview-input" id="quickActionInput" placeholder="+ Ajouter une action rapide…" onkeydown="if(event.key==='Enter')addQuickAction()" oninput="toggleQuickAdd(this)"/>
+            <button class="ia-dock-preview-add" id="quickAddBtn" onclick="addQuickAction()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Zone 5 : toggle expand/collapse -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+
+      </div><!-- /ia-dock-bar -->
+
+      <!-- ════ CORPS EXPANDABLE — vue tabbée ════ -->
+      <div class="ia-dock-body" id="iaDockBody">
+
+        <!-- Tabbar -->
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">3</span>
+            <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+
+            <!-- Échange pré-chargé : exemple d'analyse complète -->
+            <div class="ia-msg-user">Analyser l'incident DHL IDF et proposer des actions pour les 3 commandes impactées</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse commandes · 16 mars · 09h14
+              </div>
+              <div class="ia-msg-ai">
+                Analyse complète — <strong>DHL IDF : 19 retards actifs</strong>, dont 3 commandes à risque client élevé (CMD-48240, 48241, 48255). Cause confirmée : panne hub Roissy depuis 06h00.<br><br>
+                Actions recommandées :<br>
+                ① <strong>Rebooker CMD-48240 et 48241 vers GLS</strong> (couverture IDF : 97,5 %)<br>
+                ② Notifier les clients concernés par email proactif<br>
+                ③ Ouvrir un ticket SAV DHL pour compensation tarifaire<br><br>
+                Délai résolution estimé : 18h aujourd'hui.
+              </div>
+              <div class="ia-msg-time">09h14</div>
+            </div>
+
+            <div class="ia-msg-user">Quel est le taux de litiges par transporteur ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse litiges · 16 mars · 09h22
+              </div>
+              <div class="ia-msg-ai">
+                DHL : <strong style="color:var(--danger)">1,4 %</strong> (4/287) · Chronopost : 1,0 % (3/312) · GLS : 1,0 % (2/198) · UPS : 0,6 % · Geodis : 0,7 %.<br><br>
+                <strong>DHL est le seul transporteur au-dessus du seuil cible 1,0 %</strong> — directement corrélé à l'incident IDF de ce matin.
+              </div>
+              <div class="ia-msg-time">09h22</div>
+            </div>
+
+            <!-- Échange 3 : stock dormant + export CSV -->
+            <div class="ia-msg-user">Export des références sans mouvement depuis 6 semaines</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse stocks · 16 mars · 09h31
+              </div>
+              <div class="ia-msg-ai">
+                <strong>247 références</strong> sans mouvement depuis ≥ 6 semaines identifiées. Stock immobilisé estimé : <strong>34 820 €</strong> valeur achat.<br><br>
+                Répartition : 142 réf. B2C · 73 réf. B2B · 32 réf. cross-canal.<br>
+                Colonnes exportées : SKU · Désignation · Dernière sortie · Jours sans mouvement · Qté · Valeur stock.
+              </div>
+              <div class="ia-msg-actions">
+                <button class="ia-msg-export-btn" id="staticExportBtn" onclick="triggerCSVExport(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Télécharger le CSV
+                </button>
+              </div>
+              <div class="ia-msg-time">09h31</div>
+            </div>
+
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+              <div class="ia-sugg-label">Suggestions</div>
+              <button class="ia-save-convo-btn" id="saveConvoBtn" onclick="saveConversation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                Enregistrer cette analyse
+              </button>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSend('Estimer l\'impact client de l\'incident DHL')"><div class="ia-sugg-dot" style="background:var(--danger)"></div>Impact client DHL</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comment rebooker vers GLS ?')"><div class="ia-sugg-dot" style="background:var(--success)"></div>Rebooker vers GLS</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comparer les performances S-1 vs semaine actuelle')"><div class="ia-sugg-dot" style="background:var(--primary)"></div>Comparer S-1 vs actuel</div>
+              <div class="ia-sugg" onclick="fillAndSend('Export des références sans mouvement depuis 6 semaines')"><div class="ia-sugg-dot" style="background:var(--success)"></div>Réf. dormantes → CSV</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions (fusionné) -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+
+            <!-- Colonne Analyses (50%) -->
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountFull">3</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--danger)"></div><div class="analysis-q">Transporteurs avec le plus de retards cette semaine</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 19 retards (6,6 %) · Chronopost : 8 retards (2,6 %). Incident DHL IDF confirmé.</div>
+                  <div class="analysis-footer"><span class="analysis-time">16 mars · 09h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-2" onclick="loadAnalysisInIA(2)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--warning)"></div><div class="analysis-q">Évolution du taux de livraison sur 7 jours</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">96,4 % global — recul de −0,4 pt vs S-1. DHL tire la moyenne vers le bas.</div>
+                  <div class="analysis-footer"><span class="analysis-time">15 mars · 16h30</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-3" onclick="loadAnalysisInIA(3)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--primary)"></div><div class="analysis-q">Litiges ouverts — répartition par transporteur</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 4 litiges · Chronopost : 3 · GLS : 2 · Autres : 3. Total : 12 litiges ouverts.</div>
+                  <div class="analysis-footer"><span class="analysis-time">14 mars · 11h02</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonne Actions (50%) -->
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountFull">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /ia-dock-body -->
+
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
 </body>
 </html>
