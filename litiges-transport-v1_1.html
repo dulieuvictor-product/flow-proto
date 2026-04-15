@@ -454,6 +454,10 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 }
 .save-pill.visible { display:flex; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── GRAIN TRANSITION ── */
+.grain-flash { animation: grainFade 0.22s ease; }
+@keyframes grainFade { 0%{opacity:0.3} 100%{opacity:1} }
 </style>
 </head>
 <body>
@@ -522,7 +526,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
         Mode sombre
       </button>
-      <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
   </div>
 
@@ -620,7 +623,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="page-header">
       <div class="page-eyebrow">Module</div>
       <div class="page-title"><span>Litiges Transport</span> — Indicateurs clés</div>
-      <div class="page-sub">Semaine 17–23 mars 2025 · tous transporteurs · tous canaux</div>
+      <div class="page-sub" id="page-sub">Semaine 17–23 mars 2025 · tous transporteurs · tous canaux</div>
     </div>
   </div>
   <!-- ══ FUNNEL LITIGES ══ -->
@@ -629,15 +632,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <!-- Barre totale -->
     <div class="funnel-total-bar">
       <div>
-        <div class="funnel-total-label">Volume total — Semaine 17–23 mars 2025</div>
+        <div class="funnel-total-label" id="funnel-label">Volume total — Semaine 17–23 mars 2025</div>
         <div style="display:flex;align-items:baseline;gap:10px;margin-top:3px;">
-          <div class="funnel-total-value"><strong>68</strong> réclamations · dont <strong>47</strong> litiges</div>
+          <div class="funnel-total-value" id="funnel-value"><strong>68</strong> réclamations · dont <strong>47</strong> litiges</div>
           <div class="funnel-total-sub">tous transporteurs · tous canaux</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span class="kpi-status-badge warn">⚠ En hausse</span>
-        <span style="font-size:11px;color:var(--muted)"><span class="delta-dn">↑ +8</span> vs S16</span>
+        <span class="kpi-status-badge warn" id="funnel-badge">⚠ En hausse</span>
+        <span style="font-size:11px;color:var(--muted)" id="funnel-delta"><span class="delta-dn">↑ +8</span> vs S16</span>
       </div>
     </div>
 
@@ -649,9 +652,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
         </div>
         <div class="funnel-step-label">Réclamations sans litiges</div>
-        <div class="funnel-step-value" style="color:var(--c-savt)">68</div>
+        <div class="funnel-step-value" id="fs-recl" style="color:var(--c-savt)">68</div>
         <div class="funnel-step-sub">réclamations reçues<br>non qualifiées en litige</div>
-        <span class="funnel-step-pct" style="background:var(--c-savt-t);color:var(--c-savt)">100%</span>
+        <span class="funnel-step-pct" id="fs-recl-pct" style="background:var(--c-savt-t);color:var(--c-savt)">100%</span>
       </div>
 
       <!-- Arrow -->
@@ -665,9 +668,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
         <div class="funnel-step-label">Litiges ouverts</div>
-        <div class="funnel-step-value" style="color:var(--warning)">47</div>
+        <div class="funnel-step-value" id="fs-ouverts" style="color:var(--warning)">47</div>
         <div class="funnel-step-sub">litiges actifs<br>en attente de résolution</div>
-        <span class="funnel-step-pct" style="background:var(--warning-tint);color:var(--warning)">69,1%</span>
+        <span class="funnel-step-pct" id="fs-ouverts-pct" style="background:var(--warning-tint);color:var(--warning)">69,1%</span>
       </div>
 
       <!-- Arrow -->
@@ -681,9 +684,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div class="funnel-step-label">Indemnisés</div>
-        <div class="funnel-step-value" style="color:var(--success)">12</div>
+        <div class="funnel-step-value" id="fs-indem" style="color:var(--success)">12</div>
         <div class="funnel-step-sub">remboursements reçus<br>litige clôturé</div>
-        <span class="funnel-step-pct" style="background:var(--success-tint);color:var(--success)">17,6%</span>
+        <span class="funnel-step-pct" id="fs-indem-pct" style="background:var(--success-tint);color:var(--success)">17,6%</span>
       </div>
 
       <!-- Arrow -->
@@ -697,9 +700,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
         </div>
         <div class="funnel-step-label">Non indemnisés</div>
-        <div class="funnel-step-value" style="color:var(--danger)">7</div>
+        <div class="funnel-step-value" id="fs-nind" style="color:var(--danger)">7</div>
         <div class="funnel-step-sub">refusés ou pertes<br>définitives</div>
-        <span class="funnel-step-pct" style="background:var(--danger-tint);color:var(--danger)">10,3%</span>
+        <span class="funnel-step-pct" id="fs-nind-pct" style="background:var(--danger-tint);color:var(--danger)">10,3%</span>
       </div>
     </div>
 
@@ -711,18 +714,18 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <div class="indem-main">
           <div class="indem-header">
             <div class="indem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
-            <div><div class="indem-title">Indemnités totales reçues</div><div style="font-size:10px;color:var(--muted)">Semaine 17–23 mars 2025</div></div>
+            <div><div class="indem-title">Indemnités totales reçues</div><div style="font-size:10px;color:var(--muted)" id="indem-date">Semaine 17–23 mars 2025</div></div>
           </div>
           <div class="indem-amount" id="indemAmount">3 240<span class="unit"> €</span></div>
           <div class="indem-sub" id="indemSub">12 litiges clôturés avec remboursement</div>
           <div class="indem-split" id="indemSplit" style="display:none;">
             <div class="indem-split-item">
               <div class="indem-split-label">Transporteur</div>
-              <div class="indem-split-val" style="color:var(--c-qtrans)">2 180 €</div>
+              <div class="indem-split-val" style="color:var(--c-qtrans)" id="indem-transp-val">2 180 €</div>
             </div>
             <div class="indem-split-item">
               <div class="indem-split-label">e-logik</div>
-              <div class="indem-split-val" style="color:var(--violet)">1 060 €</div>
+              <div class="indem-split-val" style="color:var(--violet)" id="indem-elogik-val">1 060 €</div>
             </div>
           </div>
           <div class="indem-toggle-group">
@@ -745,9 +748,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           </div>
           <span class="kpi-status-badge warn">⚠ Hors cible</span>
         </div>
-        <div class="kpi-big" style="color:var(--warning)">8.2<span class="unit"> jours</span></div>
-        <div class="kpi-secondary">objectif ≤ 5 jours · GLS : 11.4j · DHL : 2.1j</div>
-        <div class="kpi-sub-row"><span class="delta-dn">↑ +1.4j</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
+        <div class="kpi-big" id="tps-val" style="color:var(--warning)">8.2<span class="unit"> jours</span></div>
+        <div class="kpi-secondary" id="tps-sub">objectif ≤ 5 jours · GLS : 11.4j · DHL : 2.1j</div>
+        <div class="kpi-sub-row" id="tps-delta"><span class="delta-dn">↑ +1.4j</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:61%"></div></div></div>
       </div>
 
@@ -767,27 +770,27 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <!-- Gauche : taux global + jauge -->
           <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px;border-right:1px solid var(--border);">
             <div>
-              <div class="litige-big">3,7<span class="unit">%</span></div>
+              <div class="litige-big" id="taux-global">3,7<span class="unit">%</span></div>
               <div style="font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:3px;">OBJECTIF ≤ 1,5%</div>
             </div>
             <div class="litige-bar-wrap">
-              <div class="litige-bar"><div class="litige-bar-fill" style="width:73%"></div></div>
+              <div class="litige-bar"><div class="litige-bar-fill" id="taux-bar" style="width:73%"></div></div>
               <div class="litige-seuil">
                 <span class="litige-seuil-label">0%</span>
                 <span class="litige-seuil-label" style="color:var(--danger)">Seuil 1,5%</span>
                 <span class="litige-seuil-label">5%</span>
               </div>
             </div>
-            <div class="litige-sub">47 litiges · 68 réclamations · 12 847 expéditions<br>+12 cette semaine · 8 clôturés</div>
+            <div class="litige-sub" id="taux-sub">47 litiges · 68 réclamations · 12 847 expéditions<br>+12 cette semaine · 8 clôturés</div>
           </div>
           <!-- Droite : par transporteur -->
           <div style="padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
             <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;">Par transporteur</div>
-            <div class="litige-row"><div class="litige-row-name">GLS</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:49%;background:var(--danger)"></div></div><div class="litige-row-val" style="color:var(--danger)">23</div></div>
-            <div class="litige-row"><div class="litige-row-name">Chronopost</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:30%;background:var(--warning)"></div></div><div class="litige-row-val" style="color:var(--warning)">14</div></div>
-            <div class="litige-row"><div class="litige-row-name">Colissimo</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:15%;background:var(--warning)"></div></div><div class="litige-row-val" style="color:var(--warning)">7</div></div>
-            <div class="litige-row"><div class="litige-row-name">DHL Express</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:6%;background:var(--success)"></div></div><div class="litige-row-val" style="color:var(--success)">3</div></div>
-            <div class="litige-row"><div class="litige-row-name">Colis Privé</div><div class="litige-row-bar"><div class="litige-row-fill" style="width:0%"></div></div><div class="litige-row-val" style="color:var(--success)">0</div></div>
+            <div class="litige-row"><div class="litige-row-name">GLS</div><div class="litige-row-bar"><div class="litige-row-fill" id="bar-gls" style="width:49%;background:var(--danger)"></div></div><div class="litige-row-val" id="val-gls" style="color:var(--danger)">23</div></div>
+            <div class="litige-row"><div class="litige-row-name">Chronopost</div><div class="litige-row-bar"><div class="litige-row-fill" id="bar-chrono" style="width:30%;background:var(--warning)"></div></div><div class="litige-row-val" id="val-chrono" style="color:var(--warning)">14</div></div>
+            <div class="litige-row"><div class="litige-row-name">Colissimo</div><div class="litige-row-bar"><div class="litige-row-fill" id="bar-colissimo" style="width:15%;background:var(--warning)"></div></div><div class="litige-row-val" id="val-colissimo" style="color:var(--warning)">7</div></div>
+            <div class="litige-row"><div class="litige-row-name">DHL Express</div><div class="litige-row-bar"><div class="litige-row-fill" id="bar-dhl" style="width:6%;background:var(--success)"></div></div><div class="litige-row-val" id="val-dhl" style="color:var(--success)">3</div></div>
+            <div class="litige-row"><div class="litige-row-name">Colis Privé</div><div class="litige-row-bar"><div class="litige-row-fill" id="bar-cp" style="width:0%"></div></div><div class="litige-row-val" id="val-cp" style="color:var(--success)">0</div></div>
           </div>
         </div>
       </div>
@@ -810,8 +813,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <!-- Tableau états litiges -->
         <div class="card">
           <div class="card-head">
-            <div><div class="card-title">État des litiges en cours</div><div class="card-sub">12 litiges actifs · semaine 17–23 mars 2025</div></div>
-            <span class="card-badge cb-bad">12 ouverts</span>
+            <div><div class="card-title">État des litiges en cours</div><div class="card-sub" id="table-sub">12 litiges actifs · semaine 17–23 mars 2025</div></div>
+            <span class="card-badge cb-bad" id="table-badge">12 ouverts</span>
           </div>
           <div class="tbl-wrap">
             <table class="tbl">
@@ -899,7 +902,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             </table>
           </div>
           <div style="padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;">
-            <span>Affichage 6 sur 12 litiges</span>
+            <span id="table-footer">Affichage 6 sur 12 litiges</span>
             <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500;">Voir tous les litiges →</span>
           </div>
         </div>
@@ -907,7 +910,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <!-- Tableau répartition par transporteur et offre -->
         <div class="card">
           <div class="card-head">
-            <div><div class="card-title">Répartition par transporteur et offre</div><div class="card-sub">Litiges · TPS · sources d'ouverture · par offre de transport</div></div>
+            <div><div class="card-title">Répartition par transporteur et offre</div><div class="card-sub" id="repartition-sub">Litiges · TPS · sources d'ouverture · par offre de transport</div></div>
             <span class="card-badge cb-savt">5 transporteurs</span>
           </div>
           <div class="carrier-table-wrap">
@@ -1102,7 +1105,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div class="card" style="position:sticky;top:12px;">
         <div class="feed-header">
           <div class="feed-title"><div class="feed-pulse"></div>Alertes litiges</div>
-          <span class="feed-count">5 actives</span>
+          <span class="feed-count" id="feed-count">5 actives</span>
         </div>
         <div class="alert-feed" id="alertFeed">
 
@@ -1281,11 +1284,258 @@ function toggleTheme() {
   setTimeout(rebuildCharts, 50);
 }
 
-/* ── PERIOD ── */
+/* ══════════════════════════════════════════════════
+   DONNÉES MULTI-GRAIN — Litiges Transport
+   Règle : 1 mois = 4 semaines · 1 jour = snapshot J
+   Référence : Semaine S18 · 17–23 mars 2025
+   ══════════════════════════════════════════════════ */
+var GRAIN_DATA = {
+
+  /* ── JOUR — vendredi 21 mars (cumul semaine au J) ── */
+  jour: {
+    label: '21 mars', dateLabel: '21 mars 2025',
+    pageSub: 'Vendredi 21 mars 2025 · tous transporteurs · tous canaux',
+    funnel: {
+      label: 'Volume total — Vendredi 21 mars 2025',
+      value: '<strong>14</strong> réclamations · dont <strong>9</strong> litiges',
+      badge: '⚠ En cours', delta: '<span class="delta-dn">↑ +2</span> vs hier',
+      recl: 14, reclPct: '100%', ouv: 9, ouvPct: '64,3%',
+      ind: 2, indPct: '14,3%', nind: 1, nindPct: '7,1%'
+    },
+    kpi: {
+      indemAmount: '680', indemSub: '2 litiges clôturés avec remboursement',
+      indemDate: 'Vendredi 21 mars 2025',
+      transpVal: '460 €', elogikVal: '220 €',
+      tpsVal: '7.8', tpsSub: 'objectif ≤ 5 jours · GLS : 10.2j · DHL : 2.1j',
+      tpsDelta: '<span class="delta-dn">↑ +0.8j</span><span style="font-size:11px;color:var(--muted)"> vs hier</span>',
+      tauxGlobal: '3,5', tauxBar: '70%',
+      tauxSub: '9 litiges · 14 réclamations · 2 748 expéditions<br>+2 aujourd\'hui · 1 clôturé',
+      carriers: [
+        { id:'gls',      val:4,  pct:'44%', color:'var(--danger)' },
+        { id:'chrono',   val:3,  pct:'33%', color:'var(--warning)' },
+        { id:'colissimo',val:1,  pct:'11%', color:'var(--warning)' },
+        { id:'dhl',      val:1,  pct:'11%', color:'var(--success)' },
+        { id:'cp',       val:0,  pct:'0%',  color:'var(--success)' }
+      ]
+    },
+    table: { sub: '9 litiges actifs · 21 mars 2025', badge: '9 ouverts', footer: 'Affichage 6 sur 9 litiges' },
+    feed: { count: '3 actives' },
+    chart: {
+      weeks: ['L17','M18','M19','J20','V21'],
+      volume: { ouverts: [8,9,9,10,9], resolus: [6,7,6,7,2] },
+      cout:   { ouverts: [3100,3400,3500,3800,3480], resolus: [2400,2700,2400,2600,680] }
+    }
+  },
+
+  /* ── SEMAINE S18 — 17–23 mars (données originales) ── */
+  semaine: {
+    label: 'S18 · 17–23 mars', dateLabel: 'Semaine 17–23 mars',
+    pageSub: 'Semaine 17–23 mars 2025 · tous transporteurs · tous canaux',
+    funnel: {
+      label: 'Volume total — Semaine 17–23 mars 2025',
+      value: '<strong>68</strong> réclamations · dont <strong>47</strong> litiges',
+      badge: '⚠ En hausse', delta: '<span class="delta-dn">↑ +8</span> vs S16',
+      recl: 68, reclPct: '100%', ouv: 47, ouvPct: '69,1%',
+      ind: 12, indPct: '17,6%', nind: 7, nindPct: '10,3%'
+    },
+    kpi: {
+      indemAmount: '3 240', indemSub: '12 litiges clôturés avec remboursement',
+      indemDate: 'Semaine 17–23 mars 2025',
+      transpVal: '2 180 €', elogikVal: '1 060 €',
+      tpsVal: '8.2', tpsSub: 'objectif ≤ 5 jours · GLS : 11.4j · DHL : 2.1j',
+      tpsDelta: '<span class="delta-dn">↑ +1.4j</span><span style="font-size:11px;color:var(--muted)"> vs semaine précédente</span>',
+      tauxGlobal: '3,7', tauxBar: '73%',
+      tauxSub: '47 litiges · 68 réclamations · 12 847 expéditions<br>+12 cette semaine · 8 clôturés',
+      carriers: [
+        { id:'gls',      val:23, pct:'49%', color:'var(--danger)' },
+        { id:'chrono',   val:14, pct:'30%', color:'var(--warning)' },
+        { id:'colissimo',val:7,  pct:'15%', color:'var(--warning)' },
+        { id:'dhl',      val:3,  pct:'6%',  color:'var(--success)' },
+        { id:'cp',       val:0,  pct:'0%',  color:'var(--success)' }
+      ]
+    },
+    table: { sub: '12 litiges actifs · semaine 17–23 mars 2025', badge: '12 ouverts', footer: 'Affichage 6 sur 12 litiges' },
+    feed: { count: '5 actives' },
+    chart: {
+      weeks: ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'],
+      volume: { ouverts:[28,31,29,34,36,38,35,39,42,44,47,47], resolus:[22,24,26,28,25,30,28,32,30,34,32,8] },
+      cout:   { ouverts:[9200,10400,9800,11200,12100,12800,11900,13400,14800,15600,18420,18420], resolus:[7200,8100,8800,9400,8500,10200,9600,10800,10200,11400,10800,3240] }
+    }
+  },
+
+  /* ── MOIS — mars 2025 (4 semaines S15–S18) ── */
+  mois: {
+    label: 'Mars 2025', dateLabel: 'Mars 2025 (S15–S18)',
+    pageSub: 'Mars 2025 · S15 → S18 · tous transporteurs · tous canaux',
+    funnel: {
+      label: 'Volume total — Mars 2025 (4 semaines)',
+      value: '<strong>272</strong> réclamations · dont <strong>188</strong> litiges',
+      badge: '⚠ Hausse persistante', delta: '<span class="delta-dn">↑ +32</span> vs février',
+      recl: 272, reclPct: '100%', ouv: 188, ouvPct: '69,1%',
+      ind: 48, indPct: '17,6%', nind: 28, nindPct: '10,3%'
+    },
+    kpi: {
+      indemAmount: '12 960', indemSub: '48 litiges clôturés avec remboursement',
+      indemDate: 'Mars 2025 · S15–S18',
+      transpVal: '8 720 €', elogikVal: '4 240 €',
+      tpsVal: '7.6', tpsSub: 'objectif ≤ 5 jours · GLS : 10.8j · DHL : 2.3j',
+      tpsDelta: '<span class="delta-dn">↑ +0.8j</span><span style="font-size:11px;color:var(--muted)"> vs février</span>',
+      tauxGlobal: '3,7', tauxBar: '73%',
+      tauxSub: '188 litiges · 272 réclamations · 51 388 expéditions<br>+32 vs mars 2024 · 32 clôturés/sem.',
+      carriers: [
+        { id:'gls',      val:92,  pct:'49%', color:'var(--danger)' },
+        { id:'chrono',   val:56,  pct:'30%', color:'var(--warning)' },
+        { id:'colissimo',val:28,  pct:'15%', color:'var(--warning)' },
+        { id:'dhl',      val:12,  pct:'6%',  color:'var(--success)' },
+        { id:'cp',       val:0,   pct:'0%',  color:'var(--success)' }
+      ]
+    },
+    table: { sub: '188 litiges actifs · mars 2025', badge: '188 litiges', footer: 'Affichage 6 sur 188 litiges' },
+    feed: { count: '5 actives' },
+    chart: {
+      weeks: ['S15','S16','S17','S18'],
+      volume: { ouverts:[42,44,47,47], resolus:[30,34,32,8] },
+      cout:   { ouverts:[14800,15600,18420,18420], resolus:[10200,11400,10800,3240] }
+    }
+  },
+
+  /* ── ANNÉE — 2025 YTD (jan–mars = 3 mois = 12 semaines) ── */
+  annee: {
+    label: '2025 YTD', dateLabel: 'Jan – Mars 2025',
+    pageSub: 'Janvier – Mars 2025 · S1→S18 · tous transporteurs · tous canaux',
+    funnel: {
+      label: 'Volume total — 2025 YTD (Jan–Mars)',
+      value: '<strong>816</strong> réclamations · dont <strong>564</strong> litiges',
+      badge: '⚠ Tendance hausse', delta: '<span class="delta-dn">↑ +18%</span> vs 2024',
+      recl: 816, reclPct: '100%', ouv: 564, ouvPct: '69,1%',
+      ind: 144, indPct: '17,6%', nind: 84, nindPct: '10,3%'
+    },
+    kpi: {
+      indemAmount: '38 880', indemSub: '144 litiges clôturés avec remboursement',
+      indemDate: 'Janvier – Mars 2025',
+      transpVal: '26 160 €', elogikVal: '12 720 €',
+      tpsVal: '7.1', tpsSub: 'objectif ≤ 5 jours · GLS : 10.2j · DHL : 2.4j',
+      tpsDelta: '<span class="delta-dn">↑ +1.1j</span><span style="font-size:11px;color:var(--muted)"> vs 2024</span>',
+      tauxGlobal: '3,7', tauxBar: '73%',
+      tauxSub: '564 litiges · 816 réclamations · 154 164 expéditions<br>+18% vs 2024 · GLS principal facteur',
+      carriers: [
+        { id:'gls',      val:276, pct:'49%', color:'var(--danger)' },
+        { id:'chrono',   val:168, pct:'30%', color:'var(--warning)' },
+        { id:'colissimo',val:84,  pct:'15%', color:'var(--warning)' },
+        { id:'dhl',      val:36,  pct:'6%',  color:'var(--success)' },
+        { id:'cp',       val:0,   pct:'0%',  color:'var(--success)' }
+      ]
+    },
+    table: { sub: '564 litiges YTD · jan–mars 2025', badge: '564 litiges', footer: 'Affichage 6 sur 564 litiges' },
+    feed: { count: '5 actives' },
+    chart: {
+      weeks: ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'],
+      volume: { ouverts:[22,24,23,26,28,29,28,31,29,34,36,38,35,39,42,44,47,47], resolus:[18,19,20,22,21,23,22,24,26,28,25,30,28,32,30,34,32,8] },
+      cout:   { ouverts:[7200,7800,7500,8400,9100,9400,9200,10400,9800,11200,12100,12800,11900,13400,14800,15600,18420,18420], resolus:[5800,6200,6500,7100,6800,7600,7200,8100,8800,9400,8500,10200,9600,10800,10200,11400,10800,3240] }
+    }
+  }
+};
+
+/* ════ MOTEUR DE RENDU ════ */
+var currentGrain = 'semaine';
+
 function setPeriod(btn) {
   document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
+  var map = { 'Jour':'jour', 'Semaine':'semaine', 'Mois':'mois', 'Année':'annee' };
+  currentGrain = map[btn.textContent.trim()] || 'semaine';
+  applyGrain(currentGrain);
 }
+
+function applyGrain(grain) {
+  var d = GRAIN_DATA[grain];
+  if (!d) return;
+
+  /* Flash */
+  document.querySelectorAll('.funnel-step-value, .kpi-big, .litige-big').forEach(function(el) {
+    el.classList.remove('grain-flash'); void el.offsetWidth; el.classList.add('grain-flash');
+  });
+
+  /* Labels */
+  setText('dpLabel', d.dateLabel);
+  setText('page-sub', d.pageSub);
+
+  /* Funnel total */
+  var f = d.funnel;
+  setText('funnel-label', f.label);
+  setHTML('funnel-value', f.value);
+  setText('funnel-badge', f.badge);
+  setHTML('funnel-delta', f.delta);
+  setText('fs-recl', f.recl);
+  setText('fs-recl-pct', f.reclPct);
+  setText('fs-ouverts', f.ouv);
+  setText('fs-ouverts-pct', f.ouvPct);
+  setText('fs-indem', f.ind);
+  setText('fs-indem-pct', f.indPct);
+  setText('fs-nind', f.nind);
+  setText('fs-nind-pct', f.nindPct);
+
+  /* KPI indemnités */
+  var k = d.kpi;
+  setHTML('indemAmount', k.indemAmount + '<span class="unit"> €</span>');
+  setText('indemSub', k.indemSub);
+  setText('indem-date', k.indemDate);
+  setText('indem-transp-val', k.transpVal);
+  setText('indem-elogik-val', k.elogikVal);
+  /* Mettre à jour les vars internes utilisées par updateIndemDisplay */
+  indemTranspVal = parseInt(k.transpVal.replace(/[^0-9]/g,''));
+  indemElogikVal = parseInt(k.elogikVal.replace(/[^0-9]/g,''));
+
+  /* KPI TPS */
+  setHTML('tps-val', k.tpsVal + '<span class="unit"> jours</span>');
+  setText('tps-sub', k.tpsSub);
+  setHTML('tps-delta', k.tpsDelta);
+
+  /* Taux litiges */
+  setHTML('taux-global', k.tauxGlobal + '<span class="unit">%</span>');
+  setStyle('taux-bar', 'width', k.tauxBar);
+  setHTML('taux-sub', k.tauxSub);
+
+  /* Par transporteur */
+  k.carriers.forEach(function(cr) {
+    setStyle('bar-' + cr.id, 'width', cr.pct);
+    setStyle('bar-' + cr.id, 'background', cr.color);
+    setText('val-' + cr.id, cr.val);
+    setStyle2('val-' + cr.id, 'color', cr.color);
+  });
+
+  /* Table */
+  setText('table-sub', d.table.sub);
+  setText('table-badge', d.table.badge);
+  setText('table-footer', d.table.footer);
+
+  /* Feed */
+  setText('feed-count', d.feed.count);
+
+  /* Graphique — mise à jour vars globales + rebuild avec try/catch */
+  weeks = d.chart.weeks;
+  dataVolume = d.chart.volume;
+  dataCout   = d.chart.cout;
+  try { buildLitChart(); } catch(e) { /* silently fail if chart not ready */ }
+}
+
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el && val !== undefined) el.textContent = String(val);
+}
+function setHTML(id, html) {
+  var el = document.getElementById(id);
+  if (el && html !== undefined) el.innerHTML = html;
+}
+function setStyle(id, prop, val) {
+  var el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+function setStyle2(id, prop, val) {
+  var el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+/* ── CSS grain transition ── */
 
 /* ── IA CHAT ── */
 function toggleChatCollapse() {
@@ -1418,9 +1668,11 @@ function toggleIndem(type) {
   btn.classList.toggle('active', indemState[type]);
   updateIndemDisplay();
 }
+var indemTranspVal = 2180;
+var indemElogikVal = 1060;
 function updateIndemDisplay() {
-  var transpVal = 2180;
-  var elogikVal = 1060;
+  var transpVal = indemTranspVal;
+  var elogikVal = indemElogikVal;
   var total = 0;
   if (indemState.transp) total += transpVal;
   if (indemState.elogik) total += elogikVal;
@@ -1560,6 +1812,7 @@ function rebuildCharts() { buildLitChart(); }
 window.addEventListener('DOMContentLoaded', function() {
   renderCal();
   buildLitChart();
+  applyGrain('semaine');
 });
 var themeObserver = new MutationObserver(function(muts) {
   muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
