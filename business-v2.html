@@ -419,11 +419,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             <div class="kpi-mod-icon" style="background:var(--primary-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>
             <div><div class="kpi-label">Commandes vendues</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">B2C + B2B · sem. en cours</div></div>
           </div>
-          <span class="kpi-status-badge ok">↑ objectif</span>
+          <span class="kpi-status-badge ok" id="kpiBadgeCommandes">↑ objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--primary)">2 841<span class="unit"> cmd</span></div>
-        <div class="kpi-secondary">Objectif semaine : 2 600 commandes</div>
-        <div class="kpi-sub-row"><span class="delta-up">+9,3%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
+        <div class="kpi-big" style="color:var(--primary)"><span id="kpiValCommandes">2 841</span><span class="unit"> cmd</span></div>
+        <div class="kpi-secondary" id="kpiObjCommandes">Objectif semaine : 2 600 commandes</div>
+        <div class="kpi-sub-row"><span class="delta-up" id="kpiDeltaCommandes">+9,3%</span><span style="font-size:11px;color:var(--muted)" id="kpiSubCommandes">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:92%;background:var(--primary)"></div></div></div>
       </div>
       <!-- KPI 2 : Articles / commande — violet -->
@@ -433,11 +433,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             <div class="kpi-mod-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
             <div><div class="kpi-label">Articles / commande</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Moyenne hebdomadaire</div></div>
           </div>
-          <span class="kpi-status-badge ok">stable</span>
+          <span class="kpi-status-badge ok" id="kpiBadgeArticles">stable</span>
         </div>
-        <div class="kpi-big" style="color:var(--violet)">2,4<span class="unit"> art.</span></div>
-        <div class="kpi-secondary">B2C : 2,1 art. · B2B : 5,3 art.</div>
-        <div class="kpi-sub-row"><span class="delta-up">+0,2</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
+        <div class="kpi-big" style="color:var(--violet)"><span id="kpiValArticles">2,4</span><span class="unit"> art.</span></div>
+        <div class="kpi-secondary" id="kpiObjArticles">B2C : 2,1 art. · B2B : 5,3 art.</div>
+        <div class="kpi-sub-row"><span class="delta-up" id="kpiDeltaArticles">+0,2</span><span style="font-size:11px;color:var(--muted)" id="kpiSubArticles">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:78%;background:var(--violet)"></div></div></div>
       </div>
       <!-- KPI 3 : AOV — ambre/stocks -->
@@ -447,11 +447,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             <div class="kpi-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
             <div><div class="kpi-label">Panier moyen (AOV)</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Average Order Value</div></div>
           </div>
-          <span class="kpi-status-badge ok">↑ objectif</span>
+          <span class="kpi-status-badge ok" id="kpiBadgeAov">↑ objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-stocks)">118<span class="unit"> €</span></div>
-        <div class="kpi-secondary">Objectif : 105 € · B2C : 94 € · B2B : 312 €</div>
-        <div class="kpi-sub-row"><span class="delta-up">+12,4%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
+        <div class="kpi-big" style="color:var(--c-stocks)"><span id="kpiValAov">118</span><span class="unit"> €</span></div>
+        <div class="kpi-secondary" id="kpiObjAov">Objectif : 105 € · B2C : 94 € · B2B : 312 €</div>
+        <div class="kpi-sub-row"><span class="delta-up" id="kpiDeltaAov">+12,4%</span><span style="font-size:11px;color:var(--muted)" id="kpiSubAov">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:88%;background:var(--c-stocks)"></div></div></div>
       </div>
       <!-- KPI 4 : CA e-commerce — business blue (KPI stratégique principal) -->
@@ -461,11 +461,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             <div class="kpi-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
             <div><div class="kpi-label">CA e-commerce</div><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Tous canaux · sem. en cours</div></div>
           </div>
-          <span class="kpi-status-badge ok">↑ objectif</span>
+          <span class="kpi-status-badge ok" id="kpiBadgeCa">↑ objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--c-business)">335<span class="unit"> k€</span></div>
-        <div class="kpi-secondary">Objectif semaine : 310 k€ · YTD : 3,8 M€</div>
-        <div class="kpi-sub-row"><span class="delta-up">+8,1%</span><span style="font-size:11px;color:var(--muted)">vs S-1</span></div>
+        <div class="kpi-big" style="color:var(--c-business)"><span id="kpiValCa">335</span><span class="unit"> k€</span></div>
+        <div class="kpi-secondary" id="kpiObjCa">Objectif semaine : 310 k€ · YTD : 3,8 M€</div>
+        <div class="kpi-sub-row"><span class="delta-up" id="kpiDeltaCa">+8,1%</span><span style="font-size:11px;color:var(--muted)" id="kpiSubCa">vs S-1</span></div>
         <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="width:94%;background:var(--c-business)"></div></div></div>
       </div>
       <!-- KPI 5 : Répartition des livraisons -->
@@ -521,7 +521,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <button class="cmt-btn" onclick="switchG1Metric(this,'commandes')">Commandes</button>
       <button class="cmt-btn" onclick="switchG1Metric(this,'references')">Références expédiées</button>
       <button class="cmt-btn" onclick="switchG1Metric(this,'articles')">Articles / commande</button>
-      <button class="cmt-btn" onclick="switchG1Metric(this,'refs')">Références / commande</button>
     </div>
     <div style="padding:12px 18px 6px"><div style="height:220px;position:relative"><canvas id="chartG1"></canvas></div></div>
     <!-- Séries optionnelles cochables -->
@@ -565,7 +564,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div class="card-head">
         <div><div class="card-title">Performance par référence</div><div class="card-sub" id="tableSubLabel">Tous canaux — volumes, objectifs et tendance de la semaine</div></div>
         <div style="display:flex;align-items:center;gap:8px">
-          <select id="filterTable" onchange="applyTableFilter(this.value)" class="filter-select">
+          <select id="filterTable" onchange="applyTableFilter(this.value, currentGrain)" class="filter-select">
             <option value="all">Tous canaux</option>
             <option value="B2C">B2C</option>
             <option value="B2B">B2B</option>
@@ -576,7 +575,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       </div>
       <div class="pt-wrap">
         <table class="prod-table">
-          <thead><tr><th>#</th><th>Produit</th><th>Canal</th><th>Ventes</th><th>Objectif</th><th>Atteinte</th><th>Stock 3 mois</th><th>Réappro.</th><th>Tendance</th></tr></thead>
+          <thead><tr><th>#</th><th>Produit</th><th>Canal</th><th id="thColis">Colis / sem.</th><th>Objectif</th><th>Atteinte</th><th>Stock 3 mois</th><th>Réappro.</th><th>Tendance</th></tr></thead>
           <tbody id="prodTableBody"></tbody>
         </table>
       </div>
@@ -725,9 +724,425 @@ function toggleTheme() {
 }
 
 // PERIOD
+// ── GRAIN COURANT ──────────────────────────────────────────────────────────────
+var currentGrain = 'semaine';
+
+// ── DATASETS MULTI-GRAIN ───────────────────────────────────────────────────────
+var grainData = {
+  jour: {
+    labels:       ['Lun 17','Mar 18','Mer 19','Jeu 20','Ven 21'],
+    periodLabel:  'Lun 17 – Ven 21 mars 2025 · tous canaux · toutes références',
+    dpLabel:      '17 – 21 mars',
+    compareLabel: 'vs j-1',
+    kpis: {
+      commandes: { val:'568',    unit:'cmd',  obj:'Objectif jour : 520 commandes',     delta:'+9,2%', dir:'up',   badge:'↑ objectif' },
+      articles:  { val:'2,4',   unit:'art.',  obj:'B2C : 2,2 art. · B2B : 5,3 art.',  delta:'+0,2',  dir:'up',   badge:'stable' },
+      aov:       { val:'118',   unit:'€',     obj:'Objectif : 105 € · B2C : 94 € · B2B : 312 €', delta:'+12,4%', dir:'up', badge:'↑ objectif' },
+      ca:        { val:'67',    unit:'k€',    obj:'Objectif jour : 62 k€ · YTD : 3,8 M€', delta:'+8,1%', dir:'up', badge:'↑ objectif' }
+    },
+    g1: {
+      b2c: {
+        colis:     [496, 524, 512, 548, 561],
+        commandes: [448, 472, 464, 496, 512],
+        references:[7, 8, 8, 9, 9],
+        articles:  [2.2, 2.3, 2.3, 2.4, 2.4]
+      },
+      b2b: {
+        colis:     [74, 80, 82, 88, 86],
+        commandes: [52, 56, 58, 60, 59],
+        references:[3, 3, 3, 3, 3],
+        articles:  [5.1, 5.2, 5.3, 5.4, 5.3]
+      }
+    },
+    g1Y2Y: {
+      b2c: {
+        colis:     [440, 465, 455, 488, 499],
+        commandes: [398, 419, 412, 440, 455],
+        references:[6, 7, 7, 8, 8],
+        articles:  [2.0, 2.1, 2.1, 2.2, 2.2]
+      },
+      b2b: {
+        colis:     [66, 71, 73, 78, 77],
+        commandes: [46, 50, 51, 53, 53],
+        references:[2, 3, 3, 3, 3],
+        articles:  [4.9, 5.0, 5.1, 5.2, 5.1]
+      }
+    },
+    g1Budget: {
+      b2c: {
+        colis:     [520, 520, 520, 520, 520],
+        commandes: [480, 480, 480, 480, 480],
+        references:[8, 8, 8, 8, 8],
+        articles:  [2.3, 2.3, 2.3, 2.3, 2.3]
+      },
+      b2b: {
+        colis:     [80, 80, 80, 80, 80],
+        commandes: [56, 56, 56, 56, 56],
+        references:[3, 3, 3, 3, 3],
+        articles:  [5.2, 5.2, 5.2, 5.2, 5.2]
+      }
+    },
+    g1Forecast: {
+      b2c: {
+        colis:     [null, null, null, 556, 574],
+        commandes: [null, null, null, 504, 520],
+        references:[null, null, null, 9, 9],
+        articles:  [null, null, null, 2.4, 2.5]
+      },
+      b2b: {
+        colis:     [null, null, null, 90, 88],
+        commandes: [null, null, null, 62, 61],
+        references:[null, null, null, 4, 4],
+        articles:  [null, null, null, 5.4, 5.4]
+      }
+    },
+    nps:   [72, 74, 73, 75, 74],
+    prodData: [
+      { rank:1,  name:'Masque Keratine Pro',  ref:'SKU-MKP-200', canal:'B2C', colis:63,  obj:56,  trend:'acc',  stock3m:2840, reappro:'recu' },
+      { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:40,  obj:36,  trend:'acc',  stock3m:1540, reappro:'commande' },
+      { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:35,  obj:32,  trend:'stag', stock3m:3200, reappro:'recu' },
+      { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:28,  obj:26,  trend:'stag', stock3m:980,  reappro:'non_commande' },
+      { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:29,  obj:34,  trend:'dec',  stock3m:420,  reappro:'non_commande' },
+      { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:24,  obj:22,  trend:'acc',  stock3m:1760, reappro:'commande' },
+      { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:17,  obj:18,  trend:'stag', stock3m:640,  reappro:'recu' },
+      { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:19,  obj:16,  trend:'acc',  stock3m:2100, reappro:'commande' },
+      { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:14,  obj:18,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
+      { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:13,  obj:12,  trend:'acc',  stock3m:890,  reappro:'recu' }
+    ]
+  },
+
+  semaine: {
+    labels:       ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'],
+    periodLabel:  'Semaine 17–23 mars 2025 · tous canaux · toutes références',
+    dpLabel:      '17 – 23 mars',
+    compareLabel: 'vs S-1',
+    kpis: {
+      commandes: { val:'2 841',  unit:'cmd',  obj:'Objectif semaine : 2 600 commandes',     delta:'+9,3%', dir:'up', badge:'↑ objectif' },
+      articles:  { val:'2,4',   unit:'art.',  obj:'B2C : 2,1 art. · B2B : 5,3 art.',       delta:'+0,2',  dir:'up', badge:'stable' },
+      aov:       { val:'118',   unit:'€',     obj:'Objectif : 105 € · B2C : 94 € · B2B : 312 €', delta:'+12,4%', dir:'up', badge:'↑ objectif' },
+      ca:        { val:'335',   unit:'k€',    obj:'Objectif semaine : 310 k€ · YTD : 3,8 M€',    delta:'+8,1%', dir:'up', badge:'↑ objectif' }
+    },
+    g1: {
+      b2c: {
+        colis:     [1820,1950,2010,2140,1980,2200,2280,2100,2350,2460,2680,2841],
+        commandes: [1640,1720,1800,1920,1760,1980,2050,1920,2150,2240,2420,2580],
+        references:[38,41,43,45,42,47,49,44,52,54,58,61],
+        articles:  [1.9,2.0,2.0,2.1,2.0,2.1,2.2,2.1,2.2,2.3,2.4,2.4]
+      },
+      b2b: {
+        colis:     [310,280,330,290,350,370,360,340,380,390,420,410],
+        commandes: [210,195,220,185,240,255,248,230,265,270,295,285],
+        references:[18,16,19,17,21,22,21,20,23,24,26,25],
+        articles:  [4.8,5.0,5.1,5.0,5.2,5.3,5.2,5.1,5.3,5.4,5.4,5.3]
+      }
+    },
+    g1Y2Y: {
+      b2c: {
+        colis:     [1620,1740,1800,1910,1760,1960,2020,1870,2090,2180,2340,2500],
+        commandes: [1460,1530,1610,1720,1570,1770,1830,1710,1910,1990,2160,2290],
+        references:[32,35,37,39,36,40,42,38,44,46,50,53],
+        articles:  [1.7,1.8,1.8,1.9,1.8,1.9,2.0,1.9,2.0,2.1,2.2,2.2]
+      },
+      b2b: {
+        colis:     [275,250,295,258,312,330,320,303,338,347,374,365],
+        commandes: [187,174,196,165,214,228,221,205,236,241,263,254],
+        references:[15,14,17,15,18,19,18,17,20,21,23,22],
+        articles:  [4.5,4.7,4.8,4.7,4.9,5.0,4.9,4.8,5.0,5.1,5.1,5.0]
+      }
+    },
+    g1Budget: {
+      b2c: {
+        colis:     [1900,1900,2000,2000,2100,2100,2200,2200,2300,2300,2500,2600],
+        commandes: [1700,1700,1800,1800,1900,1900,2000,2000,2100,2100,2300,2400],
+        references:[40,40,42,42,45,45,48,48,52,52,56,58],
+        articles:  [2.0,2.0,2.0,2.1,2.1,2.1,2.2,2.2,2.2,2.3,2.3,2.4]
+      },
+      b2b: {
+        colis:     [300,300,320,320,340,340,360,360,380,380,400,400],
+        commandes: [205,205,215,215,235,235,250,250,265,265,285,285],
+        references:[17,17,18,18,20,20,21,21,22,22,24,24],
+        articles:  [4.8,4.8,5.0,5.0,5.1,5.1,5.2,5.2,5.3,5.3,5.4,5.4]
+      }
+    },
+    g1Forecast: {
+      b2c: {
+        colis:     [null,null,null,null,null,null,null,null,2380,2520,2720,2880],
+        commandes: [null,null,null,null,null,null,null,null,2180,2300,2470,2630],
+        references:[null,null,null,null,null,null,null,null,54,57,61,64],
+        articles:  [null,null,null,null,null,null,null,null,2.3,2.3,2.4,2.5]
+      },
+      b2b: {
+        colis:     [null,null,null,null,null,null,null,null,385,395,425,415],
+        commandes: [null,null,null,null,null,null,null,null,268,273,298,288],
+        references:[null,null,null,null,null,null,null,null,24,25,27,26],
+        articles:  [null,null,null,null,null,null,null,null,5.4,5.5,5.5,5.4]
+      }
+    },
+    nps: [64,67,65,68,70,69,72,71,73,72,74,74],
+    prodData: [
+      { rank:1,  name:'Masque Keratine Pro',  ref:'SKU-MKP-200', canal:'B2C', colis:312, obj:280, trend:'acc',  stock3m:2840, reappro:'recu' },
+      { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:196, obj:180, trend:'acc',  stock3m:1540, reappro:'commande' },
+      { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:174, obj:160, trend:'stag', stock3m:3200, reappro:'recu' },
+      { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:142, obj:130, trend:'stag', stock3m:980,  reappro:'non_commande' },
+      { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:143, obj:170, trend:'dec',  stock3m:420,  reappro:'non_commande' },
+      { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:118, obj:110, trend:'acc',  stock3m:1760, reappro:'commande' },
+      { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:84,  obj:90,  trend:'stag', stock3m:640,  reappro:'recu' },
+      { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:96,  obj:80,  trend:'acc',  stock3m:2100, reappro:'commande' },
+      { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:72,  obj:90,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
+      { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:65,  obj:60,  trend:'new',  stock3m:890,  reappro:'recu' }
+    ]
+  },
+
+  mois: {
+    labels:       ['Oct','Nov','Déc','Jan','Fév','Mar'],
+    periodLabel:  'Mars 2025 · 6 derniers mois · tous canaux · toutes références',
+    dpLabel:      'Mars 2025',
+    compareLabel: 'vs M-1',
+    kpis: {
+      commandes: { val:'11 364', unit:'cmd',  obj:'Objectif mois : 10 400 commandes',    delta:'+9,3%', dir:'up', badge:'↑ objectif' },
+      articles:  { val:'2,35',  unit:'art.',  obj:'B2C : 2,1 art. · B2B : 5,25 art.',   delta:'+0,15', dir:'up', badge:'stable' },
+      aov:       { val:'116',   unit:'€',     obj:'Objectif : 105 € · B2C : 94 € · B2B : 310 €', delta:'+10,5%', dir:'up', badge:'↑ objectif' },
+      ca:        { val:'1 340', unit:'k€',    obj:'Objectif mois : 1 240 k€ · YTD : 3,8 M€',     delta:'+8,1%', dir:'up', badge:'↑ objectif' }
+    },
+    g1: {
+      b2c: {
+        colis:     [7280, 7800, 8040, 8560, 7920, 8800],
+        commandes: [6560, 6880, 7200, 7680, 7040, 7920],
+        references:[152, 164, 172, 180, 168, 188],
+        articles:  [1.95, 2.0, 2.05, 2.1, 2.1, 2.2]
+      },
+      b2b: {
+        colis:     [1240, 1120, 1320, 1160, 1400, 1480],
+        commandes: [840,  780,  880,  740,  960,  1020],
+        references:[72,   64,   76,   68,   84,   100],
+        articles:  [4.9,  5.0,  5.1,  5.0,  5.2,  5.25]
+      }
+    },
+    g1Y2Y: {
+      b2c: {
+        colis:     [6480, 6960, 7200, 7640, 7040, 7840],
+        commandes: [5840, 6120, 6440, 6880, 6280, 7080],
+        references:[128, 140, 148, 156, 144, 164],
+        articles:  [1.75, 1.8, 1.85, 1.9, 1.9, 2.0]
+      },
+      b2b: {
+        colis:     [1100, 996,  1175, 1032, 1246, 1319],
+        commandes: [747,  694,  782,  659,  854,  908],
+        references:[60,   54,   64,   58,   70,   84],
+        articles:  [4.7,  4.8,  4.9,  4.8,  5.0,  5.1]
+      }
+    },
+    g1Budget: {
+      b2c: {
+        colis:     [7600, 7600, 8000, 8000, 8400, 8400],
+        commandes: [6800, 6800, 7200, 7200, 7600, 7600],
+        references:[160, 160, 168, 168, 180, 180],
+        articles:  [2.0, 2.0, 2.05, 2.05, 2.1, 2.1]
+      },
+      b2b: {
+        colis:     [1200, 1200, 1280, 1280, 1360, 1360],
+        commandes: [820,  820,  860,  860,  940,  940],
+        references:[68,   68,   72,   72,   80,   80],
+        articles:  [4.9, 4.9, 5.0, 5.0, 5.1, 5.1]
+      }
+    },
+    g1Forecast: {
+      b2c: {
+        colis:     [null, null, null, null, 8040, 8960],
+        commandes: [null, null, null, null, 7160, 8080],
+        references:[null, null, null, null, 172, 196],
+        articles:  [null, null, null, null, 2.15, 2.25]
+      },
+      b2b: {
+        colis:     [null, null, null, null, 1424, 1508],
+        commandes: [null, null, null, null, 976,  1040],
+        references:[null, null, null, null, 88,   104],
+        articles:  [null, null, null, null, 5.2,  5.3]
+      }
+    },
+    nps: [65, 67, 66, 69, 71, 74],
+    prodData: [
+      { rank:1,  name:'Masque Keratine Pro',  ref:'SKU-MKP-200', canal:'B2C', colis:1248, obj:1120, trend:'acc',  stock3m:2840, reappro:'recu' },
+      { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:784,  obj:720,  trend:'acc',  stock3m:1540, reappro:'commande' },
+      { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:696,  obj:640,  trend:'stag', stock3m:3200, reappro:'recu' },
+      { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:568,  obj:520,  trend:'stag', stock3m:980,  reappro:'non_commande' },
+      { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:572,  obj:680,  trend:'dec',  stock3m:420,  reappro:'non_commande' },
+      { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:472,  obj:440,  trend:'acc',  stock3m:1760, reappro:'commande' },
+      { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:336,  obj:360,  trend:'stag', stock3m:640,  reappro:'recu' },
+      { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:384,  obj:320,  trend:'acc',  stock3m:2100, reappro:'commande' },
+      { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:288,  obj:360,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
+      { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:260,  obj:240,  trend:'acc',  stock3m:890,  reappro:'recu' }
+    ]
+  },
+
+  annee: {
+    labels:       ['2022','2023','2024','2025 YTD'],
+    periodLabel:  '2025 YTD (S18/52) · évolution annuelle · tous canaux · toutes références',
+    dpLabel:      '2025 YTD',
+    compareLabel: 'vs A-1',
+    kpis: {
+      commandes: { val:'136 368', unit:'cmd', obj:'Objectif 2025 : 124 800 commandes',   delta:'+9,3%', dir:'up', badge:'↑ objectif' },
+      articles:  { val:'2,3',    unit:'art.', obj:'B2C : 2,1 art. · B2B : 5,3 art.',    delta:'+0,2',  dir:'up', badge:'stable' },
+      aov:       { val:'113',    unit:'€',    obj:'Objectif : 100 € · B2C : 90 € · B2B : 290 €', delta:'+13%', dir:'up', badge:'↑ objectif' },
+      ca:        { val:'16 080', unit:'k€',   obj:'Objectif 2025 : 14 880 k€ · 2024 : 12 950 k€', delta:'+8,1%', dir:'up', badge:'↑ objectif' }
+    },
+    g1: {
+      b2c: {
+        colis:     [72400, 82800, 94560, 22161],
+        commandes: [65200, 74400, 85200, 20016],
+        references:[1824,  2064,  2352,  561],
+        articles:  [1.7,   1.85,  2.05,  2.3]
+      },
+      b2b: {
+        colis:     [11200, 12800, 15200, 3690],
+        commandes: [7560,  8720,  10560, 2565],
+        references:[648,   744,   900,   225],
+        articles:  [4.5,   4.8,   5.1,   5.3]
+      }
+    },
+    g1Y2Y: {
+      b2c: {
+        colis:     [64800, 72400, 82800, null],
+        commandes: [58400, 65200, 74400, null],
+        references:[1536,  1824,  2064,  null],
+        articles:  [1.5,   1.7,   1.85,  null]
+      },
+      b2b: {
+        colis:     [9960,  11200, 12800, null],
+        commandes: [6720,  7560,  8720,  null],
+        references:[576,   648,   744,   null],
+        articles:  [4.3,   4.5,   4.8,   null]
+      }
+    },
+    g1Budget: {
+      b2c: {
+        colis:     [76000, 88000, 96000, 26000],
+        commandes: [68000, 79000, 86500, 23400],
+        references:[1920,  2200,  2400,  650],
+        articles:  [1.8,   1.9,   2.1,   2.4]
+      },
+      b2b: {
+        colis:     [11600, 13200, 15600, 4000],
+        commandes: [7800,  8960,  10800, 2640],
+        references:[672,   768,   924,   240],
+        articles:  [4.6,   4.9,   5.2,   5.4]
+      }
+    },
+    g1Forecast: {
+      b2c: {
+        colis:     [null, null, null, 22500],
+        commandes: [null, null, null, 20320],
+        references:[null, null, null, 572],
+        articles:  [null, null, null, 2.35]
+      },
+      b2b: {
+        colis:     [null, null, null, 3760],
+        commandes: [null, null, null, 2608],
+        references:[null, null, null, 228],
+        articles:  [null, null, null, 5.35]
+      }
+    },
+    nps: [60, 64, 68, 74],
+    prodData: [
+      { rank:1,  name:'Masque Keratine Pro',  ref:'SKU-MKP-200', canal:'B2C', colis:14976, obj:13440, trend:'acc',  stock3m:2840, reappro:'recu' },
+      { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:9408,  obj:8640,  trend:'acc',  stock3m:1540, reappro:'commande' },
+      { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:8352,  obj:7680,  trend:'stag', stock3m:3200, reappro:'recu' },
+      { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:6816,  obj:6240,  trend:'stag', stock3m:980,  reappro:'non_commande' },
+      { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:6864,  obj:8160,  trend:'dec',  stock3m:420,  reappro:'non_commande' },
+      { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:5664,  obj:5280,  trend:'acc',  stock3m:1760, reappro:'commande' },
+      { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:4032,  obj:4320,  trend:'stag', stock3m:640,  reappro:'recu' },
+      { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:4608,  obj:3840,  trend:'acc',  stock3m:2100, reappro:'commande' },
+      { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:3456,  obj:4320,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
+      { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:3120,  obj:2880,  trend:'new',  stock3m:890,  reappro:'recu' }
+    ]
+  }
+};
+
+// ── RÉTRO-COMPAT : les variables historiques pointent sur le grain semaine ──────
+var weeks   = grainData.semaine.labels;
+var g1Data         = { b2c: grainData.semaine.g1.b2c,         b2b: grainData.semaine.g1.b2b };
+var g1Y2YData      = { b2c: grainData.semaine.g1Y2Y.b2c,      b2b: grainData.semaine.g1Y2Y.b2b };
+var g1BudgetData   = { b2c: grainData.semaine.g1Budget.b2c,   b2b: grainData.semaine.g1Budget.b2b };
+var g1ForecastData = { b2c: grainData.semaine.g1Forecast.b2c, b2b: grainData.semaine.g1Forecast.b2b };
+var npsData = grainData.semaine.nps;
+var prodData = grainData.semaine.prodData;
+
+// ── LABELS UNITÉ TABLEAU SELON GRAIN ─────────────────────────────────────────
+var grainTableColLabel = { jour:'Colis / jour', semaine:'Colis / sem.', mois:'Colis / mois', annee:'Colis / an' };
+var grainTableSublabel = { jour:'jour', semaine:'semaine', mois:'mois', annee:"l'année" };
+
+// ── APPLY GRAIN : met à jour toutes les zones de la page ──────────────────────
+function applyGrain(grain) {
+  currentGrain = grain;
+  var d = grainData[grain];
+
+  // 1. Page-sub (header)
+  document.querySelector('.page-sub').textContent = d.periodLabel;
+
+  // 2. Date picker label
+  document.getElementById('dpLabel').textContent = d.dpLabel;
+
+  // 3. KPI cards
+  var kpiIds = {
+    commandes: { big:'kpiValCommandes', obj:'kpiObjCommandes', delta:'kpiDeltaCommandes', badge:'kpiBadgeCommandes', sub:'kpiSubCommandes' },
+    articles:  { big:'kpiValArticles',  obj:'kpiObjArticles',  delta:'kpiDeltaArticles',  badge:'kpiBadgeArticles',  sub:'kpiSubArticles' },
+    aov:       { big:'kpiValAov',       obj:'kpiObjAov',       delta:'kpiDeltaAov',       badge:'kpiBadgeAov',       sub:'kpiSubAov' },
+    ca:        { big:'kpiValCa',        obj:'kpiObjCa',        delta:'kpiDeltaCa',        badge:'kpiBadgeCa',        sub:'kpiSubCa' }
+  };
+  Object.keys(kpiIds).forEach(function(k) {
+    var ids = kpiIds[k];
+    var kpi = d.kpis[k];
+    var elBig = document.getElementById(ids.big);
+    if (elBig) elBig.textContent = kpi.val;
+    var elObj = document.getElementById(ids.obj);
+    if (elObj) elObj.textContent = kpi.obj;
+    var elDelta = document.getElementById(ids.delta);
+    if (elDelta) { elDelta.textContent = kpi.delta; elDelta.className = kpi.dir === 'up' ? 'delta-up' : 'delta-down'; }
+    var elBadge = document.getElementById(ids.badge);
+    if (elBadge) elBadge.textContent = kpi.badge;
+    var elSub = document.getElementById(ids.sub);
+    if (elSub) elSub.textContent = d.compareLabel;
+  });
+
+  // 4. Graphique G1 — mise à jour des données source
+  g1Data         = { b2c: d.g1.b2c,         b2b: d.g1.b2b };
+  g1Y2YData      = { b2c: d.g1Y2Y.b2c,      b2b: d.g1Y2Y.b2b };
+  g1BudgetData   = { b2c: d.g1Budget.b2c,   b2b: d.g1Budget.b2b };
+  g1ForecastData = { b2c: d.g1Forecast.b2c, b2b: d.g1Forecast.b2b };
+  weeks = d.labels;
+  var g1SubEl = document.getElementById('g1Sub');
+  if (g1SubEl) {
+    var metricLabels = { colis:'Colis expédiés', commandes:'Commandes', references:'Références expédiées', articles:'Articles / commande', refs:'Références / commande' };
+    g1SubEl.textContent = (metricLabels[g1Metric] || 'Colis expédiés') + ' · ' + d.labels.length + ' derniers ' + (grain === 'jour' ? 'jours ouvrés' : grain === 'semaine' ? 'semaines' : grain === 'mois' ? 'mois' : 'années') + ' · ' + g1Channel.toUpperCase();
+  }
+  buildG1();
+
+  // 5. NPS
+  npsData = d.nps;
+  buildNPS();
+
+  // 6. Tableau produits
+  prodData = d.prodData;
+  var currentFilter = document.getElementById('filterTable') ? document.getElementById('filterTable').value : 'all';
+  // Mise à jour de l'en-tête de colonne "Colis"
+  var thColis = document.getElementById('thColis');
+  if (thColis) thColis.textContent = grainTableColLabel[grain];
+  applyTableFilter(currentFilter, grain);
+
+  // 7. Sous-label tableau
+  var subEl = document.getElementById('tableSubLabel');
+  if (subEl) {
+    var canal = (currentFilter === 'all' ? 'Tous canaux' : currentFilter);
+    subEl.textContent = canal + ' \u2014 volumes, objectifs et tendance de ' + grainTableSublabel[grain];
+  }
+}
+
 function setPeriod(btn) {
   document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
+  var grainMap = { 'Jour':'jour', 'Semaine':'semaine', 'Mois':'mois', '\u00c9t\u00e9':'annee', 'Ann\u00e9e':'annee', 'Année':'annee' };
+  var grain = grainMap[btn.textContent.trim()] || 'semaine';
+  applyGrain(grain);
 }
 
 // Fonctions chat inline supprimées — elo·IA migré vers le dock global
@@ -761,71 +1176,7 @@ function fmtD(d) { var M = ['jan','fev','mar','avr','mai','juin','juil','aou','s
 function applyRange() { if (rangeStart) document.getElementById('dpLabel').textContent = rangeEnd ? fmtD(rangeStart) + ' - ' + fmtD(rangeEnd) : fmtD(rangeStart); toggleCal(); }
 document.addEventListener('click', function(e) { if (calOpen && !document.querySelector('.date-wrap').contains(e.target)) { calOpen = false; document.getElementById('calDrop').classList.remove('open'); } });
 
-// CHARTS DATA
-var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
-var g1Data = {
-  b2c: {
-    colis:     [1820,1950,2010,2140,1980,2200,2280,2100,2350,2460,2680,2841],
-    commandes: [1640,1720,1800,1920,1760,1980,2050,1920,2150,2240,2420,2580],
-    references:[38,41,43,45,42,47,49,44,52,54,58,61],
-    articles:  [1.9,2.0,2.0,2.1,2.0,2.1,2.2,2.1,2.2,2.3,2.4,2.4]
-  },
-  b2b: {
-    colis:     [310,280,330,290,350,370,360,340,380,390,420,410],
-    commandes: [210,195,220,185,240,255,248,230,265,270,295,285],
-    references:[18,16,19,17,21,22,21,20,23,24,26,25],
-    articles:  [4.8,5.0,5.1,5.0,5.2,5.3,5.2,5.1,5.3,5.4,5.4,5.3]
-  }
-};
-
-// Y2Y — mêmes semaines, année précédente (légèrement inférieures)
-var g1Y2YData = {
-  b2c: {
-    colis:     [1620,1740,1800,1910,1760,1960,2020,1870,2090,2180,2340,2500],
-    commandes: [1460,1530,1610,1720,1570,1770,1830,1710,1910,1990,2160,2290],
-    references:[32,35,37,39,36,40,42,38,44,46,50,53],
-    articles:  [1.7,1.8,1.8,1.9,1.8,1.9,2.0,1.9,2.0,2.1,2.2,2.2]
-  },
-  b2b: {
-    colis:     [275,250,295,258,312,330,320,303,338,347,374,365],
-    commandes: [187,174,196,165,214,228,221,205,236,241,263,254],
-    references:[15,14,17,15,18,19,18,17,20,21,23,22],
-    articles:  [4.5,4.7,4.8,4.7,4.9,5.0,4.9,4.8,5.0,5.1,5.1,5.0]
-  }
-};
-
-// Budget — objectif défini en début de période
-var g1BudgetData = {
-  b2c: {
-    colis:     [1900,1900,2000,2000,2100,2100,2200,2200,2300,2300,2500,2600],
-    commandes: [1700,1700,1800,1800,1900,1900,2000,2000,2100,2100,2300,2400],
-    references:[40,40,42,42,45,45,48,48,52,52,56,58],
-    articles:  [2.0,2.0,2.0,2.1,2.1,2.1,2.2,2.2,2.2,2.3,2.3,2.4]
-  },
-  b2b: {
-    colis:     [300,300,320,320,340,340,360,360,380,380,400,400],
-    commandes: [205,205,215,215,235,235,250,250,265,265,285,285],
-    references:[17,17,18,18,20,20,21,21,22,22,24,24],
-    articles:  [4.8,4.8,5.0,5.0,5.1,5.1,5.2,5.2,5.3,5.3,5.4,5.4]
-  }
-};
-
-// Forecast — optionnel, disponible seulement si client l'a configuré
-var g1ForecastData = {
-  b2c: {
-    colis:     [null,null,null,null,null,null,null,null,2380,2520,2720,2880],
-    commandes: [null,null,null,null,null,null,null,null,2180,2300,2470,2630],
-    references:[null,null,null,null,null,null,null,null,54,57,61,64],
-    articles:  [null,null,null,null,null,null,null,null,2.3,2.3,2.4,2.5]
-  },
-  b2b: {
-    colis:     [null,null,null,null,null,null,null,null,385,395,425,415],
-    commandes: [null,null,null,null,null,null,null,null,268,273,298,288],
-    references:[null,null,null,null,null,null,null,null,24,25,27,26],
-    articles:  [null,null,null,null,null,null,null,null,5.4,5.5,5.5,5.4]
-  }
-};
-var npsData = [64,67,65,68,70,69,72,71,73,72,74,74];
+// CHARTS DATA — données pilotées par grainData (cf. grainData + applyGrain ci-dessus)
 var g1Channel = 'b2c', g1Metric = 'colis';
 var chartG1Inst, chartNPSInst;
 
@@ -1079,26 +1430,15 @@ function switchG1Metric(btn, metric) {
 
 
 
-// PRODUCT TABLE
-var prodData = [
-  { rank:1,  name:'Masque Keratine Pro', ref:'SKU-MKP-200', canal:'B2C', colis:312, obj:280, trend:'acc',  stock3m:2840, reappro:'recu' },
-  { rank:2,  name:'Serum Argan Intense',  ref:'SKU-SAI-050', canal:'B2C', colis:196, obj:180, trend:'acc',  stock3m:1540, reappro:'commande' },
-  { rank:3,  name:'Shampoing Eclat Pro',  ref:'SKU-SEP-250', canal:'B2C', colis:174, obj:160, trend:'stag', stock3m:3200, reappro:'recu' },
-  { rank:4,  name:'Conditionnateur Liss', ref:'SKU-CL-200',  canal:'B2B', colis:142, obj:130, trend:'stag', stock3m:980,  reappro:'non_commande' },
-  { rank:5,  name:'Huile Argan Intense',  ref:'SKU-HAI-100', canal:'B2C', colis:143, obj:170, trend:'dec',  stock3m:420,  reappro:'non_commande' },
-  { rank:6,  name:'Masque Hydra Repair',  ref:'SKU-MHR-150', canal:'B2C', colis:118, obj:110, trend:'acc',  stock3m:1760, reappro:'commande' },
-  { rank:7,  name:'Kit Soin Pro',         ref:'SKU-KSP-SET', canal:'B2B', colis:84,  obj:90,  trend:'stag', stock3m:640,  reappro:'recu' },
-  { rank:8,  name:'Spray Thermoprotect',  ref:'SKU-STP-150', canal:'B2C', colis:96,  obj:80,  trend:'acc',  stock3m:2100, reappro:'commande' },
-  { rank:9,  name:'Baume Lissant Ultra',  ref:'SKU-BLU-100', canal:'B2C', colis:72,  obj:90,  trend:'dec',  stock3m:310,  reappro:'non_commande' },
-  { rank:10, name:'Huile Brillance',      ref:'SKU-HBI-75',  canal:'B2B', colis:65,  obj:60,  trend:'new',  stock3m:890,  reappro:'recu' }
-];
+// PRODUCT TABLE — données pilotées par grainData[currentGrain].prodData
 
-function applyTableFilter(f) {
+function applyTableFilter(f, grain) {
+  if (!grain) grain = currentGrain;
   var filtered = f === 'all' ? prodData : prodData.filter(function(p) { return p.canal === f; });
   var ok = filtered.filter(function(p) { return p.colis >= p.obj; }).length;
   document.getElementById('badgeOk').textContent = ok + ' en objectif';
   document.getElementById('badgeWarn').textContent = (filtered.length - ok) + ' en retard';
-  document.getElementById('tableSubLabel').textContent = (f === 'all' ? 'Tous canaux' : f) + ' \u2014 volumes, objectifs et tendance de la semaine';
+  document.getElementById('tableSubLabel').textContent = (f === 'all' ? 'Tous canaux' : f) + ' \u2014 volumes, objectifs et tendance de ' + (grainTableSublabel[grain] || 'la semaine');
   var tbody = document.getElementById('prodTableBody');
   tbody.innerHTML = '';
   filtered.forEach(function(p) {
