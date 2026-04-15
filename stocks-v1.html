@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>elogik (flow) — Stocks</title>
+<title>elogik (flow) — Qualité Logistique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root, [data-theme="light"] {
   --bg:#F2F4F8; --surface:#FFFFFF; --surface2:#F4F6FA;
@@ -19,15 +18,15 @@
   --warning:#C27B00; --warning-tint:#FEF4E0;
   --danger:#D63050; --danger-tint:#FDEAED;
   --violet:#6C47E8; --violet-tint:#F0EDFF;
-  --nav-bg:#FFFFFF; --nav-active-bg:#FFFBEB; --nav-active-tx:#B45309;
+  --nav-bg:#FFFFFF; --nav-active-bg:#ECFEFF; --nav-active-tx:#0E7490;
   --topbar-bg:#FFFFFF; --card-shadow:0 1px 3px rgba(0,0,0,0.06);
   --c-business:#2563EB; --c-business-t:#EFF6FF;
-  --c-qlog:#0E7490;    --c-qlog-t:#ECFEFF;
-  --c-qtrans:#0284C7;  --c-qtrans-t:#F0F9FF;
-  --c-savt:#6366F1;    --c-savt-t:#EEF2FF;
-  --c-savl:#9333EA;    --c-savl-t:#FDF4FF;
-  --c-stocks:#D97706;  --c-stocks-t:#FFFBEB;
-  --ai-border:rgba(108,71,232,0.2);
+  --c-qlog:#0E7490; --c-qlog-t:#ECFEFF;
+  --c-qtrans:#0284C7; --c-qtrans-t:#F0F9FF;
+  --c-savt:#6366F1; --c-savt-t:#EEF2FF;
+  --c-savl:#9333EA; --c-savl-t:#FDF4FF;
+  --c-stocks:#D97706; --c-stocks-t:#FFFBEB;
+  --nps-color:#7C3AED;
 }
 [data-theme="dark"] {
   --bg:#0C0F14; --surface:#181E28; --surface2:#1F2736;
@@ -38,15 +37,15 @@
   --warning:#FFB020; --warning-tint:rgba(255,176,32,0.13);
   --danger:#FF3B6A; --danger-tint:rgba(255,59,106,0.13);
   --violet:#A78BFF; --violet-tint:rgba(167,139,255,0.13);
-  --nav-bg:#141A22; --nav-active-bg:rgba(217,119,6,0.15); --nav-active-tx:#FCD34D;
+  --nav-bg:#141A22; --nav-active-bg:rgba(14,116,144,0.18); --nav-active-tx:#22D3EE;
   --topbar-bg:#141A22; --card-shadow:0 1px 0 rgba(255,255,255,0.04);
   --c-business:#60A5FA; --c-business-t:rgba(96,165,250,0.13);
-  --c-qlog:#22D3EE;    --c-qlog-t:rgba(34,211,238,0.13);
-  --c-qtrans:#38BDF8;  --c-qtrans-t:rgba(56,189,248,0.13);
-  --c-savt:#A5B4FC;    --c-savt-t:rgba(165,180,252,0.13);
-  --c-savl:#C084FC;    --c-savl-t:rgba(192,132,252,0.13);
-  --c-stocks:#FCD34D;  --c-stocks-t:rgba(252,211,77,0.13);
-  --ai-border:rgba(167,139,255,0.2);
+  --c-qlog:#22D3EE; --c-qlog-t:rgba(34,211,238,0.13);
+  --c-qtrans:#38BDF8; --c-qtrans-t:rgba(56,189,248,0.13);
+  --c-savt:#A5B4FC; --c-savt-t:rgba(165,180,252,0.13);
+  --c-savl:#C084FC; --c-savl-t:rgba(192,132,252,0.13);
+  --c-stocks:#FCD34D; --c-stocks-t:rgba(252,211,77,0.13);
+  --nps-color:#A78BFF;
 }
 html, body { height:100%; }
 body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--ink); display:flex; transition:background 0.25s, color 0.25s; }
@@ -98,7 +97,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .icon-btn svg { width:16px; height:16px; color:var(--slate); }
 .notif-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--danger); border:1.5px solid var(--topbar-bg); }
 
-/* ── ELO IA COMPOSANT ── */
+/* ── TIME SELECTOR & CALENDAR ── */
 .time-selector { display:flex; align-items:center; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:3px; }
 .ts-btn { font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 14px; border-radius:7px; border:none; background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
 .ts-btn:hover { color:var(--ink); }
@@ -111,17 +110,19 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .cal-nav-btn { background:var(--surface2); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--slate); font-size:14px; padding:3px 8px; font-family:'Plus Jakarta Sans',sans-serif; }
 .cal-month-lbl { font-size:12px; font-weight:600; color:var(--ink); font-family:'DM Mono',monospace; }
-.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.cal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; }
 .cal-dh { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-align:center; padding:2px 0; font-family:'DM Mono',monospace; }
 .cal-d { font-size:11px; text-align:center; padding:5px 2px; border-radius:5px; cursor:pointer; color:var(--slate); font-family:'DM Mono',monospace; }
 .cal-d:hover { background:var(--surface2); } .cal-d.in-range { background:var(--primary-tint); color:var(--primary); }
-.cal-d.range-start,.cal-d.range-end { background:var(--primary); color:#fff; font-weight:700; }
+.cal-d.range-start, .cal-d.range-end { background:var(--primary); color:#fff; font-weight:700; }
 .cal-d.other-month { color:var(--border2); cursor:default; } .cal-d.today { font-weight:700; color:var(--ink); }
 .cal-range-info { font-size:10px; color:var(--muted); margin-top:8px; font-family:'DM Mono',monospace; min-height:16px; }
 .cal-footer { margin-top:10px; display:flex; gap:6px; justify-content:flex-end; }
 .cal-action { font-size:11px; font-weight:500; padding:5px 12px; border-radius:7px; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; }
 .cal-action.primary { background:var(--primary); color:white; border-color:var(--primary); }
 .date-wrap { position:relative; }
+
+/* ── ELO IA CHATBOT ── */
 .chatbot-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
 .chatbot-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
 .chatbot-av { width:30px; height:30px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -131,8 +132,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .live-badge { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; font-family:'DM Mono',monospace; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:5px 12px; white-space:nowrap; }
 .live-pulse { width:6px; height:6px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-.chat-collapsible { overflow:hidden; }
-.chat-collapsible.collapsed { display:none; }
+.chat-collapsible { transition:max-height 0.3s ease, opacity 0.25s ease; max-height:2000px; opacity:1; overflow:hidden; }
+.chat-collapsible.collapsed { max-height:0; opacity:0; pointer-events:none; }
 .chat-area { padding:0 16px; display:flex; flex-direction:column; gap:10px; }
 .chat-area.open { padding:12px 16px; }
 .chat-bubble-wrap { display:flex; flex-direction:column; gap:3px; }
@@ -145,7 +146,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 [data-theme="dark"] .ai-conclusion { border-color:rgba(167,139,255,0.25); }
 .ai-conclusion-head { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:7px; }
 .ai-conclusion-body { font-size:12px; color:var(--ink); line-height:1.65; }
-.reassurance-row { display:grid; grid-template-columns:repeat(3,1fr); }
+.reassurance-row { display:grid; grid-template-columns:repeat(3, 1fr); }
 .re-item { padding:10px 14px; border-right:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
 .re-item:last-child { border-right:none; }
 .re-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
@@ -154,7 +155,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .re-sub { font-size:10px; color:var(--muted); line-height:1.3; margin-top:1px; }
 .qs-header { padding:10px 18px 6px; }
 .qs-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
-.qs-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:7px; padding:0 14px 12px; }
+.qs-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:7px; padding:0 14px 12px; }
 .q-chip { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 13px; font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; overflow:hidden; }
 .q-chip:hover { border-color:var(--violet); color:var(--ink); background:var(--violet-tint); }
 .q-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
@@ -171,19 +172,66 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
 /* ── CONTENT ── */
 .content { padding:16px 24px 40px; flex:1; display:flex; flex-direction:column; gap:12px; }
-.page-header { margin-bottom:4px; }
+.content > div { width:100%; }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom:4px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .page-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
 .page-title { font-size:20px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); }
-.page-title span { color:var(--c-savt); }
+.page-title span { color:var(--c-qlog); }
 .page-sub { font-size:12px; color:var(--muted); margin-top:3px; }
 .section-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
 .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
 
-/* ── KPI GRID ── */
-.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, transform 0.15s; cursor:default; }
+/* ── KPI GRID — 5 colonnes ── */
+.kpi-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; }
+
+/* ── TABLEAU TRANSPORTEUR ── */
+.transp-table-wrap { overflow-x:auto; }
+.transp-table { width:100%; border-collapse:collapse; font-size:11px; }
+.transp-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
+.transp-table th:first-child { text-align:left; padding-left:16px; }
+.transp-table td { padding:7px 12px; text-align:right; border-bottom:1px solid var(--border); vertical-align:middle; color:var(--ink); font-family:'DM Mono',monospace; font-size:11px; }
+.transp-table td:first-child { text-align:left; padding-left:16px; font-family:'Plus Jakarta Sans',sans-serif; }
+.transp-table tr:last-child td { border-bottom:none; }
+.transp-table tr.family-row > td { background:var(--surface2); font-weight:600; font-size:11px; color:var(--ink); }
+.transp-table tr.family-row > td:first-child { display:table-cell; vertical-align:middle; }
+.transp-table tr.family-row > td:first-child > span { display:inline-flex; align-items:center; gap:7px; }
+.family-row-inner { display:inline-flex; align-items:center; gap:7px; }
+.transp-table tr.offer-row > td { background:var(--surface); color:var(--slate); }
+.transp-table tr.offer-row > td:first-child { padding-left:32px; font-size:11px; color:var(--muted); }
+.transp-table tr.offer-row:hover > td { background:var(--surface2); }
+.t-family-chevron { width:13px; height:13px; cursor:pointer; color:var(--muted); transition:transform 0.2s; flex-shrink:0; }
+.t-family-chevron.open { transform:rotate(90deg); }
+.t-total-row > td { background:var(--surface); font-weight:700; color:var(--ink); border-top:2px solid var(--border2); }
+/* Badges statut */
+.ts-badge { display:inline-flex; align-items:center; justify-content:center; min-width:28px; padding:2px 7px; border-radius:100px; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
+.ts-stock   { background:var(--warning-tint); color:var(--warning); }
+.ts-none    { background:var(--surface2); color:var(--muted); border:1px solid var(--border2); }
+.ts-wip     { background:var(--primary-tint); color:var(--primary); }
+.ts-ok      { background:var(--success-tint); color:var(--success); }
+.ts-anomaly { background:var(--danger-tint); color:var(--danger); }
+.ts-carrier { background:var(--violet-tint); color:var(--violet); }
+.ts-cancel  { background:var(--surface2); color:var(--muted); text-decoration:line-through; }
+.ts-zero    { color:var(--border2); font-size:10px; }
+/* Toggle collapse offres */
+.offers-collapse { display:none; }
+.canal-toggle { display:flex; align-items:center; gap:2px; margin-bottom:2px; }
+.canal-toggle-btn { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px; border:none; background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:500; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+.canal-toggle-btn .canal-toggle-sub { font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); opacity:0.7; }
+.canal-toggle-btn:hover { color:var(--ink); background:var(--surface2); }
+.canal-toggle-btn.active { color:var(--c-qlog); font-weight:600; background:var(--c-qlog-t); }
+.canal-toggle-btn.active .canal-toggle-sub { color:var(--c-qlog); opacity:0.8; }
+.canal-toggle-btn.active-b2b { color:var(--c-business); font-weight:600; background:var(--c-business-t); }
+.canal-toggle-btn.active-b2b .canal-toggle-sub { color:var(--c-business); opacity:0.8; }
+.reapro-bar { height:6px; background:var(--border2); border-radius:100px; overflow:hidden; display:flex; margin-top:10px; }
+.reapro-seg { height:100%; transition:width 0.6s ease; }
+.reapro-legend { display:flex; gap:10px; margin-top:7px; flex-wrap:wrap; }
+.reapro-leg { display:flex; align-items:center; gap:5px; font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.reapro-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, border-color 0.25s, transform 0.15s; cursor:default; }
 .kpi-card:hover { transform:translateY(-2px); }
-.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-savt)); }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-qlog)); }
 .kpi-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
 .kpi-label-wrap { display:flex; align-items:flex-start; gap:9px; }
 .kpi-mod-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -203,104 +251,101 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-bar-wrap { margin-top:12px; }
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
 .kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
+.kpi-split-bar { height:6px; background:var(--border2); border-radius:100px; overflow:hidden; display:flex; margin-top:10px; }
+.kpi-split-a { height:100%; background:var(--success); border-radius:100px 0 0 100px; transition:width 0.6s ease; }
+.kpi-split-b { height:100%; background:var(--warning); border-radius:0 100px 100px 0; transition:width 0.6s ease; }
+.kpi-split-legend { display:flex; gap:10px; margin-top:6px; }
+.kpi-split-leg { display:flex; align-items:center; gap:4px; font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.kpi-split-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
 
-/* ── MAIN LAYOUT 2/3 + 1/3 ── */
-.main-layout { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
+/* ── MODULE TABS B2C / B2B ── */
+.module-tabs { display:flex; gap:0; background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--card-shadow); }
+.mod-tab { flex:1; display:flex; align-items:center; justify-content:center; gap:9px; padding:14px 20px; cursor:pointer; font-size:13px; font-weight:500; color:var(--slate); border-right:1px solid var(--border); transition:background 0.15s, color 0.15s; user-select:none; }
+.mod-tab:last-child { border-right:none; }
+.mod-tab:hover { background:var(--surface2); color:var(--ink); }
+.mod-tab.active { background:var(--c-qlog-t); color:var(--c-qlog); font-weight:600; }
+.mod-tab.active.b2b { background:var(--c-business-t); color:var(--c-business); }
+.mod-tab-pill { font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
+.mod-tab.active .mod-tab-pill { background:var(--c-qlog); color:white; }
+.mod-tab.active.b2b .mod-tab-pill { background:var(--c-business); color:white; }
+.mod-tab:not(.active) .mod-tab-pill { background:var(--surface2); color:var(--muted); border:1px solid var(--border2); }
+.mod-tab-desc { font-size:10px; color:var(--muted); margin-top:1px; font-family:'DM Mono',monospace; }
+.mod-tab.active .mod-tab-desc { color:var(--c-qlog); }
+.mod-tab.active.b2b .mod-tab-desc { color:var(--c-business); }
 
-/* ── CARDS SHARED ── */
-.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
+/* ── TAB PANELS ── */
+.tab-panel { display:none; animation:fadeIn 0.2s ease; }
+.tab-panel.active { display:flex; flex-direction:column; gap:12px; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION 2COL ── */
+.section-2col { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
+
+/* ── CARDS ── */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; width:100%; min-width:0; }
 .card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .card-title { font-size:13px; font-weight:600; color:var(--ink); }
 .card-sub { font-size:11px; color:var(--muted); margin-top:2px; }
 .card-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'DM Mono',monospace; }
 .cb-ok { background:var(--success-tint); color:var(--success); }
-.cb-bad { background:var(--danger-tint); color:var(--danger); }
 .cb-warn { background:var(--warning-tint); color:var(--warning); }
-.cb-savt { background:var(--c-savt-t); color:var(--c-savt); }
 .chart-tabs { display:flex; gap:4px; padding:12px 18px 0; }
 .ct-btn { font-size:11px; font-weight:500; padding:5px 14px; border-radius:7px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
 .ct-btn:hover { color:var(--ink); }
-.ct-btn.active { background:var(--c-savt-t); color:var(--c-savt); border-color:var(--c-savt); font-weight:600; }
+.ct-btn.active.qlog { background:var(--c-qlog-t); color:var(--c-qlog); border-color:var(--c-qlog); font-weight:600; }
+.ct-btn.active.biz { background:var(--c-business-t); color:var(--c-business); border-color:var(--c-business); font-weight:600; }
 .chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 18px 10px; }
 .cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
 .cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
+.canal-mini-row { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--border); }
+.canal-cell { padding:12px 16px; border-right:1px solid var(--border); }
+.canal-cell:last-child { border-right:none; }
+.canal-cell-lbl { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:6px; }
+.canal-stat-row { display:flex; align-items:baseline; gap:5px; }
+.canal-stat-val { font-size:20px; font-weight:300; letter-spacing:-0.03em; }
+.canal-stat-unit { font-size:11px; color:var(--muted); }
+.canal-stat-delta { font-size:10px; font-weight:600; padding:1px 6px; border-radius:100px; }
+.d-up { background:var(--success-tint); color:var(--success); }
+.d-dn { background:var(--danger-tint); color:var(--danger); }
+.d-eq { background:var(--surface2); color:var(--muted); }
 
-/* ── TABLEAUX ── */
-.tbl-wrap { overflow-x:auto; }
-.tbl { width:100%; border-collapse:collapse; font-size:12px; }
-.tbl th { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:9px 14px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
-.tbl th.center { text-align:center; }
-.tbl td { padding:11px 14px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; }
-.tbl td.center { text-align:center; }
-.tbl tbody tr:last-child td { border-bottom:none; }
-.tbl tbody tr:hover td { background:var(--surface2); }
-.num-mono { font-family:'DM Mono',monospace; font-size:12px; }
-.num-good { color:var(--success); font-weight:600; font-family:'DM Mono',monospace; }
-.num-warn { color:var(--warning); font-weight:600; font-family:'DM Mono',monospace; }
-.num-bad { color:var(--danger); font-weight:600; font-family:'DM Mono',monospace; }
-.badge-pill { display:inline-flex; align-items:center; padding:2px 9px; border-radius:100px; font-size:9px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
-.bp-ouvert { background:var(--danger-tint); color:var(--danger); }
-.bp-encours { background:var(--warning-tint); color:var(--warning); }
-.bp-resolu { background:var(--success-tint); color:var(--success); }
-.bp-attente { background:var(--c-savt-t); color:var(--c-savt); }
-.source-chip { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:600; padding:2px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
-.sc-client { background:var(--c-business-t); color:var(--c-business); }
-.sc-trans { background:var(--c-qtrans-t); color:var(--c-qtrans); }
+/* ── SCORE SIDEBAR ── */
+.score-sidebar { display:flex; flex-direction:column; gap:10px; }
+.score-sidebar-title { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:8px; }
+.score-sidebar-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.score-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 16px; box-shadow:var(--card-shadow); position:relative; overflow:hidden; }
+.score-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--sc-color, var(--c-qlog)); }
+.score-card-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:8px; }
+.score-gauge-wrap { display:flex; align-items:baseline; gap:10px; margin-bottom:5px; }
+.score-big { font-size:26px; font-weight:300; letter-spacing:-0.04em; color:var(--sc-color, var(--c-qlog)); line-height:1; }
+.score-big .unit { font-size:12px; font-weight:400; }
+.score-trend-up { font-size:10px; font-weight:600; color:var(--success); }
+.score-trend-dn { font-size:10px; font-weight:600; color:var(--danger); }
+.score-desc { font-size:10px; color:var(--muted); line-height:1.45; }
+.score-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:8px; }
+.score-bar-fill { height:100%; border-radius:100px; background:var(--sc-color, var(--c-qlog)); transition:width 0.6s ease; }
 
-/* ── ALERT CARDS (feed litiges) ── */
-.alert-feed { display:flex; flex-direction:column; gap:0; overflow-y:auto; max-height:780px; }
-.alert-feed::-webkit-scrollbar { width:3px; }
-.alert-feed::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
-.alert-card {
-  padding:13px 16px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  border-left:3px solid transparent;
-  transition:background 0.12s;
-  position:relative;
-}
-.alert-card:last-child { border-bottom:none; }
-.alert-card:hover { background:var(--surface2); }
-.alert-card.critical { border-left-color:var(--danger); }
-.alert-card.warn { border-left-color:var(--warning); }
-.alert-card.info { border-left-color:var(--c-savt); }
-.alert-card-top { display:flex; align-items:flex-start; gap:8px; }
-.alert-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-.alert-icon svg { width:12px; height:12px; }
-.alert-icon.critical { background:var(--danger-tint); }
-.alert-icon.warn { background:var(--warning-tint); }
-.alert-icon.info { background:var(--c-savt-t); }
-.alert-title { font-size:12px; font-weight:600; color:var(--ink); line-height:1.35; flex:1; }
-.alert-title.critical { color:var(--danger); }
-.alert-title.warn { color:var(--warning); }
-.alert-title.info { color:var(--c-savt); }
-.alert-desc { font-size:11px; color:var(--slate); line-height:1.5; padding-left:30px; }
-.alert-meta { display:flex; align-items:center; gap:6px; padding-left:30px; flex-wrap:wrap; }
-.alert-meta-chip { font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:100px; padding:1px 7px; }
-.alert-meta-chip.amount { color:var(--ink); font-weight:600; }
-.alert-meta-chip.client { color:var(--c-business); background:var(--c-business-t); border-color:transparent; }
-.alert-actions { display:flex; gap:6px; padding-left:30px; flex-wrap:wrap; }
-.alert-btn { font-size:11px; font-weight:600; border:none; border-radius:6px; padding:5px 12px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
-.alert-btn.primary { background:var(--danger-tint); color:var(--danger); }
-.alert-btn.primary:hover { background:var(--danger); color:white; }
-.alert-btn.warn-primary { background:var(--warning-tint); color:var(--warning); }
-.alert-btn.warn-primary:hover { background:var(--warning); color:white; }
-.alert-btn.info-primary { background:var(--c-savt-t); color:var(--c-savt); }
-.alert-btn.info-primary:hover { background:var(--c-savt); color:white; }
-.alert-btn.ghost { background:var(--surface2); color:var(--muted); }
-.alert-btn.ghost:hover { background:var(--border2); color:var(--ink); }
-/* Save CTA */
-.alert-btn.save { background:var(--violet-tint); color:var(--violet); border:1px solid var(--ai-border); }
-.alert-btn.save:hover { background:var(--violet); color:white; }
-.alert-btn.save.saved { background:var(--success-tint); color:var(--success); border-color:rgba(42,149,84,0.2); cursor:default; }
-
-/* Feed header avec compteur live */
-.feed-header { padding:12px 16px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.feed-title { font-size:12px; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:8px; }
-.feed-pulse { width:7px; height:7px; border-radius:50%; background:var(--danger); animation:pulse 1.6s infinite; }
-.feed-count { font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); }
+/* ── RECEPTION BLOCK ── */
+.recept-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0; }
+.recept-cell { padding:14px 16px; border-right:1px solid var(--border); }
+.recept-cell:last-child { border-right:none; }
+.recept-cell-label { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.recept-big { font-size:24px; font-weight:300; letter-spacing:-0.04em; color:var(--c-qlog); line-height:1; margin-bottom:4px; }
+.recept-big .unit { font-size:12px; font-weight:400; }
+.recept-sub { font-size:11px; color:var(--muted); line-height:1.4; }
+.recept-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:10px; }
+.recept-bar-fill { height:100%; border-radius:100px; background:var(--c-qlog); }
+.fourn-list { padding:0 16px 12px; }
+.fourn-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.fourn-row:last-child { border-bottom:none; }
+.fourn-name { font-size:12px; font-weight:500; color:var(--ink); flex:1; min-width:0; }
+.fourn-name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+.fourn-rdv-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
+.fourn-rdv-ok { background:var(--success-tint); color:var(--success); }
+.fourn-rdv-no { background:var(--warning-tint); color:var(--warning); }
+.fourn-date { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+.fourn-conform-bar { width:50px; height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.fourn-conform-fill { height:100%; border-radius:100px; }
 
 /* ── ANALYSES & ACTIONS ── */
 .block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
@@ -313,7 +358,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .aa-body { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
 .aa-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:12px; text-align:center; padding:20px; }
 .aa-empty svg { width:28px; height:28px; opacity:0.3; }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; transition:border-color 0.12s; }
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; cursor:default; transition:border-color 0.12s; }
 .analysis-item:hover { border-color:var(--primary); }
 .analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:4px; }
 .analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
@@ -337,189 +382,30 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
 .action-controls { display:flex; align-items:center; gap:5px; flex-shrink:0; }
 .action-ctrl-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); }
-.action-ctrl-btn:hover { background:var(--surface); color:var(--ink); }
+.action-ctrl-btn:hover { background:var(--surface); border-color:var(--border2); color:var(--ink); }
 .action-ctrl-btn svg { width:10px; height:10px; }
 .aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
 .aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
 .aa-add-input:focus { border-color:var(--violet); }
 
-/* ── IA SAVE FEATURE ── */
-.conv-pill { display:none; align-items:center; gap:6px; margin:8px 16px 0; padding:5px 11px; background:var(--violet-tint); border:1px solid rgba(108,71,232,0.25); border-radius:100px; font-size:10px; color:var(--violet); font-weight:500; width:fit-content; }
-.conv-pill.visible { display:flex; }
-.conv-pill svg { width:11px; height:11px; }
-.conv-pill-close { margin-left:6px; cursor:pointer; opacity:0.6; }
-.conv-pill-close:hover { opacity:1; }
-.chat-save-bar { display:flex; align-items:center; justify-content:space-between; padding:9px 16px; border-top:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
-.chat-save-bar.hidden { display:none; }
-.chat-save-hint { font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-.chat-save-hint svg { width:13px; height:13px; }
-.chat-save-btn { display:flex; align-items:center; gap:7px; background:var(--violet); color:white; border:none; border-radius:8px; padding:7px 16px; font-size:12px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; }
-.chat-save-btn:hover { opacity:0.88; }
-.chat-save-btn.saved { background:var(--success); cursor:default; }
-.chat-save-btn svg { width:13px; height:13px; }
-.chat-saved-banner { display:none; align-items:center; gap:8px; padding:7px 16px; background:var(--success-tint); border-top:1px solid rgba(42,149,84,0.2); font-size:11px; color:var(--success); font-weight:500; }
-.chat-saved-banner.visible { display:flex; }
-.chat-saved-banner svg { width:13px; height:13px; }
-.chat-saved-banner .open-link { margin-left:auto; font-size:10px; font-weight:700; color:var(--success); text-decoration:underline; cursor:pointer; font-family:'DM Mono',monospace; }
-
-
-/* ── STOCKS SPECIFIQUE ── */
-.kpi-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:transform 0.15s; }
-.kpi-card:hover { transform:translateY(-2px); }
-.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-stocks)); }
-.kpi-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-.kpi-label-wrap { display:flex; align-items:flex-start; gap:9px; }
-.kpi-mod-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.kpi-mod-icon svg { width:15px; height:15px; }
-.kpi-label { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; line-height:1.4; }
-.kpi-label-sub { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; margin-top:1px; }
-.kpi-status-badge { font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; white-space:nowrap; flex-shrink:0; }
-.kpi-status-badge.ok   { background:var(--success-tint); color:var(--success); }
-.kpi-status-badge.bad  { background:var(--danger-tint);  color:var(--danger); }
-.kpi-status-badge.warn { background:var(--warning-tint); color:var(--warning); }
-.kpi-big { font-size:32px; font-weight:300; letter-spacing:-0.04em; line-height:1; margin-bottom:5px; }
-.kpi-big .unit { font-size:16px; font-weight:400; }
-.kpi-secondary { font-size:11px; color:var(--muted); margin-bottom:4px; line-height:1.4; }
-.kpi-sub-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.delta-dn  { font-size:10px; font-weight:600; background:var(--danger-tint);  color:var(--danger);  padding:1px 6px; border-radius:100px; }
-.delta-up  { font-size:10px; font-weight:600; background:var(--success-tint); color:var(--success); padding:1px 6px; border-radius:100px; }
-.delta-neu { font-size:10px; font-weight:600; background:var(--surface2); color:var(--slate); padding:1px 6px; border-radius:100px; }
-.kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:12px; }
-.kpi-fill { height:100%; border-radius:100px; }
-
-/* SECTION SEPARATOR */
-.section-sep { display:flex; align-items:center; gap:10px; margin:4px 0 16px; }
-.section-sep-title { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
-.section-sep-line { flex:1; height:1px; background:var(--border); }
-
-/* CARDS */
-.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
-.card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.card-title { font-size:13px; font-weight:600; color:var(--ink); }
-.card-sub { font-size:11px; color:var(--muted); margin-top:2px; }
-.card-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'DM Mono',monospace; }
-.cb-ok  { background:var(--success-tint); color:var(--success); }
-.cb-bad { background:var(--danger-tint);  color:var(--danger); }
-.cb-warn{ background:var(--warning-tint); color:var(--warning); }
-.cb-neu { background:var(--surface2); color:var(--slate); }
-
-/* GRID 50/50 */
-.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-/* GRID 2/3 + 1/3 */
-.g-pie { display:grid; grid-template-columns:2fr 1fr; gap:12px; }
-
-/* STOCK TABLE */
-.stock-table { width:100%; border-collapse:collapse; font-size:12px; }
-.stock-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); padding:9px 14px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); font-family:'DM Mono',monospace; white-space:nowrap; }
-.stock-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; font-size:12px; }
-.stock-table tbody tr:last-child td { border-bottom:none; }
-.stock-table tbody tr:hover td { background:var(--surface2); }
-.stock-alert-row td { background:rgba(214,48,80,0.03); }
-[data-theme="dark"] .stock-alert-row td { background:rgba(255,59,106,0.05); }
-.td-mono { font-family:'DM Mono',monospace; font-size:11px; color:var(--slate); }
-.td-bold { font-weight:600; }
-
-/* BADGES */
-.badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
-.bdg-d { background:var(--danger-tint);  color:var(--danger); }
-.bdg-w { background:var(--warning-tint); color:var(--warning); }
-.bdg-s { background:var(--success-tint); color:var(--success); }
-.bdg-g { background:var(--surface2); color:var(--muted); }
-
-/* DAYS CHIP */
-.days-chip { display:inline-flex; align-items:center; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
-.days-ok   { background:var(--success-tint); color:var(--success); }
-.days-warn { background:var(--warning-tint); color:var(--warning); }
-.days-bad  { background:var(--danger-tint);  color:var(--danger); }
-
-/* MINI-KPI row in card */
-.mini-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 18px; border-bottom:1px solid var(--border); }
-.mini-kpi { text-align:center; padding:10px; background:var(--surface2); border-radius:10px; border:1px solid var(--border); }
-.mini-kpi-val { font-size:22px; font-weight:300; letter-spacing:-0.03em; }
-.mini-kpi-lbl { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
-
-/* ROTATION THRESHOLD CONTROL */
-.threshold-ctrl { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:6px 12px; font-size:12px; }
-.threshold-ctrl input[type=range] { width:80px; accent-color:var(--danger); cursor:pointer; }
-.threshold-val { font-family:'DM Mono',monospace; font-weight:700; color:var(--danger); min-width:36px; text-align:center; font-size:13px; }
-
-/* CHART LEGEND */
-.chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 18px 10px; }
-.cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
-.cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
-
-/* ANALYSES & ACTIONS */
-.block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
-.aa-col { background:var(--surface); border:1px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--card-shadow); min-height:280px; }
-.aa-head { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.aa-head-left { display:flex; align-items:center; gap:9px; }
-.aa-head-title { font-size:12px; font-weight:600; color:var(--ink); }
-.aa-head-sub { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
-.aa-head-badge { font-size:10px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
-.aa-body { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
-.aa-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:12px; text-align:center; padding:20px; }
-.aa-empty svg { width:28px; height:28px; opacity:0.3; }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; transition:border-color 0.12s; }
-.analysis-item:hover { border-color:var(--primary); }
-.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:4px; }
-.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
-.analysis-archive-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
-.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
-.analysis-archive-btn svg { width:11px; height:11px; }
-.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; }
-.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
-.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
-.analysis-src  { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
-.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; display:flex; align-items:flex-start; gap:10px; transition:border-color 0.12s; }
-.action-item:hover { border-color:var(--violet); }
-.action-check { width:16px; height:16px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
-.action-check:hover { border-color:var(--success); background:var(--success-tint); }
-.action-check.done { border-color:var(--success); background:var(--success); }
-.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
-.action-text { flex:1; min-width:0; }
-.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
-.action-title.done-text { text-decoration:line-through; color:var(--muted); }
-.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
-.action-controls { display:flex; align-items:center; gap:5px; flex-shrink:0; }
-.action-ctrl-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); }
-.action-ctrl-btn:hover { background:var(--surface); color:var(--ink); }
-.action-ctrl-btn svg { width:10px; height:10px; }
-.aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
-.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',monospace; outline:none; transition:border-color 0.15s; }
-.aa-add-input:focus { border-color:var(--violet); }
-
-/* IA SAVE */
-.conv-pill { display:none; align-items:center; gap:6px; margin:8px 16px 0; padding:5px 11px; background:var(--violet-tint); border:1px solid rgba(108,71,232,0.25); border-radius:100px; font-size:10px; color:var(--violet); font-weight:500; width:fit-content; }
-.conv-pill.visible { display:flex; }
-.conv-pill svg { width:11px; height:11px; }
-.conv-pill-close { margin-left:6px; cursor:pointer; opacity:0.6; }
-.chat-save-bar { display:flex; align-items:center; justify-content:space-between; padding:9px 16px; border-top:1px solid var(--border); background:var(--surface2); }
-.chat-save-bar.hidden { display:none; }
-.chat-save-hint { font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-.chat-save-hint svg { width:13px; height:13px; }
-.chat-save-btn { display:flex; align-items:center; gap:7px; background:var(--violet); color:white; border:none; border-radius:8px; padding:7px 16px; font-size:12px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; }
-.chat-save-btn:hover { opacity:0.88; }
-.chat-save-btn.saved { background:var(--success); cursor:default; }
-.chat-save-btn svg { width:13px; height:13px; }
-.chat-saved-banner { display:none; align-items:center; gap:8px; padding:7px 16px; background:var(--success-tint); border-top:1px solid rgba(42,149,84,0.2); font-size:11px; color:var(--success); font-weight:500; }
-.chat-saved-banner.visible { display:flex; }
-.chat-saved-banner .open-link { margin-left:auto; font-size:10px; font-weight:700; color:var(--success); text-decoration:underline; cursor:pointer; font-family:'DM Mono',monospace; }
+/* ── GRAIN TRANSITION — feedback perceptif au changement de période ── */
+.kpi-big, .score-big, .canal-stat-val, [id^="b2c-"], [id^="b2b-"], [id^="rec-"] {
+  transition: opacity 0.18s ease;
+}
+.grain-flash { animation: grainFade 0.25s ease; }
+@keyframes grainFade { 0%{opacity:0.35} 100%{opacity:1} }
 </style>
 </head>
 <body>
 
+<!-- ══ SIDENAV ══ -->
 <aside class="sidenav">
   <div class="nav-brand">
     <div class="nav-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div>
-      <div class="nav-brand-name">elo<strong>logik</strong></div>
-      <span class="nav-brand-sub">(flow)</span>
-    </div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
   </div>
   <div class="nav-section">Principal</div>
-  <div class="nav-item" onclick="location.href='elogik-home-v6_12.html'" style="cursor:pointer;">
+  <div class="nav-item" onclick="location.href='elogik-home-v5.html'" style="cursor:pointer;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Tableau de bord
   </div>
@@ -528,7 +414,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
+  <div class="nav-item active" onclick="location.href='qualite-logistique-v2.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     Préparation
   </div>
@@ -544,7 +430,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
     Retours <span class="nav-badge-warn">24</span>
   </div>
-  <div class="nav-item active">
+  <div class="nav-item" onclick="location.href='stocks-v1.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
     Stocks <span class="nav-badge">8</span>
   </div>
@@ -561,11 +447,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ══ MAIN ══ -->
 <div class="main">
   <div class="topbar">
     <div class="breadcrumb">
-      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Stocks</span>
+      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Qualité logistique</span>
     </div>
     <div class="topbar-right">
       <button class="theme-btn" onclick="toggleTheme()">
@@ -573,19 +459,18 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
         Mode sombre
       </button>
-      <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
   </div>
 
   <div class="content">
 
-  <!-- ══ ELO IA ══ -->
+  <!-- ══ BLOC 1 : elo · IA ══ -->
   <div>
     <div class="chatbot-card" style="display:flex;flex-direction:column;">
       <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:12px;">
           <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Stocks &amp; Entrepôt</div></div>
+          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Qualité Logistique</div></div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <div class="live-badge"><div class="live-pulse"></div>Live</div>
@@ -621,22 +506,17 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         </div>
       </div>
       <div class="chat-collapsible collapsed" id="chatCollapsible">
-        <div class="conv-pill" id="convPill">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-          Conversation enregistrée dans Analyses
-          <span class="conv-pill-close" onclick="document.getElementById('convPill').classList.remove('visible')">&#x2715;</span>
-        </div>
         <div class="chat-area open" id="chatArea">
           <div class="chat-bubble-wrap user-wrap">
-            <div class="chat-bubble user">Quels articles vont bientôt être en rupture et lesquels ne bougent plus ?</div>
-            <div class="chat-bubble-time">10h05</div>
+            <div class="chat-bubble user">Quels produits ont causé le plus d'incidents de préparation cette semaine ?</div>
+            <div class="chat-bubble-time">09h22</div>
           </div>
           <div class="chat-bubble-wrap ai-wrap">
             <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Stocks · tous entrepôts</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Préparation des commandes · tous canaux</div>
               <div class="ai-conclusion">
                 <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
-                <div class="ai-conclusion-body"><strong>8 ruptures actives</strong>, dont Shampoing Hydra+ (0 u) et Mousse coiffante Volume (3 u). <span style="color:var(--warning);font-weight:500">14 références ont atteint leur seuil d'alerte.</span> Côté rotation : 23 références immobiles depuis plus de 60 jours (4 820 unités). La Crème Boucles 250ml cumule 134 jours sans mouvement — à mettre en promotion ou sur palette de déstockage. Besoin estimé en cartons M : +500 u avant la fin de semaine au rythme actuel.</div>
+                <div class="ai-conclusion-body"><strong>3 incidents concentrés sur les coffrets pluriproduits</strong> (Kit Soin Pro, Set Argan). Le délai moyen de préparation B2B dépasse l'objectif de <span style="color:var(--warning);font-weight:500">+16 min vendredi</span>, corrélé au pic de volume en fin de semaine. Recommandation : réserver 2 opérateurs dédiés coffrets les jeudis–vendredis.</div>
               </div>
             </div>
           </div>
@@ -649,582 +529,816 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <div id="rePanel" style="display:none;">
             <div class="reassurance-row">
               <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Stocks &amp; WMS actives</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">WMS elogik · OMS · sync toutes les 15 min</div></div></div>
+              <div class="re-item"><div class="re-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Qualité Logistique actives</div></div></div>
+              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">WMS e-kan · sync toutes les 15 min</div></div></div>
             </div>
           </div>
         </div>
-        <div class="qs-header"><div class="qs-label">Questions contextualisées — Stocks &amp; Entrepôt</div></div>
+        <div class="qs-header"><div class="qs-label">Questions contextualisées — Préparation commandes</div></div>
         <div class="qs-grid">
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels articles sont bientôt en rupture de stock ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-stocks)"></div><span class="q-chip-txt">Quels articles n'ont pas bougé depuis 30 jours ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quels articles mettre sur palette de déstockage ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--primary)"></div><span class="q-chip-txt">Quel est mon besoin en consommables cette semaine ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Quels consommables sont les plus utilisés ce mois ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Combien de produits en stock vs. actifs sur le CMS ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Quel produit nécessite le plus de temps de préparation ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quels produits consomment le plus de consommables ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels jours avons-nous eu des problèmes de préparation ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Délai moyen monoproduit vs pluriproduits ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Combien de commandes risquent le cut-off ce soir ?</span></div>
+          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Quels fournisseurs ont eu des écarts de volume ?</span></div>
         </div>
         <div class="input-row">
           <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
           <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         </div>
-        <div class="chat-save-bar" id="chatSaveBar">
-          <div class="chat-save-hint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-            Enregistrer cette analyse dans vos suivis
-          </div>
-          <button class="chat-save-btn" id="chatSaveBtn" onclick="saveAnalysisIA()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-            Enregistrer l'analyse
-          </button>
-        </div>
-        <div class="chat-saved-banner" id="chatSavedBanner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Analyse enregistrée — visible dans le bloc Analyses
-          <span class="open-link" onclick="scrollToAnalysis()">Voir &#x2192;</span>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- ══ KPI ══ -->
+  <!-- ══ BLOC 2 : KPI MACRO — 3 cards ══ -->
   <div>
-    <div style="margin-bottom:14px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px">Module</div>
-      <div style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--ink)"><span style="color:var(--c-stocks)">Stocks</span> — Indicateurs clés</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px">Semaine 17–23 mars 2025 · tous entrepôts · toutes références</div>
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow">Module</div>
+        <div class="page-title"><span>Préparation des commandes</span> — Indicateurs clés</div>
+        <div class="page-sub">Semaine 17–23 mars 2025 · tous canaux · tous entrepôts</div>
+      </div>
     </div>
-    <div class="kpi-grid-3">
-      <!-- Ruptures proches -->
-      <div class="kpi-card" style="--module-color:var(--warning)">
+    <div class="kpi-grid">
+
+      <!-- 1 — Préparées -->
+      <div class="kpi-card" style="--module-color:var(--c-qlog)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="kpi-label">Ruptures proches</div><div class="kpi-label-sub">Seuil alerte atteint</div></div>
+            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+            <div><div class="kpi-label">Préparées</div><div class="kpi-label-sub">Total période</div></div>
           </div>
-          <span class="kpi-status-badge warn">&#x26A0; À surveiller</span>
+          <span class="kpi-status-badge ok" id="kpi-prep-badge">✓ Objectif</span>
         </div>
-        <div class="kpi-big" style="color:var(--warning)">14<span class="unit"> réf.</span></div>
-        <div class="kpi-secondary">stock &#x2264; seuil d'alerte · risque sous 7 jours</div>
-        <div class="kpi-sub-row"><span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:46%"></div></div>
+        <div class="kpi-big" style="color:var(--c-qlog)" id="kpi-prep-val">1 201<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary" id="kpi-prep-taux">taux de service 99.75% · obj. 99.5%</div>
+        <div class="kpi-sub-row" id="kpi-prep-delta"><span class="delta-up">↑ +0.25 pts</span><span style="font-size:11px;color:var(--muted)">vs objectif</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" id="kpi-prep-bar" style="background:var(--c-qlog);width:99.75%"></div></div></div>
       </div>
-      <!-- Ruptures actives -->
-      <div class="kpi-card" style="--module-color:var(--danger)">
-        <div class="kpi-header">
-          <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-            <div><div class="kpi-label">Ruptures actives</div><div class="kpi-label-sub">Stock &#x3D; 0 ou critique</div></div>
-          </div>
-          <span class="kpi-status-badge bad">&#x26A0; Action requise</span>
-        </div>
-        <div class="kpi-big" style="color:var(--danger)">8<span class="unit"> réf.</span></div>
-        <div class="kpi-secondary">dont 2 à stock zéro · impact commandes directes</div>
-        <div class="kpi-sub-row"><span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:62%"></div></div>
-      </div>
-      <!-- Produits en stock vs CMS -->
+
+      <!-- 2 — Cut-off -->
       <div class="kpi-card" style="--module-color:var(--success)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
-            <div><div class="kpi-label">Produits en stock</div><div class="kpi-label-sub">vs. actifs sur CMS</div></div>
+            <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="kpi-label">Respect cut-off</div><div class="kpi-label-sub">Avant / après</div></div>
           </div>
-          <span class="kpi-status-badge ok">&#x2713; Cohérent</span>
+          <span class="kpi-status-badge ok" id="kpi-cutoff-badge">✓ Bon niveau</span>
         </div>
-        <div class="kpi-big" style="color:var(--success)">334 <span class="unit">/ 342</span></div>
-        <div class="kpi-secondary">8 réf. actives sur CMS sans stock · 97.7% couverture</div>
-        <div class="kpi-sub-row"><span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--success);width:97.7%"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ SEPARATEUR STOCKS & RUPTURES ══ -->
-  <div class="section-sep">
-    <div class="section-sep-title">Stocks &amp; Ruptures</div>
-    <div class="section-sep-line"></div>
-  </div>
-
-  <!-- ══ BLOC 1 : STOCK-OUT + ROTATION ══ -->
-  <div class="g2">
-
-    <!-- Block 1 : Stock-out rate -->
-    <div class="card">
-      <div class="card-head">
-        <div><div class="card-title">Stock-out rate — Ruptures</div><div class="card-sub">Références en rupture ou à risque</div></div>
-        <span class="card-badge cb-bad" id="stockout-count">8 ruptures</span>
-      </div>
-      <div class="mini-kpi-row">
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--danger)" id="so-critical">8</div>
-          <div class="mini-kpi-lbl">Rupture</div>
+        <div class="kpi-big" style="color:var(--success)" id="kpi-cutoff-val">91.2<span class="unit">%</span></div>
+        <div class="kpi-secondary">avant cut-off · 8.8% après</div>
+        <div class="kpi-split-bar">
+          <div class="kpi-split-a" id="kpi-cutoff-bara" style="width:91.2%"></div>
+          <div class="kpi-split-b" id="kpi-cutoff-barb" style="width:8.8%"></div>
         </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--warning)" id="so-alert">14</div>
-          <div class="mini-kpi-lbl">Seuil atteint</div>
-        </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--success)" id="so-ok">312</div>
-          <div class="mini-kpi-lbl">OK</div>
+        <div class="kpi-split-legend">
+          <div class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--success)"></div><span id="kpi-cutoff-lega">Avant (91.2%)</span></div>
+          <div class="kpi-split-leg"><div class="kpi-split-dot" style="background:var(--warning)"></div><span id="kpi-cutoff-legb">Après (8.8%)</span></div>
         </div>
       </div>
-      <div style="overflow-x:auto">
-        <table class="stock-table">
-          <thead>
-            <tr>
-              <th>Référence</th>
-              <th>Désignation</th>
-              <th>Stock</th>
-              <th>Seuil</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="stock-alert-row">
-              <td class="td-mono">COS-10421</td>
-              <td class="td-bold">Shampoing Hydra+ 250ml</td>
-              <td class="td-mono" style="color:var(--danger)">0</td>
-              <td class="td-mono">50</td>
-              <td><span class="badge bdg-d">Rupture</span></td>
-            </tr>
-            <tr class="stock-alert-row">
-              <td class="td-mono">COS-10187</td>
-              <td class="td-bold">Mousse coiffante Volume 150ml</td>
-              <td class="td-mono" style="color:var(--danger)">3</td>
-              <td class="td-mono">20</td>
-              <td><span class="badge bdg-d">Rupture</span></td>
-            </tr>
-            <tr class="stock-alert-row">
-              <td class="td-mono">COS-10822</td>
-              <td class="td-bold">Laque Brillance Extra 300ml</td>
-              <td class="td-mono" style="color:var(--danger)">7</td>
-              <td class="td-mono">30</td>
-              <td><span class="badge bdg-d">Rupture</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10654</td>
-              <td class="td-bold">Masque capillaire Repair 200ml</td>
-              <td class="td-mono" style="color:var(--warning)">18</td>
-              <td class="td-mono">25</td>
-              <td><span class="badge bdg-w">Seuil atteint</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10229</td>
-              <td class="td-bold">Après-shampoing Douceur 250ml</td>
-              <td class="td-mono" style="color:var(--warning)">22</td>
-              <td class="td-mono">30</td>
-              <td><span class="badge bdg-w">Seuil atteint</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-11042</td>
-              <td class="td-bold">Sérum Lissant Kératine 50ml</td>
-              <td class="td-mono" style="color:var(--warning)">31</td>
-              <td class="td-mono">40</td>
-              <td><span class="badge bdg-w">Seuil atteint</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center">
-        <span>8 ruptures · 14 alertes · 312 OK</span>
-        <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500">Voir tout &#x2192;</span>
-      </div>
-    </div>
 
-    <!-- Block 2 : Rotation des stocks -->
-    <div class="card">
-      <div class="card-head">
-        <div><div class="card-title">Rotation des stocks</div><div class="card-sub">Références immobiles sans mouvement</div></div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:var(--muted)">Immobile depuis ></span>
-          <div class="threshold-ctrl">
-            <input type="range" min="7" max="180" value="60" id="rotSlider" oninput="updateRotation(this.value)">
-            <span class="threshold-val" id="rotVal">60j</span>
+      <!-- 3 — Bloquées (toutes causes) -->
+      <div class="kpi-card" style="--module-color:var(--danger)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div><div class="kpi-label">Bloquées</div><div class="kpi-label-sub">Anomalie · att. action</div></div>
+          </div>
+          <span class="kpi-status-badge ok" id="kpi-bloc-badge">✓ Sous seuil</span>
+        </div>
+        <div class="kpi-big" style="color:var(--danger)" id="kpi-bloc-val">3<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary" id="kpi-bloc-sub">sur 1 204 commandes · 0.25%</div>
+        <div class="kpi-sub-row" id="kpi-bloc-delta"><span class="delta-up">↓ −70%</span><span style="font-size:11px;color:var(--muted)">vs seuil alerte (10)</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:3%"></div></div></div>
+      </div>
+
+      <!-- 4 — Bloquées attente stock + jauge réapro -->
+      <div class="kpi-card" style="--module-color:var(--warning)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
+            <div><div class="kpi-label">Att. stock</div><div class="kpi-label-sub">Bloquées · réapro</div></div>
+          </div>
+          <span class="kpi-status-badge warn">⚠ À traiter</span>
+        </div>
+        <div class="kpi-big" style="color:var(--warning)">2<span class="unit"> cmd.</span></div>
+        <div class="kpi-secondary">sur 3 bloquées · att. réapprovisionnement</div>
+        <div class="reapro-bar">
+          <div class="reapro-seg" style="width:45%;background:#22D3EE;opacity:0.85;border-radius:100px 0 0 100px;"></div>
+          <div class="reapro-seg" style="width:20%;background:var(--success);"></div>
+          <div class="reapro-seg" style="width:35%;background:var(--warning);border-radius:0 100px 100px 0;"></div>
+        </div>
+        <div class="reapro-legend">
+          <div class="reapro-leg"><div class="reapro-dot" style="background:#22D3EE;opacity:0.85;"></div>Commandé (45%)</div>
+          <div class="reapro-leg"><div class="reapro-dot" style="background:var(--success)"></div>Récept. en cours (20%)</div>
+          <div class="reapro-leg"><div class="reapro-dot" style="background:var(--warning)"></div>Non commandé (35%)</div>
+        </div>
+      </div>
+
+      <!-- 5 — Colis & articles par commande -->
+      <div class="kpi-card" style="--module-color:var(--c-qlog)">
+        <div class="kpi-header">
+          <div class="kpi-label-wrap">
+            <div class="kpi-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+            <div><div class="kpi-label">Colis / commande</div><div class="kpi-label-sub">Moy. période · tous canaux</div></div>
+          </div>
+          <span class="kpi-status-badge ok">✓ Stable</span>
+        </div>
+        <div class="kpi-big" style="color:var(--c-qlog)" id="kpi-colis-val">1.05<span class="unit"> col.</span></div>
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:5px;">
+          <span style="font-size:18px;font-weight:300;letter-spacing:-0.03em;color:var(--muted);" id="kpi-colis-art">3.2</span>
+          <span style="font-size:11px;color:var(--muted);">art. / cmd.</span>
+        </div>
+        <div class="kpi-secondary">majorité mono-colis · ratio colis/art. stable</div>
+        <div style="margin-top:10px;display:flex;gap:8px;">
+          <div style="flex:1;background:var(--c-qlog-t);border:1px solid rgba(14,116,144,0.15);border-radius:8px;padding:7px 10px;">
+            <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--c-qlog);font-family:'DM Mono',monospace;margin-bottom:3px;">Colis moy.</div>
+            <div style="font-size:15px;font-weight:600;color:var(--c-qlog);font-family:'DM Mono',monospace;">1.05</div>
+          </div>
+          <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;">
+            <div style="font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:3px;">Art. moy.</div>
+            <div style="font-size:15px;font-weight:600;color:var(--muted);font-family:'DM Mono',monospace;">3.2</div>
           </div>
         </div>
       </div>
-      <div class="mini-kpi-row" style="grid-template-columns:repeat(3,1fr)">
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--danger)" id="rot-count">—</div>
-          <div class="mini-kpi-lbl">Réfs immobiles</div>
-        </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--warning)" id="rot-val-stock">—</div>
-          <div class="mini-kpi-lbl">Unités bloquées</div>
-        </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--slate)" id="rot-avg">—</div>
-          <div class="mini-kpi-lbl">Délai moyen</div>
-        </div>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="stock-table">
-          <thead>
-            <tr>
-              <th>Référence</th>
-              <th>Désignation</th>
-              <th>Qté</th>
-              <th>Dernier mouvement</th>
-              <th>Immobile</th>
-            </tr>
-          </thead>
-          <tbody id="rot-table"></tbody>
-        </table>
-      </div>
-      <div style="padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;">
-        <button id="rot-export-btn" onclick="exportRotation()" disabled style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:not-allowed;transition:all 0.12s;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exporter <span id="rot-export-count">0</span> références
-        </button>
-      </div>
+
     </div>
   </div>
 
-  <!-- ══ BLOC DLC + RUPTURES ══ -->
-  <div class="g2">
+  <!-- ══ BLOC 3 : ONGLETS B2C / B2B ══ -->
+  <div>
+    <!-- ── SOUS-TOGGLE B2C / B2B ── -->
+    <div class="canal-toggle">
+      <button class="canal-toggle-btn active" id="tab-b2c" onclick="switchTab('b2c')">B2C <span class="canal-toggle-sub" id="b2c-toggle-sub">934 cmd.</span></button>
+      <button class="canal-toggle-btn" id="tab-b2b" onclick="switchTab('b2b')">B2B <span class="canal-toggle-sub" id="b2b-toggle-sub">267 cmd.</span></button>
+    </div>
 
-    <!-- #1 Références à DLC courte (< 30j) -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">DLC courte — &lt; 30 jours</div>
-          <div class="card-sub">Références à écouler en priorité · semaine en cours</div>
-        </div>
-        <span class="card-badge cb-bad">10 réf.</span>
+    <!-- ── PANEL B2C ── -->
+    <div class="tab-panel active" id="panel-b2c">
+
+      <div class="section-label" style="margin-top:8px">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
+        Suivi de la préparation — B2C
       </div>
-      <div style="overflow-x:auto;">
-        <div style="overflow-y:auto;max-height:225px;">
-          <table class="tbl" style="min-width:100%;">
-            <thead style="position:sticky;top:0;z-index:2;background:var(--surface2);">
+
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Suivi de la préparation B2C</div>
+              <div class="card-sub" id="b2c-card-sub">934 commandes · objectif cut-off 99.5%</div>
+            </div>
+            <span class="card-badge cb-ok">✓ Objectif</span>
+          </div>
+          <div class="chart-tabs" id="b2cChartTabs">
+            <button class="ct-btn active qlog" onclick="switchB2CChart(this,'preparation')">Taux préparation</button>
+            <button class="ct-btn" onclick="switchB2CChart(this,'cutoff')">Respect cut-off</button>
+          </div>
+          <div class="chart-legend">
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog)"></div>Semaine en cours</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-qlog);opacity:0.4;"></div>Objectif</div>
+          </div>
+          <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2C"></canvas></div>
+          <!-- Cartons utilisés -->
+          <div style="border-top:1px solid var(--border);padding:10px 18px 12px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              <span style="font-size:11px;color:var(--muted);" id="b2c-cart-lbl">Cartons utilisés cette semaine</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--c-qlog);" id="b2c-cartons">1 847</span>
+              <span style="font-size:10px;color:var(--muted);">cartons</span>
+              <span class="canal-stat-delta d-up" style="font-size:10px;" id="b2c-cart-delta">↑ +4.2%</span>
+            </div>
+          </div>
+          <!-- Mini stats cut-off + préparation -->
+          <div class="canal-mini-row">
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux préparation</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-qlog)" id="b2c-taux-prep">99.7</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up" id="b2c-taux-prep-delta">↑ +0.2</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Respect cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--success)" id="b2c-cutoff-val">93.1</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-up" id="b2c-cutoff-delta">↑ +1.1</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Cmd. intégrées bloquées</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--danger)" id="b2c-blocked-val">1</span><span class="canal-stat-unit"> cmd.</span><span class="canal-stat-delta d-dn" id="b2c-blocked-lbl">⚠ OMS</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score qualité — B2C</div>
+          <!-- Cmd intégrées bloquées -->
+          <div class="score-card" style="--sc-color:var(--danger)">
+            <div class="score-card-label">Cmd. intégrées bloquées</div>
+            <div class="score-gauge-wrap"><div class="score-big" id="b2c-sc-bloc-big" style="color:var(--danger)">1<span class="unit"> cmd.</span></div><span style="font-size:10px;font-weight:600;color:var(--muted)">sem. en cours</span></div>
+            <div class="score-desc" id="b2c-sc-bloc-desc">Erreur format OMS · en attente de correction</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2c-sc-bloc-bar" style="background:var(--danger);width:10%"></div></div>
+          </div>
+          <!-- Cmd en anomalie -->
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Commandes en anomalie</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)" id="b2c-sc-ano-val">0<span class="unit"> cmd.</span></div><span class="score-trend-up">✓ RAS</span></div>
+            <div class="score-desc" id="b2c-sc-ano-desc">Aucune anomalie détectée cette semaine</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2c-sc-ano-bar" style="background:var(--success);width:0%"></div></div>
+          </div>
+          <!-- Taux incident -->
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Taux d'incident</div>
+            <div class="score-gauge-wrap"><div class="score-big" id="b2c-sc-inc-big" style="color:var(--success)">0.5<span class="unit">%</span></div><span class="score-trend-up" id="b2c-sc-inc-delta">↓ −0.4 pts</span></div>
+            <div class="score-desc" id="b2c-sc-inc-desc">5 incidents · 934 préparations · seuil 1.0%</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2c-sc-inc-bar" style="background:var(--success);width:5%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        Suivi de la préparation par transporteur — B2C
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Préparation par offre de transport</div>
+            <div class="card-sub" id="b2c-carrier-sub">934 commandes · semaine 17–23 mars · B2C</div>
+          </div>
+          <span class="card-badge cb-ok">✓ Majoritairement préparées</span>
+        </div>
+        <div class="carrier-table-wrap">
+          <table class="transp-table">
+            <thead>
               <tr>
-                <th>Référence</th>
-                <th>Désignation</th>
-                <th class="center">Stock</th>
-                <th class="center">DLC</th>
-                <th class="center">Jours restants</th>
+                <th style="text-align:left;">Transporteur / Offre</th>
+                <th>Att. stock</th>
+                <th>Non traitée</th>
+                <th>En cours</th>
+                <th>Préparée</th>
+                <th>Anomalie</th>
+                <th>Prise en charge</th>
+                <th>Annulée</th>
+                <th style="border-left:1px solid var(--border);">Total</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="td-mono">COS-10337</td>
-                <td class="td-bold">Crème solaire SPF50 100ml</td>
-                <td class="center"><span class="num-bad">42</span></td>
-                <td class="center"><span class="num-mono">08/04/25</span></td>
-                <td class="center"><span class="num-bad">7j</span></td>
+
+              <!-- COLISSIMO -->
+              <tr class="family-row" id="b2c-row-colissimo">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-colissimo-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('colissimo-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Colissimo</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">12</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">38</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">310</span></td>
+                <td data-field="ano"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">192</span></td>
+                <td data-field="ann"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">552</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10582</td>
-                <td class="td-bold">Masque détox argile 75ml</td>
-                <td class="center"><span class="num-warn">118</span></td>
-                <td class="center"><span class="num-mono">12/04/25</span></td>
-                <td class="center"><span class="num-bad">11j</span></td>
+              <tr class="offer-row" id="colissimo-b2c">
+                <td>Colissimo Domicile J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">8</span></td>
+                <td><span class="ts-badge ts-wip">24</span></td>
+                <td><span class="ts-badge ts-ok">198</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">120</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">350</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10994</td>
-                <td class="td-bold">Sérum vitamine C 30ml</td>
-                <td class="center"><span class="num-warn">67</span></td>
-                <td class="center"><span class="num-mono">16/04/25</span></td>
-                <td class="center"><span class="num-bad">15j</span></td>
+              <tr class="offer-row" id="colissimo-b2c">
+                <td>Colissimo Expert</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">14</span></td>
+                <td><span class="ts-badge ts-ok">112</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">72</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">202</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10118</td>
-                <td class="td-bold">Lotion tonique florale 200ml</td>
-                <td class="center"><span class="num-warn">204</span></td>
-                <td class="center"><span class="num-mono">18/04/25</span></td>
-                <td class="center"><span class="num-warn">17j</span></td>
+
+              <!-- CHRONOPOST -->
+              <tr class="family-row" id="b2c-row-chronopost">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-chrono-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Chronopost</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">6</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">18</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">156</span></td>
+                <td data-field="ano"><span class="ts-badge ts-anomaly">2</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">98</span></td>
+                <td data-field="ann"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">280</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-11203</td>
-                <td class="td-bold">Exfoliant corps 150ml</td>
-                <td class="center"><span class="num-mono">89</span></td>
-                <td class="center"><span class="num-mono">20/04/25</span></td>
-                <td class="center"><span class="num-warn">19j</span></td>
+              <tr class="offer-row" id="chrono-b2c">
+                <td>Chronopost Express J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">12</span></td>
+                <td><span class="ts-badge ts-ok">104</span></td>
+                <td><span class="ts-badge ts-anomaly">2</span></td>
+                <td><span class="ts-badge ts-carrier">64</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">186</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10774</td>
-                <td class="td-bold">Huile corps amande douce 100ml</td>
-                <td class="center"><span class="num-mono">156</span></td>
-                <td class="center"><span class="num-mono">22/04/25</span></td>
-                <td class="center"><span class="num-warn">21j</span></td>
+              <tr class="offer-row" id="chrono-b2c">
+                <td>Chronopost 13h</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">6</span></td>
+                <td><span class="ts-badge ts-ok">52</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">34</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">94</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10456</td>
-                <td class="td-bold">BB crème teintée 30ml</td>
-                <td class="center"><span class="num-mono">73</span></td>
-                <td class="center"><span class="num-mono">24/04/25</span></td>
-                <td class="center"><span class="num-warn">23j</span></td>
+
+              <!-- MONDIAL RELAY -->
+              <tr class="family-row" id="b2c-row-mr">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-mr-b2c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('mr-b2c',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Mondial Relay</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-stock">1</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">4</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">10</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">72</span></td>
+                <td data-field="ano"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">14</span></td>
+                <td data-field="ann"><span class="ts-badge ts-cancel">1</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">102</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-11087</td>
-                <td class="td-bold">Contour yeux anti-âge 15ml</td>
-                <td class="center"><span class="num-mono">31</span></td>
-                <td class="center"><span class="num-mono">25/04/25</span></td>
-                <td class="center"><span class="num-warn">24j</span></td>
+              <tr class="offer-row" id="mr-b2c">
+                <td>Point Relais 5j</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">4</span></td>
+                <td><span class="ts-badge ts-wip">10</span></td>
+                <td><span class="ts-badge ts-ok">72</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">14</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);">102</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10661</td>
-                <td class="td-bold">Fond de teint fluide 30ml</td>
-                <td class="center"><span class="num-mono">48</span></td>
-                <td class="center"><span class="num-mono">27/04/25</span></td>
-                <td class="center"><span class="num-warn">26j</span></td>
+
+              <!-- TOTAL -->
+              <tr class="t-total-row">
+                <td>Total B2C</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">22</span></td>
+                <td><span class="ts-badge ts-wip">66</span></td>
+                <td><span class="ts-badge ts-ok">538</span></td>
+                <td><span class="ts-badge ts-anomaly">2</span></td>
+                <td><span class="ts-badge ts-carrier">304</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;font-size:12px;color:var(--ink);" id="b2c-total-row">934</td>
               </tr>
-              <tr>
-                <td class="td-mono">COS-10902</td>
-                <td class="td-bold">Crème hydratante nuit 50ml</td>
-                <td class="center"><span class="num-mono">112</span></td>
-                <td class="center"><span class="num-mono">30/04/25</span></td>
-                <td class="center"><span class="num-warn">29j</span></td>
-              </tr>
+
             </tbody>
           </table>
         </div>
       </div>
-      <div style="padding:7px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;display:flex;gap:16px;flex-wrap:wrap;">
-        <span style="color:var(--danger);font-weight:700;">≤ 15j</span> critique &nbsp;·&nbsp;
-        <span style="color:var(--warning);font-weight:700;">16–30j</span> à surveiller
+
       </div>
     </div>
 
-    <!-- #2 Références en rupture -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Références en rupture</div>
-          <div class="card-sub">Commandes bloquées · statut réapprovisionnement</div>
-        </div>
-        <span class="card-badge cb-bad">8 réf.</span>
+    <!-- ── PANEL B2B ── -->
+    <div class="tab-panel" id="panel-b2b">
+
+      <div class="section-label" style="margin-top:8px">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="5" width="6" height="16" rx="1"/></svg></div>
+        Suivi de la préparation — B2B
       </div>
-      <div style="overflow-x:auto;">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Référence</th>
-              <th>Désignation</th>
-              <th class="center">Cmd. bloquées</th>
-              <th class="center">Réappro</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="td-mono">COS-10421</td>
-              <td class="td-bold">Shampoing Hydra+ 250ml</td>
-              <td class="center"><span class="num-bad">24</span></td>
-              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10187</td>
-              <td class="td-bold">Mousse coiffante Volume 150ml</td>
-              <td class="center"><span class="num-bad">17</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10822</td>
-              <td class="td-bold">Laque Brillance Extra 300ml</td>
-              <td class="center"><span class="num-warn">11</span></td>
-              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10539</td>
-              <td class="td-bold">Gel douche Éclat 250ml</td>
-              <td class="center"><span class="num-bad">19</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10711</td>
-              <td class="td-bold">Démaquillant biphasé 150ml</td>
-              <td class="center"><span class="num-warn">8</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10348</td>
-              <td class="td-bold">Eau micellaire 400ml</td>
-              <td class="center"><span class="num-warn">13</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10963</td>
-              <td class="td-bold">Baume lèvres protection 4ml</td>
-              <td class="center"><span class="num-mono">6</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-11124</td>
-              <td class="td-bold">Poudre libre translucide 10g</td>
-              <td class="center"><span class="num-bad">21</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div class="section-2col">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Suivi de la préparation B2B</div>
+              <div class="card-sub" id="b2b-card-sub">267 commandes · cut-off 16h00 · avg 5.3 art/cmd</div>
+            </div>
+            <span class="card-badge cb-warn">⚠ À surveiller</span>
+          </div>
+          <div class="chart-tabs" id="b2bChartTabs">
+            <button class="ct-btn active biz" onclick="switchB2BChart(this,'preparation')">Taux préparation</button>
+            <button class="ct-btn" onclick="switchB2BChart(this,'cutoff')">Respect cut-off</button>
+          </div>
+          <div class="chart-legend">
+            <div class="cl-item"><div class="cl-dot" style="background:var(--c-business)"></div>Semaine en cours</div>
+            <div class="cl-item"><div class="cl-dot" style="background:var(--warning)"></div>Objectif</div>
+          </div>
+          <div style="padding:0 16px 14px;position:relative;height:140px;"><canvas id="chartB2B"></canvas></div>
+          <!-- Cartons utilisés -->
+          <div style="border-top:1px solid var(--border);padding:10px 18px 12px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              <span style="font-size:11px;color:var(--muted);" id="b2b-cart-lbl">Cartons utilisés cette semaine</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--c-business);" id="b2b-cartons">521</span>
+              <span style="font-size:10px;color:var(--muted);">cartons</span>
+              <span class="canal-stat-delta d-dn" style="font-size:10px;" id="b2b-cart-delta">↑ +2.8%</span>
+            </div>
+          </div>
+          <!-- Mini stats -->
+          <div class="canal-mini-row">
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Taux préparation</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--c-business)" id="b2b-taux-prep">99.2</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn" id="b2b-taux-prep-delta">↓ −0.3</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Respect cut-off</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--warning)" id="b2b-cutoff-val">86.5</span><span class="canal-stat-unit">%</span><span class="canal-stat-delta d-dn" id="b2b-cutoff-delta">↓ −0.8</span></div>
+            </div>
+            <div class="canal-cell">
+              <div class="canal-cell-lbl">Cmd. intégrées bloquées</div>
+              <div class="canal-stat-row"><span class="canal-stat-val" style="color:var(--danger)" id="b2b-blocked-val">1</span><span class="canal-stat-unit"> cmd.</span><span class="canal-stat-delta d-dn" id="b2b-blocked-lbl">⚠ EDI</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-sidebar">
+          <div class="score-sidebar-title">Score qualité — B2B</div>
+          <!-- Cmd intégrées bloquées -->
+          <div class="score-card" style="--sc-color:var(--danger)">
+            <div class="score-card-label">Cmd. intégrées bloquées</div>
+            <div class="score-gauge-wrap"><div class="score-big" id="b2b-sc-bloc-big" style="color:var(--danger)">1<span class="unit"> cmd.</span></div><span style="font-size:10px;font-weight:600;color:var(--muted)">sem. en cours</span></div>
+            <div class="score-desc" id="b2b-sc-bloc-desc">Format EDI non reconnu · en attente de retraitement</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2b-sc-bloc-bar" style="background:var(--danger);width:10%"></div></div>
+          </div>
+          <!-- Cmd en anomalie -->
+          <div class="score-card" style="--sc-color:var(--success)">
+            <div class="score-card-label">Commandes en anomalie</div>
+            <div class="score-gauge-wrap"><div class="score-big" style="color:var(--success)" id="b2b-sc-ano-val">0<span class="unit"> cmd.</span></div><span class="score-trend-up">✓ RAS</span></div>
+            <div class="score-desc" id="b2b-sc-ano-desc">Aucune anomalie détectée cette semaine</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2b-sc-ano-bar" style="background:var(--success);width:0%"></div></div>
+          </div>
+          <!-- Taux incident -->
+          <div class="score-card" style="--sc-color:var(--warning)">
+            <div class="score-card-label">Taux d'incident</div>
+            <div class="score-gauge-wrap"><div class="score-big" id="b2b-sc-inc-big" style="color:var(--warning)">1.1<span class="unit">%</span></div><span class="score-trend-dn" id="b2b-sc-inc-delta">↑ +0.3 pts</span></div>
+            <div class="score-desc" id="b2b-sc-inc-desc">3 incidents · 267 préparations · seuil 1.0%</div>
+            <div class="score-bar"><div class="score-bar-fill" id="b2b-sc-inc-bar" style="background:var(--warning);width:11%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <div style="width:18px;height:18px;border-radius:5px;background:var(--c-business-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-business)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        Suivi de la préparation par transporteur — B2B
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Préparation par offre de transport</div>
+            <div class="card-sub" id="b2b-carrier-sub">267 commandes · semaine 17–23 mars · B2B</div>
+          </div>
+          <span class="card-badge cb-warn">⚠ Anomalie Chronopost</span>
+        </div>
+        <div class="carrier-table-wrap">
+          <table class="transp-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Transporteur / Offre</th>
+                <th>Att. stock</th>
+                <th>Non traitée</th>
+                <th>En cours</th>
+                <th>Préparée</th>
+                <th>Anomalie</th>
+                <th>Prise en charge</th>
+                <th>Annulée</th>
+                <th style="border-left:1px solid var(--border);">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- DHL -->
+              <tr class="family-row" id="b2b-row-dhl">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-dhl-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('dhl-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>DHL</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-stock">1</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">5</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">14</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">88</span></td>
+                <td data-field="ano"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">22</span></td>
+                <td data-field="ann"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">130</td>
+              </tr>
+              <tr class="offer-row" id="dhl-b2b">
+                <td>DHL Express 9h</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">3</span></td>
+                <td><span class="ts-badge ts-wip">8</span></td>
+                <td><span class="ts-badge ts-ok">54</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">14</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">80</td>
+              </tr>
+              <tr class="offer-row" id="dhl-b2b">
+                <td>DHL Freight Pallet</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">6</span></td>
+                <td><span class="ts-badge ts-ok">34</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">8</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">50</td>
+              </tr>
+
+              <!-- CHRONOPOST B2B -->
+              <tr class="family-row" id="b2b-row-chronopost">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-chrono-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('chrono-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>Chronopost</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">3</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">8</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">56</span></td>
+                <td data-field="ano"><span class="ts-badge ts-anomaly">3</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">12</span></td>
+                <td data-field="ann"><span class="ts-badge ts-cancel">1</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">83</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2b">
+                <td>Chronopost Business 13h</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">5</span></td>
+                <td><span class="ts-badge ts-ok">38</span></td>
+                <td><span class="ts-badge ts-anomaly">3</span></td>
+                <td><span class="ts-badge ts-carrier">8</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);">57</td>
+              </tr>
+              <tr class="offer-row" id="chrono-b2b">
+                <td>Chronopost Express J+1</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">1</span></td>
+                <td><span class="ts-badge ts-wip">3</span></td>
+                <td><span class="ts-badge ts-ok">18</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">4</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">26</td>
+              </tr>
+
+              <!-- GLS -->
+              <tr class="family-row" id="b2b-row-gls">
+                <td><span class="family-row-inner"><svg class="t-family-chevron open" id="chev-gls-b2b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" onclick="toggleCarrier('gls-b2b',this)"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>GLS</span></span></td>
+                <td data-field="att"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="non"><span class="ts-badge ts-none">2</span></td>
+                <td data-field="wip"><span class="ts-badge ts-wip">4</span></td>
+                <td data-field="prep"><span class="ts-badge ts-ok">42</span></td>
+                <td data-field="ano"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="pec"><span class="ts-badge ts-carrier">6</span></td>
+                <td data-field="ann"><span class="ts-badge ts-zero">—</span></td>
+                <td data-field="total" style="border-left:1px solid var(--border);font-weight:700;color:var(--ink);">54</td>
+              </tr>
+              <tr class="offer-row" id="gls-b2b">
+                <td>GLS Business Parcel</td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-none">2</span></td>
+                <td><span class="ts-badge ts-wip">4</span></td>
+                <td><span class="ts-badge ts-ok">42</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td><span class="ts-badge ts-carrier">6</span></td>
+                <td><span class="ts-badge ts-zero">—</span></td>
+                <td style="border-left:1px solid var(--border);">54</td>
+              </tr>
+
+              <!-- TOTAL -->
+              <tr class="t-total-row">
+                <td>Total B2B</td>
+                <td><span class="ts-badge ts-stock">1</span></td>
+                <td><span class="ts-badge ts-none">10</span></td>
+                <td><span class="ts-badge ts-wip">26</span></td>
+                <td><span class="ts-badge ts-ok">186</span></td>
+                <td><span class="ts-badge ts-anomaly">3</span></td>
+                <td><span class="ts-badge ts-carrier">40</span></td>
+                <td><span class="ts-badge ts-cancel">1</span></td>
+                <td style="border-left:1px solid var(--border);font-weight:700;font-size:12px;color:var(--ink);" id="b2b-total-row">267</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+  </div><!-- /bloc onglets -->
 
-  </div>
-
-  <!-- ══ SEPARATEUR ÉVOLUTIONS ══ -->
-  <div class="section-sep">
-    <div class="section-sep-title">Répartition et coûts</div>
-    <div class="section-sep-line"></div>
-  </div>
-
-  <!-- ══ BLOC 2 : HISTORIQUE + PIE ══ -->
-  <div class="g-pie">
-
-    <!-- Tableau factures stockage reçues -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Factures stockage reçues</div>
-          <div class="card-sub">Janvier · Février · Mars 2025 — WMS elogik</div>
-        </div>
-        <span class="card-badge" style="background:var(--c-stocks-t);color:var(--c-stocks)">3 factures</span>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Réf. facture</th>
-              <th>Période</th>
-              <th class="center">Montant total</th>
-              <th class="center">Vol. étagères</th>
-              <th class="center">Vol. palettes</th>
-              <th class="center">Mouvements</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Janvier -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-001</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/01/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Janvier 2025</span></td>
-              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">4 820 €</span></td>
-              <td class="center"><span class="num-mono">1 240 €</span></td>
-              <td class="center"><span class="num-mono">2 960 €</span></td>
-              <td class="center"><span class="num-mono">620 €</span></td>
-            </tr>
-            <!-- Février -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-002</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 28/02/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Février 2025</span></td>
-              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">5 140 €</span></td>
-              <td class="center"><span class="num-mono">1 380 €</span></td>
-              <td class="center"><span class="num-mono">3 120 €</span></td>
-              <td class="center"><span class="num-mono">640 €</span></td>
-            </tr>
-            <!-- Mars -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-003</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/03/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Mars 2025</span></td>
-              <td class="center"><span class="num-warn" style="font-weight:700;">5 680 €</span></td>
-              <td class="center"><span class="num-mono">1 520 €</span></td>
-              <td class="center"><span class="num-mono">3 440 €</span></td>
-              <td class="center"><span class="num-mono">720 €</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- Ligne totaux -->
-      <div style="display:grid;grid-template-columns:1fr repeat(4,auto);gap:0;border-top:1px solid var(--border2);padding:10px 16px;align-items:center;background:var(--surface2);">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">Total T1 2025</span>
-        <div style="display:flex;gap:24px;margin-left:auto;align-items:baseline;">
-          <div style="text-align:center;">
-            <div style="font-size:18px;font-weight:300;letter-spacing:-0.03em;color:var(--c-stocks);">15 640 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Total</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">4 140 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Étagères</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">9 520 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Palettes</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">1 980 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Mouvements</div>
-          </div>
-        </div>
-      </div>
+  <!-- ══ BLOC 4 : SUIVI DE RÉCEPTION (commun B2C + B2B) ══ -->
+  <div>
+    <div class="section-label">
+      <div style="width:18px;height:18px;border-radius:5px;background:var(--c-qlog-t);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M5 12H2l10-10 10 10h-3"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg></div>
+      Suivi de réception — tous canaux
     </div>
 
-    <!-- Pie chart répartition palette / magasin -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Répartition emplacement</div>
-          <div class="card-sub">Palette · Étagères · Consignes</div>
-        </div>
-      </div>
-      <div style="padding:8px 16px 0;position:relative;height:160px"><canvas id="chartPie"></canvas></div>
-      <div style="padding:10px 18px 14px;display:flex;flex-direction:column;gap:6px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#D97706;flex-shrink:0"></div>Palette</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">58% · 14 200 u</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#0E8FCC;flex-shrink:0"></div>Étagères</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">34% · 8 320 u</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#6C47E8;flex-shrink:0"></div>Consignes / Transit</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">8% · 1 960 u</span>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- Layout 3 colonnes : fournisseurs | délai CF→quai | CF sans BL -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start;">
 
-  <!-- ══ SEPARATEUR ANALYSES ══ -->
-  <div class="section-sep">
-    <div class="section-sep-title">Analyses &amp; suivi</div>
-    <div class="section-sep-line"></div>
-  </div>
+      <!-- Colonne 1 : liste fournisseurs consolidée -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Fournisseurs actifs</div>
+            <div class="card-sub" id="rec-count-lbl">12 réceptions · 3 fournisseurs · sem. en cours</div>
+          </div>
+          <span class="card-badge cb-warn">⚠ 1 sans BL</span>
+        </div>
+        <div style="padding:8px 16px 4px;"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">B2C</div></div>
+        <div class="fourn-list">
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--success-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--success)">BG</div>
+            <div class="fourn-name"><span class="fourn-name-text">Beauty Group SAS</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace" id="rec-bg-units">4 réc. · 1 240 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-ok" style="flex-shrink:0;">BL ✓</span>
+            <span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;" id="rec-bg-pct">100%</span>
+          </div>
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">NC</div>
+            <div class="fourn-name"><span class="fourn-name-text">Nüber Cosmetics</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace" id="rec-nc-units">4 réc. · 1 820 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-no" style="flex-shrink:0;">Sans BL</span>
+            <span style="font-size:10px;color:var(--success);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;" id="rec-nc-pct">94%</span>
+          </div>
+        </div>
+        <div style="padding:8px 16px 4px;border-top:1px solid var(--border);"><div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">B2B</div></div>
+        <div class="fourn-list">
+          <div class="fourn-row">
+            <div style="width:26px;height:26px;border-radius:6px;background:var(--warning-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--warning)">KP</div>
+            <div class="fourn-name"><span class="fourn-name-text">Kera Pro Distribution</span><div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace" id="rec-kp-units">4 réc. · 860 unités</div></div>
+            <span class="fourn-rdv-badge fourn-rdv-no" style="flex-shrink:0;">Sans BL ×3</span>
+            <span style="font-size:10px;color:var(--warning);font-weight:600;font-family:'DM Mono',monospace;flex-shrink:0;" id="rec-kp-pct">87%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 2 : Délai CF → mise à quai -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Délai CF → mise à quai</div>
+            <div class="card-sub">Moy. émission commande fournisseur → réception quai</div>
+          </div>
+        </div>
+        <div style="padding:20px 20px 8px;">
+          <!-- B2C -->
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2C</span>
+                <span style="font-size:9px;background:var(--c-qlog-t);color:var(--c-qlog);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">Beauty Group · Nüber</span>
+              </div>
+              <span class="delta-up" style="font-size:10px;">↓ −0.3 j</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--success);line-height:1;" id="rec-delai-b2c">2.4</span>
+              <span style="font-size:14px;color:var(--muted);">jours</span>
+              <span style="font-size:11px;color:var(--muted);">· obj. ≤ 3 j</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:80%;background:var(--success);border-radius:100px;"></div>
+            </div>
+          </div>
+          <!-- B2B -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2B</span>
+                <span style="font-size:9px;background:var(--warning-tint);color:var(--warning);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">Kera Pro</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +0.8 j</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--warning);line-height:1;" id="rec-delai-b2b">4.1</span>
+              <span style="font-size:14px;color:var(--muted);">jours</span>
+              <span style="font-size:11px;color:var(--muted);">· obj. ≤ 3 j</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:100%;background:var(--warning);border-radius:100px;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Palettes mixtes · tri manuel · délai dépassé</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 3 : CF sans bon de livraison -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">CF sans bon de livraison</div>
+            <div class="card-sub">% de réceptions arrivées sans BL préalable · obj. 0%</div>
+          </div>
+        </div>
+        <div style="padding:20px 20px 8px;">
+          <!-- B2C -->
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2C</span>
+                <span style="font-size:9px;background:var(--warning-tint);color:var(--warning);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">1/8 réceptions</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +4.2 pts</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--warning);line-height:1;" id="rec-bl-b2c">12.5</span>
+              <span style="font-size:14px;color:var(--muted);">%</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:12.5%;background:var(--warning);border-radius:100px;" id="rec-bl-b2c-bar"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Nüber Cosmetics · 22 mars</div>
+          </div>
+          <!-- B2B -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <span style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">B2B</span>
+                <span style="font-size:9px;background:var(--danger-tint);color:var(--danger);padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace;font-weight:700;">3/4 réceptions</span>
+              </div>
+              <span class="delta-dn" style="font-size:10px;">↑ +12 pts</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+              <span style="font-size:36px;font-weight:300;letter-spacing:-0.04em;color:var(--danger);line-height:1;" id="rec-bl-b2b">75</span>
+              <span style="font-size:14px;color:var(--muted);">%</span>
+            </div>
+            <div style="height:4px;background:var(--border2);border-radius:100px;overflow:hidden;">
+              <div style="height:100%;width:75%;background:var(--danger);border-radius:100px;" id="rec-bl-b2b-bar"></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:6px;">Kera Pro Distribution · absence processus BL</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /suivi réception -->
 
   <!-- ══ BLOC ANALYSES & ACTIONS ══ -->
-  <div class="block-actions" id="analysisSection">
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Stocks</div></div>
-        </div>
-        <span class="aa-head-badge" id="analysisCount">1</span>
-      </div>
-      <div class="aa-body" id="analysisList">
-        <div class="analysis-item" id="analysis-card-1">
-          <div class="analysis-item-head">
-            <div class="analysis-mod-dot" style="background:var(--c-stocks)"></div>
-            <div class="analysis-q">8 ruptures actives dont Shampoing Hydra+ (0 u) — impact commandes directes</div>
-            <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+  <div>
+    <div class="section-label">Analyses &amp; suivi</div>
+    <div class="block-actions">
+
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Qualité Logistique</div></div>
           </div>
-          <div class="analysis-answer">Shampoing Hydra+ : 0 u · Mousse coiffante : 3 u. Réappro urgente à déclencher. 14 références supplémentaires en seuil d'alerte.</div>
-          <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 10h05</span><span class="analysis-src">WMS elogik</span></div>
+          <span class="aa-head-badge" id="analysisCount">3</span>
+        </div>
+        <div class="aa-body" id="analysisList">
+          <div class="analysis-item" id="analysis-card-1">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--c-qlog)"></div>
+              <div class="analysis-q">Quel produit nécessite le plus de temps de préparation en pluriproduits ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) vs 11 min pour les monoproduits. Corrélé au tri multi-emplacements.</div>
+            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-2">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--warning)"></div>
+              <div class="analysis-q">Quels jours avons-nous eu le plus de dépassements du cut-off B2B ?</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">Jeudi et vendredi concentrent 74 % des dépassements cut-off B2B, corrélés aux pics de volume en fin de semaine.</div>
+            <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 11h14</span><span class="analysis-src">WMS e-kan</span></div>
+          </div>
+          <div class="analysis-item" id="analysis-card-3">
+            <div class="analysis-item-head">
+              <div class="analysis-mod-dot" style="background:var(--danger)"></div>
+              <div class="analysis-q">Comparer le taux de conformité B2C vs B2B sur les 4 dernières semaines</div>
+              <button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
+            </div>
+            <div class="analysis-answer">B2C stable autour de 95–97 %. B2B en baisse : 93 → 87.5 % sur 4 semaines. Kera Pro Distribution principal facteur.</div>
+            <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 14h30</span><span class="analysis-src">WMS e-kan · OMS</span></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="aa-col">
-      <div class="aa-head">
-        <div class="aa-head-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Stocks</div></div>
+
+      <div class="aa-col">
+        <div class="aa-head">
+          <div class="aa-head-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Qualité Logistique</div></div>
+          </div>
+          <span class="aa-head-badge" id="actionCount">0</span>
         </div>
-        <span class="aa-head-badge" id="actionCount">0</span>
-      </div>
-      <div class="aa-body" id="actionList">
-        <div class="aa-empty" id="actionEmpty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+        <div class="aa-body" id="actionList">
+          <div class="aa-empty" id="actionEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+          </div>
+        </div>
+        <div class="aa-add-row">
+          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
         </div>
       </div>
-      <div class="aa-add-row">
-        <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
-      </div>
+
     </div>
   </div>
 
@@ -1232,36 +1346,524 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 </div><!-- /main -->
 
 <script>
-/* THEME */
+/* ── TOGGLE TRANSPORTEUR (collapse offres) ── */
+function toggleCarrier(groupId, chevron) {
+  var rows = document.querySelectorAll('tr.offer-row[id="' + groupId + '"]');
+  var isOpen = chevron.classList.contains('open');
+  rows.forEach(function(r) {
+    if (isOpen) {
+      r.classList.add('offers-collapse');
+    } else {
+      r.classList.remove('offers-collapse');
+    }
+  });
+  chevron.classList.toggle('open', !isOpen);
+}
+/* Init : toutes les offres visibles au chargement */
+window.addEventListener('DOMContentLoaded', function() {
+  /* Init toggleCarrier */
+  document.querySelectorAll('tr.offer-row').forEach(function(r) {
+    r.classList.remove('offers-collapse');
+  });
+  document.querySelectorAll('.t-family-chevron').forEach(function(c) {
+    c.classList.add('open');
+  });
+  /* Init calendrier et graphiques */
+  renderCal();
+  buildB2CChart();
+  buildB2BChart();
+  /* Initialise le grain "Semaine" au chargement */
+  applyGrainToPage('semaine');
+});
+
+/* ── THEME ── */
 function toggleTheme() {
-  var d = document.documentElement;
-  d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  rebuildCharts();
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  setTimeout(function() { rebuildCharts(); }, 50);
 }
 
-/* PERIOD */
+/* ══════════════════════════════════════════════════
+   DONNÉES MULTI-GRAIN — cohérence arithmétique stricte
+   Règle : 1 mois = 4 semaines / 1 semaine ≈ 5 jours ouvrés
+   Semaine de référence (active) = S18 · 17–23 mars 2025
+   ══════════════════════════════════════════════════ */
+
+var GRAIN_DATA = {
+
+  /* ── JOUR (vendredi 21 mars — pic de fin de semaine) ── */
+  jour: {
+    label: '21 mars',
+    dateLabel: 'Vendredi 21 mars',
+    pageSubLabel: 'Vendredi 21 mars 2025 · tous canaux · tous entrepôts',
+
+    /* KPIs macro */
+    kpi: {
+      preparees: { val: '248', unit: 'cmd.', taux: 99.6, txLabel: 'taux de service 99.6% · obj. 99.5%', delta: '↑ +0.1 pts', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Objectif', barWidth: '99.6' },
+      cutoff:    { val: '88.4', unit: '%', avant: 88.4, apres: 11.6, statusLabel: '✓ Bon niveau', status: 'ok' },
+      bloquees:  { val: '3', unit: 'cmd.', sub: 'sur 251 commandes · 1.2%', delta: '↑ Pic vendredi', deltaClass: 'delta-dn', status: 'ok', statusLabel: '✓ Sous seuil' },
+      attStock:  { val: '2', unit: 'cmd.', sub: 'sur 3 bloquées · att. réapprovisionnement' },
+      colis:     { val: '1.08', unit: 'col.', art: '3.4' }
+    },
+
+    /* Panneau B2C */
+    b2c: {
+      totalCmd: 186,
+      cartons: 389,
+      cartDelta: '↑ +2.1%',
+      tauxPrep: 99.7, tauxPrepDelta: '↑ +0.2',
+      cutoff: 88.4, cutoffDelta: '↑ +0.9',
+      blocked: 1, blockedLabel: '⚠ OMS',
+      cmdBloquees: { val: 1, color: 'danger', desc: 'Erreur format OMS · en attente de correction', barW: '10%' },
+      cmdAnomalie: { val: 0, color: 'success', desc: 'Aucune anomalie détectée ce jour', barW: '0%' },
+      tauxIncident: { val: '0.5', color: 'success', desc: '1 incident · 186 préparations · seuil 1.0%', barW: '5%', delta: '↓ −0.4 pts' },
+      /* Table transporteur */
+      colissimo: { att:0, non:3, wip:8, prep:110, ano:0, pec:52, ann:0, total:173 },
+      chronopost: { att:0, non:2, wip:4, prep:29, ano:1, pec:18, ann:0, total:54 },
+      mr:         { att:0, non:1, wip:2, prep:18, ano:0, pec:3, ann:1, total:25 }
+    },
+
+    /* Panneau B2B */
+    b2b: {
+      totalCmd: 62,
+      cartons: 81,
+      cartDelta: '↑ +1.8%',
+      tauxPrep: 98.4, tauxPrepDelta: '↓ −0.8',
+      cutoff: 79.0, cutoffDelta: '↓ −1.4',
+      blocked: 0, blockedLabel: '—',
+      cmdBloquees: { val: 0, color: 'success', desc: 'Aucun blocage ce jour', barW: '0%' },
+      cmdAnomalie: { val: 1, color: 'warning', desc: '1 anomalie · format EDI incorrect', barW: '10%' },
+      tauxIncident: { val: '1.6', color: 'danger', desc: '1 incident · 62 préparations · seuil 1.0%', barW: '16%', delta: '↑ +0.6 pts' },
+      dhl:      { att:0, non:1, wip:3, prep:24, ano:0, pec:5, ann:0, total:33 },
+      chronopost: { att:0, non:1, wip:2, prep:16, ano:1, pec:2, ann:0, total:22 },
+      gls:      { att:0, non:0, wip:1, prep:9, ano:0, pec:1, ann:0, total:11 }
+    },
+
+    /* Graphiques (7 derniers jours ouvrés) */
+    chartLabels: ['L15','M16','M17','J18','V19','L22','M21'],
+    b2cChart: { preparation: [99.4,99.6,99.8,99.5,99.7,99.3,99.7], cutoff: [90.2,91.0,92.1,90.8,88.4,91.5,88.4] },
+    b2bChart: { preparation: [99.0,99.2,99.1,98.8,98.4,99.0,98.4], cutoff: [85.0,86.2,85.8,84.5,79.0,85.3,79.0] },
+
+    /* Réception */
+    reception: {
+      b2c: { bg: { rec:1, units:310, bl:true, pct:100 }, nc: { rec:1, units:455, bl:false, pct:94 } },
+      b2b: { kp: { rec:1, units:215, bl:false, pct:75 } },
+      delaib2c: '2.6', delaib2b: '4.3',
+      blb2c: '50', blb2b: '0'
+    }
+  },
+
+  /* ── SEMAINE (S18 · 17–23 mars 2025 — données originales) ── */
+  semaine: {
+    label: 'S18 · 17–23 mars',
+    dateLabel: 'Semaine 17–23 mars',
+    pageSubLabel: 'Semaine 17–23 mars 2025 · tous canaux · tous entrepôts',
+
+    kpi: {
+      preparees: { val: '1 201', unit: 'cmd.', taux: 99.75, txLabel: 'taux de service 99.75% · obj. 99.5%', delta: '↑ +0.25 pts', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Objectif', barWidth: '99.75' },
+      cutoff:    { val: '91.2', unit: '%', avant: 91.2, apres: 8.8, statusLabel: '✓ Bon niveau', status: 'ok' },
+      bloquees:  { val: '3', unit: 'cmd.', sub: 'sur 1 204 commandes · 0.25%', delta: '↓ −70%', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Sous seuil' },
+      attStock:  { val: '2', unit: 'cmd.', sub: 'sur 3 bloquées · att. réapprovisionnement' },
+      colis:     { val: '1.05', unit: 'col.', art: '3.2' }
+    },
+
+    b2c: {
+      totalCmd: 934,
+      cartons: 1847,
+      cartDelta: '↑ +4.2%',
+      tauxPrep: 99.7, tauxPrepDelta: '↑ +0.2',
+      cutoff: 93.1, cutoffDelta: '↑ +1.1',
+      blocked: 1, blockedLabel: '⚠ OMS',
+      cmdBloquees: { val: 1, color: 'danger', desc: 'Erreur format OMS · en attente de correction', barW: '10%' },
+      cmdAnomalie: { val: 0, color: 'success', desc: 'Aucune anomalie détectée cette semaine', barW: '0%' },
+      tauxIncident: { val: '0.5', color: 'success', desc: '5 incidents · 934 préparations · seuil 1.0%', barW: '5%', delta: '↓ −0.4 pts' },
+      colissimo: { att:0, non:12, wip:38, prep:310, ano:0, pec:192, ann:0, total:552 },
+      chronopost: { att:0, non:6, wip:18, prep:156, ano:2, pec:98, ann:0, total:280 },
+      mr:         { att:1, non:4, wip:10, prep:72, ano:0, pec:14, ann:1, total:102 }
+    },
+
+    b2b: {
+      totalCmd: 267,
+      cartons: 521,
+      cartDelta: '↑ +2.8%',
+      tauxPrep: 99.2, tauxPrepDelta: '↓ −0.3',
+      cutoff: 86.5, cutoffDelta: '↓ −0.8',
+      blocked: 1, blockedLabel: '⚠ EDI',
+      cmdBloquees: { val: 1, color: 'danger', desc: 'Format EDI non reconnu · en attente de retraitement', barW: '10%' },
+      cmdAnomalie: { val: 0, color: 'success', desc: 'Aucune anomalie détectée cette semaine', barW: '0%' },
+      tauxIncident: { val: '1.1', color: 'warning', desc: '3 incidents · 267 préparations · seuil 1.0%', barW: '11%', delta: '↑ +0.3 pts' },
+      dhl:      { att:1, non:5, wip:14, prep:88, ano:0, pec:22, ann:0, total:130 },
+      chronopost: { att:0, non:3, wip:8, prep:56, ano:3, pec:12, ann:1, total:83 },
+      gls:      { att:0, non:2, wip:4, prep:42, ano:0, pec:6, ann:0, total:54 }
+    },
+
+    chartLabels: ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'],
+    b2cChart: { preparation: [99.1,99.4,99.2,99.6,99.5,99.8,99.7,99.5,99.9,100,99.8,99.7], cutoff: [90.1,91.2,90.8,92.1,91.5,92.8,92.5,91.8,93.0,93.4,93.1,93.1] },
+    b2bChart: { preparation: [98.8,99.0,99.1,99.3,98.9,99.2,99.5,99.1,99.3,99.4,99.2,99.2], cutoff: [84.0,85.5,85.0,86.8,85.2,87.0,87.5,86.0,87.8,88.5,86.5,86.5] },
+
+    reception: {
+      b2c: { bg: { rec:4, units:1240, bl:true, pct:100 }, nc: { rec:4, units:1820, bl:false, pct:94 } },
+      b2b: { kp: { rec:4, units:860, bl:false, pct:87 } },
+      delaib2c: '2.4', delaib2b: '4.1',
+      blb2c: '50', blb2b: '75'
+    }
+  },
+
+  /* ── MOIS (mars 2025 = 4 semaines S15+S16+S17+S18) ── */
+  mois: {
+    label: 'Mars 2025',
+    dateLabel: 'Mars 2025 (4 semaines)',
+    pageSubLabel: 'Mars 2025 · S15 → S18 · tous canaux · tous entrepôts',
+
+    /* 4 × semaine ≈ mois. Total cmd = 934×4 = 3 736 B2C / 267×4 = 1 068 B2B */
+    kpi: {
+      preparees: { val: '4 804', unit: 'cmd.', taux: 99.5, txLabel: 'taux de service 99.5% · obj. 99.5%', delta: '→ Objectif atteint', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Objectif', barWidth: '99.5' },
+      cutoff:    { val: '92.0', unit: '%', avant: 92.0, apres: 8.0, statusLabel: '✓ Bon niveau', status: 'ok' },
+      bloquees:  { val: '11', unit: 'cmd.', sub: 'sur 4 815 commandes · 0.23%', delta: '↓ −56%', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Sous seuil' },
+      attStock:  { val: '7', unit: 'cmd.', sub: 'sur 11 bloquées · att. réapprovisionnement' },
+      colis:     { val: '1.05', unit: 'col.', art: '3.3' }
+    },
+
+    b2c: {
+      totalCmd: 3736,
+      cartons: 7388,
+      cartDelta: '↑ +3.1%',
+      tauxPrep: 99.6, tauxPrepDelta: '↑ +0.1',
+      cutoff: 92.4, cutoffDelta: '↑ +0.8',
+      blocked: 3, blockedLabel: '⚠ OMS',
+      cmdBloquees: { val: 3, color: 'warning', desc: '3 erreurs OMS · 2 corrigées · 1 en cours', barW: '30%' },
+      cmdAnomalie: { val: 2, color: 'warning', desc: '2 anomalies détectées · Chronopost semaine S17', barW: '20%' },
+      tauxIncident: { val: '0.6', color: 'success', desc: '22 incidents · 3 736 préparations · seuil 1.0%', barW: '6%', delta: '↓ −0.1 pt' },
+      colissimo: { att:0, non:44, wip:0, prep:2208, ano:0, pec:768, ann:0, total:3020 }, /* ratio*4 arrondi */
+      chronopost: { att:0, non:22, wip:0, prep:624, ano:6, pec:392, ann:0, total:1044 },
+      mr:         { att:3, non:14, wip:0, prep:288, ano:0, pec:56, ann:3, total:364 }
+    },
+
+    b2b: {
+      totalCmd: 1068,
+      cartons: 2084,
+      cartDelta: '↑ +2.1%',
+      tauxPrep: 99.0, tauxPrepDelta: '↓ −0.2',
+      cutoff: 87.1, cutoffDelta: '↓ −0.5',
+      blocked: 3, blockedLabel: '⚠ EDI ×3',
+      cmdBloquees: { val: 3, color: 'danger', desc: '3 erreurs EDI · Kera Pro · processus à corriger', barW: '30%' },
+      cmdAnomalie: { val: 3, color: 'warning', desc: '3 anomalies · Chronopost Business S16–S18', barW: '30%' },
+      tauxIncident: { val: '0.9', color: 'warning', desc: '10 incidents · 1 068 préparations · seuil 1.0%', barW: '9%', delta: '↑ +0.1 pt' },
+      dhl:      { att:2, non:18, wip:0, prep:352, ano:0, pec:88, ann:0, total:460 },
+      chronopost: { att:0, non:12, wip:0, prep:224, ano:9, pec:48, ann:3, total:296 },
+      gls:      { att:0, non:8, wip:0, prep:168, ano:0, pec:24, ann:0, total:200 }
+    },
+
+    /* 4 points = 4 semaines du mois */
+    chartLabels: ['S15','S16','S17','S18'],
+    b2cChart: { preparation: [99.9,100,99.8,99.7], cutoff: [93.0,93.4,93.1,93.1] },
+    b2bChart: { preparation: [99.3,99.4,99.2,99.2], cutoff: [87.8,88.5,86.5,86.5] },
+
+    reception: {
+      b2c: { bg: { rec:16, units:4960, bl:true, pct:100 }, nc: { rec:16, units:7280, bl:false, pct:91 } },
+      b2b: { kp: { rec:16, units:3440, bl:false, pct:78 } },
+      delaib2c: '2.5', delaib2b: '4.4',
+      blb2c: '44', blb2b: '68'
+    }
+  },
+
+  /* ── ANNÉE (2025 YTD = 3 mois = 12 semaines) ── */
+  annee: {
+    label: '2025 YTD',
+    dateLabel: 'Janvier → Mars 2025',
+    pageSubLabel: 'Janvier – Mars 2025 · S1 → S18 · tous canaux · tous entrepôts',
+
+    /* 3 mois × 4 sem × ~1 200 cmd/sem = 14 400 env. */
+    kpi: {
+      preparees: { val: '14 212', unit: 'cmd.', taux: 99.4, txLabel: 'taux de service 99.4% · obj. 99.5%', delta: '↓ −0.1 pt', deltaClass: 'delta-dn', status: 'warn', statusLabel: '⚠ Sous obj.', barWidth: '99.4' },
+      cutoff:    { val: '91.5', unit: '%', avant: 91.5, apres: 8.5, statusLabel: '✓ Bon niveau', status: 'ok' },
+      bloquees:  { val: '34', unit: 'cmd.', sub: 'sur 14 246 commandes · 0.24%', delta: '↓ −38%', deltaClass: 'delta-up', status: 'ok', statusLabel: '✓ Sous seuil' },
+      attStock:  { val: '22', unit: 'cmd.', sub: 'sur 34 bloquées · att. réapprovisionnement' },
+      colis:     { val: '1.04', unit: 'col.', art: '3.1' }
+    },
+
+    b2c: {
+      totalCmd: 11136,
+      cartons: 21820,
+      cartDelta: '↑ +6.4% vs 2024',
+      tauxPrep: 99.5, tauxPrepDelta: '→ stable',
+      cutoff: 92.1, cutoffDelta: '↑ +1.4 vs jan',
+      blocked: 9, blockedLabel: '⚠ 9 total',
+      cmdBloquees: { val: 9, color: 'warning', desc: '9 erreurs OMS YTD · 8 corrigées · 1 en cours', barW: '45%' },
+      cmdAnomalie: { val: 8, color: 'warning', desc: '8 anomalies YTD · principalement Chronopost', barW: '40%' },
+      tauxIncident: { val: '0.7', color: 'success', desc: '78 incidents · 11 136 prép. · seuil 1.0%', barW: '7%', delta: '↓ −0.3 pts vs 2024' },
+      colissimo: { att:0, non:0, wip:0, prep:6682, ano:0, pec:2304, ann:0, total:8986 },
+      chronopost: { att:0, non:0, wip:0, prep:1868, ano:18, pec:1176, ann:0, total:3062 },
+      mr:         { att:9, non:0, wip:0, prep:864, ano:0, pec:168, ann:9, total:1050 }
+    },
+
+    b2b: {
+      totalCmd: 3204,
+      cartons: 6251,
+      cartDelta: '↑ +4.2% vs 2024',
+      tauxPrep: 98.8, tauxPrepDelta: '↓ −0.4 vs 2024',
+      cutoff: 86.8, cutoffDelta: '↑ +0.6 vs jan',
+      blocked: 9, blockedLabel: '⚠ EDI récurrent',
+      cmdBloquees: { val: 9, color: 'danger', desc: '9 erreurs EDI YTD · Kera Pro · action requise', barW: '45%' },
+      cmdAnomalie: { val: 9, color: 'danger', desc: '9 anomalies YTD · Chronopost Business S6-S18', barW: '45%' },
+      tauxIncident: { val: '1.0', color: 'warning', desc: '32 incidents · 3 204 prép. · seuil 1.0%', barW: '10%', delta: '→ à la limite' },
+      dhl:      { att:6, non:0, wip:0, prep:1056, ano:0, pec:264, ann:0, total:1326 },
+      chronopost: { att:0, non:0, wip:0, prep:672, ano:27, pec:144, ann:9, total:852 },
+      gls:      { att:0, non:0, wip:0, prep:504, ano:0, pec:72, ann:0, total:576 }
+    },
+
+    /* 12 mois/points sur l'année (ici YTD = jan/fev/mars avec sous-découpage par semaines) */
+    chartLabels: ['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'],
+    b2cChart: {
+      preparation: [99.0,99.1,98.9,99.2,99.3,99.0,99.1,99.4,99.2,99.6,99.5,99.8,99.7,99.5,99.9,100,99.8,99.7],
+      cutoff:      [89.5,90.0,89.8,90.5,90.8,90.2,90.1,91.2,90.8,92.1,91.5,92.8,92.5,91.8,93.0,93.4,93.1,93.1]
+    },
+    b2bChart: {
+      preparation: [98.2,98.5,98.4,98.8,98.7,98.5,98.8,99.0,99.1,99.3,98.9,99.2,99.5,99.1,99.3,99.4,99.2,99.2],
+      cutoff:      [83.0,83.5,84.0,84.5,84.8,84.2,84.0,85.5,85.0,86.8,85.2,87.0,87.5,86.0,87.8,88.5,86.5,86.5]
+    },
+
+    reception: {
+      b2c: { bg: { rec:48, units:14880, bl:true, pct:100 }, nc: { rec:48, units:21840, bl:false, pct:89 } },
+      b2b: { kp: { rec:48, units:10320, bl:false, pct:71 } },
+      delaib2c: '2.6', delaib2b: '4.5',
+      blb2c: '40', blb2b: '62'
+    }
+  }
+};
+
+/* ═══════════════════════════════════════════
+   MOTEUR DE RENDU — applique un grain à toute la page
+   ═══════════════════════════════════════════ */
+var currentGrain = 'semaine';
+
 function setPeriod(btn) {
   document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
+  var grainMap = { 'Jour': 'jour', 'Semaine': 'semaine', 'Mois': 'mois', 'Année': 'annee' };
+  var grain = grainMap[btn.textContent.trim()] || 'semaine';
+  currentGrain = grain;
+  applyGrainToPage(grain);
 }
 
-/* IA TOGGLE */
+function applyGrainToPage(grain) {
+  var d = GRAIN_DATA[grain];
+  if (!d) return;
+  /* Micro-transition : feedback perceptif (Loi de Tesler — changement explicite) */
+  document.querySelectorAll('.kpi-big, .score-big, .canal-stat-val').forEach(function(el) {
+    el.classList.remove('grain-flash');
+    void el.offsetWidth; // reflow
+    el.classList.add('grain-flash');
+  });
+
+  /* ── Date label ── */
+  var dpLabel = document.getElementById('dpLabel');
+  if (dpLabel) dpLabel.textContent = d.dateLabel;
+
+  /* ── Page sub-title ── */
+  var pageSubs = document.querySelectorAll('.page-sub');
+  pageSubs.forEach(function(el) { el.textContent = d.pageSubLabel; });
+
+  /* ── KPI cards ── */
+  applyKPI(d.kpi);
+
+  /* ── Panneau B2C ── */
+  applyPanel('b2c', d.b2c, grain);
+
+  /* ── Panneau B2B ── */
+  applyPanel('b2b', d.b2b, grain);
+
+  /* ── Graphiques ── */
+  applyCharts(d);
+
+  /* ── Réception ── */
+  applyReception(d.reception, grain);
+}
+
+function applyKPI(k) {
+  /* KPI 1 — Préparées */
+  setTxt('kpi-prep-val', k.preparees.val + ' <span class="unit"> ' + k.preparees.unit + '</span>');
+  setTxt('kpi-prep-taux', k.preparees.txLabel);
+  setTxt('kpi-prep-delta', '<span class="' + k.preparees.deltaClass + '">' + k.preparees.delta + '</span><span style="font-size:11px;color:var(--muted)"> vs objectif</span>');
+  setStyle('kpi-prep-bar', 'width', k.preparees.barWidth + '%');
+  var p1badge = document.getElementById('kpi-prep-badge');
+  if (p1badge) { p1badge.className = 'kpi-status-badge ' + k.preparees.status; p1badge.textContent = k.preparees.statusLabel; }
+
+  /* KPI 2 — Cut-off */
+  setTxt('kpi-cutoff-val', k.cutoff.val + ' <span class="unit">%</span>');
+  setStyle('kpi-cutoff-bara', 'width', k.cutoff.avant + '%');
+  setStyle('kpi-cutoff-barb', 'width', k.cutoff.apres + '%');
+  setTxt('kpi-cutoff-lega', 'Avant (' + k.cutoff.avant + '%)');
+  setTxt('kpi-cutoff-legb', 'Après (' + k.cutoff.apres + '%)');
+  var p2badge = document.getElementById('kpi-cutoff-badge');
+  if (p2badge) { p2badge.className = 'kpi-status-badge ' + k.cutoff.status; p2badge.textContent = k.cutoff.statusLabel; }
+
+  /* KPI 3 — Bloquées */
+  setTxt('kpi-bloc-val', k.bloquees.val + ' <span class="unit"> ' + k.bloquees.unit + '</span>');
+  setTxt('kpi-bloc-sub', k.bloquees.sub);
+  setTxt('kpi-bloc-delta', '<span class="' + k.bloquees.deltaClass + '">' + k.bloquees.delta + '</span><span style="font-size:11px;color:var(--muted)"> vs seuil alerte (10)</span>');
+  var p3badge = document.getElementById('kpi-bloc-badge');
+  if (p3badge) { p3badge.className = 'kpi-status-badge ' + k.bloquees.status; p3badge.textContent = k.bloquees.statusLabel; }
+
+  /* KPI 5 — Colis */
+  setTxt('kpi-colis-val', k.colis.val + ' <span class="unit"> col.</span>');
+  setTxt('kpi-colis-art', k.colis.art);
+}
+
+function applyPanel(canal, p, grain) {
+  var pfx = canal === 'b2c' ? 'b2c' : 'b2b';
+  var grainLbl = { jour: 'aujourd\'hui', semaine: 'cette semaine', mois: 'ce mois', annee: 'YTD' }[grain] || 'cette période';
+
+  setTxt(pfx + '-total-cmd', p.totalCmd.toLocaleString('fr-FR'));
+  setTxt(pfx + '-cartons', p.cartons.toLocaleString('fr-FR'));
+  setTxt(pfx + '-cart-delta', p.cartDelta);
+  setTxt(pfx + '-cart-lbl', 'Cartons utilisés ' + grainLbl);
+  setTxt(pfx + '-taux-prep', p.tauxPrep);
+  setTxt(pfx + '-taux-prep-delta', p.tauxPrepDelta);
+  setTxt(pfx + '-cutoff-val', p.cutoff);
+  setTxt(pfx + '-cutoff-delta', p.cutoffDelta);
+  setTxt(pfx + '-blocked-val', p.blocked);
+  setTxt(pfx + '-blocked-lbl', p.blockedLabel);
+
+  /* Score sidebar */
+  var sc = p.cmdBloquees;
+  var scBlocEl = document.getElementById(pfx + '-sc-bloc-big');
+  if (scBlocEl) { scBlocEl.innerHTML = sc.val + '<span class="unit"> cmd.</span>'; scBlocEl.style.color = 'var(--' + sc.color + ')'; }
+  setTxt(pfx + '-sc-bloc-desc', sc.desc);
+  setStyle(pfx + '-sc-bloc-bar', 'width', sc.barW);
+
+  var sa = p.cmdAnomalie;
+  var scAnoEl = document.getElementById(pfx + '-sc-ano-val');
+  if (scAnoEl) { scAnoEl.innerHTML = sa.val + '<span class="unit"> cmd.</span>'; }
+  setTxt(pfx + '-sc-ano-desc', sa.desc);
+  setStyle(pfx + '-sc-ano-bar', 'width', sa.barW);
+
+  var si = p.tauxIncident;
+  var scIncEl = document.getElementById(pfx + '-sc-inc-big');
+  if (scIncEl) { scIncEl.innerHTML = si.val + '<span class="unit">%</span>'; scIncEl.style.color = 'var(--' + si.color + ')'; }
+  setTxt(pfx + '-sc-inc-delta', si.delta);
+  setTxt(pfx + '-sc-inc-desc', si.desc);
+  setStyle(pfx + '-sc-inc-bar', 'width', si.barW);
+
+  /* Table transporteur */
+  if (canal === 'b2c') {
+    applyCarrierRow('b2c-row-colissimo', p.colissimo);
+    applyCarrierRow('b2c-row-chronopost', p.chronopost);
+    applyCarrierRow('b2c-row-mr', p.mr);
+    var totalb2c = p.colissimo.total + p.chronopost.total + p.mr.total;
+    setTxt('b2c-total-row', totalb2c.toLocaleString('fr-FR'));
+    /* Sub-title cards */
+    setTxt('b2c-card-sub', p.totalCmd.toLocaleString('fr-FR') + ' commandes · objectif cut-off 99.5%');
+    setTxt('b2c-carrier-sub', p.totalCmd.toLocaleString('fr-FR') + ' commandes · ' + d_label(grain) + ' · B2C');
+  } else {
+    applyCarrierRow('b2b-row-dhl', p.dhl);
+    applyCarrierRow('b2b-row-chronopost', p.chronopost);
+    applyCarrierRow('b2b-row-gls', p.gls);
+    var totalb2b = p.dhl.total + p.chronopost.total + p.gls.total;
+    setTxt('b2b-total-row', totalb2b.toLocaleString('fr-FR'));
+    setTxt('b2b-card-sub', p.totalCmd.toLocaleString('fr-FR') + ' commandes · cut-off 16h00 · avg 5.3 art/cmd');
+    setTxt('b2b-carrier-sub', p.totalCmd.toLocaleString('fr-FR') + ' commandes · ' + d_label(grain) + ' · B2B');
+  }
+
+  /* Toggle labels */
+  setTxt(canal + '-toggle-sub', p.totalCmd.toLocaleString('fr-FR') + ' cmd.');
+}
+
+function d_label(grain) {
+  return { jour: '21 mars', semaine: 'semaine 17–23 mars', mois: 'mars 2025', annee: 'jan–mars 2025' }[grain] || '';
+}
+
+function applyCarrierRow(id, row) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var cells = el.querySelectorAll('[data-field]');
+  cells.forEach(function(c) {
+    var f = c.getAttribute('data-field');
+    var v = row[f];
+    if (v === 0) { c.innerHTML = '<span class="ts-badge ts-zero">—</span>'; }
+    else if (f === 'total') { c.textContent = v; }
+    else {
+      var cls = { att:'ts-stock', non:'ts-none', wip:'ts-wip', prep:'ts-ok', ano:'ts-anomaly', pec:'ts-carrier', ann:'ts-cancel' }[f] || 'ts-none';
+      c.innerHTML = '<span class="ts-badge ' + cls + '">' + v + '</span>';
+    }
+  });
+  /* total en gras */
+  var tot = el.querySelector('[data-field="total"]');
+  if (tot) tot.textContent = row.total;
+}
+
+function applyCharts(d) {
+  /* Met à jour les variables globales utilisées par les builders */
+  weeks = d.chartLabels;
+  b2cData.preparation = d.b2cChart.preparation;
+  b2cData.cutoff       = d.b2cChart.cutoff;
+  b2bData.preparation = d.b2bChart.preparation;
+  b2bData.cutoff       = d.b2bChart.cutoff;
+  /* Réinitialise departJ (interpolation linéaire simple depuis prep) */
+  b2cData.departJ = d.b2cChart.preparation.map(function(v) { return +(v - 0.7).toFixed(1); });
+  b2bData.departJ = d.b2bChart.preparation.map(function(v) { return +(v - 2.4).toFixed(1); });
+  rebuildCharts();
+}
+
+function applyReception(rec, grain) {
+  if (!rec) return;
+  /* Délais */
+  setTxt('rec-delai-b2c', rec.delaib2c);
+  setTxt('rec-delai-b2b', rec.delaib2b);
+  /* BL */
+  var b2cBlNum = parseFloat(rec.blb2c);
+  var b2bBlNum = parseFloat(rec.blb2b);
+  setTxt('rec-bl-b2c', rec.blb2c);
+  setTxt('rec-bl-b2b', rec.blb2b);
+  setStyle('rec-bl-b2c-bar', 'width', rec.blb2c + '%');
+  setStyle('rec-bl-b2b-bar', 'width', rec.blb2b + '%');
+
+  var grainLbl = { jour: 'ce jour', semaine: 'sem. en cours', mois: 'ce mois', annee: 'YTD' }[grain] || 'période';
+  setTxt('rec-count-lbl', '12 réceptions · 3 fournisseurs · ' + grainLbl);
+
+  /* Fournisseurs */
+  var bg = rec.b2c.bg;
+  var nc = rec.b2c.nc;
+  var kp = rec.b2b.kp;
+  setTxt('rec-bg-units', bg.rec + ' réc. · ' + bg.units.toLocaleString('fr-FR') + ' unités');
+  setTxt('rec-nc-units', nc.rec + ' réc. · ' + nc.units.toLocaleString('fr-FR') + ' unités');
+  setTxt('rec-kp-units', kp.rec + ' réc. · ' + kp.units.toLocaleString('fr-FR') + ' unités');
+  setTxt('rec-bg-pct', bg.pct + '%');
+  setTxt('rec-nc-pct', nc.pct + '%');
+  setTxt('rec-kp-pct', kp.pct + '%');
+}
+
+/* ── Helpers ── */
+function setTxt(id, html) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (html !== null && html !== undefined) el.innerHTML = html;
+}
+function setStyle(id, prop, val) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.style[prop] = val;
+}
+
+/* ── CHAT COLLAPSE ── */
 function toggleChatCollapse() {
   var coll = document.getElementById('chatCollapsible');
   var icon = document.getElementById('chatCollapseIcon');
-  var isCollapsed = coll.classList.contains('collapsed');
-  if (isCollapsed) { coll.classList.remove('collapsed'); icon.style.transform = ''; }
-  else { coll.classList.add('collapsed'); icon.style.transform = 'rotate(180deg)'; }
+  var collapsed = coll.classList.toggle('collapsed');
+  icon.style.transform = collapsed ? 'rotate(180deg)' : '';
 }
 function toggleReassurance() {
-  var p = document.getElementById('rePanel'), c = document.getElementById('reChevron');
-  var v = p.style.display !== 'none';
-  p.style.display = v ? 'none' : 'block'; c.style.transform = v ? '' : 'rotate(180deg)';
+  var panel = document.getElementById('rePanel');
+  var chevron = document.getElementById('reChevron');
+  var visible = panel.style.display !== 'none';
+  panel.style.display = visible ? 'none' : 'block';
+  chevron.style.transform = visible ? '' : 'rotate(180deg)';
 }
 function fillChat(chip) {
   var inp = document.getElementById('chatInputMain');
   inp.value = chip.querySelector('.q-chip-txt').textContent;
-  toggleSendMain(inp); inp.focus();
+  toggleSendMain(inp);
+  inp.focus();
 }
 function toggleSendMain(inp) {
   document.getElementById('sendBtnMain').classList.toggle('ready', inp.value.trim().length > 0);
@@ -1270,221 +1872,221 @@ function sendChatMain() {
   var inp = document.getElementById('chatInputMain');
   if (!inp.value.trim()) return;
   var area = document.getElementById('chatArea');
-  var w = document.createElement('div'); w.className = 'chat-bubble-wrap user-wrap';
-  w.innerHTML = '<div class="chat-bubble user">' + inp.value + '</div><div class="chat-bubble-time">maintenant</div>';
-  area.appendChild(w); inp.value = '';
+  var wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap user-wrap';
+  wrap.innerHTML = '<div class="chat-bubble user">' + inp.value + '</div><div class="chat-bubble-time">maintenant</div>';
+  area.appendChild(wrap);
+  inp.value = '';
   document.getElementById('sendBtnMain').classList.remove('ready');
+  area.scrollTop = area.scrollHeight;
 }
-document.getElementById('chatInputMain').addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMain(); });
+document.getElementById('chatInputMain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendChatMain();
+});
 
-/* IA SAVE */
-var iaAnalysisSaved = false;
-function saveAnalysisIA() {
-  if (iaAnalysisSaved) return; iaAnalysisSaved = true;
-  var btn = document.getElementById('chatSaveBtn');
-  btn.classList.add('saved');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg> Analyse enregistrée';
-  btn.onclick = null;
-  document.getElementById('chatSaveBar').classList.add('hidden');
-  document.getElementById('chatSavedBanner').classList.add('visible');
-  document.getElementById('convPill').classList.add('visible');
-  injectAnalysis('violet', 'Ruptures stocks : 8 actives + 14 alertes · besoin cartons M urgent', '0 u Shampoing Hydra+, 3 u Mousse Volume. 23 refs immobiles 60j+. Cartons M à 0.7 sem.', 'WMS elogik · OMS');
-}
-function scrollToAnalysis() {
-  document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* CALENDAR */
-var calOpen = false, curY = 2025, curM = 2, rs = null, re = null;
+/* ── CALENDAR ── */
+var calOpen = false, currentYear = 2025, currentMonth = 2, rangeStart = null, rangeEnd = null;
 function toggleCal() { calOpen = !calOpen; document.getElementById('calDrop').classList.toggle('open', calOpen); if (calOpen) renderCal(); }
-function moveMonth(d) { curM += d; if (curM < 0) { curM = 11; curY--; } if (curM > 11) { curM = 0; curY++; } renderCal(); }
+function moveMonth(d) { currentMonth += d; if (currentMonth < 0) { currentMonth = 11; currentYear--; } if (currentMonth > 11) { currentMonth = 0; currentYear++; } renderCal(); }
 function renderCal() {
   var M = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  document.getElementById('calMonth').textContent = M[curM] + ' ' + curY;
+  document.getElementById('calMonth').textContent = M[currentMonth] + ' ' + currentYear;
   var g = document.getElementById('calGrid'); g.innerHTML = '';
   ['L','M','M','J','V','S','D'].forEach(function(d) { var e = document.createElement('div'); e.className = 'cal-dh'; e.textContent = d; g.appendChild(e); });
-  var fd = new Date(curY, curM, 1).getDay(); fd = (fd + 6) % 7;
-  var dim = new Date(curY, curM + 1, 0).getDate();
-  var prev = new Date(curY, curM, 0).getDate();
+  var fd = new Date(currentYear, currentMonth, 1).getDay(); fd = (fd + 6) % 7;
+  var dim = new Date(currentYear, currentMonth + 1, 0).getDate();
+  var prev = new Date(currentYear, currentMonth, 0).getDate();
   for (var i = 0; i < fd; i++) { var e = document.createElement('div'); e.className = 'cal-d other-month'; e.textContent = prev - fd + 1 + i; g.appendChild(e); }
   for (var day = 1; day <= dim; day++) {
     var e = document.createElement('div'); e.className = 'cal-d';
-    var dt = new Date(curY, curM, day);
-    if (rs && re) { if (dt > rs && dt < re) e.classList.add('in-range'); if (dt.toDateString() === rs.toDateString()) e.classList.add('range-start'); if (dt.toDateString() === re.toDateString()) e.classList.add('range-end'); }
-    else if (rs && dt.toDateString() === rs.toDateString()) e.classList.add('range-start');
+    var dt = new Date(currentYear, currentMonth, day);
+    if (day === 24 && currentMonth === 2 && currentYear === 2025) e.classList.add('today');
+    if (rangeStart && rangeEnd) { if (dt > rangeStart && dt < rangeEnd) e.classList.add('in-range'); if (dt.toDateString() === rangeStart.toDateString()) e.classList.add('range-start'); if (dt.toDateString() === rangeEnd.toDateString()) e.classList.add('range-end'); }
+    else if (rangeStart && dt.toDateString() === rangeStart.toDateString()) e.classList.add('range-start');
     e.textContent = day;
     e.onclick = (function(d2) { return function() { pickDay(d2); }; })(new Date(dt));
     g.appendChild(e);
   }
 }
-function pickDay(date) {
-  if (!rs || (rs && re)) { rs = date; re = null; document.getElementById('rangeInfo').textContent = 'Début : ' + fmtD(date); }
-  else { if (date < rs) { re = rs; rs = date; } else re = date; document.getElementById('rangeInfo').textContent = fmtD(rs) + ' - ' + fmtD(re); }
-  renderCal();
-}
-function fmtD(d) { var M = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']; return d.getDate() + ' ' + M[d.getMonth()]; }
-function applyRange() { if (rs) document.getElementById('dpLabel').textContent = re ? fmtD(rs) + ' - ' + fmtD(re) : fmtD(rs); toggleCal(); }
+function pickDay(date) { if (!rangeStart || (rangeStart && rangeEnd)) { rangeStart = date; rangeEnd = null; document.getElementById('rangeInfo').textContent = 'Debut : ' + fmtD(date); } else { if (date < rangeStart) { rangeEnd = rangeStart; rangeStart = date; } else rangeEnd = date; document.getElementById('rangeInfo').textContent = fmtD(rangeStart) + ' - ' + fmtD(rangeEnd); } renderCal(); }
+function fmtD(d) { var M = ['jan','fev','mar','avr','mai','juin','juil','aou','sep','oct','nov','dec']; return d.getDate() + ' ' + M[d.getMonth()]; }
+function applyRange() { if (rangeStart) document.getElementById('dpLabel').textContent = rangeEnd ? fmtD(rangeStart) + ' - ' + fmtD(rangeEnd) : fmtD(rangeStart); toggleCal(); }
 document.addEventListener('click', function(e) { if (calOpen && !document.querySelector('.date-wrap').contains(e.target)) { calOpen = false; document.getElementById('calDrop').classList.remove('open'); } });
 
-/* ROTATION TABLE */
-var rotData = [
-  { ref:'COS-21142', name:'Sérum brillance Lissant 50ml',      qty:240, lastMove:'04 jan. 2026', days:71 },
-  { ref:'COS-20834', name:'Gel coiffant Fixation forte 150ml',  qty:85,  lastMove:'18 jan. 2026', days:57 },
-  { ref:'COS-21891', name:'Huile capillaire Argan 100ml',       qty:310, lastMove:'28 déc. 2025', days:78 },
-  { ref:'COS-20412', name:'Spray thermoprotecteur 200ml',       qty:62,  lastMove:'12 jan. 2026', days:63 },
-  { ref:'COS-22014', name:'Crème de soin Boucles 250ml',        qty:520, lastMove:'02 nov. 2025', days:134 },
-  { ref:'COS-19876', name:'Mousse Volume Légère 200ml',         qty:190, lastMove:'05 jan. 2026', days:70 },
-  { ref:'COS-21304', name:'Brillantine solide 75ml',            qty:430, lastMove:'10 nov. 2025', days:126 },
-];
-function renderRotation(threshold) {
-  var filtered = rotData.filter(function(r) { return r.days >= threshold; });
-  document.getElementById('rot-count').textContent = filtered.length;
-  document.getElementById('rot-val-stock').textContent = filtered.reduce(function(s,r){ return s+r.qty; }, 0).toLocaleString('fr-FR');
-  var avg = filtered.length ? Math.round(filtered.reduce(function(s,r){ return s+r.days; },0)/filtered.length) : 0;
-  document.getElementById('rot-avg').textContent = avg + 'j';
-  var tbody = document.getElementById('rot-table');
-  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);font-size:12px;padding:16px">Aucune référence immobile au-delà de ce seuil</td></tr>'; }
-  else {
-    tbody.innerHTML = filtered.map(function(r) {
-      var cls = r.days >= 90 ? 'days-bad' : r.days >= 60 ? 'days-warn' : 'days-ok';
-      return '<tr class="stock-alert-row"><td class="td-mono">' + r.ref + '</td><td style="font-weight:500">' + r.name + '</td><td class="td-mono">' + r.qty + '</td><td class="td-mono">' + r.lastMove + '</td><td><span class="days-chip ' + cls + '">' + r.days + 'j</span></td></tr>';
-    }).join('');
-  }
-  /* CTA export */
-  var btn = document.getElementById('rot-export-btn');
-  var cnt = document.getElementById('rot-export-count');
-  cnt.textContent = filtered.length;
-  if (filtered.length > 0) {
-    btn.disabled = false;
-    btn.style.cursor = 'pointer';
-    btn.style.color = 'var(--primary)';
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.background = 'var(--primary-tint)';
+/* ── ONGLETS B2C / B2B ── */
+function switchTab(canal) {
+  var b2cBtn = document.getElementById('tab-b2c');
+  var b2bBtn = document.getElementById('tab-b2b');
+  // reset
+  b2cBtn.classList.remove('active','active-b2b');
+  b2bBtn.classList.remove('active','active-b2b');
+  document.getElementById('panel-b2c').classList.remove('active');
+  document.getElementById('panel-b2b').classList.remove('active');
+  // set
+  if (canal === 'b2c') {
+    b2cBtn.classList.add('active');
+    document.getElementById('panel-b2c').classList.add('active');
   } else {
-    btn.disabled = true;
-    btn.style.cursor = 'not-allowed';
-    btn.style.color = 'var(--muted)';
-    btn.style.borderColor = 'var(--border2)';
-    btn.style.background = 'var(--surface2)';
+    b2bBtn.classList.add('active-b2b');
+    document.getElementById('panel-b2b').classList.add('active');
   }
-}
-function exportRotation() {
-  var threshold = parseInt(document.getElementById('rotSlider').value);
-  var filtered = rotData.filter(function(r) { return r.days >= threshold; });
-  if (!filtered.length) return;
-  var rows = [['Référence','Désignation','Qté','Dernier mouvement','Immobile (j)']];
-  filtered.forEach(function(r){ rows.push([r.ref, r.name, r.qty, r.lastMove, r.days]); });
-  var csv = rows.map(function(r){ return r.join(';'); }).join('\n');
-  var a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'rotation-stocks-' + threshold + 'j.csv';
-  a.click();
-}
-function updateRotation(val) {
-  document.getElementById('rotVal').textContent = val + 'j';
-  renderRotation(parseInt(val));
+  setTimeout(function() { rebuildCharts(); }, 50);
 }
 
-/* CHARTS */
-var chartEvol = null, chartPie = null;
+/* ── CHART TABS ── */
+function switchB2CChart(btn, metric) {
+  document.getElementById('b2cChartTabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active','qlog','biz'); });
+  btn.classList.add('active','qlog');
+  buildB2CChart(metric);
+}
+function switchB2BChart(btn, metric) {
+  document.getElementById('b2bChartTabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active','qlog','biz'); });
+  btn.classList.add('active','biz');
+  buildB2BChart(metric);
+}
+
+/* ── CHARTS ── */
+var chartB2CInst, chartB2BInst;
 var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
-var stockUnits  = [24800,23100,25400,22800,21600,24200,23100,22000,20800,19800,18480,18480];
-var factureLog  = [4200, 4050, 4380, 3980, 3820, 4150, 4020, 3890, 3740, 3620, 3490, 3490];
+var b2cData = {
+  preparation: [99.1, 99.4, 99.2, 99.6, 99.5, 99.8, 99.7, 99.5, 99.9, 100, 99.8, 99.7],
+  departJ:     [98.2, 98.5, 98.4, 98.8, 98.5, 99.0, 98.9, 98.6, 99.1, 99.2, 99.0, 98.9],
+  cutoff:      [90.1, 91.2, 90.8, 92.1, 91.5, 92.8, 92.5, 91.8, 93.0, 93.4, 93.1, 93.1]
+};
+var b2bData = {
+  preparation: [98.8, 99.0, 99.1, 99.3, 98.9, 99.2, 99.5, 99.1, 99.3, 99.4, 99.2, 99.2],
+  departJ:     [96.2, 97.0, 96.8, 97.4, 96.5, 97.8, 97.5, 97.0, 97.8, 98.1, 96.8, 96.8],
+  cutoff:      [84.0, 85.5, 85.0, 86.8, 85.2, 87.0, 87.5, 86.0, 87.8, 88.5, 86.5, 86.5]
+};
 
-function buildCharts() {
+function getTC() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return { grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', text: isDark ? '#5A6C7D' : '#8A95A3' };
+}
 
-  /* Pie répartition */
-  var ctxP = document.getElementById('chartPie');
-  if (!ctxP) return;
-  if (chartPie) { chartPie.destroy(); chartPie = null; }
-  chartPie = new Chart(ctxP.getContext('2d'), {
-    type: 'doughnut',
+function buildB2CChart(metric) {
+  var ctx = document.getElementById('chartB2C');
+  if (!ctx) return;
+  if (chartB2CInst) chartB2CInst.destroy();
+  var tc = getTC();
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var color = isDark ? '#22D3EE' : '#0E7490';
+  var raw = b2cData[metric || 'preparation'];
+  chartB2CInst = new Chart(ctx, {
+    type: 'line',
     data: {
-      labels: ['Palette', 'Étagères', 'Consignes / Transit'],
-      datasets: [{
-        data: [58, 34, 8],
-        backgroundColor: [
-          isDark ? '#FCD34D' : '#D97706',
-          isDark ? '#38BDF8' : '#0E8FCC',
-          isDark ? '#A78BFF' : '#6C47E8'
-        ],
-        borderWidth: 0,
-        hoverOffset: 6
-      }]
+      labels: weeks,
+      datasets: [
+        { label: 'Réalisé', data: raw, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: color, borderWidth: 2 },
+        { label: 'Objectif', data: weeks.map(function() { return 99.5; }), borderColor: 'rgba(42,149,84,0.5)', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) { return ' ' + ctx.label + ' : ' + ctx.raw + '%'; }
-          }
-        }
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' } } },
+        y: { min: 84, max: 101, grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return v + '%'; } } }
       }
     }
   });
 }
 
-function rebuildCharts() { buildCharts(); }
-
-/* ANALYSES */
-var analysisAutoId = 10;
-function injectAnalysis(color, q, a, src) {
-  var list = document.getElementById('analysisList');
-  var item = document.createElement('div');
-  var aId = analysisAutoId++;
-  item.className = 'analysis-item'; item.id = 'analysis-card-' + aId;
-  item.innerHTML = '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--' + color + ')"></div><div class="analysis-q">' + q + '</div><button class="analysis-archive-btn" onclick="archiveAnalysis(' + aId + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">' + a + '</div><div class="analysis-footer"><span class="analysis-time">Maintenant</span><span class="analysis-src">' + src + '</span></div>';
-  list.insertBefore(item, list.firstChild);
-  updateAnalysisCount();
-}
-function archiveAnalysis(id) {
-  var c = document.getElementById('analysis-card-' + id);
-  if (c) { c.remove(); updateAnalysisCount(); }
-}
-function updateAnalysisCount() {
-  document.getElementById('analysisCount').textContent = document.getElementById('analysisList').querySelectorAll('.analysis-item').length;
-}
-
-/* ACTIONS */
-var actions = [];
-function addAction() {
-  var inp = document.getElementById('actionInput'), val = inp.value.trim();
-  if (!val) return; actions.push({ id: Date.now(), text: val, done: false }); inp.value = ''; renderActions();
-}
-function toggleActionDone(id) { var a = actions.find(function(x){ return x.id===id; }); if (a) { a.done = !a.done; renderActions(); } }
-function archiveAction(id) { actions = actions.filter(function(x){ return x.id!==id; }); renderActions(); }
-function renderActions() {
-  var list = document.getElementById('actionList'), empty = document.getElementById('actionEmpty');
-  document.getElementById('actionCount').textContent = actions.length;
-  if (!actions.length) { if(empty) empty.style.display = 'flex'; return; }
-  if(empty) empty.style.display = 'none';
-  list.querySelectorAll('.action-item').forEach(function(el){ el.remove(); });
-  actions.forEach(function(a) {
-    var div = document.createElement('div'); div.className = 'action-item';
-    var check = document.createElement('div'); check.className = 'action-check' + (a.done ? ' done' : '');
-    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg>';
-    check.onclick = (function(aid){ return function(){ toggleActionDone(aid); }; })(a.id);
-    var txt = document.createElement('div'); txt.className = 'action-text';
-    txt.innerHTML = '<div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div><div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) + '</div>';
-    var ctrl = document.createElement('div'); ctrl.className = 'action-controls';
-    var ab = document.createElement('button'); ab.className = 'action-ctrl-btn';
-    ab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>';
-    ab.onclick = (function(aid){ return function(){ archiveAction(aid); }; })(a.id);
-    ctrl.appendChild(ab); div.appendChild(check); div.appendChild(txt); div.appendChild(ctrl);
-    list.appendChild(div);
+function buildB2BChart(metric) {
+  var ctx = document.getElementById('chartB2B');
+  if (!ctx) return;
+  if (chartB2BInst) chartB2BInst.destroy();
+  var tc = getTC();
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var color = isDark ? '#60A5FA' : '#2563EB';
+  var raw = b2bData[metric || 'preparation'];
+  chartB2BInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        { label: 'Réalisé', data: raw, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: color, borderWidth: 2 },
+        { label: 'Objectif', data: weeks.map(function() { return 99.0; }), borderColor: isDark ? 'rgba(255,176,32,0.55)' : 'rgba(194,123,0,0.55)', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' } } },
+        y: { min: 84, max: 101, grid: { color: tc.grid }, ticks: { color: tc.text, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return v + '%'; } } }
+      }
+    }
   });
 }
 
-/* INIT */
-window.addEventListener('DOMContentLoaded', function() {
-  renderCal();
-  renderRotation(60);
-  buildCharts();
+function rebuildCharts() { buildB2CChart(); buildB2BChart(); }
+
+var themeObserver = new MutationObserver(function(muts) {
+  muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
 });
+themeObserver.observe(document.documentElement, { attributes: true });
+
+/* ── ANALYSES ── */
+function archiveAnalysis(id) {
+  var card = document.getElementById('analysis-card-' + id);
+  if (card) {
+    card.remove();
+    document.getElementById('analysisCount').textContent =
+      document.getElementById('analysisList').querySelectorAll('.analysis-item').length;
+  }
+}
+
+/* ── ACTIONS ── */
+var actions = [];
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim();
+  if (!val) return;
+  actions.push({ id: Date.now(), text: val, done: false });
+  inp.value = '';
+  renderActions();
+}
+function toggleActionDone(id) {
+  var a = actions.find(function(x) { return x.id === id; });
+  if (a) { a.done = !a.done; renderActions(); }
+}
+function archiveAction(id) {
+  actions = actions.filter(function(x) { return x.id !== id; });
+  renderActions();
+}
+function renderActions() {
+  var list = document.getElementById('actionList');
+  var empty = document.getElementById('actionEmpty');
+  document.getElementById('actionCount').textContent = actions.length;
+  if (actions.length === 0) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  actions.forEach(function(a) {
+    var div = document.createElement('div');
+    div.className = 'action-item';
+    var check = document.createElement('div');
+    check.className = 'action-check' + (a.done ? ' done' : '');
+    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg>';
+    check.onclick = (function(aid) { return function() { toggleActionDone(aid); }; })(a.id);
+    var txt = document.createElement('div');
+    txt.className = 'action-text';
+    txt.innerHTML = '<div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div>' +
+      '<div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) + '</div>';
+    var ctrl = document.createElement('div');
+    ctrl.className = 'action-controls';
+    var archBtn = document.createElement('button');
+    archBtn.className = 'action-ctrl-btn';
+    archBtn.title = 'Archiver';
+    archBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>';
+    archBtn.onclick = (function(aid) { return function() { archiveAction(aid); }; })(a.id);
+    ctrl.appendChild(archBtn);
+    div.appendChild(check); div.appendChild(txt); div.appendChild(ctrl);
+    list.appendChild(div);
+  });
+}
 </script>
 </body>
 </html>
