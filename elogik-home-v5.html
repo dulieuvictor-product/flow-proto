@@ -226,8 +226,10 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .page-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
 .page-title { font-size: 20px; font-weight: 300; letter-spacing: -0.03em; color: var(--ink); }
 .page-title span { color: var(--primary); }
-.page-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--success); background: var(--success-tint); border: 1px solid rgba(42,149,84,0.2); border-radius: 100px; padding: 5px 12px; white-space: nowrap; }
+.page-sub { font-size: 12px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 8px; }
+.live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--success); background: var(--success-tint); border: 1px solid rgba(42,149,84,0.2); border-radius: 100px; padding: 4px 10px; white-space: nowrap; transition: opacity 0.25s, background 0.25s; }
+.live-badge.inactive { color: var(--muted); background: var(--surface2); border-color: var(--border2); }
+.live-badge.inactive .live-pulse { background: var(--muted); animation: none; }
 .live-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 1.6s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
@@ -416,22 +418,35 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
   background: rgba(0,0,0,0);
   pointer-events: none;
   z-index: 149; /* sous le dock (150) mais au-dessus du contenu */
-  transition: background 0.4s ease;
+  transition: background 0.35s ease;
 }
 body.signals-active .signal-overlay {
-  background: rgba(0,0,0,0.22);
+  background: rgba(0,0,0,0.28);
   pointer-events: auto;
 }
 [data-theme="dark"] body.signals-active .signal-overlay {
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.42);
 }
 
-/* Au chargement : les signaux sont masqués, révélés via .toast-in */
-.signal-ia {
-  opacity: 0;
-  transform: translateY(16px);
+/* Feedback visuel sur le contenu grisé — blur léger */
+body.signals-active .main > .content {
+  filter: blur(0.5px);
+  transition: filter 0.35s ease;
+}
+body:not(.signals-active) .main > .content {
+  filter: none;
+  transition: filter 0.35s ease;
+}
+body.signals-active .main > .topbar {
+  filter: blur(0.4px);
+  transition: filter 0.35s ease;
+}
+body:not(.signals-active) .main > .topbar {
+  filter: none;
+  transition: filter 0.35s ease;
 }
 
+/* Signal card — masquée par défaut, révélée via .toast-in */
 .signal-ia {
   width: 100%;
   background: var(--surface);
@@ -440,8 +455,10 @@ body.signals-active .signal-overlay {
   overflow: hidden;
   box-shadow: var(--dock-shadow);
   position: relative;
-  transition: background 0.25s, border-color 0.25s, opacity 0.4s ease, transform 0.4s ease;
   pointer-events: auto;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: background 0.25s, border-color 0.25s, opacity 0.35s ease, transform 0.35s ease;
 }
 /* État visible après l'animation toast */
 .signal-ia.toast-in {
@@ -450,6 +467,9 @@ body.signals-active .signal-overlay {
 }
 .signal-ia.dismissing {
   animation: signalOut 0.28s ease forwards;
+}
+@keyframes signalOut {
+  to { opacity: 0; transform: translateY(-8px); max-height: 0; margin: 0; padding: 0; overflow: hidden; }
 }
 .signal-ia::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 14px 14px 0 0;
@@ -983,7 +1003,7 @@ body.signals-active .signal-overlay {
     <div class="nav-mod-icon" style="background:var(--c-qlog-t);">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
     </div>
-    Préparation
+    Logistique
   </div>
 
   <div class="nav-item" onclick="location.href='qualite-transport-v1.html'" style="cursor:pointer">
@@ -1083,9 +1103,11 @@ body.signals-active .signal-overlay {
     <div>
       <div class="page-eyebrow">elogik (flow)</div>
       <div class="page-title">Tableau de bord <span>en temps réel</span></div>
-      <div class="page-sub">Semaine 17 – 23 mars 2025 · données synchronisées</div>
+      <div class="page-sub">
+        <div class="live-badge" id="liveBadge"><div class="live-pulse"></div>Live</div>
+        <span id="grainLabel">Semaine 17 – 23 mars 2025 · données synchronisées</span>
+      </div>
     </div>
-    <div class="live-badge"><div class="live-pulse"></div>Live</div>
   </div>
 
   <!-- ══════════════════════════════════
@@ -1335,8 +1357,16 @@ function setPeriod(el, key) {
   document.querySelectorAll('.ts-btn').forEach(function(b) { b.classList.remove('active'); });
   el.classList.add('active');
   currentHomePeriod = key;
+  /* Live badge : actif uniquement sur Jour et Semaine */
+  var badge = document.getElementById('liveBadge');
+  if (badge) badge.classList.toggle('inactive', key !== 'jour' && key !== 'semaine');
   var d = HOME_PERIOD[key];
   if (!d) return;
+  /* Sync grain label + date picker label */
+  var grain = document.getElementById('grainLabel');
+  if (grain) grain.textContent = d.label + ' · données synchronisées';
+  var dp = document.getElementById('dpLabel');
+  if (dp) dp.textContent = d.label;
   updateHomeKPIs(d);
 }
 
@@ -1951,6 +1981,7 @@ function saveSignal(sigId, analysisText) {
 /* ── CHARTS ── */
 let donutChart, lineChart;
 function rebuildCharts() {
+  if (!document.getElementById('chartDonut') || !document.getElementById('chartLine')) return;
   if (donutChart) donutChart.destroy();
   if (lineChart) lineChart.destroy();
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1982,8 +2013,6 @@ function rebuildCharts() {
     }
   });
 }
-rebuildCharts();
-
 function filterCarrier(name, btn) {
   document.querySelectorAll('.cf-tag').forEach(function(t) { t.classList.remove('active'); });
   btn.classList.add('active');
@@ -1993,10 +2022,17 @@ function filterCarrier(name, btn) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+  rebuildCharts();
   updateDockHeight();
   syncAnalysisCounts();
   window.addEventListener('resize', updateDockHeight);
   setTimeout(showDemoAlert, 800);
+
+  /* Activer l'overlay immédiatement si des signaux sont dans le DOM */
+  var initialSignals = document.querySelectorAll('#signalZone .signal-ia');
+  if (initialSignals.length > 0) {
+    document.body.classList.add('signals-active');
+  }
 
   /* Toast d'entrée des signaux IA — apparition échelonnée */
   var signals = document.querySelectorAll('#signalZone .signal-ia');
@@ -2004,7 +2040,6 @@ window.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
       sig.classList.add('toast-in');
       updateDockHeight();
-      /* Activer l'overlay dès le premier signal visible */
       updateSignalOverlay();
     }, 600 + i * 220);
   });
