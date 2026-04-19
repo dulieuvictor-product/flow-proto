@@ -394,6 +394,167 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 }
 .grain-flash { animation: grainFade 0.25s ease; }
 @keyframes grainFade { 0%{opacity:0.35} 100%{opacity:1} }
+
+/* ════════════════════════════════════════════
+   FLOATING IA DOCK — repris de home-V7
+   ════════════════════════════════════════════ */
+:root { --dock-shadow: 0 -4px 24px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.06); }
+[data-theme="dark"] { --dock-shadow: 0 -4px 24px rgba(0,0,0,0.35), 0 -1px 0 rgba(255,255,255,0.04); }
+
+.ia-dock-anchor { position:fixed; bottom:0; left:220px; right:0; z-index:150; pointer-events:none; }
+@media (max-width:640px) { .ia-dock-anchor { left:0; z-index:140; } .signal-overlay { left:0; } }
+.ia-dock-inner { width:100%; pointer-events:none; display:flex; flex-direction:column; align-items:stretch; }
+.signal-ia-float-zone { pointer-events:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:6px; padding:0 20px; }
+.signal-overlay { position:fixed; top:0; left:220px; right:0; bottom:0; background:rgba(0,0,0,0); pointer-events:none; z-index:149; transition:background 0.35s ease; }
+body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-events:auto; }
+[data-theme="dark"] body.signals-active .signal-overlay { background:rgba(0,0,0,0.42); }
+body.signals-active .main > .content { filter:blur(0.5px); transition:filter 0.35s ease; }
+body:not(.signals-active) .main > .content { filter:none; transition:filter 0.35s ease; }
+body.signals-active .main > .topbar { filter:blur(0.4px); transition:filter 0.35s ease; }
+body:not(.signals-active) .main > .topbar { filter:none; transition:filter 0.35s ease; }
+
+.signal-ia { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--dock-shadow); position:relative; pointer-events:auto; opacity:0; transform:translateY(12px); transition:background 0.25s,border-color 0.25s,opacity 0.35s ease,transform 0.35s ease; }
+.signal-ia.toast-in { opacity:1; transform:translateY(0); }
+.signal-ia.dismissing { animation:signalOut 0.28s ease forwards; }
+@keyframes signalOut { to { opacity:0; transform:translateY(-8px); max-height:0; margin:0; padding:0; overflow:hidden; } }
+.signal-ia::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0; }
+.signal-ia[data-severity="danger"]::before { background:var(--danger); }
+.signal-ia[data-severity="warning"]::before { background:var(--warning); }
+.signal-ia[data-severity="info"]::before { background:var(--primary); }
+.signal-ia-head { display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px; gap:10px; }
+.signal-ia-head-left { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
+.signal-ia-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.signal-ia[data-severity="danger"] .signal-ia-icon { background:var(--danger-tint); }
+.signal-ia[data-severity="warning"] .signal-ia-icon { background:var(--warning-tint); }
+.signal-ia[data-severity="info"] .signal-ia-icon { background:var(--primary-tint); }
+.signal-ia-icon svg { width:13px; height:13px; }
+.signal-ia[data-severity="danger"] .signal-ia-icon svg { stroke:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-icon svg { stroke:var(--warning); }
+.signal-ia[data-severity="info"] .signal-ia-icon svg { stroke:var(--primary); }
+.signal-ia-meta { min-width:0; flex:1; }
+.signal-ia-source { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px; }
+.signal-ia[data-severity="danger"] .signal-ia-source { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source { color:var(--warning); }
+.signal-ia[data-severity="info"] .signal-ia-source { color:var(--primary); }
+.signal-ia-source-dot { width:5px; height:5px; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+.signal-ia[data-severity="danger"] .signal-ia-source-dot { background:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source-dot { background:var(--warning); }
+.signal-ia[data-severity="info"] .signal-ia-source-dot { background:var(--primary); }
+.signal-ia-text-inline { font-size:12px; color:var(--ink); line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.signal-ia-text-inline strong { font-weight:600; }
+.signal-ia[data-severity="danger"] .signal-ia-text-inline strong { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color:var(--warning); }
+.signal-ia[data-severity="info"] .signal-ia-text-inline strong { color:var(--primary); }
+.signal-ia-head-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.signal-ia-btn { font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 12px; border-radius:100px; border:none; cursor:pointer; display:flex; align-items:center; gap:4px; white-space:nowrap; transition:all 0.12s; }
+.signal-ia-btn svg { width:10px; height:10px; }
+.signal-ia-btn-primary { background:var(--violet); color:white; }
+.signal-ia-btn-primary:hover { background:#5535D0; }
+.signal-ia-btn-save { background:var(--surface2); border:1px solid var(--border2); color:var(--slate); font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 12px; border-radius:100px; cursor:pointer; display:flex; align-items:center; gap:4px; white-space:nowrap; transition:all 0.12s; }
+.signal-ia-btn-save:hover { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
+.signal-ia-dismiss { width:22px; height:22px; border-radius:6px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0; }
+.signal-ia-dismiss:hover { background:var(--surface2); color:var(--ink); }
+.signal-ia-dismiss svg { width:11px; height:11px; }
+.signal-ia-reco { padding:0 14px 12px; display:block; }
+.signal-ia-reco-inner { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.15); border-radius:10px; padding:9px 12px; }
+[data-theme="dark"] .signal-ia-reco-inner { border-color:rgba(167,139,255,0.18); }
+.signal-ia-reco-head { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:5px; }
+.signal-ia-reco-head svg { width:10px; height:10px; }
+.signal-ia-reco-body { font-size:11.5px; color:var(--ink); line-height:1.6; }
+.signal-ia-reco-body strong { color:var(--violet); font-weight:600; }
+
+.ia-dock { pointer-events:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:0; box-shadow:var(--dock-shadow); transition:background 0.25s,border-color 0.25s; overflow:hidden; display:flex; flex-direction:column-reverse; }
+.ia-dock-bar { display:flex; align-items:stretch; min-height:52px; border-top:1px solid var(--border); }
+.ia-dock-zone { display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--border); min-width:0; flex-shrink:0; }
+.ia-dock-zone.ia-dock-input-zone { flex:1; flex-shrink:1; min-width:0; order:10; border-right:none; }
+.ia-dock-zone:first-child { order:0; }
+.ia-dock-zone:last-child { border-right:none; }
+.ia-dock-brand { display:flex; align-items:center; gap:9px; }
+.ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ia-dock-av svg { width:14px; height:14px; }
+.ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+.ia-dock-input-zone { gap:8px; }
+.ia-dock-input-wrap { flex:1; display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 14px; transition:border-color 0.15s,background 0.25s; }
+.ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
+.ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
+.ia-dock-input::placeholder { color:var(--muted); }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s,transform 0.12s; }
+.ia-dock-send.ready { opacity:1; }
+.ia-dock-send:hover.ready { transform:scale(1.08); }
+.ia-dock-send svg { width:11px; height:11px; }
+.ia-saved-pill { display:none; align-items:center; gap:5px; font-size:10px; font-weight:500; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+.ia-saved-pill.visible { display:flex; }
+.ia-saved-pill svg { width:10px; height:10px; }
+.ia-dock-preview { align-items:center !important; flex-direction:row; justify-content:flex-start; padding:0 16px !important; cursor:pointer; gap:10px; width:200px; flex-shrink:0; transition:background 0.12s; }
+.ia-dock-preview:hover { background:rgba(0,0,0,0.025); }
+[data-theme="dark"] .ia-dock-preview:hover { background:rgba(255,255,255,0.03); }
+.ia-dock-preview-head { display:flex; align-items:center; gap:10px; width:100%; margin-bottom:0; }
+.ia-dock-preview-title { font-size:10px; font-weight:600; color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.ia-dock-preview-title svg { width:13px; height:13px; opacity:0.6; }
+.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-dock-preview-items { display:none !important; }
+.ia-dock-preview-input-row { display:none !important; }
+.ia-dock-preview-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; width:100%; background:none; border:none; padding:0; }
+.ia-dock-preview-item-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; opacity:0.7; }
+.ia-dock-preview-item-txt { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:11px; color:var(--muted); min-width:0; flex:1; }
+.ia-dock-preview-more { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+.ia-dock-preview-input { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:4px 9px; font-size:11px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); outline:none; transition:border-color 0.15s; min-width:0; }
+.ia-dock-preview-input:focus { border-color:var(--violet); }
+.ia-dock-preview-input::placeholder { color:var(--muted); }
+.ia-dock-preview-add { width:22px; height:22px; border-radius:6px; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.5; transition:opacity 0.12s; }
+.ia-dock-preview-add.ready { opacity:1; }
+.ia-dock-preview-add svg { width:10px; height:10px; }
+.ia-dock-toggle { order:11; width:44px; flex-shrink:0; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.12s; }
+.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
+.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; transform:rotate(180deg); }
+.ia-dock.open .ia-dock-toggle svg { transform:rotate(0deg); }
+.ia-dock-body { overflow:hidden; max-height:0; transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1); border-bottom:1px solid var(--border); }
+.ia-dock.open .ia-dock-body { max-height:360px; }
+.ia-dock-tabs { display:flex; align-items:stretch; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
+.ia-dock-tab-btn { display:flex; align-items:center; gap:7px; padding:0 20px; height:38px; font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+.ia-dock-tab-btn svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-tab-btn:hover { color:var(--ink); }
+.ia-dock-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--surface); }
+.ia-dock-tab-btn.active svg { opacity:1; }
+.ia-dock-tab-btn .ia-count, .ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+.ia-dock-panel { display:none; flex-direction:column; height:322px; overflow:hidden; }
+.ia-dock-panel.active { display:flex; }
+.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:9px; }
+.ia-dock-panel-scroll::-webkit-scrollbar { width:3px; }
+.ia-dock-panel-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
+.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 16px 4px; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-dock-panel-footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--surface2); padding:8px 14px; }
+.ia-msg-user { align-self:flex-end; max-width:88%; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:11.5px; line-height:1.5; }
+.ia-msg-ai-wrap { align-self:flex-start; width:100%; display:flex; flex-direction:column; gap:5px; }
+.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-msg-ai-meta svg { width:9px; height:9px; }
+.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:8px 11px; font-size:11.5px; line-height:1.6; color:var(--ink); }
+.ia-msg-ai strong { font-weight:600; color:var(--violet); }
+.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; align-self:flex-end; }
+.ia-typing { display:flex; align-items:center; gap:4px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
+.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--violet); animation:pulse 1.2s infinite; }
+.ia-tdot:nth-child(2) { animation-delay:0.2s; } .ia-tdot:nth-child(3) { animation-delay:0.4s; }
+.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
+.ia-sugg { display:flex; align-items:center; gap:6px; padding:5px 8px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.ia-sugg:hover { border-color:var(--violet); background:var(--violet-tint); color:var(--ink); }
+.ia-sugg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.ia-dock-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; background:var(--surface2); }
+.ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.ia-dock-add-input:focus { border-color:var(--violet); }
+.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
+.dock-empty svg { width:24px; height:24px; opacity:0.3; }
+.ia-save-convo-btn { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; color:var(--violet); background:var(--violet-tint); border:1px solid rgba(108,71,232,0.22); border-radius:100px; padding:6px 14px; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+.ia-save-convo-btn:hover:not(:disabled) { background:var(--violet); color:white; border-color:var(--violet); box-shadow:0 2px 8px rgba(108,71,232,0.3); }
+.ia-save-convo-btn.saving { background:var(--violet); color:white; border-color:var(--violet); cursor:default; opacity:0.85; animation:saveConvoPulse 0.6s ease infinite alternate; }
+.ia-save-convo-btn.saved { background:var(--success-tint); color:var(--success); border-color:rgba(42,149,84,0.25); cursor:default; }
+@keyframes saveConvoPulse { from{opacity:0.75} to{opacity:1} }
+.ia-msg-actions { display:flex; gap:6px; margin-top:4px; }
+.ia-msg-export-btn { display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.22); border-radius:100px; padding:5px 13px; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+.ia-msg-export-btn:hover { background:var(--success); color:white; border-color:var(--success); }
+.ia-msg-export-btn.downloaded { background:var(--surface2); color:var(--muted); border-color:var(--border2); cursor:default; }
 </style>
 </head>
 <body>
@@ -451,9 +612,31 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 <div class="main">
   <div class="topbar">
     <div class="breadcrumb">
-      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Qualité logistique</span>
+      <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Préparation commandes</span>
     </div>
-    <div class="topbar-right">
+        <div class="topbar-right">
+      <div class="time-selector">
+        <button class="ts-btn" onclick="setPeriod(this,'jour')">Jour</button>
+        <button class="ts-btn active" onclick="setPeriod(this,'semaine')">Semaine</button>
+        <button class="ts-btn" onclick="setPeriod(this,'mois')">Mois</button>
+        <button class="ts-btn" onclick="setPeriod(this,'annee')">Année</button>
+      </div>
+      <div class="date-wrap">
+        <button class="date-picker-btn" onclick="toggleCal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dpLabel">17 – 23 mars</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cal-dropdown" id="calDrop">
+          <div class="cal-nav"><button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+          <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+          <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+          <div class="cal-footer"><button class="cal-action" onclick="toggleCal()">Annuler</button>
+          <button class="cal-action primary" onclick="applyRange()">Appliquer</button></div>
+        </div>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -463,93 +646,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
 
   <div class="content">
-
-  <!-- ══ BLOC 1 : elo · IA ══ -->
-  <div>
-    <div class="chatbot-card" style="display:flex;flex-direction:column;">
-      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Qualité Logistique</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="live-badge"><div class="live-pulse"></div>Live</div>
-          <div class="time-selector">
-            <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
-            <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Année</button>
-          </div>
-          <div class="date-wrap">
-            <button class="date-picker-btn" onclick="toggleCal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span id="dpLabel">17 – 23 mars</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="cal-dropdown" id="calDrop">
-              <div class="cal-nav">
-                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-              <div class="cal-footer">
-                <button class="cal-action" onclick="toggleCal()">Annuler</button>
-                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-              </div>
-            </div>
-          </div>
-          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);">
-            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-collapsible collapsed" id="chatCollapsible">
-        <div class="chat-area open" id="chatArea">
-          <div class="chat-bubble-wrap user-wrap">
-            <div class="chat-bubble user">Quels produits ont causé le plus d'incidents de préparation cette semaine ?</div>
-            <div class="chat-bubble-time">09h22</div>
-          </div>
-          <div class="chat-bubble-wrap ai-wrap">
-            <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Préparation des commandes · tous canaux</div>
-              <div class="ai-conclusion">
-                <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
-                <div class="ai-conclusion-body"><strong>3 incidents concentrés sur les coffrets pluriproduits</strong> (Kit Soin Pro, Set Argan). Le délai moyen de préparation B2B dépasse l'objectif de <span style="color:var(--warning);font-weight:500">+16 min vendredi</span>, corrélé au pic de volume en fin de semaine. Recommandation : réserver 2 opérateurs dédiés coffrets les jeudis–vendredis.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="re-footer">
-          <div class="re-toggle" onclick="toggleReassurance()">
-            <div class="re-toggle-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confidentialité &amp; sources</div>
-            <svg id="reChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="rePanel" style="display:none;">
-            <div class="reassurance-row">
-              <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qlog)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Qualité Logistique actives</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">WMS e-kan · sync toutes les 15 min</div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="qs-header"><div class="qs-label">Questions contextualisées — Préparation commandes</div></div>
-        <div class="qs-grid">
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Quel produit nécessite le plus de temps de préparation ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quels produits consomment le plus de consommables ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels jours avons-nous eu des problèmes de préparation ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Délai moyen monoproduit vs pluriproduits ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qlog)"></div><span class="q-chip-txt">Combien de commandes risquent le cut-off ce soir ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Quels fournisseurs ont eu des écarts de volume ?</span></div>
-        </div>
-        <div class="input-row">
-          <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
-          <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ══ BLOC 2 : KPI MACRO — 3 cards ══ -->
   <div>
@@ -1276,71 +1372,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div><!-- /suivi réception -->
 
-  <!-- ══ BLOC ANALYSES & ACTIONS ══ -->
-  <div>
-    <div class="section-label">Analyses &amp; suivi</div>
-    <div class="block-actions">
-
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Qualité Logistique</div></div>
-          </div>
-          <span class="aa-head-badge" id="analysisCount">3</span>
-        </div>
-        <div class="aa-body" id="analysisList">
-          <div class="analysis-item" id="analysis-card-1">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--c-qlog)"></div>
-              <div class="analysis-q">Quel produit nécessite le plus de temps de préparation en pluriproduits ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) vs 11 min pour les monoproduits. Corrélé au tri multi-emplacements.</div>
-            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">WMS e-kan</span></div>
-          </div>
-          <div class="analysis-item" id="analysis-card-2">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--warning)"></div>
-              <div class="analysis-q">Quels jours avons-nous eu le plus de dépassements du cut-off B2B ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">Jeudi et vendredi concentrent 74 % des dépassements cut-off B2B, corrélés aux pics de volume en fin de semaine.</div>
-            <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 11h14</span><span class="analysis-src">WMS e-kan</span></div>
-          </div>
-          <div class="analysis-item" id="analysis-card-3">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--danger)"></div>
-              <div class="analysis-q">Comparer le taux de conformité B2C vs B2B sur les 4 dernières semaines</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">B2C stable autour de 95–97 %. B2B en baisse : 93 → 87.5 % sur 4 semaines. Kera Pro Distribution principal facteur.</div>
-            <div class="analysis-footer"><span class="analysis-time">Vendredi 21 mars · 14h30</span><span class="analysis-src">WMS e-kan · OMS</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Qualité Logistique</div></div>
-          </div>
-          <span class="aa-head-badge" id="actionCount">0</span>
-        </div>
-        <div class="aa-body" id="actionList">
-          <div class="aa-empty" id="actionEmpty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
-          </div>
-        </div>
-        <div class="aa-add-row">
-          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   </div><!-- /content -->
 </div><!-- /main -->
@@ -2029,64 +2060,507 @@ var themeObserver = new MutationObserver(function(muts) {
 });
 themeObserver.observe(document.documentElement, { attributes: true });
 
-/* ── ANALYSES ── */
-function archiveAnalysis(id) {
-  var card = document.getElementById('analysis-card-' + id);
-  if (card) {
-    card.remove();
-    document.getElementById('analysisCount').textContent =
-      document.getElementById('analysisList').querySelectorAll('.analysis-item').length;
-  }
+/* ════ IA DOCK — Préparation commandes ════ */
+
+function updateDockHeight() {
+  var anchor = document.getElementById('iaDockAnchor');
+  var h = anchor ? anchor.getBoundingClientRect().height : 68;
+  var contentEl = document.querySelector('.content');
+  if (contentEl) contentEl.style.paddingBottom = (h + 8) + 'px';
+}
+function toggleDock() { document.getElementById('iaDock').classList.toggle('open'); setTimeout(updateDockHeight, 320); }
+function openDock() { document.getElementById('iaDock').classList.add('open'); setTimeout(updateDockHeight, 320); }
+function toggleSend(inp) { document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0); }
+
+var nextAnalysisId = 4;
+var actions = [];
+
+var aiResponsesPrep = {
+  'coffret':     'Les <strong>coffrets pluriproduits</strong> (Kit Soin Pro, Set Argan) cumulent <strong>3 incidents cette semaine</strong>. Délai moyen : 42 min vs 11 min monoproduits. Cause principale : tri multi-emplacements. Recommandation : regrouper les SKU coffrets sur des emplacements adjacents et réserver 2 opérateurs dédiés les jeudis–vendredis.',
+  'pluriproduit': 'Kit Soin Pro : <strong>42 min</strong> en moyenne (pluriproduits) — le plus élevé de la semaine. Corrélé au tri multi-emplacements (3 zones distinctes). Set Argan : 38 min. Monoproduits : 11 min en moyenne.',
+  'cut-off':     '<strong>Jeudi et vendredi concentrent 74 %</strong> des dépassements cut-off B2B. Pic de volume en fin de semaine (+38 % vs lundi–mercredi). Recommandation : anticiper le cut-off de 30 min les vendredis ou affecter un opérateur B2B supplémentaire.',
+  'cutoff':      '<strong>Jeudi et vendredi concentrent 74 %</strong> des dépassements cut-off B2B. Pic de volume en fin de semaine (+38 % vs lundi–mercredi). Recommandation : anticiper le cut-off de 30 min les vendredis.',
+  'b2b':         'Taux d\'incident B2B : <strong style="color:var(--warning)">1,8 %</strong> (4/218 cmd.) — 4× au-dessus du seuil cible 0,5 %. Causes : coffrets pluriproduits (3 incidents) + dépassements cut-off vendredi (1 incident). B2C reste à <strong style="color:var(--success)">0,4 %</strong> cette semaine.',
+  'b2c':         'Taux d\'incident B2C : <strong style="color:var(--success)">0,4 %</strong> (3/742 cmd.) — sous le seuil cible 1,0 %. Performance stable sur toute la semaine.',
+  'incident':    'Cette semaine : <strong>7 incidents de préparation</strong> au total. B2B : 4 incidents (coffrets × 3, cut-off × 1). B2C : 3 incidents (OMS × 1, stock × 2). Taux global : 0,7 % — sous le seuil d\'alerte 1,0 %.',
+  'consommable': '<strong>Coffrets pluriproduits consomment 2,4× plus de consommables</strong> que les monoproduits (ruban, calage, intercalaires). Estimation semaine : +18 % vs budget. Impact annuel projeté si tendance maintenue : +~4 200 €.',
+  'réception':   'Taux de conformité réception : <strong>94,2 %</strong> — sous l\'objectif 96 %. 3 fournisseurs avec anomalies récurrentes cette semaine. Délai moyen de contrôle : 47 min/palette.',
+  'stock':       'Commandes bloquées stock : <strong>5 cette semaine</strong> (2,1 % du total). Principalement sur les références B2C dormantes. Taux d\'attente réapprovisionnement : 2,1 % des commandes bloquées.',
+  'taux':        'Taux de service global : <strong style="color:var(--success)">99,3 %</strong> — au-dessus de l\'objectif 99,0 %. B2C : 99,6 % · B2B : 98,2 %. Légère pression B2B liée aux dépassements cut-off en fin de semaine.',
+  'opérateur':   'Performance opérateurs cette semaine : moyenne <strong>43 cmd./heure</strong> (objectif 40). Pic vendredi 17h : 38 cmd./heure sur les coffrets. Recommandation : briefing spécifique pluriproduits pour les 2 opérateurs du vendredi.',
+};
+
+function getResponse(q) {
+  var ql = q.toLowerCase();
+  for (var k in aiResponsesPrep) { if (ql.indexOf(k) > -1) return aiResponsesPrep[k]; }
+  return 'J\'analyse vos données Préparation commandes… <strong>Aucune anomalie supplémentaire détectée</strong> au-delà des signaux déjà remontés. Posez-moi une question précise sur un produit, un canal (B2C/B2B), un taux ou une anomalie.';
 }
 
-/* ── ACTIONS ── */
-var actions = [];
-function addAction() {
-  var inp = document.getElementById('actionInput');
-  var val = inp.value.trim();
-  if (!val) return;
-  actions.push({ id: Date.now(), text: val, done: false });
-  inp.value = '';
-  renderActions();
+function appendMsg(type, text) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var div = document.createElement('div');
+  if (type === 'user') {
+    div.className = 'ia-msg-user'; div.textContent = text;
+  } else {
+    div.className = 'ia-msg-ai-wrap';
+    var iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    var now = new Date(); var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+    div.innerHTML = '<div class="ia-msg-ai-meta">' + iconSvg + ' elo·IA · ' + hm + '</div><div class="ia-msg-ai">' + text + '</div><div class="ia-msg-time">' + hm + '</div>';
+  }
+  scroll.appendChild(div); scroll.scrollTop = scroll.scrollHeight;
 }
-function toggleActionDone(id) {
-  var a = actions.find(function(x) { return x.id === id; });
-  if (a) { a.done = !a.done; renderActions(); }
+
+function showTyping() {
+  var scroll = document.getElementById('iaConvoScroll');
+  var t = document.createElement('div'); t.className = 'ia-typing'; t.id = 'iaTyping';
+  t.innerHTML = '<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop = scroll.scrollHeight;
 }
-function archiveAction(id) {
-  actions = actions.filter(function(x) { return x.id !== id; });
-  renderActions();
+function hideTyping() { var t = document.getElementById('iaTyping'); if (t) t.remove(); }
+
+function sendIA() {
+  var inp = document.getElementById('iaDockInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = ''; document.getElementById('iaSendBtn').classList.remove('ready');
+  switchDockTab('chat');
+  appendMsg('user', val); showTyping();
+  var resp = getResponse(val);
+  setTimeout(function() {
+    hideTyping(); appendMsg('ai', resp);
+    resetSaveConvoBtn(); showSavePill(val, resp);
+  }, 900 + Math.random() * 500);
 }
-function renderActions() {
-  var list = document.getElementById('actionList');
-  var empty = document.getElementById('actionEmpty');
-  document.getElementById('actionCount').textContent = actions.length;
-  if (actions.length === 0) { empty.style.display = 'flex'; return; }
-  empty.style.display = 'none';
-  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+
+function showSavePill(q, answer) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var old = document.getElementById('iaChatSaveRow'); if (old) old.remove();
+  var row = document.createElement('div'); row.id = 'iaChatSaveRow';
+  row.style.cssText = 'display:flex;justify-content:flex-end;padding:2px 0 4px';
+  row.innerHTML = '<button onclick="saveChatAnalysis()" style="font-size:10px;font-weight:600;font-family:Plus Jakarta Sans,sans-serif;padding:4px 12px;border-radius:100px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.12s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Enregistrer l\'analyse</button>';
+  scroll.appendChild(row); scroll.scrollTop = scroll.scrollHeight;
+}
+
+function saveChatAnalysis() {
+  var row = document.getElementById('iaChatSaveRow'); if (!row) return;
+  var msgs = document.getElementById('iaConvoScroll').querySelectorAll('.ia-msg-user');
+  var aiMsgs = document.getElementById('iaConvoScroll').querySelectorAll('.ia-msg-ai');
+  var q = msgs.length ? msgs[msgs.length-1].textContent : 'Analyse IA';
+  var a = aiMsgs.length ? aiMsgs[aiMsgs.length-1].innerText : '';
+  var btn = row.querySelector('button');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+  btn.style.cssText = 'font-size:10px;font-weight:600;font-family:Plus Jakarta Sans,sans-serif;padding:4px 12px;border-radius:100px;border:1px solid rgba(42,149,84,0.2);background:var(--success-tint);color:var(--success);cursor:default;display:flex;align-items:center;gap:5px;pointer-events:none';
+  injectAnalysis(q, a);
+}
+
+function askIA(q) { document.getElementById('iaDockInput').value = q; document.getElementById('iaSendBtn').classList.add('ready'); openDock(); setTimeout(sendIA, 150); }
+function fillAndSend(q) { document.getElementById('iaDockInput').value = q; document.getElementById('iaSendBtn').classList.add('ready'); sendIA(); }
+
+var currentDockTab = 'chat';
+function switchDockTab(tab) {
+  if (tab === 'actions') tab = 'analyses';
+  currentDockTab = tab;
+  ['chat','analyses'].forEach(function(t) {
+    var btn = document.getElementById('tab-' + t); var panel = document.getElementById('panel-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+    if (panel) panel.classList.toggle('active', t === tab);
+  });
+  openDock();
+}
+
+function syncAnalysisCounts() {
+  var list = document.getElementById('analysesList');
+  var n = list ? list.querySelectorAll('.analysis-item').length : 0;
+  ['analysisCount','analysisCountFull'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=n; });
+  updateAnalysesPreview();
+}
+function updateAnalysesPreview() {
+  var list = document.getElementById('analysesList'); var preview = document.getElementById('analysesPreview');
+  if (!preview || !list) return; preview.innerHTML = '';
+  var items = list.querySelectorAll('.analysis-item'); var shown = 0;
+  items.forEach(function(item) {
+    if (shown >= 2) return;
+    var q = item.querySelector('.analysis-q'); var dot = item.querySelector('.analysis-mod-dot');
+    var row = document.createElement('div'); row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:' + (dot ? dot.style.background : 'var(--primary)') + '"></div><span class="ia-dock-preview-item-txt">' + (q ? q.textContent : '') + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (items.length > 2) { var more = document.createElement('div'); more.className = 'ia-dock-preview-more'; more.textContent = '+' + (items.length-2) + ' autres'; preview.appendChild(more); }
+}
+function injectAnalysis(q, answer) {
+  var cleanAnswer = answer.replace(/<[^>]+>/g,'');
+  var list = document.getElementById('analysesList'); var newId = nextAnalysisId++;
+  var colors = ['var(--c-qlog)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col = colors[(newId-1) % colors.length];
+  var now = new Date(); var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+  var card = document.createElement('div'); card.className = 'analysis-item'; card.id = 'analysis-card-' + newId;
+  card.onclick = function() { loadAnalysisInIA(newId); };
+  card.innerHTML = '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:'+col+'"></div><div class="analysis-q">'+q+'</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,'+newId+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">'+cleanAnswer.slice(0,120)+(cleanAnswer.length>120?'…':'')+'</div><div class="analysis-footer"><span class="analysis-time">'+new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) +' · '+hm+'</span><span class="analysis-src">elo·IA</span></div>';
+  var first = list.querySelector('.analysis-item'); list.insertBefore(card, first||null);
+  syncAnalysisCounts();
+  setTimeout(function() { card.classList.add('highlight'); }, 20);
+  setTimeout(function() { card.classList.remove('highlight'); }, 2000);
+  var pill = document.getElementById('iaSavedPill'); if (pill) { pill.classList.add('visible'); setTimeout(function() { pill.classList.remove('visible'); }, 3500); }
+  switchDockTab('analyses');
+}
+function archiveAnalysis(e, id) { e.stopPropagation(); var card = document.getElementById('analysis-card-'+id); if (card) { card.remove(); syncAnalysisCounts(); } }
+function loadAnalysisInIA(id) {
+  var card = document.getElementById('analysis-card-'+id); if (!card) return;
+  var q = card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaDockInput').value = '↩ ' + q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  switchDockTab('chat'); document.getElementById('iaDockInput').focus();
+}
+
+function syncActionCounts() {
+  ['actionCount','actionCountFull'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=actions.length; });
+  updateActionsPreview();
+}
+function updateActionsPreview() {
+  var preview = document.getElementById('actionsPreview'); var hint = document.getElementById('actionsEmptyHint');
+  if (!preview) return; preview.querySelectorAll('.ia-dock-preview-item').forEach(function(el) { el.remove(); });
+  if (actions.length===0) { if (hint) hint.style.display=''; return; }
+  if (hint) hint.style.display='none';
+  var shown=0;
   actions.forEach(function(a) {
-    var div = document.createElement('div');
-    div.className = 'action-item';
-    var check = document.createElement('div');
-    check.className = 'action-check' + (a.done ? ' done' : '');
-    check.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg>';
-    check.onclick = (function(aid) { return function() { toggleActionDone(aid); }; })(a.id);
-    var txt = document.createElement('div');
-    txt.className = 'action-text';
-    txt.innerHTML = '<div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div>' +
-      '<div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) + '</div>';
-    var ctrl = document.createElement('div');
-    ctrl.className = 'action-controls';
-    var archBtn = document.createElement('button');
-    archBtn.className = 'action-ctrl-btn';
-    archBtn.title = 'Archiver';
-    archBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>';
-    archBtn.onclick = (function(aid) { return function() { archiveAction(aid); }; })(a.id);
-    ctrl.appendChild(archBtn);
-    div.appendChild(check); div.appendChild(txt); div.appendChild(ctrl);
+    if (shown>=2) return;
+    var row = document.createElement('div'); row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:'+(a.done?'var(--success)':'var(--violet)')+'"></div><span class="ia-dock-preview-item-txt'+(a.done?'" style="text-decoration:line-through;color:var(--muted)':'')+'">' + a.text + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (actions.length>2) { var more=document.createElement('div'); more.className='ia-dock-preview-more'; more.textContent='+' + (actions.length-2)+' en cours'; preview.appendChild(more); }
+}
+function renderActions_dock() {
+  var list = document.getElementById('actionsList'); var empty = document.getElementById('actionsEmpty');
+  syncActionCounts(); list.querySelectorAll('.action-item').forEach(function(el){el.remove();});
+  if (actions.length===0) { if (empty) empty.style.display=''; return; }
+  if (empty) empty.style.display='none';
+  actions.forEach(function(a) {
+    var div=document.createElement('div'); div.className='action-item';
+    div.innerHTML='<div class="action-check'+(a.done?' done':'')+'" onclick="toggleAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="action-text"><div class="action-title'+(a.done?' done-text':'')+'">'+a.text+'</div><div class="action-meta">'+new Date(a.id).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div><button class="action-ctrl-btn" onclick="removeAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
     list.appendChild(div);
   });
 }
+function addAction() {
+  var inp=document.getElementById('actionInput'); var val=inp.value.trim(); if (!val) return;
+  inp.value=''; actions.push({id:Date.now(),text:val,done:false}); renderActions_dock();
+}
+function toggleQuickAdd(inp) { document.getElementById('quickAddBtn').classList.toggle('ready', inp.value.trim().length>0); }
+function addQuickAction() {
+  var inp=document.getElementById('quickActionInput'); var val=inp.value.trim(); if (!val) return;
+  inp.value=''; document.getElementById('quickAddBtn').classList.remove('ready');
+  actions.push({id:Date.now(),text:val,done:false}); renderActions_dock();
+}
+function toggleAction(id) { var a=actions.find(function(x){return x.id===id;}); if(a){a.done=!a.done; renderActions_dock();} }
+function removeAction(id) { actions=actions.filter(function(x){return x.id!==id;}); renderActions_dock(); }
+
+var signalSaved={};
+function dismissSignal(id) {
+  var el=document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() { el.remove(); updateDockHeight(); updateSignalOverlay(); }, 300);
+}
+function updateSignalOverlay() {
+  var remaining=document.querySelectorAll('#signalZone .signal-ia:not(.dismissing)');
+  document.body.classList.toggle('signals-active', remaining.length>0);
+}
+function saveSignal(sigId, analysisText) {
+  if (signalSaved[sigId]) return; signalSaved[sigId]=true;
+  var btn=document.getElementById('save-'+sigId);
+  if (btn) { btn.style.cssText='background:var(--success-tint);border:1px solid rgba(42,149,84,0.2);color:var(--success);font-size:11px;font-weight:600;font-family:Plus Jakarta Sans,sans-serif;padding:5px 12px;border-radius:100px;cursor:default;display:flex;align-items:center;gap:4px;white-space:nowrap;'; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée'; btn.onclick=null; }
+  injectAnalysis('Signal · '+analysisText.split('·')[0], analysisText);
+}
+
+var _convoSaved=false;
+function resetSaveConvoBtn() {
+  var btn=document.getElementById('saveConvoBtn'); if (!btn) return;
+  _convoSaved=false; btn.classList.remove('saved','saving'); btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Enregistrer cette analyse';
+}
+function saveConversation() {
+  if (_convoSaved) return;
+  var btn=document.getElementById('saveConvoBtn'); var scroll=document.getElementById('iaConvoScroll');
+  var userMsgs=scroll.querySelectorAll('.ia-msg-user'); var aiMsgs=scroll.querySelectorAll('.ia-msg-ai');
+  if (!userMsgs.length && !aiMsgs.length) return;
+  var title=userMsgs.length ? userMsgs[0].textContent.trim() : 'Conversation elo·IA';
+  var lastAi=aiMsgs.length ? aiMsgs[aiMsgs.length-1].innerHTML : '';
+  _convoSaved=true;
+  if (btn) { btn.classList.add('saving'); btn.disabled=true; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> Enregistrement…'; }
+  setTimeout(function() {
+    if (btn) { btn.classList.remove('saving'); btn.classList.add('saved'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> Analyse enregistrée'; }
+    injectAnalysis(title, lastAi);
+  }, 420);
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  updateDockHeight();
+  syncAnalysisCounts();
+  window.addEventListener('resize', updateDockHeight);
+  /* Signaux IA — apparition échelonnée */
+  var signals = document.querySelectorAll('#signalZone .signal-ia');
+  if (signals.length>0) document.body.classList.add('signals-active');
+  signals.forEach(function(sig, i) {
+    setTimeout(function() { sig.classList.add('toast-in'); updateDockHeight(); updateSignalOverlay(); }, 600 + i * 220);
+  });
+});
 </script>
+
+<!-- ════ FLOATING IA DOCK — repris de home-V7 ════ -->
+<div class="signal-overlay" id="signalOverlay"></div>
+
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+
+    <!-- ── SIGNAL IA (flottants au-dessus du dock) ── -->
+    <div class="signal-ia-float-zone" id="signalZone">
+
+      <!-- Signal Préparation : coffrets pluriproduits -->
+      <div class="signal-ia" data-severity="warning" id="sig1">
+        <div class="signal-ia-head">
+          <div class="signal-ia-head-left">
+            <div class="signal-ia-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="signal-ia-meta">
+              <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Signal Préparation</div>
+              <div class="signal-ia-text-inline"><strong>Coffrets pluriproduits : délai +16 min jeudi–vendredi</strong> — 3 incidents cette semaine sur Kit Soin Pro et Set Argan</div>
+            </div>
+          </div>
+          <div class="signal-ia-head-right">
+            <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser les incidents sur les coffrets pluriproduits et proposer des actions correctives')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              Analyser IA
+            </button>
+            <button class="signal-ia-btn-save" id="save-sig1" onclick="saveSignal('sig1','Coffrets pluriproduits · +16 min délai préparation · Reco: 2 opérateurs dédiés jeu–ven')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Sauvegarder
+            </button>
+            <button class="signal-ia-dismiss" onclick="dismissSignal('sig1')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="signal-ia-reco" id="sig1-reco">
+          <div class="signal-ia-reco-inner">
+            <div class="signal-ia-reco-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Préconisation elo · IA
+            </div>
+            <div class="signal-ia-reco-body">
+              <strong>Réserver 2 opérateurs dédiés coffrets les jeudis et vendredis</strong> pour absorber le pic de volume B2B. En parallèle, vérifier les emplacements multi-SKU du Kit Soin Pro — le tri multi-emplacements est la cause principale des 42 min de délai moyen. Objectif : redescendre sous 25 min.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /signal zone -->
+
+    <!-- ── IA DOCK ── -->
+    <div class="ia-dock" id="iaDock">
+
+      <div class="ia-dock-bar">
+
+        <!-- Zone 1 : brand elo·IA -->
+        <div class="ia-dock-zone">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 2 : champ de saisie IA -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput" placeholder="Posez une question sur la préparation des commandes…" oninput="toggleSend(this)" onkeydown="if(event.key==='Enter')sendIA()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="openDock()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+
+        <!-- Zone 3 : aperçu Analyses -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewAnalyses">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Analyses
+            </div>
+            <span class="ia-count" id="analysisCount">3</span>
+          </div>
+          <div class="ia-dock-preview-items" id="analysesPreview">
+            <div class="ia-dock-preview-item">
+              <div class="ia-dock-preview-item-dot" style="background:var(--c-qlog)"></div>
+              <span class="ia-dock-preview-item-txt">Produit avec le plus de temps de préparation</span>
+            </div>
+            <div class="ia-dock-preview-item">
+              <div class="ia-dock-preview-item-dot" style="background:var(--warning)"></div>
+              <span class="ia-dock-preview-item-txt">Dépassements cut-off B2B jeudi–vendredi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 4 : aperçu Actions -->
+        <div class="ia-dock-zone ia-dock-preview" id="previewActions">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Actions
+            </div>
+            <span class="ia-count-action" id="actionCount">0</span>
+          </div>
+          <div class="ia-dock-preview-items" id="actionsPreview">
+            <div class="ia-dock-preview-item" style="color:var(--muted);font-size:10px;font-style:italic" id="actionsEmptyHint">Aucune action — ajoutez-en ci-dessous</div>
+          </div>
+          <div class="ia-dock-preview-input-row">
+            <input class="ia-dock-preview-input" id="quickActionInput" placeholder="+ Ajouter une action rapide…" onkeydown="if(event.key==='Enter')addQuickAction()" oninput="toggleQuickAdd(this)"/>
+            <button class="ia-dock-preview-add" id="quickAddBtn" onclick="addQuickAction()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Zone 5 : toggle expand/collapse -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+
+      </div><!-- /ia-dock-bar -->
+
+      <!-- ════ CORPS EXPANDABLE ════ -->
+      <div class="ia-dock-body" id="iaDockBody">
+
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">3</span>
+            <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+
+            <div class="ia-msg-user">Quels produits ont causé le plus d'incidents de préparation cette semaine ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse Préparation · 17 mars · 09h22
+              </div>
+              <div class="ia-msg-ai">
+                Analyse S17–S23 mars — <strong>3 incidents concentrés sur les coffrets pluriproduits</strong> (Kit Soin Pro, Set Argan). Délai moyen B2B dépasse l'objectif de <strong>+16 min vendredi</strong>, corrélé au pic de volume en fin de semaine.<br><br>
+                Actions recommandées :<br>
+                ① <strong>Réserver 2 opérateurs dédiés coffrets les jeudis–vendredis</strong><br>
+                ② Vérifier les emplacements multi-SKU du Kit Soin Pro (tri multi-emplacements → 42 min)<br>
+                ③ Anticiper les pics B2B avec un cut-off anticipé de 30 min les vendredi
+              </div>
+              <div class="ia-msg-time">09h22</div>
+            </div>
+
+            <div class="ia-msg-user">Quel est le taux d'incidents par canal cette semaine ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse canaux · 19 mars · 11h14
+              </div>
+              <div class="ia-msg-ai">
+                B2C : <strong style="color:var(--success)">0,4 %</strong> (3/742 cmd.) · B2B : <strong style="color:var(--warning)">1,8 %</strong> (4/218 cmd.) · Cross-canal : 0,6 %.<br><br>
+                <strong>B2B est 4× au-dessus du seuil cible 0,5 %</strong> — directement corrélé aux coffrets pluriproduits et aux dépassements de cut-off en fin de semaine.
+              </div>
+              <div class="ia-msg-time">11h14</div>
+            </div>
+
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+              <div class="ia-sugg-label">Suggestions</div>
+              <button class="ia-save-convo-btn" id="saveConvoBtn" onclick="saveConversation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                Enregistrer cette analyse
+              </button>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSend('Quel produit nécessite le plus de temps de préparation en pluriproduits ?')"><div class="ia-sugg-dot" style="background:var(--c-qlog)"></div>Temps prépa pluriproduits</div>
+              <div class="ia-sugg" onclick="fillAndSend('Quels jours avons-nous le plus de dépassements de cut-off B2B ?')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Cut-off B2B par jour</div>
+              <div class="ia-sugg" onclick="fillAndSend('Estimer l\'impact consommables des coffrets cette semaine')"><div class="ia-sugg-dot" style="background:var(--primary)"></div>Impact consommables coffrets</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comparer le taux d\'incident B2C vs B2B sur le mois')"><div class="ia-sugg-dot" style="background:var(--violet)"></div>Incident B2C vs B2B</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions (fusionné) -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+
+            <!-- Colonne Analyses -->
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountFull">3</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--c-qlog)"></div><div class="analysis-q">Quel produit nécessite le plus de temps de préparation en pluriproduits ?</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">Kit Soin Pro : 42 min en moyenne (pluriproduits) vs 11 min pour les monoproduits. Corrélé au tri multi-emplacements.</div>
+                  <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h22</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-2" onclick="loadAnalysisInIA(2)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--warning)"></div><div class="analysis-q">Quels jours avons-nous eu le plus de dépassements du cut-off B2B ?</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">Jeudi et vendredi concentrent 74 % des dépassements cut-off B2B, corrélés aux pics de volume en fin de semaine.</div>
+                  <div class="analysis-footer"><span class="analysis-time">Mercredi 19 mars · 11h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-3" onclick="loadAnalysisInIA(3)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--primary)"></div><div class="analysis-q">Taux d'incident par canal B2C vs B2B cette semaine</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">B2C : 0,4 % · B2B : 1,8 % (4× seuil cible). Cause principale : coffrets pluriproduits et cut-off B2B dépassé.</div>
+                  <div class="analysis-footer"><span class="analysis-time">19 mars · 11h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonne Actions -->
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountFull">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /ia-dock-body -->
+
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
 </body>
 </html>
