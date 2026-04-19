@@ -1911,7 +1911,8 @@ function sendChatMain() {
   document.getElementById('sendBtnMain').classList.remove('ready');
   area.scrollTop = area.scrollHeight;
 }
-document.getElementById('chatInputMain').addEventListener('keydown', function(e) {
+var _chatInputMain = document.getElementById('chatInputMain');
+if (_chatInputMain) _chatInputMain.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') sendChatMain();
 });
 
