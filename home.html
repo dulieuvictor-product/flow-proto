@@ -112,7 +112,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow-y: auto; height: 100vh; }
 
 /* ── TOPBAR ── */
-.topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 100; transition: background 0.25s; }
+.topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 100; transition: background 0.25s; flex-shrink: 0; }
 .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; }
 .bc-parent { color: var(--muted); }
 .bc-sep { color: var(--border2); }
@@ -224,7 +224,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 
 .page-header { margin-bottom: 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .page-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
-.page-title { font-size: 20px; font-weight: 300; letter-spacing: -0.03em; color: var(--ink); }
+.page-title { font-size: 24px; font-weight: 300; letter-spacing: -0.03em; color: var(--ink); }
 .page-title span { color: var(--primary); }
 .page-sub { font-size: 12px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 8px; }
 .live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--success); background: var(--success-tint); border: 1px solid rgba(42,149,84,0.2); border-radius: 100px; padding: 4px 10px; white-space: nowrap; transition: opacity 0.25s, background 0.25s; }
@@ -921,7 +921,7 @@ body:not(.signals-active) .main > .topbar {
   .bottom-nav { display: block; }
   .content { padding: 16px 16px 20px; }
   .page-header { flex-direction: column; gap: 10px; }
-  .page-title { font-size: 18px; }
+  .page-title { font-size: 20px; }
   .kpi-big { font-size: 24px; }
   .charts-grid { grid-template-columns: 1fr; }
   .theme-btn .theme-label { display: none; }
