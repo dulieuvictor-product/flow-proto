@@ -705,7 +705,7 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px">Module</div>
       <div style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--ink)"><span style="color:var(--c-stocks)">Stocks</span> — Indicateurs clés</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px">Semaine 17–23 mars 2025 · tous entrepôts · toutes références</div>
+      <div id="page-sub" style="font-size:12px;color:var(--muted);margin-top:3px">Semaine 17–23 mars 2025 · tous entrepôts · toutes références</div>
     </div>
     <div class="kpi-grid-3">
       <!-- Ruptures proches -->
@@ -715,12 +715,12 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
             <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <div><div class="kpi-label">Ruptures proches</div><div class="kpi-label-sub">Seuil alerte atteint</div></div>
           </div>
-          <span class="kpi-status-badge warn">&#x26A0; À surveiller</span>
+          <span id="kpi-alert-badge" class="kpi-status-badge warn">&#x26A0; À surveiller</span>
         </div>
-        <div class="kpi-big" style="color:var(--warning)">14<span class="unit"> réf.</span></div>
-        <div class="kpi-secondary">stock &#x2264; seuil d'alerte · risque sous 7 jours</div>
-        <div class="kpi-sub-row"><span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:46%"></div></div>
+        <div id="kpi-alert-big" class="kpi-big" style="color:var(--warning)">14<span class="unit"> réf.</span></div>
+        <div id="kpi-alert-sec" class="kpi-secondary">stock &#x2264; seuil d'alerte · risque sous 7 jours</div>
+        <div id="kpi-alert-delta" class="kpi-sub-row"><span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
+        <div class="kpi-bar"><div id="kpi-alert-fill" class="kpi-fill" style="background:var(--warning);width:46%"></div></div>
       </div>
       <!-- Ruptures actives -->
       <div class="kpi-card" style="--module-color:var(--danger)">
@@ -729,12 +729,12 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
             <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
             <div><div class="kpi-label">Ruptures actives</div><div class="kpi-label-sub">Stock &#x3D; 0 ou critique</div></div>
           </div>
-          <span class="kpi-status-badge bad">&#x26A0; Action requise</span>
+          <span id="kpi-rupt-badge" class="kpi-status-badge bad">&#x26A0; Action requise</span>
         </div>
-        <div class="kpi-big" style="color:var(--danger)">8<span class="unit"> réf.</span></div>
-        <div class="kpi-secondary">dont 2 à stock zéro · impact commandes directes</div>
-        <div class="kpi-sub-row"><span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:62%"></div></div>
+        <div id="kpi-rupt-big" class="kpi-big" style="color:var(--danger)">8<span class="unit"> réf.</span></div>
+        <div id="kpi-rupt-sec" class="kpi-secondary">dont 2 à stock zéro · impact commandes directes</div>
+        <div id="kpi-rupt-delta" class="kpi-sub-row"><span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
+        <div class="kpi-bar"><div id="kpi-rupt-fill" class="kpi-fill" style="background:var(--danger);width:62%"></div></div>
       </div>
       <!-- Produits en stock vs CMS -->
       <div class="kpi-card" style="--module-color:var(--success)">
@@ -743,12 +743,12 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
             <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
             <div><div class="kpi-label">Produits en stock</div><div class="kpi-label-sub">vs. actifs sur CMS</div></div>
           </div>
-          <span class="kpi-status-badge ok">&#x2713; Cohérent</span>
+          <span id="kpi-stock-badge" class="kpi-status-badge ok">&#x2713; Cohérent</span>
         </div>
-        <div class="kpi-big" style="color:var(--success)">334 <span class="unit">/ 342</span></div>
-        <div class="kpi-secondary">8 réf. actives sur CMS sans stock · 97.7% couverture</div>
-        <div class="kpi-sub-row"><span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--success);width:97.7%"></div></div>
+        <div id="kpi-stock-big" class="kpi-big" style="color:var(--success)">334 <span class="unit">/ 342</span></div>
+        <div id="kpi-stock-sec" class="kpi-secondary">8 réf. actives sur CMS sans stock · 97.7% couverture</div>
+        <div id="kpi-stock-delta" class="kpi-sub-row"><span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
+        <div class="kpi-bar"><div id="kpi-stock-fill" class="kpi-fill" style="background:var(--success);width:97.7%"></div></div>
       </div>
     </div>
   </div>
@@ -1205,10 +1205,165 @@ function toggleTheme() {
   rebuildCharts();
 }
 
+/* ══ GRAIN DATA ══ */
+var GRAIN_DATA = {
+
+  /* ── JOUR — mardi 18 mars 2025 ── */
+  jour: {
+    label: 'Jour', dateLabel: 'Mar. 18 mars',
+    pageSub: 'Mardi 18 mars 2025 · tous entrepôts · toutes références',
+    // KPI Ruptures proches
+    alertBig: '14<span class="unit"> réf.</span>',
+    alertBadgeTxt: '&#x26A0; À surveiller', alertBadgeCls: 'warn',
+    alertSec: 'stock \u2264 seuil d\'alerte \xb7 risque sous 24\u202fh',
+    alertDelta: '<span class="delta-neu">= +0</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
+    alertFillW: '46%',
+    // KPI Ruptures actives
+    ruptBig: '8<span class="unit"> réf.</span>',
+    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
+    ruptSec: 'dont 2 \xe0 stock z\xe9ro \xb7 19 commandes bloqu\xe9es aujourd\'hui',
+    ruptDelta: '<span class="delta-neu">= +0</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
+    ruptFillW: '62%',
+    // KPI Produits en stock
+    stockBig: '334 <span class="unit">/ 342</span>',
+    stockBadgeTxt: '&#x2713; Coh\xe9rent', stockBadgeCls: 'ok',
+    stockSec: '8 r\xe9f. actives sur CMS sans stock \xb7 97.7% couverture',
+    stockDelta: '<span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
+    stockFillW: '97.7%',
+    // mini-KPIs Stock-out
+    soCritical: '8', soAlert: '14', soOk: '312', stockoutBadge: '8 ruptures',
+    // Stock dormant default threshold
+    rotThreshold: 7
+  },
+
+  /* ── SEMAINE — S17, 17-23 mars 2025 ── */
+  semaine: {
+    label: 'Semaine', dateLabel: '17 \u2013 23 mars',
+    pageSub: 'Semaine 17\u201323 mars 2025 \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
+    alertBig: '14<span class="unit"> r\xe9f.</span>',
+    alertBadgeTxt: '&#x26A0; \xc0 surveiller', alertBadgeCls: 'warn',
+    alertSec: 'stock \u2264 seuil d\'alerte \xb7 risque sous 7 jours',
+    alertDelta: '<span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
+    alertFillW: '46%',
+    ruptBig: '8<span class="unit"> r\xe9f.</span>',
+    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
+    ruptSec: 'dont 2 \xe0 stock z\xe9ro \xb7 impact commandes directes',
+    ruptDelta: '<span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
+    ruptFillW: '62%',
+    stockBig: '334 <span class="unit">/ 342</span>',
+    stockBadgeTxt: '&#x2713; Coh\xe9rent', stockBadgeCls: 'ok',
+    stockSec: '8 r\xe9f. actives sur CMS sans stock \xb7 97.7% couverture',
+    stockDelta: '<span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
+    stockFillW: '97.7%',
+    soCritical: '8', soAlert: '14', soOk: '312', stockoutBadge: '8 ruptures',
+    rotThreshold: 60
+  },
+
+  /* ── MOIS — Mars 2025 (4 semaines) ── */
+  mois: {
+    label: 'Mois', dateLabel: 'Mars 2025',
+    pageSub: 'Mars 2025 \xb7 4 semaines \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
+    alertBig: '18<span class="unit"> r\xe9f.</span>',
+    alertBadgeTxt: '&#x26A0; \xc0 surveiller', alertBadgeCls: 'warn',
+    alertSec: 'stock \u2264 seuil d\'alerte \xb7 tendance hausse sur le mois',
+    alertDelta: '<span class="delta-dn">&#x2191; +5</span><span style="font-size:11px;color:var(--muted)">vs mois pr\xe9c\xe9dent</span>',
+    alertFillW: '59%',
+    ruptBig: '10<span class="unit"> r\xe9f.</span>',
+    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
+    ruptSec: 'dont 3 \xe0 stock z\xe9ro \xb7 impact sur 58 commandes',
+    ruptDelta: '<span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs mois pr\xe9c\xe9dent</span>',
+    ruptFillW: '77%',
+    stockBig: '332 <span class="unit">/ 342</span>',
+    stockBadgeTxt: '&#x26A0; En baisse', stockBadgeCls: 'warn',
+    stockSec: '10 r\xe9f. actives sur CMS sans stock \xb7 97.1% couverture',
+    stockDelta: '<span class="delta-dn">&#x2193; \u22122</span><span style="font-size:11px;color:var(--muted)">r\xe9f. vs f\xe9vrier</span>',
+    stockFillW: '97.1%',
+    soCritical: '10', soAlert: '18', soOk: '314', stockoutBadge: '10 ruptures',
+    rotThreshold: 30
+  },
+
+  /* ── ANNÉE — 2025 YTD (Jan–Mars, 3 mois × 4 semaines) ── */
+  annee: {
+    label: 'Ann\xe9e', dateLabel: '2025 YTD',
+    pageSub: '2025 YTD \xb7 Janvier \u2013 Mars \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
+    alertBig: '18<span class="unit"> r\xe9f.</span>',
+    alertBadgeTxt: '&#x26A0; Tendance hausse', alertBadgeCls: 'warn',
+    alertSec: 'pic atteint en mars \xb7 moyenne mensuelle : 14 r\xe9f.',
+    alertDelta: '<span class="delta-dn">&#x2191; +28%</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
+    alertFillW: '59%',
+    ruptBig: '10<span class="unit"> r\xe9f.</span>',
+    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
+    ruptSec: 'dont 3 \xe0 stock z\xe9ro \xb7 124 commandes bloqu\xe9es YTD',
+    ruptDelta: '<span class="delta-dn">&#x2191; +25%</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
+    ruptFillW: '77%',
+    stockBig: '332 <span class="unit">/ 342</span>',
+    stockBadgeTxt: '&#x26A0; En baisse', stockBadgeCls: 'warn',
+    stockSec: 'couverture en baisse progressive depuis janvier',
+    stockDelta: '<span class="delta-dn">&#x2193; \u22122 pts</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
+    stockFillW: '97.1%',
+    soCritical: '10', soAlert: '18', soOk: '314', stockoutBadge: '10 ruptures',
+    rotThreshold: 90
+  }
+};
+
 /* PERIOD */
+var currentGrain = 'semaine';
+
 function setPeriod(btn) {
   document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
+  var map = { 'Jour': 'jour', 'Semaine': 'semaine', 'Mois': 'mois', 'Ann\xe9e': 'annee' };
+  currentGrain = map[btn.textContent.trim()] || 'semaine';
+  applyGrain(currentGrain);
+}
+
+function applyGrain(grain) {
+  var d = GRAIN_DATA[grain];
+  if (!d) return;
+
+  /* Flash */
+  document.querySelectorAll('.kpi-big, .mini-kpi-val').forEach(function(el) {
+    el.classList.remove('grain-flash'); void el.offsetWidth; el.classList.add('grain-flash');
+  });
+
+  /* Labels */
+  var dpL = document.getElementById('dpLabel'); if (dpL) dpL.textContent = d.dateLabel;
+  var ps  = document.getElementById('page-sub'); if (ps) ps.textContent = d.pageSub;
+
+  /* KPI — Ruptures proches */
+  var el;
+  el = document.getElementById('kpi-alert-big');   if (el) el.innerHTML = d.alertBig;
+  el = document.getElementById('kpi-alert-badge');  if (el) { el.className = 'kpi-status-badge ' + d.alertBadgeCls; el.innerHTML = d.alertBadgeTxt; }
+  el = document.getElementById('kpi-alert-sec');    if (el) el.textContent = d.alertSec;
+  el = document.getElementById('kpi-alert-delta');  if (el) el.innerHTML = d.alertDelta;
+  el = document.getElementById('kpi-alert-fill');   if (el) el.style.width = d.alertFillW;
+
+  /* KPI — Ruptures actives */
+  el = document.getElementById('kpi-rupt-big');    if (el) el.innerHTML = d.ruptBig;
+  el = document.getElementById('kpi-rupt-badge');  if (el) { el.className = 'kpi-status-badge ' + d.ruptBadgeCls; el.innerHTML = d.ruptBadgeTxt; }
+  el = document.getElementById('kpi-rupt-sec');    if (el) el.textContent = d.ruptSec;
+  el = document.getElementById('kpi-rupt-delta');  if (el) el.innerHTML = d.ruptDelta;
+  el = document.getElementById('kpi-rupt-fill');   if (el) el.style.width = d.ruptFillW;
+
+  /* KPI — Produits en stock */
+  el = document.getElementById('kpi-stock-big');   if (el) el.innerHTML = d.stockBig;
+  el = document.getElementById('kpi-stock-badge'); if (el) { el.className = 'kpi-status-badge ' + d.stockBadgeCls; el.innerHTML = d.stockBadgeTxt; }
+  el = document.getElementById('kpi-stock-sec');   if (el) el.textContent = d.stockSec;
+  el = document.getElementById('kpi-stock-delta'); if (el) el.innerHTML = d.stockDelta;
+  el = document.getElementById('kpi-stock-fill');  if (el) el.style.width = d.stockFillW;
+
+  /* Mini-KPIs Stock-out */
+  el = document.getElementById('so-critical'); if (el) el.textContent = d.soCritical;
+  el = document.getElementById('so-alert');    if (el) el.textContent = d.soAlert;
+  el = document.getElementById('so-ok');       if (el) el.textContent = d.soOk;
+  el = document.getElementById('stockout-count'); if (el) el.textContent = d.stockoutBadge;
+
+  /* Stock dormant — seuil par défaut */
+  var slider = document.getElementById('rotSlider');
+  var rotValEl = document.getElementById('rotVal');
+  if (slider) { slider.value = d.rotThreshold; }
+  if (rotValEl) { rotValEl.textContent = d.rotThreshold + 'j'; }
+  renderRotation(d.rotThreshold);
 }
 
 /* IA TOGGLE */
@@ -1449,8 +1604,8 @@ function renderActions() {
 /* INIT */
 window.addEventListener('DOMContentLoaded', function() {
   renderCal();
-  renderRotation(60);
   buildCharts();
+  applyGrain('semaine');
   updateDockHeight();
   syncDockAnalysisCounts();
   window.addEventListener('resize', updateDockHeight);
