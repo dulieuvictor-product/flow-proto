@@ -624,7 +624,7 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item" onclick="location.href='préparation.html'" style="cursor:pointer;">
+  <div class="nav-item" onclick="location.href='preparation.html'" style="cursor:pointer;">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     Logistique
   </div>
@@ -845,10 +845,10 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
       </div>
     </div>
 
-    <!-- Block 2 : Rotation des stocks -->
+    <!-- Block 2 : Stock dormant -->
     <div class="card">
       <div class="card-head">
-        <div><div class="card-title">Rotation des stocks</div><div class="card-sub">Références immobiles sans mouvement</div></div>
+        <div><div class="card-title">Stock dormant</div><div class="card-sub">Références immobiles sans mouvement</div></div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:11px;color:var(--muted)">Immobile depuis ></span>
           <div class="threshold-ctrl">
@@ -1241,7 +1241,8 @@ function sendChatMain() {
   area.appendChild(w); inp.value = '';
   document.getElementById('sendBtnMain').classList.remove('ready');
 }
-document.getElementById('chatInputMain').addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMain(); });
+var _chatInpMain = document.getElementById('chatInputMain');
+if (_chatInpMain) _chatInpMain.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMain(); });
 
 /* IA SAVE */
 var iaAnalysisSaved = false;
