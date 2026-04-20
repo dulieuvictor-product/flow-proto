@@ -458,6 +458,97 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 /* ── GRAIN TRANSITION ── */
 .grain-flash { animation: grainFade 0.22s ease; }
 @keyframes grainFade { 0%{opacity:0.3} 100%{opacity:1} }
+
+/* ── IA DOCK ANCHOR & FULL DOCK SYSTEM ── */
+:root { --dock-shadow: 0 -4px 24px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.06); }
+[data-theme="dark"] { --dock-shadow: 0 -4px 24px rgba(0,0,0,0.35), 0 -1px 0 rgba(255,255,255,0.04); }
+.ia-dock-anchor { position:fixed; bottom:0; left:220px; right:0; z-index:150; pointer-events:none; }
+@media (max-width:640px) { .ia-dock-anchor { left:0; z-index:140; } .signal-overlay { left:0; } }
+.ia-dock-inner { width:100%; pointer-events:none; display:flex; flex-direction:column; align-items:stretch; }
+.signal-overlay { position:fixed; top:0; left:220px; right:0; bottom:0; background:rgba(0,0,0,0); pointer-events:none; z-index:149; transition:background 0.35s ease; }
+body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-events:auto; }
+[data-theme="dark"] body.signals-active .signal-overlay { background:rgba(0,0,0,0.42); }
+.ia-dock { pointer-events:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:0; box-shadow:var(--dock-shadow); transition:background 0.25s,border-color 0.25s; overflow:hidden; display:flex; flex-direction:column-reverse; }
+.ia-dock-bar { display:flex; align-items:stretch; min-height:52px; border-top:1px solid var(--border); }
+.ia-dock-zone { display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--border); min-width:0; flex-shrink:0; }
+.ia-dock-zone.ia-dock-input-zone { flex:1; flex-shrink:1; min-width:0; order:10; border-right:none; }
+.ia-dock-zone:first-child { order:0; }
+.ia-dock-zone:last-child { border-right:none; }
+.ia-dock-brand { display:flex; align-items:center; gap:9px; }
+.ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ia-dock-av svg { width:14px; height:14px; }
+.ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+.ia-dock-input-zone { gap:8px; }
+.ia-dock-input-wrap { flex:1; display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 14px; transition:border-color 0.15s,background 0.25s; }
+.ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
+.ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
+.ia-dock-input::placeholder { color:var(--muted); }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s,transform 0.12s; }
+.ia-dock-send.ready { opacity:1; }
+.ia-dock-send:hover.ready { transform:scale(1.08); }
+.ia-dock-send svg { width:11px; height:11px; }
+.ia-saved-pill { display:none; align-items:center; gap:5px; font-size:10px; font-weight:500; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+.ia-saved-pill.visible { display:flex; }
+.ia-saved-pill svg { width:10px; height:10px; }
+.ia-dock-preview { align-items:center !important; flex-direction:row; justify-content:flex-start; padding:0 16px !important; cursor:pointer; gap:10px; width:200px; flex-shrink:0; transition:background 0.12s; }
+.ia-dock-preview:hover { background:rgba(0,0,0,0.025); }
+[data-theme="dark"] .ia-dock-preview:hover { background:rgba(255,255,255,0.03); }
+.ia-dock-preview-head { display:flex; align-items:center; gap:10px; width:100%; margin-bottom:0; }
+.ia-dock-preview-title { font-size:10px; font-weight:600; color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.ia-dock-preview-title svg { width:13px; height:13px; opacity:0.6; }
+.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-dock-preview-items { display:none !important; }
+.ia-dock-preview-input-row { display:none !important; }
+.ia-dock-preview-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; width:100%; background:none; border:none; padding:0; }
+.ia-dock-preview-item-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; opacity:0.7; }
+.ia-dock-preview-item-txt { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:11px; color:var(--muted); min-width:0; flex:1; }
+.ia-dock-preview-more { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+.ia-dock-toggle { order:11; width:44px; flex-shrink:0; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.12s; }
+.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
+.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; transform:rotate(180deg); }
+.ia-dock.open .ia-dock-toggle svg { transform:rotate(0deg); }
+.ia-dock-body { overflow:hidden; max-height:0; transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1); border-bottom:1px solid var(--border); }
+.ia-dock.open .ia-dock-body { max-height:360px; }
+.ia-dock-tabs { display:flex; align-items:stretch; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
+.ia-dock-tab-btn { display:flex; align-items:center; gap:7px; padding:0 20px; height:38px; font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+.ia-dock-tab-btn svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-tab-btn:hover { color:var(--ink); }
+.ia-dock-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--surface); }
+.ia-dock-tab-btn.active svg { opacity:1; }
+.ia-dock-tab-btn .ia-count, .ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+.ia-dock-panel { display:none; flex-direction:column; height:322px; overflow:hidden; }
+.ia-dock-panel.active { display:flex; }
+.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:9px; }
+.ia-dock-panel-scroll::-webkit-scrollbar { width:3px; }
+.ia-dock-panel-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
+.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 16px 4px; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-dock-panel-footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--surface2); padding:8px 14px; }
+.ia-msg-user { align-self:flex-end; max-width:88%; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:11.5px; line-height:1.5; }
+.ia-msg-ai-wrap { align-self:flex-start; width:100%; display:flex; flex-direction:column; gap:5px; }
+.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-msg-ai-meta svg { width:9px; height:9px; }
+.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:8px 11px; font-size:11.5px; line-height:1.6; color:var(--ink); }
+.ia-msg-ai strong { font-weight:600; color:var(--violet); }
+.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; align-self:flex-end; }
+.ia-typing { display:flex; align-items:center; gap:4px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
+.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--violet); animation:pulse 1.2s infinite; }
+.ia-tdot:nth-child(2) { animation-delay:0.2s; } .ia-tdot:nth-child(3) { animation-delay:0.4s; }
+.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
+.ia-sugg { display:flex; align-items:center; gap:6px; padding:5px 8px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.ia-sugg:hover { border-color:var(--violet); background:var(--violet-tint); color:var(--ink); }
+.ia-sugg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.ia-dock-add-input:focus { border-color:var(--violet); }
+.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
+.dock-empty svg { width:24px; height:24px; opacity:0.3; }
+.ia-save-convo-btn { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; color:var(--violet); background:var(--violet-tint); border:1px solid rgba(108,71,232,0.22); border-radius:100px; padding:6px 14px; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+.ia-save-convo-btn:hover:not(:disabled) { background:var(--violet); color:white; border-color:var(--violet); }
+.ia-save-convo-btn.saving { background:var(--violet); color:white; border-color:var(--violet); cursor:default; opacity:0.85; animation:saveConvoPulse 0.6s ease infinite alternate; }
+.ia-save-convo-btn.saved { background:var(--success-tint); color:var(--success); border-color:rgba(42,149,84,0.25); cursor:default; }
+@keyframes saveConvoPulse { from{opacity:0.75} to{opacity:1} }
 </style>
 </head>
 <body>
@@ -521,6 +612,32 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Litiges</span>
     </div>
     <div class="topbar-right">
+      <div class="time-selector">
+        <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
+        <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Année</button>
+      </div>
+      <div class="date-wrap">
+        <button class="date-picker-btn" onclick="toggleCal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dpLabel">17 – 23 mars</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cal-dropdown" id="calDrop">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+            <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+            <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+          <div class="cal-footer">
+            <button class="cal-action" onclick="toggleCal()">Annuler</button>
+            <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
+          </div>
+        </div>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -530,93 +647,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
 
   <div class="content">
-
-  <!-- ══ BLOC 1 : elo·IA ══ -->
-  <div>
-    <div class="chatbot-card" style="display:flex;flex-direction:column;">
-      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc">claude-sonnet · contexte Litiges Transport</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="live-badge"><div class="live-pulse"></div>Live</div>
-          <div class="time-selector">
-            <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
-            <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Année</button>
-          </div>
-          <div class="date-wrap">
-            <button class="date-picker-btn" onclick="toggleCal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span id="dpLabel">17 – 23 mars</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="cal-dropdown" id="calDrop">
-              <div class="cal-nav">
-                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-              <div class="cal-footer">
-                <button class="cal-action" onclick="toggleCal()">Annuler</button>
-                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-              </div>
-            </div>
-          </div>
-          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);">
-            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-collapsible collapsed" id="chatCollapsible">
-        <div class="chat-area open" id="chatArea">
-          <div class="chat-bubble-wrap user-wrap">
-            <div class="chat-bubble user">Quels sont les litiges les plus critiques en attente de traitement ?</div>
-            <div class="chat-bubble-time">10h18</div>
-          </div>
-          <div class="chat-bubble-wrap ai-wrap">
-            <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Litiges Transport · tous transporteurs</div>
-              <div class="ai-conclusion">
-                <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
-                <div class="ai-conclusion-body"><strong>3 litiges critiques</strong> dépassent 500€ : CMD-48221 (GLS, 847€, client récurrent Beauté Pro Paris), CMD-48199 (Chronopost, 612€) et CMD-48255 (DHL, 534€, 3e incident ce mois). <span style="color:var(--warning);font-weight:500">GLS cumule 23 litiges non résolus</span> depuis plus de 7 jours — TPS moyen 11.4 jours, 2× la cible. Action recommandée : escalade contractuelle GLS et basculement immédiat des flux critiques vers Colis Privé (0 litige cette semaine).</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="re-footer">
-          <div class="re-toggle" onclick="toggleReassurance()">
-            <div class="re-toggle-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confidentialité &amp; sources</div>
-            <svg id="reChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="rePanel" style="display:none;">
-            <div class="reassurance-row">
-              <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Litiges Transport actives</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">TMS elogik · OMS · sync toutes les 15 min</div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="qs-header"><div class="qs-label">Questions contextualisées — Litiges Transport</div></div>
-        <div class="qs-grid">
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels sont les litiges critiques par montant de commande ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-business)"></div><span class="q-chip-txt">Quels clients fréquents ont le plus de litiges ouverts ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quels transporteurs ont le plus de litiges non résolus ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-savt)"></div><span class="q-chip-txt">Quel est le TPS de résolution moyen par transporteur ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qtrans)"></div><span class="q-chip-txt">Quels litiges ont été ouverts par les transporteurs vs clients ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Évolution du coût des litiges sur les 4 dernières semaines ?</span></div>
-        </div>
-        <div class="input-row">
-          <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
-          <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ══ BLOC 2 : KPI MACRO ══ -->
   <div>
@@ -1225,54 +1255,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
   </div>
 
-  <!-- ══ BLOC 4 : ANALYSES & SUIVI ══ -->
-  <div>
-    <div class="section-label">Analyses &amp; suivi</div>
-    <div class="block-actions">
-
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <div><div class="aa-head-title">Analyses sauvegardées</div><div class="aa-head-sub">elo IA · Litiges Transport</div></div>
-          </div>
-          <span class="aa-head-badge" id="analysisCount">1</span>
-        </div>
-        <div class="aa-body" id="analysisList">
-          <div class="analysis-item" id="analysis-card-1">
-            <div class="analysis-item-head">
-              <div class="analysis-mod-dot" style="background:var(--c-savt)"></div>
-              <div class="analysis-q">Quels transporteurs ont le plus de litiges non résolus et quel est l'impact client ?</div>
-              <button class="analysis-archive-btn" onclick="archiveAnalysis(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>
-            </div>
-            <div class="analysis-answer">GLS : 23 litiges, TPS 11.4j, 3 clients récurrents à risque de résiliation. Recommandation : escalade contractuelle + basculement 30% flux vers Colis Privé (0 litige).</div>
-            <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 10h18</span><span class="analysis-src">TMS · OMS elogik</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="aa-col">
-        <div class="aa-head">
-          <div class="aa-head-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            <div><div class="aa-head-title">Actions en cours</div><div class="aa-head-sub">Suivi · Litiges Transport</div></div>
-          </div>
-          <span class="aa-head-badge" id="actionCount">0</span>
-        </div>
-        <div class="aa-body" id="actionList">
-          <div class="aa-empty" id="actionEmpty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
-          </div>
-        </div>
-        <div class="aa-add-row">
-          <input class="aa-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()"/>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
   </div><!-- /content -->
 </div><!-- /main -->
 
@@ -1813,11 +1795,390 @@ window.addEventListener('DOMContentLoaded', function() {
   renderCal();
   buildLitChart();
   applyGrain('semaine');
+  updateDockHeight();
+  syncDockAnalysisCounts();
+  window.addEventListener('resize', updateDockHeight);
 });
 var themeObserver = new MutationObserver(function(muts) {
   muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
 });
 themeObserver.observe(document.documentElement, { attributes: true });
+
+/* ═══════════════════════════════════════════
+   IA DOCK — Litiges Transport
+   ═══════════════════════════════════════════ */
+
+function updateDockHeight() {
+  var anchor = document.getElementById('iaDockAnchor');
+  var h = anchor ? anchor.getBoundingClientRect().height : 68;
+  var contentEl = document.querySelector('.content');
+  if (contentEl) contentEl.style.paddingBottom = (h + 8) + 'px';
+}
+function toggleIADock() { document.getElementById('iaDock').classList.toggle('open'); setTimeout(updateDockHeight, 320); }
+function openIADock() { document.getElementById('iaDock').classList.add('open'); setTimeout(updateDockHeight, 320); }
+function toggleSendDock(inp) { document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0); }
+
+var dockNextAnalysisId = 2;
+var dockActions = [];
+
+var aiResponsesLitiges = {
+  'gls':         '<strong>GLS concentre 49 % des litiges ouverts</strong> (23 sur 47) — TPS moyen 11,4 j, soit 2,3× l\'objectif de 5 j. 3 clients récurrents représentent 65 % de ces litiges. Action recommandée : revue hebdomadaire GLS + alerte automatique dès J+6.',
+  'chronopost':  'Chronopost : <strong>14 litiges ouverts</strong> — TPS moyen 8,2 j. Catégorie dominante : colis non livré (57 %). Amélioration possible : relance proactive à J+3 pour réduire le TPS de ~2 j.',
+  'dhl':         'DHL : <strong>3 litiges seulement</strong> — TPS moyen 3,8 j, sous l\'objectif. Transporteur le plus performant sur le périmètre litiges. Aucune action urgente requise.',
+  'tps':         'TPS moyen global : <strong>7,6 j</strong> — objectif < 5 j, écart +2,6 j. GLS tire la moyenne vers le haut avec 11,4 j. Sans GLS, le TPS serait à 5,1 j. Recommandation : plan d\'action dédié GLS en priorité.',
+  'non livré':   '<strong>18 litiges "colis non livré"</strong> (38 % des cas) — principal motif. Délai de détection moyen : 4,2 j après date engagement. Recommandation : déclencher le litige automatiquement à J+2 post-engagement.',
+  'endommagé':   '<strong>12 litiges "colis endommagé"</strong> (26 %) — en hausse +4 pts vs mois précédent. GLS : 8 cas sur 12. Corrélation avec les colis > 5 kg. Action : vérifier les conditions de manutention GLS sur les envois lourds.',
+  'résolus':     '<strong>28 litiges résolus ce mois</strong> — taux de résolution 71 %. Délai moyen de résolution : 6,2 j. Objectif : passer à 80 % de résolution avec un TPS < 5 j d\'ici fin de trimestre.',
+  'client':      '<strong>3 clients récurrents</strong> concentrent 41 % des litiges GLS : Dupont SARL (9 litiges), Martin Industries (6), LG Distrib (5). Recommandation : appel client prioritaire + suivi personnalisé sur ces comptes.',
+  'remboursement': 'Indemnisations en cours : <strong>€ 4 280 engagés</strong> sur 47 litiges ouverts. Montant moyen par litige : 91 €. GLS représente 58 % des indemnisations. Délai moyen de remboursement transporteur : 18 j.',
+  'tendance':    'Tendance : <strong>+12 % de litiges vs mois précédent</strong>. Pic observé semaine S12 (13 litiges en 5 jours). Corrélation avec hausse du volume GLS (+18 % ce mois). Recommandation : plafonner les expéditions GLS à 60 % du mix.',
+};
+
+function getDockResponse(q) {
+  var ql = q.toLowerCase();
+  for (var k in aiResponsesLitiges) { if (ql.indexOf(k) > -1) return aiResponsesLitiges[k]; }
+  return 'J\'analyse vos données Litiges Transport… <strong>Aucune anomalie supplémentaire</strong> au-delà des signaux déjà remontés. Posez-moi une question précise sur un transporteur, le TPS, les motifs de litige, les clients ou les remboursements.';
+}
+
+function appendDockMsg(type, text) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var div = document.createElement('div');
+  if (type === 'user') {
+    div.className = 'ia-msg-user'; div.textContent = text;
+  } else {
+    div.className = 'ia-msg-ai-wrap';
+    var iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    var now = new Date(); var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+    div.innerHTML = '<div class="ia-msg-ai-meta">' + iconSvg + ' elo·IA · ' + hm + '</div><div class="ia-msg-ai">' + text + '</div><div class="ia-msg-time">' + hm + '</div>';
+  }
+  scroll.appendChild(div); scroll.scrollTop = scroll.scrollHeight;
+}
+function showDockTyping() {
+  var scroll = document.getElementById('iaConvoScroll');
+  var t = document.createElement('div'); t.className = 'ia-typing'; t.id = 'iaTyping';
+  t.innerHTML = '<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop = scroll.scrollHeight;
+}
+function hideDockTyping() { var t = document.getElementById('iaTyping'); if (t) t.remove(); }
+
+function sendIADock() {
+  var inp = document.getElementById('iaDockInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = ''; document.getElementById('iaSendBtn').classList.remove('ready');
+  switchDockTab('chat'); openIADock();
+  appendDockMsg('user', val); showDockTyping();
+  var resp = getDockResponse(val);
+  setTimeout(function() {
+    hideDockTyping(); appendDockMsg('ai', resp);
+    resetSaveConvoBtn();
+    var pill = document.getElementById('iaSavedPill'); if (pill) { pill.classList.add('visible'); setTimeout(function() { pill.classList.remove('visible'); }, 3500); }
+  }, 900 + Math.random() * 500);
+}
+function fillAndSendDock(q) { document.getElementById('iaDockInput').value = q; document.getElementById('iaSendBtn').classList.add('ready'); sendIADock(); }
+
+var currentDockTab = 'chat';
+function switchDockTab(tab) {
+  if (tab === 'actions') tab = 'analyses';
+  currentDockTab = tab;
+  ['chat','analyses'].forEach(function(t) {
+    var btn = document.getElementById('tab-' + t); var panel = document.getElementById('panel-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+    if (panel) panel.classList.toggle('active', t === tab);
+  });
+  openIADock();
+}
+
+function syncDockAnalysisCounts() {
+  var list = document.getElementById('analysesList');
+  var n = list ? list.querySelectorAll('.analysis-item').length : 0;
+  ['dockAnalysisCount','analysisCountFull','analysisCountFull2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=n; });
+  updateAnalysesPreview();
+}
+function updateAnalysesPreview() {
+  var list = document.getElementById('analysesList'); var preview = document.getElementById('analysesPreview');
+  if (!preview || !list) return; preview.innerHTML = '';
+  var items = list.querySelectorAll('.analysis-item'); var shown = 0;
+  items.forEach(function(item) {
+    if (shown >= 2) return;
+    var q = item.querySelector('.analysis-q'); var dot = item.querySelector('.analysis-mod-dot');
+    var row = document.createElement('div'); row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:' + (dot ? dot.style.background : 'var(--primary)') + '"></div><span class="ia-dock-preview-item-txt">' + (q ? q.textContent : '') + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (items.length > 2) { var more = document.createElement('div'); more.className = 'ia-dock-preview-more'; more.textContent = '+' + (items.length-2) + ' autres'; preview.appendChild(more); }
+}
+function injectDockAnalysis(q, answer) {
+  var cleanAnswer = answer.replace(/<[^>]+>/g,'');
+  var list = document.getElementById('analysesList'); var newId = dockNextAnalysisId++;
+  var colors = ['var(--c-savt)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col = colors[(newId-1) % colors.length];
+  var now = new Date(); var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+  var card = document.createElement('div'); card.className = 'analysis-item'; card.id = 'analysis-card-' + newId;
+  card.onclick = function() { loadAnalysisInIA(newId); };
+  card.innerHTML = '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:'+col+'"></div><div class="analysis-q">'+q+'</div><button class="analysis-archive-btn" onclick="archiveDockAnalysis(event,'+newId+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">'+cleanAnswer.slice(0,120)+(cleanAnswer.length>120?'…':'')+'</div><div class="analysis-footer"><span class="analysis-time">'+new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) +' · '+hm+'</span><span class="analysis-src">elo·IA</span></div>';
+  var first = list.querySelector('.analysis-item'); list.insertBefore(card, first||null);
+  syncDockAnalysisCounts();
+  switchDockTab('analyses');
+}
+function archiveDockAnalysis(e, id) { e.stopPropagation(); var card = document.getElementById('analysis-card-'+id); if (card) { card.remove(); syncDockAnalysisCounts(); } }
+function loadAnalysisInIA(id) {
+  var card = document.getElementById('analysis-card-'+id); if (!card) return;
+  var q = card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaDockInput').value = '↩ ' + q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  switchDockTab('chat'); document.getElementById('iaDockInput').focus();
+}
+
+function syncDockActionCounts() {
+  ['dockActionCount','actionCountFull'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=dockActions.length; });
+  updateActionsPreview();
+}
+function updateActionsPreview() {
+  var preview = document.getElementById('actionsPreview'); var hint = document.getElementById('actionsEmptyHint');
+  if (!preview) return; preview.querySelectorAll('.ia-dock-preview-item').forEach(function(el) { el.remove(); });
+  if (dockActions.length===0) { if (hint) hint.style.display=''; return; }
+  if (hint) hint.style.display='none';
+  var shown=0;
+  dockActions.forEach(function(a) {
+    if (shown>=2) return;
+    var row = document.createElement('div'); row.className = 'ia-dock-preview-item';
+    row.innerHTML = '<div class="ia-dock-preview-item-dot" style="background:'+(a.done?'var(--success)':'var(--violet)')+'"></div><span class="ia-dock-preview-item-txt'+(a.done?'" style="text-decoration:line-through;color:var(--muted)':'')+'">' + a.text + '</span>';
+    preview.appendChild(row); shown++;
+  });
+  if (dockActions.length>2) { var more=document.createElement('div'); more.className='ia-dock-preview-more'; more.textContent='+' + (dockActions.length-2)+' en cours'; preview.appendChild(more); }
+}
+function renderDockActions() {
+  var list = document.getElementById('actionsList'); var empty = document.getElementById('actionsEmpty');
+  syncDockActionCounts(); list.querySelectorAll('.action-item').forEach(function(el){el.remove();});
+  if (dockActions.length===0) { if (empty) empty.style.display=''; return; }
+  if (empty) empty.style.display='none';
+  dockActions.forEach(function(a) {
+    var div=document.createElement('div'); div.className='action-item';
+    div.innerHTML='<div class="action-check'+(a.done?' done':'')+'" onclick="toggleDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="action-text"><div class="action-title'+(a.done?' done-text':'')+'">'+a.text+'</div><div class="action-meta">'+new Date(a.id).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div><button class="action-ctrl-btn" onclick="removeDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
+    list.appendChild(div);
+  });
+}
+function addDockAction() {
+  var inp=document.getElementById('dockActionInput'); var val=inp.value.trim(); if (!val) return;
+  inp.value=''; dockActions.push({id:Date.now(),text:val,done:false}); renderDockActions();
+}
+function toggleQuickAdd(inp) { document.getElementById('quickAddBtn').classList.toggle('ready', inp.value.trim().length>0); }
+function addQuickAction() {
+  var inp=document.getElementById('quickActionInput'); var val=inp.value.trim(); if (!val) return;
+  inp.value=''; document.getElementById('quickAddBtn').classList.remove('ready');
+  dockActions.push({id:Date.now(),text:val,done:false}); renderDockActions();
+}
+function toggleDockAction(id) { var a=dockActions.find(function(x){return x.id===id;}); if(a){a.done=!a.done; renderDockActions();} }
+function removeDockAction(id) { dockActions=dockActions.filter(function(x){return x.id!==id;}); renderDockActions(); }
+
+var _convoSaved=false;
+function resetSaveConvoBtn() {
+  var btn=document.getElementById('saveConvoBtn'); if (!btn) return;
+  _convoSaved=false; btn.classList.remove('saved','saving'); btn.disabled=false;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Enregistrer cette analyse';
+}
+function saveConversation() {
+  if (_convoSaved) return;
+  var btn=document.getElementById('saveConvoBtn'); var scroll=document.getElementById('iaConvoScroll');
+  var userMsgs=scroll.querySelectorAll('.ia-msg-user'); var aiMsgs=scroll.querySelectorAll('.ia-msg-ai');
+  if (!userMsgs.length && !aiMsgs.length) return;
+  var title=userMsgs.length ? userMsgs[userMsgs.length-1].textContent.trim() : 'Conversation elo·IA';
+  var lastAi=aiMsgs.length ? aiMsgs[aiMsgs.length-1].innerHTML : '';
+  _convoSaved=true;
+  if (btn) { btn.classList.add('saving'); btn.disabled=true; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:11px;height:11px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> Enregistrement…'; }
+  setTimeout(function() {
+    if (btn) { btn.classList.remove('saving'); btn.classList.add('saved'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> Analyse enregistrée'; }
+    injectDockAnalysis(title, lastAi);
+  }, 420);
+}
 </script>
+
+<!-- ════ FLOATING IA DOCK ════ -->
+<div class="signal-overlay" id="signalOverlay"></div>
+
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+
+    <!-- ── IA DOCK ── -->
+    <div class="ia-dock" id="iaDock">
+
+      <div class="ia-dock-bar">
+
+        <!-- Zone 1 : brand elo·IA -->
+        <div class="ia-dock-zone">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 2 : champ de saisie IA -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput" placeholder="Posez une question sur les litiges transport…" oninput="toggleSendDock(this)" onkeydown="if(event.key==='Enter')sendIADock()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIADock()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="openIADock()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+
+        <!-- Zone 3 : aperçu Analyses -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewAnalyses">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Analyses
+            </div>
+            <span class="ia-count" id="dockAnalysisCount">1</span>
+          </div>
+          <div class="ia-dock-preview-items" id="analysesPreview">
+            <div class="ia-dock-preview-item">
+              <div class="ia-dock-preview-item-dot" style="background:var(--c-savt)"></div>
+              <span class="ia-dock-preview-item-txt">Transporteurs avec le plus de litiges non résolus</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone 4 : aperçu Actions -->
+        <div class="ia-dock-zone ia-dock-preview" id="previewActions">
+          <div class="ia-dock-preview-head">
+            <div class="ia-dock-preview-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Actions
+            </div>
+            <span class="ia-count-action" id="dockActionCount">0</span>
+          </div>
+          <div class="ia-dock-preview-items" id="actionsPreview">
+            <div class="ia-dock-preview-item" style="color:var(--muted);font-size:10px;font-style:italic" id="actionsEmptyHint">Aucune action — ajoutez-en ci-dessous</div>
+          </div>
+          <div class="ia-dock-preview-input-row">
+            <input class="ia-dock-preview-input" id="quickActionInput" placeholder="+ Ajouter une action rapide…" onkeydown="if(event.key==='Enter')addQuickAction()" oninput="toggleQuickAdd(this)"/>
+            <button class="ia-dock-preview-add" id="quickAddBtn" onclick="addQuickAction()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Zone 5 : toggle expand/collapse -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleIADock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+
+      </div><!-- /ia-dock-bar -->
+
+      <!-- ════ CORPS EXPANDABLE ════ -->
+      <div class="ia-dock-body" id="iaDockBody">
+
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">1</span>
+            <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+
+            <div class="ia-msg-user">Quels transporteurs ont le plus de litiges non résolus ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Analyse Litiges · 17 mars · 09h45
+              </div>
+              <div class="ia-msg-ai">
+                <strong>GLS concentre 49 % des litiges ouverts</strong> (23 sur 47) avec un TPS moyen de 11,4 j — soit 2,3× l'objectif de 5 j. 3 clients récurrents représentent 65 % de ces litiges.<br><br>
+                Actions recommandées :<br>
+                ① <strong>Revue hebdomadaire GLS</strong> avec alerte automatique dès J+6 sans résolution<br>
+                ② Relance proactive Chronopost à J+3 pour réduire le TPS de ~2 j<br>
+                ③ Appel prioritaire des 3 clients récurrents GLS (Dupont, Martin, LG Distrib)
+              </div>
+              <div class="ia-msg-time">09h45</div>
+            </div>
+
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+              <div class="ia-sugg-label">Suggestions</div>
+              <button class="ia-save-convo-btn" id="saveConvoBtn" onclick="saveConversation()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                Enregistrer cette analyse
+              </button>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSendDock('Quel est le TPS moyen par transporteur ?')"><div class="ia-sugg-dot" style="background:var(--c-savt)"></div>TPS par transporteur</div>
+              <div class="ia-sugg" onclick="fillAndSendDock('Quels sont les principaux motifs de litiges ?')"><div class="ia-sugg-dot" style="background:var(--danger)"></div>Motifs de litiges</div>
+              <div class="ia-sugg" onclick="fillAndSendDock('Quels clients ont le plus de litiges récurrents ?')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Clients récurrents</div>
+              <div class="ia-sugg" onclick="fillAndSendDock('Quel est le montant total des remboursements en cours ?')"><div class="ia-sugg-dot" style="background:var(--violet)"></div>Remboursements engagés</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+
+            <!-- Colonne Analyses -->
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountFull2">1</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--c-savt)"></div><div class="analysis-q">Transporteurs avec le plus de litiges non résolus et impact client</div><button class="analysis-archive-btn" onclick="archiveDockAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">GLS : 23 litiges, TPS 11,4 j, 3 clients récurrents — corrélation forte volume GLS → litiges. Revue hebdomadaire + alerte J+6 recommandée.</div>
+                  <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 09h45</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonne Actions -->
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountFull2">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action en cours.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="dockActionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addDockAction()" style="width:100%"/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /ia-dock-body -->
+
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
 </body>
 </html>
