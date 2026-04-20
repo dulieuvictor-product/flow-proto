@@ -517,6 +517,32 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
       <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Qualité transport</span>
     </div>
     <div class="topbar-right">
+      <div class="time-selector">
+        <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
+        <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
+        <button class="ts-btn" onclick="setPeriod(this)">Année</button>
+      </div>
+      <div class="date-wrap">
+        <button class="date-picker-btn" onclick="toggleCal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dpLabel">17 – 23 mars</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cal-dropdown" id="calDrop">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
+            <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
+            <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
+          <div class="cal-footer">
+            <button class="cal-action" onclick="toggleCal()">Annuler</button>
+            <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
+          </div>
+        </div>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -526,93 +552,6 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
   </div>
 
   <div class="content">
-
-  <!-- ══ BLOC 1 : elo·IA ══ -->
-  <div>
-    <div class="chatbot-card" style="display:flex;flex-direction:column;">
-      <div class="chatbot-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div class="chatbot-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
-          <div><div class="chatbot-name">elo · IA</div><div class="chatbot-desc" id="chatGrainLabel">claude-sonnet · contexte Qualité Transport · Semaine</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="live-badge"><div class="live-pulse"></div>Live</div>
-          <div class="time-selector">
-            <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
-            <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
-            <button class="ts-btn" onclick="setPeriod(this)">Année</button>
-          </div>
-          <div class="date-wrap">
-            <button class="date-picker-btn" onclick="toggleCal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span id="dpLabel">17 – 23 mars</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <div class="cal-dropdown" id="calDrop">
-              <div class="cal-nav">
-                <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-                <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-                <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-              <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-              <div class="cal-footer">
-                <button class="cal-action" onclick="toggleCal()">Annuler</button>
-                <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-              </div>
-            </div>
-          </div>
-          <button onclick="toggleChatCollapse()" id="chatCollapseBtn" style="width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--muted);">
-            <svg id="chatCollapseIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;transition:transform 0.25s;transform:rotate(180deg);"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-collapsible collapsed" id="chatCollapsible">
-        <div class="chat-area open" id="chatArea">
-          <div class="chat-bubble-wrap user-wrap">
-            <div class="chat-bubble user">Quels transporteurs ont le plus de retards cette semaine ?</div>
-            <div class="chat-bubble-time">09h31</div>
-          </div>
-          <div class="chat-bubble-wrap ai-wrap">
-            <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:12px 14px;">
-              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Analyse S17–S23 mars 2025 · module Qualité Transport · tous réseaux</div>
-              <div class="ai-conclusion">
-                <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
-                <div class="ai-conclusion-body"><strong>GLS concentre 58% des retards</strong> avec un OTD de 71% — le pire du mix. Lead time moyen : 3.4j vs objectif 2.0j. Le <span style="color:var(--warning);font-weight:500">coût transport GLS représente 22% du CA</span>, en hausse de +4 pts vs S-1. Recommandation : basculer 30% des flux GLS vers Colissimo ou Colis Privé (OTD 94%).</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="re-footer">
-          <div class="re-toggle" onclick="toggleReassurance()">
-            <div class="re-toggle-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confidentialité &amp; sources</div>
-            <svg id="reChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="rePanel" style="display:none;">
-            <div class="reassurance-row">
-              <div class="re-item"><div class="re-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="re-title">Données isolées</div><div class="re-sub">Vos données ne sont jamais utilisées pour entraîner le modèle</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-qtrans)" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div><div class="re-title">Contexte module</div><div class="re-sub">elo IA analyse uniquement les données Qualité Transport actives</div></div></div>
-              <div class="re-item"><div class="re-icon" style="background:var(--violet-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div><div><div class="re-title">Source traitée</div><div class="re-sub">TMS elogik · OMS · sync toutes les 15 min</div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="qs-header"><div class="qs-label">Questions contextualisées — Qualité Transport</div></div>
-        <div class="qs-grid">
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qtrans)"></div><span class="q-chip-txt">Quel transporteur a le meilleur OTD cette semaine ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span class="q-chip-txt">Quels transporteurs ont le plus de litiges ouverts ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span class="q-chip-txt">Quel est le lead time moyen par transporteur ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--success)"></div><span class="q-chip-txt">Évolution du coût transport en % du CA ce mois ?</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-qtrans)"></div><span class="q-chip-txt">Comparaison OTD J / J+1 / J+2 par transporteur</span></div>
-          <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span class="q-chip-txt">Combien de colis non livrés depuis plus de 5 jours ?</span></div>
-        </div>
-        <div class="input-row">
-          <input class="chat-input" id="chatInputMain" placeholder="Posez votre question à elo IA..." oninput="toggleSendMain(this)"/>
-          <button class="send-btn" id="sendBtnMain" onclick="sendChatMain()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ══ BLOC 2 : FUNNEL TRANSPORT ══ -->
   <div>
