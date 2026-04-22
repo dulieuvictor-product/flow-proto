@@ -162,6 +162,79 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
 .footer-name strong { font-weight: 600; color: #fff; }
 .footer-meta { font-size: 11px; color: rgba(255,255,255,0.25); font-family: var(--mono); }
 
+/* ── ITERATION BLOCK ── */
+.iter-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.iter-block-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.iter-block-icon {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  background: var(--surface2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+}
+.iter-block-icon svg { width: 16px; height: 16px; }
+.iter-block-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.iter-block-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+.iter-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.iter-section:last-child { border-bottom: none; }
+.iter-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.iter-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.iter-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.iter-card {
+  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  text-decoration: none; display: flex; flex-direction: column;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.iter-card:not(.iter-card--wip):hover {
+  transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+  border-color: rgba(14,143,204,0.3);
+}
+.iter-card--wip { cursor: default; opacity: 0.5; }
+.iter-card-hero {
+  height: 72px; background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--border); position: relative;
+}
+.iter-card-hero svg { width: 28px; height: 28px; opacity: 0.2; }
+.iter-card-tag {
+  position: absolute; bottom: 8px; left: 10px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 100px; font-family: var(--mono);
+}
+.iter-card--current .iter-card-hero { background: #020E14; }
+.iter-card--current .iter-card-hero svg { stroke: #1ADCFF; opacity: 0.18; }
+.iter-card--current .iter-card-tag { color: #1ADCFF; border: 1px solid rgba(26,220,255,0.3); background: rgba(26,220,255,0.1); }
+.iter-card--current:hover { border-color: rgba(14,143,204,0.3); }
+.iter-card--past .iter-card-hero { background: #0A0614; }
+.iter-card--past .iter-card-hero svg { stroke: #A78BFF; opacity: 0.18; }
+.iter-card--past .iter-card-tag { color: #A78BFF; border: 1px solid rgba(167,139,255,0.3); background: rgba(167,139,255,0.1); }
+.iter-card--past:hover { border-color: rgba(108,71,232,0.2); }
+.iter-card--wip .iter-card-hero { background: var(--surface2); }
+.iter-card--wip .iter-card-tag { color: var(--muted); border: 1px solid var(--border2); background: var(--surface2); }
+.iter-card-body { padding: 12px 14px; flex: 1; }
+.iter-card-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+.iter-card-desc  { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.iter-card-foot  { padding: 8px 14px 12px; display: flex; align-items: center; gap: 8px; }
+.iter-card-file  { font-size: 10px; font-family: var(--mono); color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 2px 7px; border-radius: 5px; }
+.iter-card-arrow { margin-left: auto; font-size: 13px; color: var(--muted); transition: transform 0.15s, color 0.15s; }
+.iter-card:not(.iter-card--wip):hover .iter-card-arrow { transform: translateX(3px); color: var(--flow); }
+
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:0.35} }
@@ -400,19 +473,122 @@ body { font-family: var(--font); background: var(--bg); color: var(--ink); min-h
         </div>
       </a>
 
-      <!-- (old) IA & Prédictif -->
-      <a href="elo-flow-ia.html" class="file-card" style="grid-column:span 1;border-color:rgba(108,71,232,0.15)">
-        <div class="fc-hero" style="height:100px;background:linear-gradient(135deg,#0A0614,#150B26)">
-          <div class="fc-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#A78BFF" stroke-width="0.8" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <span class="fc-badge" style="color:#A78BFF;border-color:rgba(167,139,255,0.3);background:rgba(167,139,255,0.1)">(old) IA &amp; Prédictif · Bêta</span>
-        </div>
-        <div class="fc-body">
-          <div class="fc-title" style="color:#6C47E8">(old) IA &amp; Prédictif</div>
-          <div class="fc-desc">LLM sur vos données, questions suggérées, analyse SKU dormants, crédits.</div>
-          <div class="fc-meta"><span class="fc-file">elo-flow-ia.html</span><span class="fc-arrow" style="color:#6C47E8">→</span></div>
-        </div>
-      </a>
+    </div>
+  </div>
 
+  <!-- ═══ ITÉRATIONS DESIGN ═══ -->
+  <div class="section-block">
+    <div class="section-label">Itérations design</div>
+    <div class="iter-block">
+      <div class="iter-block-head">
+        <div class="iter-block-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+          </svg>
+        </div>
+        <div>
+          <div class="iter-block-title">Affichage des alertes et bon niveau de sollicitation</div>
+          <div class="iter-block-desc">Trois approches pour afficher les signaux elo·IA sur la home — du moins intrusif au plus contextuel.</div>
+        </div>
+      </div>
+      <!-- Section elo·IA — première itération -->
+      <div class="iter-section">
+        <div class="iter-section-label">elo·IA — module conversationnel</div>
+        <div class="iter-cards" style="grid-template-columns:repeat(3,1fr)">
+
+          <a href="elo-flow-ia.html" class="iter-card iter-card--past">
+            <div class="iter-card-hero">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#A78BFF" stroke-width="0.8" stroke-linecap="round"><path d="M12 2a10 10 0 1010 10H12V2z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span class="iter-card-tag">1ère itération</span>
+            </div>
+            <div class="iter-card-body">
+              <div class="iter-card-title">IA &amp; Prédictif — Bêta</div>
+              <div class="iter-card-desc">Première version du module IA : LLM sur données, questions suggérées, analyse SKU dormants, système de crédits.</div>
+            </div>
+            <div class="iter-card-foot">
+              <span class="iter-card-file">elo-flow-ia.html</span>
+              <span class="iter-card-arrow">→</span>
+            </div>
+          </a>
+
+          <a href="home.html" class="iter-card iter-card--current">
+            <div class="iter-card-hero">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1ADCFF" stroke-width="0.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              <span class="iter-card-tag">Actuelle</span>
+            </div>
+            <div class="iter-card-body">
+              <div class="iter-card-title">elo·IA Dock — v2</div>
+              <div class="iter-card-desc">Dock persistant avec conversation, analyses sauvegardées et onglet Alertes intégré à la home.</div>
+            </div>
+            <div class="iter-card-foot">
+              <span class="iter-card-file">home.html</span>
+              <span class="iter-card-arrow">→</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="iter-section">
+        <div class="iter-section-label">Affichage des alertes et bon niveau de sollicitation</div>
+        <div class="iter-cards">
+
+          <!-- V1 : Home actuelle -->
+          <a href="home.html" class="iter-card iter-card--current">
+            <div class="iter-card-hero">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1ADCFF" stroke-width="0.8" stroke-linecap="round">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+              </svg>
+              <span class="iter-card-tag">Actuelle</span>
+            </div>
+            <div class="iter-card-body">
+              <div class="iter-card-title">Alertes dans le dock elo·IA</div>
+              <div class="iter-card-desc">Les alertes vivent dans un onglet dédié du dock — accessibles sans interrompre la lecture du dashboard.</div>
+            </div>
+            <div class="iter-card-foot">
+              <span class="iter-card-file">home.html</span>
+              <span class="iter-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- V2 : Ancienne home toast alerts -->
+          <a href="home-toast_alerts.html" class="iter-card iter-card--past">
+            <div class="iter-card-hero">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#A78BFF" stroke-width="0.8" stroke-linecap="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <span class="iter-card-tag">Précédente</span>
+            </div>
+            <div class="iter-card-body">
+              <div class="iter-card-title">Toasts flottants</div>
+              <div class="iter-card-desc">Les signaux IA apparaissent en overlay au-dessus du contenu avec grisage de l'arrière-plan.</div>
+            </div>
+            <div class="iter-card-foot">
+              <span class="iter-card-file">home-toast_alerts.html</span>
+              <span class="iter-card-arrow">→</span>
+            </div>
+          </a>
+
+          <!-- V3 : À créer — sider alertes -->
+          <div class="iter-card iter-card--wip">
+            <div class="iter-card-hero">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/>
+              </svg>
+              <span class="iter-card-tag">À venir</span>
+            </div>
+            <div class="iter-card-body">
+              <div class="iter-card-title">Sider notifications</div>
+              <div class="iter-card-desc">Un panneau latéral dédié aux alertes, ouvert depuis une cloche en topbar — inspiré des patterns Slack / Linear.</div>
+            </div>
+            <div class="iter-card-foot">
+              <span class="iter-card-file">home-sider_alerts.html</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
