@@ -390,7 +390,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 }
 @media (max-width: 640px) {
   .ia-dock-anchor { left: 0; z-index: 140; }
-  .signal-overlay { left: 0; }
 }
 
 .ia-dock-inner {
@@ -402,51 +401,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 }
 
 /* ── SIGNAL IA CARD (flottant au-dessus du dock) ── */
-.signal-ia-float-zone {
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 6px;
-  padding: 0 20px;          /* marge avec les bords de la bottom bar */
-}
-
-/* Overlay de mise au second plan — actif quand des signaux sont visibles */
-.signal-overlay {
-  position: fixed;
-  top: 0; left: 220px; right: 0; bottom: 0;
-  background: rgba(0,0,0,0);
-  pointer-events: none;
-  z-index: 149; /* sous le dock (150) mais au-dessus du contenu */
-  transition: background 0.35s ease;
-}
-body.signals-active .signal-overlay {
-  background: rgba(0,0,0,0.28);
-  pointer-events: auto;
-}
-[data-theme="dark"] body.signals-active .signal-overlay {
-  background: rgba(0,0,0,0.42);
-}
-
-/* Feedback visuel sur le contenu grisé — blur léger */
-body.signals-active .main > .content {
-  filter: blur(0.5px);
-  transition: filter 0.35s ease;
-}
-body:not(.signals-active) .main > .content {
-  filter: none;
-  transition: filter 0.35s ease;
-}
-body.signals-active .main > .topbar {
-  filter: blur(0.4px);
-  transition: filter 0.35s ease;
-}
-body:not(.signals-active) .main > .topbar {
-  filter: none;
-  transition: filter 0.35s ease;
-}
-
-/* Signal card — masquée par défaut, révélée via .toast-in */
+/* Signal card */
 .signal-ia {
   width: 100%;
   background: var(--surface);
@@ -456,20 +411,7 @@ body:not(.signals-active) .main > .topbar {
   box-shadow: var(--dock-shadow);
   position: relative;
   pointer-events: auto;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: background 0.25s, border-color 0.25s, opacity 0.35s ease, transform 0.35s ease;
-}
-/* État visible après l'animation toast */
-.signal-ia.toast-in {
-  opacity: 1;
-  transform: translateY(0);
-}
-.signal-ia.dismissing {
-  animation: signalOut 0.28s ease forwards;
-}
-@keyframes signalOut {
-  to { opacity: 0; transform: translateY(-8px); max-height: 0; margin: 0; padding: 0; overflow: hidden; }
+  transition: background 0.25s, border-color 0.25s;
 }
 .signal-ia::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 14px 14px 0 0;
@@ -554,6 +496,12 @@ body:not(.signals-active) .main > .topbar {
   padding: 2px 4px; transition: color 0.12s; white-space: nowrap; flex-shrink: 0;
 }
 .signal-ia-expand-toggle:hover { color: var(--ink); }
+
+/* ── Alertes in-panel cards ── */
+.signal-ia.in-panel { position:relative; border-radius:10px; animation:none; box-shadow:none; border:1px solid var(--border); }
+.signal-ia.in-panel.read { opacity:0.42; }
+.signal-ia.in-panel.read .signal-ia-source-dot { animation:none; opacity:0.3; }
+.signal-ia.in-panel.read .signal-ia-text-inline { color:var(--muted); }
 
 
 /* ════════════════════════════════════════════
@@ -749,7 +697,38 @@ body:not(.signals-active) .main > .topbar {
 }
 .ia-dock-toggle:hover { background: var(--surface2); color: var(--ink); }
 .ia-dock-toggle svg { width: 14px; height: 14px; transition: transform 0.25s; transform: rotate(180deg); }
-.ia-dock.open .ia-dock-toggle svg { transform: rotate(0deg); }  /* chevron vers le haut par défaut = ouvrir */
+.ia-dock.open .ia-dock-toggle svg { transform: rotate(0deg); }
+
+/* Quand le dock est ouvert : masquer la tabbar interne */
+.ia-dock.open .ia-dock-tabs { display: none; }
+
+/* Zone brand devient tab Conversation quand ouvert */
+.ia-dock.open #dockBrandZone {
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+/* Toutes les zones-nav atténuées si pas actives */
+.ia-dock.open #dockBrandZone:not(.bar-active),
+.ia-dock.open .ia-dock-preview:not(.bar-active) {
+  opacity: 0.42;
+}
+.ia-dock.open #dockBrandZone:not(.bar-active):hover,
+.ia-dock.open .ia-dock-preview:not(.bar-active):hover {
+  opacity: 0.75;
+  background: rgba(0,0,0,0.025);
+}
+/* Zone active : fond + trait violet */
+.ia-dock.open #dockBrandZone.bar-active,
+.ia-dock.open .ia-dock-preview.bar-active {
+  background: var(--surface2);
+  box-shadow: inset 0 -3px 0 var(--violet);
+}
+.ia-dock.open #dockBrandZone.bar-active .ia-dock-label { color: var(--ink); }
+.ia-dock.open .ia-dock-preview.bar-active .ia-dock-preview-title { color: var(--ink); }
+.ia-dock.open .ia-dock-preview.bar-active .ia-dock-preview-title svg { opacity: 1; }
+
+/* Preview zones : transition */
+.ia-dock.open .ia-dock-preview { transition: background 0.15s, opacity 0.15s; }
 
 /* ─────────────────────────────────────────────
    CORPS EXPANDABLE — vue tabbée pleine largeur
@@ -1661,10 +1640,12 @@ function updateDockHeight() {
 /* ── DOCK OPEN / CLOSE ── */
 function toggleDock() {
   document.getElementById('iaDock').classList.toggle('open');
+  _updateBarActive();
   setTimeout(updateDockHeight, 320);
 }
 function openDock() {
   document.getElementById('iaDock').classList.add('open');
+  _updateBarActive();
   setTimeout(updateDockHeight, 320);
 }
 
@@ -1762,7 +1743,6 @@ function sendIA() {
   var val = inp.value.trim(); if (!val) return;
   inp.value = '';
   document.getElementById('iaSendBtn').classList.remove('ready');
-  /* Ouvrir le dock sur l'onglet chat */
   switchDockTab('chat');
   appendMsg('user', val);
   showTyping();
@@ -1814,17 +1794,35 @@ function fillAndSend(q) { document.getElementById('iaDockInput').value = q; docu
 
 /* ── TABS ── */
 var currentDockTab = 'chat';
+function _updateBarActive() {
+  var tabToZone = { chat: 'dockBrandZone', analyses: 'previewAnalyses', alertes: 'previewAlertes' };
+  ['dockBrandZone','previewAnalyses','previewAlertes'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('bar-active');
+  });
+  var activeId = tabToZone[currentDockTab];
+  if (activeId) {
+    var el = document.getElementById(activeId);
+    if (el) el.classList.add('bar-active');
+  }
+}
 function switchDockTab(tab) {
-  /* 'actions' redirige vers 'analyses' (panneau fusionné) */
   if (tab === 'actions') tab = 'analyses';
   currentDockTab = tab;
-  ['chat','analyses'].forEach(function(t) {
+  ['chat','analyses','alertes'].forEach(function(t) {
     var btn = document.getElementById('tab-' + t);
     var panel = document.getElementById('panel-' + t);
     if (btn) btn.classList.toggle('active', t === tab);
     if (panel) panel.classList.toggle('active', t === tab);
   });
+  _updateBarActive();
   openDock();
+  if (tab === 'chat') {
+    requestAnimationFrame(function() {
+      var s = document.getElementById('iaConvoScroll');
+      if (s) s.scrollTop = s.scrollHeight;
+    });
+  }
 }
 
 /* ── ANALYSES ── */
@@ -1947,19 +1945,10 @@ function removeAction(id) { actions = actions.filter(function(x){return x.id!==i
 var signalSaved = {};
 function dismissSignal(id) {
   var el = document.getElementById(id); if (!el) return;
-  el.classList.add('dismissing');
-  setTimeout(function() {
-    el.remove();
-    updateDockHeight();
-    updateSignalOverlay();
-  }, 300);
+  el.remove();
+  updateDockHeight();
 }
 
-/* Active/désactive l'overlay selon les signaux encore visibles */
-function updateSignalOverlay() {
-  var remaining = document.querySelectorAll('#signalZone .signal-ia:not(.dismissing)');
-  document.body.classList.toggle('signals-active', remaining.length > 0);
-}
 function toggleSignalExpand(id) {
   var sig = document.getElementById(id);
   var toggle = document.getElementById(id + '-toggle');
@@ -2025,105 +2014,107 @@ window.addEventListener('DOMContentLoaded', function() {
   rebuildCharts();
   updateDockHeight();
   syncAnalysisCounts();
+  _renderAlertesPanel();
   window.addEventListener('resize', updateDockHeight);
-  setTimeout(showDemoAlert, 800);
-
-  /* Activer l'overlay immédiatement si des signaux sont dans le DOM */
-  var initialSignals = document.querySelectorAll('#signalZone .signal-ia');
-  if (initialSignals.length > 0) {
-    document.body.classList.add('signals-active');
-  }
-
-  /* Toast d'entrée des signaux IA — apparition échelonnée */
-  var signals = document.querySelectorAll('#signalZone .signal-ia');
-  signals.forEach(function(sig, i) {
-    setTimeout(function() {
-      sig.classList.add('toast-in');
-      updateDockHeight();
-      updateSignalOverlay();
-    }, 600 + i * 220);
-  });
+  var s = document.getElementById('iaConvoScroll');
+  if (s) s.scrollTop = s.scrollHeight;
 });
 
-/* ── Alerte démo GLS ── */
-function showDemoAlert() {
-  var zone = document.getElementById('signalZone');
-  if (!zone || document.getElementById('sig-gls')) return;
-  var div = document.createElement('div');
-  div.className = 'signal-ia';
-  div.setAttribute('data-severity', 'danger');
-  div.id = 'sig-gls';
 
-  var head = document.createElement('div');
-  head.className = 'signal-ia-head';
 
-  var left = document.createElement('div');
-  left.className = 'signal-ia-head-left';
-  left.innerHTML =
-    '<div class="signal-ia-icon">'
-    + '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">'
-    + '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>'
-    + '<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
-    + '</svg></div>'
-    + '<div class="signal-ia-meta">'
-    + '<div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo\u00b7IA \u00b7 Litiges transport</div>'
-    + '<div class="signal-ia-text-inline"><strong>Seuil critique franchi</strong>'
-    + ' \u2014 GLS\u00a0: +8 litiges en 2h, objectif semaine d\u00e9pass\u00e9 de 57\u00a0%</div>'
-    + '</div>';
 
-  var right = document.createElement('div');
-  right.className = 'signal-ia-head-right';
+/* ── ALERTES TAB ── */
+var _alerts = [
+  { id:'a1', severity:'danger',  source:'Transport · DHL IDF',         text:'<strong>Incident hub Roissy</strong> — 3 commandes bloquées depuis 06h00',            reco:'<strong>Rebooker</strong> CMD-48240, 48241, 48255 vers GLS (couverture IDF 97,5 %). Résolution DHL estimée à 18h.',                                           query:"Analyser l'incident DHL Île-de-France",        read:false, saved:false },
+  { id:'a2', severity:'warning', source:'Litiges transport',            text:'<strong>47 litiges ouverts</strong> — objectif ≤ 30 dépassé de +57 %',                reco:'<strong>DHL concentre</strong> 1,4 % du taux de litige — seul transporteur au-dessus du seuil cible. Analyser les dossiers ouverts.',                        query:'Litiges par transporteur cette semaine',        read:false, saved:false },
+  { id:'a3', severity:'warning', source:'Qualité transport · GLS',      text:'<strong>Lead time 3.4j</strong> — objectif 2.0j dépassé de +1.4j',                    reco:'GLS pire transporteur du mix. <strong>Revoir la répartition des flux</strong> vers Chronopost (+0.4j de marge disponible).',                                query:'Comparer les lead times par transporteur',      read:false, saved:false },
+  { id:'a4', severity:'danger',  source:'Stocks · Ruptures',            text:'<strong>3 ruptures de stock imminentes</strong> — SKU-0821, SKU-1104, SKU-2290',       reco:'Réapprovisionnement requis sous <strong>48h</strong>. Vérifier les fournisseurs alternatifs et les délais d\'approvisionnement.',                             query:'Ruptures de stock imminentes',                  read:true,  saved:false },
+  { id:'a5', severity:'info',    source:'Stocks · Rotation',            text:'<strong>247 références sans rotation</strong> ≥ 6 semaines — 34 820 €',                reco:'Export CSV disponible. <strong>Envisager une opération de déstockage</strong> B2C sur les 142 références consumer.',                                         query:'Stock dormant export CSV',                      read:true,  saved:true  },
+];
 
-  var btnAnalyse = document.createElement('button');
-  btnAnalyse.className = 'signal-ia-btn signal-ia-btn-primary';
-  btnAnalyse.textContent = 'Analyser elo\u00b7IA';
-  btnAnalyse.onclick = function() {
-    askIA('Analyser les litiges GLS de cette semaine');
-  };
-
-  var btnSave = document.createElement('button');
-  btnSave.className = 'signal-ia-btn signal-ia-btn-save';
-  btnSave.id = 'save-sig-gls';
-  btnSave.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder';
-  btnSave.onclick = function() {
-    saveSignal('sig-gls', 'GLS \u00b7 Seuil critique litiges \u00b7 +57\u00a0% vs objectif');
-  };
-
-  var btnDismiss = document.createElement('button');
-  btnDismiss.className = 'signal-ia-dismiss';
-  btnDismiss.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  btnDismiss.onclick = function() { dismissSignal('sig-gls'); };
-
-  right.appendChild(btnAnalyse);
-  right.appendChild(btnSave);
-  right.appendChild(btnDismiss);
-  head.appendChild(left);
-  head.appendChild(right);
-
-  var reco = document.createElement('div');
-  reco.className = 'signal-ia-reco';
-  reco.innerHTML =
-    '<div class="signal-ia-reco-inner">'
-    + '<div class="signal-ia-reco-head">'
-    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">'
-    + '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
-    + '</svg>Pr\u00e9conisation elo\u00b7IA</div>'
-    + '<div class="signal-ia-reco-body"><strong>Action recommand\u00e9e</strong>'
-    + ' \u2014 basculer 30\u201340\u00a0% des flux GLS vers Colis Priv\u00e9 (IDF & Grand-Est).'
-    + ' Estimation\u00a0: \u224815\u201320 litiges/semaine \u00e9vit\u00e9s.</div>'
-    + '</div>';
-
-  div.appendChild(head);
-  div.appendChild(reco);
-  zone.appendChild(div);
-  updateDockHeight();
-  setTimeout(function() {
-    div.classList.add('toast-in');
-    updateDockHeight();
-    updateSignalOverlay();
-  }, 80);
+function _syncAlertCount() {
+  var unread = _alerts.filter(function(a){ return !a.read; }).length;
+  ['alertCount','alertCountTab'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = unread; el.style.display = unread === 0 ? 'none' : ''; }
+  });
 }
 
+function _iconForSeverity(s) {
+  if (s==='danger')  return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  if (s==='warning') return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+}
+
+function _buildAlertCard(a) {
+  var readIcon = a.read
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var saveBtn = a.saved
+    ? '<button class="signal-ia-btn signal-ia-btn-save saved" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée</button>'
+    : '<button class="signal-ia-btn signal-ia-btn-save" id="save-alert-' + a.id + '" onclick="saveAlertAnalysis(\'' + a.id + '\')">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>';
+  return '<div class="signal-ia in-panel' + (a.read ? ' read' : '') + '" data-severity="' + a.severity + '" id="alert-panel-' + a.id + '">'
+    + '<div class="signal-ia-head">'
+      + '<div class="signal-ia-head-left">'
+        + '<div class="signal-ia-icon">' + _iconForSeverity(a.severity) + '</div>'
+        + '<div class="signal-ia-meta">'
+          + '<div class="signal-ia-source"><div class="signal-ia-source-dot"></div>' + a.source + '</div>'
+          + '<div class="signal-ia-text-inline">' + a.text + '</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="signal-ia-head-right">'
+        + '<button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA(\'' + a.query.replace(/'/g,"\\'") + '\')">'
+            + '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> Analyser IA'
+        + '</button>'
+        + saveBtn
+        + '<button class="signal-ia-dismiss" onclick="toggleAlertRead(\'' + a.id + '\')" title="' + (a.read ? 'Marquer non lu' : 'Marquer comme lu') + '">' + readIcon + '</button>'
+      + '</div>'
+    + '</div>'
+    + '<div class="signal-ia-reco"><div class="signal-ia-reco-inner">'
+      + '<div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo·IA</div>'
+      + '<div class="signal-ia-reco-body">' + a.reco + '</div>'
+    + '</div></div>'
+  + '</div>';
+}
+
+function _renderAlertesPanel() {
+  var list = document.getElementById('alertesList');
+  if (!list) return;
+  list.innerHTML = '';
+  _alerts.forEach(function(a) {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = _buildAlertCard(a);
+    list.appendChild(tmp.firstChild);
+  });
+  _syncAlertCount();
+}
+
+function toggleAlertRead(id) {
+  var a = _alerts.find(function(x){ return x.id === id; });
+  if (!a) return;
+  a.read = !a.read;
+  var card = document.getElementById('alert-panel-' + id);
+  if (card) {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = _buildAlertCard(a);
+    card.parentNode.replaceChild(tmp.firstChild, card);
+  }
+  _syncAlertCount();
+}
+
+function saveAlertAnalysis(id) {
+  var a = _alerts.find(function(x){ return x.id === id; });
+  if (!a || a.saved) return;
+  a.saved = true;
+  var btn = document.getElementById('save-alert-' + id);
+  if (btn) {
+    btn.classList.add('saved');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+    btn.onclick = null; btn.disabled = true;
+  }
+  injectAnalysis(a.source, a.text.replace(/<[^>]+>/g,'') + ' — ' + a.reco.replace(/<[^>]+>/g,''));
+}
 
 /* ── Enregistrer la conversation ── */
 var _convoSaved = false;
@@ -2164,89 +2155,8 @@ function saveConversation() {
      Positionné en dehors du .app pour ne pas être
      contraint par l'overflow du layout.
      ════════════════════════════════════════════ -->
-<!-- Overlay signal IA — grise la page quand des alertes sont actives -->
-<div class="signal-overlay" id="signalOverlay"></div>
-
 <div class="ia-dock-anchor" id="iaDockAnchor">
   <div class="ia-dock-inner">
-
-    <!-- ── SIGNAL IA (au-dessus du dock, fermable) ── -->
-    <div class="signal-ia-float-zone" id="signalZone">
-
-      <!-- Signal 1 : Danger litiges DHL -->
-      <div class="signal-ia" data-severity="danger" id="sig1">
-        <div class="signal-ia-head">
-          <div class="signal-ia-head-left">
-            <div class="signal-ia-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <div class="signal-ia-meta">
-              <div class="signal-ia-source">
-                <div class="signal-ia-source-dot"></div>
-                elo · IA · Signal Litiges
-              </div>
-              <div class="signal-ia-text-inline">
-                <strong>DHL concentre 33 % des retards</strong> (incident IDF confirmé) — action recommandée sur 3 commandes actives
-              </div>
-            </div>
-          </div>
-          <div class="signal-ia-head-right">
-            <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser l\'incident DHL IDF et proposer des actions pour les 3 commandes impactées')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-              Analyser IA
-            </button>
-            <button class="signal-ia-btn-save" id="save-sig1" onclick="saveSignal('sig1','Incident DHL IDF · 3 commandes retardées · Reco: bascule vers GLS zones concernées')" style="font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:all 0.12s;background:var(--surface2);border:1px solid var(--border2);color:var(--slate)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-              Sauvegarder
-            </button>
-            <button class="signal-ia-dismiss" onclick="dismissSignal('sig1')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="signal-ia-reco" id="sig1-reco">
-          <div class="signal-ia-reco-inner">
-            <div class="signal-ia-reco-head">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              Préconisation elo · IA
-            </div>
-            <div class="signal-ia-reco-body">
-              <strong>Contacter DHL</strong> pour estimer délai de résolution sur hub IDF. En parallèle, <strong>rebooker CMD-48240, 48241, 48255 vers GLS</strong> (taux livraison 97,5 % sur IDF cette semaine). Notifier les 3 clients concernés sans attendre.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Signal 2 : Warning coût logistique -->
-      <div class="signal-ia" data-severity="warning" id="sig2">
-        <div class="signal-ia-head">
-          <div class="signal-ia-head-left">
-            <div class="signal-ia-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-            <div class="signal-ia-meta">
-              <div class="signal-ia-source">
-                <div class="signal-ia-source-dot"></div>
-                elo · IA · Signal Coûts
-              </div>
-              <div class="signal-ia-text-inline">
-                <strong>Taux livraison global en recul de −0,4 pt</strong> sur 7 jours — trajectoire vers seuil d'alerte 95 %
-              </div>
-            </div>
-          </div>
-          <div class="signal-ia-head-right">
-            <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser la baisse du taux de livraison et identifier les transporteurs responsables')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-              Analyser IA
-            </button>
-            <button class="signal-ia-dismiss" onclick="dismissSignal('sig2')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /signal zone -->
 
     <!-- ── IA DOCK ── -->
     <div class="ia-dock" id="iaDock">
@@ -2256,8 +2166,8 @@ function saveConversation() {
       -->
       <div class="ia-dock-bar">
 
-        <!-- Zone 1 : brand elo·IA -->
-        <div class="ia-dock-zone">
+        <!-- Zone 1 : brand elo·IA → tab Conversation quand ouvert -->
+        <div class="ia-dock-zone" id="dockBrandZone" onclick="if(document.getElementById('iaDock').classList.contains('open'))switchDockTab('chat')">
           <div class="ia-dock-brand">
             <div class="ia-dock-av">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -2272,7 +2182,7 @@ function saveConversation() {
         <!-- Zone 2 : champ de saisie IA -->
         <div class="ia-dock-zone ia-dock-input-zone">
           <div class="ia-dock-input-wrap">
-            <input class="ia-dock-input" id="iaDockInput" placeholder="Posez une question sur vos données…" oninput="toggleSend(this)" onkeydown="if(event.key==='Enter')sendIA()"/>
+            <input class="ia-dock-input" id="iaDockInput" placeholder="Posez une question sur vos données…" oninput="toggleSend(this)" onkeydown="if(event.key==='Enter')sendIA()" onfocus="switchDockTab('chat')"/>
             <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
@@ -2304,25 +2214,16 @@ function saveConversation() {
           </div>
         </div>
 
-        <!-- Zone 4 : aperçu Actions + prise de note directe -->
-        <div class="ia-dock-zone ia-dock-preview" id="previewActions">
+        <!-- Zone 4 : aperçu Alertes → ouvre onglet alertes -->
+        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('alertes')" id="previewAlertes" style="cursor:pointer">
           <div class="ia-dock-preview-head">
             <div class="ia-dock-preview-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              Actions
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              Alertes
             </div>
-            <span class="ia-count-action" id="actionCount">0</span>
+            <span class="ia-count" id="alertCount" style="background:var(--danger-tint);color:var(--danger);">3</span>
           </div>
-          <div class="ia-dock-preview-items" id="actionsPreview">
-            <div class="ia-dock-preview-item" style="color:var(--muted);font-size:10px;font-style:italic" id="actionsEmptyHint">Aucune action — ajoutez-en ci-dessous</div>
-          </div>
-          <!-- Prise de note directe depuis la barre -->
-          <div class="ia-dock-preview-input-row">
-            <input class="ia-dock-preview-input" id="quickActionInput" placeholder="+ Ajouter une action rapide…" onkeydown="if(event.key==='Enter')addQuickAction()" oninput="toggleQuickAdd(this)"/>
-            <button class="ia-dock-preview-add" id="quickAddBtn" onclick="addQuickAction()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
-          </div>
+          <div class="ia-dock-preview-items" id="alertesPreview"></div>
         </div>
 
         <!-- Zone 5 : toggle expand/collapse -->
@@ -2346,6 +2247,11 @@ function saveConversation() {
             Analyses &amp; Actions
             <span class="ia-count" id="analysisCountFull">3</span>
             <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-alertes" onclick="switchDockTab('alertes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Alertes
+            <span class="ia-count" id="alertCountTab" style="background:var(--danger-tint);color:var(--danger);">3</span>
           </button>
         </div>
 
@@ -2476,6 +2382,11 @@ function saveConversation() {
             </div>
 
           </div>
+        </div>
+
+        <!-- Panneau Alertes -->
+        <div class="ia-dock-panel" id="panel-alertes">
+          <div class="ia-dock-panel-scroll" id="alertesList" style="gap:7px;"></div>
         </div>
 
       </div><!-- /ia-dock-body -->
