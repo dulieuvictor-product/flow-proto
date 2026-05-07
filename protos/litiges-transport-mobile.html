@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>elogik (flow) — Litiges Transport · Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root, [data-theme="light"] {
+  --bg:#F2F4F8; --surface:#FFFFFF; --surface2:#F4F6FA;
+  --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.13);
+  --ink:#1A1C1E; --slate:#4A5568; --muted:#8A95A3;
+  --primary:#0E8FCC; --primary-tint:#EAF6FD;
+  --success:#2A9554; --success-tint:#E8F8EF;
+  --warning:#C27B00; --warning-tint:#FEF4E0;
+  --danger:#D63050; --danger-tint:#FDEAED;
+  --violet:#6C47E8; --violet-tint:#F0EDFF;
+  --nav-bg:#FFFFFF; --nav-active-bg:#EEF2FF; --nav-active-tx:#6366F1;
+  --card-shadow:0 1px 3px rgba(0,0,0,0.06);
+  --c-business:#2563EB; --c-business-t:#EFF6FF;
+  --c-qlog:#0E7490; --c-qlog-t:#ECFEFF;
+  --c-qtrans:#0284C7; --c-qtrans-t:#F0F9FF;
+  --c-savt:#6366F1; --c-savt-t:#EEF2FF;
+  --c-savl:#9333EA; --c-savl-t:#FDF4FF;
+  --c-stocks:#D97706; --c-stocks-t:#FFFBEB;
+  --ai-border:rgba(108,71,232,0.2);
+  --grain-opacity:0.035;
+  --bottombar-h:72px;
+}
+[data-theme="dark"] {
+  --bg:#0C0F14; --surface:#181E28; --surface2:#1F2736;
+  --border:rgba(255,255,255,0.10); --border2:rgba(255,255,255,0.18);
+  --ink:#E2EAF4; --slate:#9AAABB; --muted:#5A6C7D;
+  --primary:#1ADCFF; --primary-tint:rgba(26,220,255,0.13);
+  --success:#22FF7A; --success-tint:rgba(34,255,122,0.13);
+  --warning:#FFB020; --warning-tint:rgba(255,176,32,0.13);
+  --danger:#FF3B6A; --danger-tint:rgba(255,59,106,0.13);
+  --violet:#A78BFF; --violet-tint:rgba(167,139,255,0.13);
+  --nav-bg:#141A22; --nav-active-bg:rgba(99,102,241,0.15); --nav-active-tx:#A5B4FC;
+  --c-business:#60A5FA; --c-business-t:rgba(96,165,250,0.13);
+  --c-qlog:#22D3EE; --c-qlog-t:rgba(34,211,238,0.13);
+  --c-qtrans:#38BDF8; --c-qtrans-t:rgba(56,189,248,0.13);
+  --c-savt:#A5B4FC; --c-savt-t:rgba(165,180,252,0.13);
+  --c-savl:#C084FC; --c-savl-t:rgba(192,132,252,0.13);
+  --c-stocks:#FCD34D; --c-stocks-t:rgba(252,211,77,0.13);
+  --ai-border:rgba(167,139,255,0.2);
+  --grain-opacity:0.055;
+}
+
+html, body { height:100%; overflow:hidden; }
+body {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+/* ── GRAIN OVERLAY ── */
+#grain-canvas {
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1000;
+  opacity:0.09;
+  mix-blend-mode:multiply;
+}
+[data-theme="dark"] #grain-canvas {
+  mix-blend-mode:screen;
+  opacity:0.13;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  height:52px;
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  gap:12px;
+  position:sticky;
+  top:0;
+  z-index:200;
+  flex-shrink:0;
+}
+.burger-btn {
+  width:36px; height:36px;
+  border-radius:9px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.burger-btn svg { width:16px; height:16px; color:var(--slate); }
+.topbar-brand { display:flex; align-items:center; gap:8px; flex:1; }
+.brand-mark { width:28px; height:28px; border-radius:7px; background:var(--primary); display:flex; align-items:center; justify-content:center; }
+.brand-mark svg { width:14px; height:14px; }
+.brand-name { font-size:13px; font-weight:300; color:var(--ink); letter-spacing:-0.02em; }
+.brand-name strong { font-weight:600; }
+.topbar-right { display:flex; align-items:center; gap:6px; }
+.icon-btn { width:34px; height:34px; border-radius:8px; border:1px solid var(--border2); background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.icon-btn svg { width:15px; height:15px; color:var(--slate); }
+.notif-dot { position:absolute; top:5px; right:5px; width:6px; height:6px; border-radius:50%; background:var(--danger); border:1.5px solid var(--surface); }
+.theme-toggle { width:34px; height:34px; border-radius:8px; border:1px solid var(--border2); background:var(--surface2); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.theme-toggle svg { width:15px; height:15px; color:var(--slate); }
+.icon-sun { display:block; } .icon-moon { display:none; }
+[data-theme="dark"] .icon-sun { display:none; } [data-theme="dark"] .icon-moon { display:block; }
+
+/* ── DRAWER MENU ── */
+.drawer-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.4);
+  z-index:500; opacity:0; pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.drawer-overlay.open { opacity:1; pointer-events:all; }
+.drawer {
+  position:fixed; top:0; left:0; bottom:0;
+  width:280px; background:var(--nav-bg);
+  z-index:501; transform:translateX(-100%);
+  transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column;
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+}
+.drawer.open { transform:translateX(0); }
+.drawer-head {
+  padding:18px 16px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.drawer-close {
+  margin-left:auto; width:28px; height:28px;
+  border-radius:7px; border:1px solid var(--border2);
+  background:var(--surface2); display:flex;
+  align-items:center; justify-content:center; cursor:pointer;
+}
+.drawer-close svg { width:13px; height:13px; color:var(--muted); }
+.nav-section { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); padding:14px 14px 5px; font-family:'DM Mono',monospace; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 10px; margin:1px 8px; border-radius:9px; font-size:13px; color:var(--slate); cursor:pointer; transition:background 0.12s, color 0.12s; }
+.nav-item svg { width:16px; height:16px; flex-shrink:0; opacity:0.75; }
+.nav-item:hover, .nav-item:active { background:var(--surface2); color:var(--ink); }
+.nav-item.active { background:var(--nav-active-bg); color:var(--nav-active-tx); font-weight:500; }
+.nav-item.active svg { opacity:1; }
+.nav-mod-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-mod-icon svg { width:13px; height:13px; opacity:1; }
+.nav-badge { margin-left:auto; font-size:10px; font-weight:700; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nav-badge-warn { margin-left:auto; font-size:10px; font-weight:700; background:var(--warning-tint); color:var(--warning); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.drawer-bottom { margin-top:auto; padding:10px 8px 14px; border-top:1px solid var(--border); }
+.nav-llm { background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:9px 12px; margin-bottom:8px; }
+.nav-llm-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+.nav-llm-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.nav-llm-count { font-size:12px; font-weight:600; font-family:'DM Mono',monospace; color:var(--violet); }
+.nav-llm-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.nav-llm-fill { height:100%; background:var(--violet); border-radius:100px; width:62%; }
+.nav-llm-sub { font-size:10px; color:var(--muted); margin-top:4px; }
+.nav-user { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:9px; cursor:pointer; }
+.nav-avatar { width:28px; height:28px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:white; flex-shrink:0; }
+.nav-user-name { font-size:12px; font-weight:500; color:var(--ink); }
+.nav-user-role { font-size:10px; color:var(--muted); }
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-bottom:calc(var(--bottombar-h) + 12px);
+  -webkit-overflow-scrolling:touch;
+}
+.content { padding:14px 14px 0; display:flex; flex-direction:column; gap:12px; }
+
+/* ── PERIOD SELECTOR ── */
+.period-bar {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:3px;
+  display:flex;
+  gap:2px;
+}
+.ts-btn {
+  flex:1; font-size:12px; font-weight:500;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:6px 4px; border-radius:7px; border:none;
+  background:transparent; color:var(--muted);
+  cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.ts-btn.active { background:var(--surface); color:var(--primary); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+
+.date-range-pill {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:0 10px;
+  height:36px;
+  white-space:nowrap;
+  flex-shrink:0;
+  color:var(--slate);
+  font-size:11px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.12s;
+}
+.date-range-pill:hover { border-color:var(--primary); color:var(--primary); }
+
+.page-header { margin-bottom:2px; }
+.page-eyebrow { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:3px; }
+.page-title { font-size:18px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); line-height:1.2; }
+.page-title span { color:var(--c-savt); }
+.page-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+.section-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── KPI CARDS — grille 2×2 style référence ── */
+.kpi-grid-2x2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.kpi-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  padding:16px 16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  box-shadow:var(--card-shadow);
+  position:relative;
+  overflow:hidden;
+}
+/* Accent couleur en haut */
+.kpi-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background:var(--module-color, var(--c-savt));
+  border-radius:14px 14px 0 0;
+}
+/* Card active / sélectionnée */
+.kpi-card.active-card {
+  border-color:var(--module-color, var(--c-savt));
+  box-shadow:0 0 0 1px var(--module-color, var(--c-savt));
+}
+.kpi-label {
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  line-height:1;
+  margin-bottom:4px;
+}
+.kpi-big {
+  font-size:36px;
+  font-weight:300;
+  letter-spacing:-0.04em;
+  line-height:1;
+  margin-bottom:4px;
+}
+.kpi-big .unit { font-size:18px; font-weight:300; }
+.kpi-secondary {
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.35;
+  font-family:'DM Mono',monospace;
+}
+.kpi-sub-row { display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-top:6px; }
+.delta-up { font-size:9px; font-weight:600; background:var(--success-tint); color:var(--success); padding:1px 5px; border-radius:100px; font-family:'DM Mono',monospace; }
+.delta-dn { font-size:9px; font-weight:600; background:var(--danger-tint); color:var(--danger); padding:1px 5px; border-radius:100px; font-family:'DM Mono',monospace; }
+.kpi-bar-wrap { margin-top:10px; }
+.kpi-bar { height:2px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.kpi-fill { height:100%; border-radius:100px; }
+
+/* ── RICH CARDS (Indemnités + TPS) ── */
+.rich-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:var(--card-shadow);
+}
+.rich-card-head {
+  padding:13px 16px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.rich-card-title {
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink);
+}
+.rich-card-body { padding:14px 16px 16px; }
+.rich-badge-neutral {
+  font-size:9px; font-weight:700;
+  font-family:'DM Mono',monospace;
+  color:var(--muted);
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:100px;
+  padding:2px 8px;
+  white-space:nowrap;
+}
+.rich-badge-warn {
+  font-size:9px; font-weight:700;
+  font-family:'DM Mono',monospace;
+  color:var(--warning);
+  background:var(--warning-tint);
+  border-radius:100px;
+  padding:3px 10px;
+  white-space:nowrap;
+}
+.delta-badge-green {
+  font-size:10px; font-weight:600;
+  font-family:'DM Mono',monospace;
+  color:var(--success);
+  background:var(--success-tint);
+  border-radius:100px;
+  padding:4px 10px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+/* Sous-blocs Indemnités — 100% design system tokens */
+.indem-bloc {
+  border-radius:10px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  border:1px solid var(--border);
+}
+.indem-trans {
+  background:var(--success-tint);
+}
+.indem-elogik {
+  background:var(--primary-tint);
+}
+.indem-bloc-label {
+  font-size:9px; font-weight:700;
+  font-family:'DM Mono',monospace;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--muted);
+}
+.indem-trans .indem-bloc-label { color:var(--success); opacity:0.7; }
+.indem-elogik .indem-bloc-label { color:var(--primary); opacity:0.7; }
+.indem-bloc-value {
+  font-size:20px; font-weight:300;
+  letter-spacing:-0.03em;
+  line-height:1;
+}
+.indem-trans .indem-bloc-value { color:var(--success); }
+.indem-elogik .indem-bloc-value { color:var(--primary); }
+/* Chips transporteurs TPS */
+.trans-chip {
+  font-size:10px; font-weight:700;
+  font-family:'DM Mono',monospace;
+  border-radius:100px;
+  padding:4px 10px;
+  white-space:nowrap;
+}
+.chip-danger { background:var(--danger-tint); color:var(--danger); }
+.chip-success { background:var(--success-tint); color:var(--success); }
+
+/* ── CARD BASE ── */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
+.card-head { padding:12px 14px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.card-title { font-size:13px; font-weight:600; color:var(--ink); }
+.card-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+.card-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; white-space:nowrap; }
+.cb-bad { background:var(--danger-tint); color:var(--danger); }
+.cb-savt { background:var(--c-savt-t); color:var(--c-savt); }
+
+/* ── CHART (horizontal scroll) ── */
+.chart-scroll-wrap {
+  overflow-x:auto;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.chart-scroll-wrap::-webkit-scrollbar { display:none; }
+.chart-inner { width:700px; height:200px; padding:12px 14px 14px; }
+.chart-tabs { display:flex; gap:4px; padding:10px 14px 0; }
+.ct-btn { font-size:11px; font-weight:500; padding:4px 12px; border-radius:7px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
+.ct-btn.active { background:var(--c-savt-t); color:var(--c-savt); border-color:var(--c-savt); font-weight:600; }
+.chart-legend { display:flex; gap:12px; flex-wrap:wrap; padding:3px 14px 8px; }
+.cl-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--muted); }
+.cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
+
+/* ── TABLE (horizontal scroll) ── */
+.tbl-wrap { overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.tbl-wrap::-webkit-scrollbar { display:none; }
+.tbl { border-collapse:collapse; font-size:11px; min-width:580px; width:100%; }
+.tbl th { font-size:8px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
+.tbl th.center { text-align:center; }
+.tbl td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; white-space:nowrap; }
+.tbl td.center { text-align:center; }
+.tbl tbody tr:last-child td { border-bottom:none; }
+.num-mono { font-family:'DM Mono',monospace; font-size:11px; }
+.num-good { color:var(--success); font-weight:600; font-family:'DM Mono',monospace; }
+.num-warn { color:var(--warning); font-weight:600; font-family:'DM Mono',monospace; }
+.num-bad { color:var(--danger); font-weight:600; font-family:'DM Mono',monospace; }
+.badge-pill { display:inline-flex; align-items:center; padding:2px 7px; border-radius:100px; font-size:8px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
+.bp-ouvert { background:var(--danger-tint); color:var(--danger); }
+.bp-encours { background:var(--warning-tint); color:var(--warning); }
+.bp-resolu { background:var(--success-tint); color:var(--success); }
+.bp-attente { background:var(--c-savt-t); color:var(--c-savt); }
+.source-chip { display:inline-flex; align-items:center; font-size:8px; font-weight:600; padding:2px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.sc-client { background:var(--c-business-t); color:var(--c-business); }
+.sc-trans { background:var(--c-qtrans-t); color:var(--c-qtrans); }
+
+/* ── TOGGLE SECTION (collapsible) ── */
+.toggle-section {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:var(--card-shadow);
+}
+.toggle-header {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:13px 14px;
+  cursor:pointer;
+  user-select:none;
+  transition:background 0.12s;
+}
+.toggle-header:active { background:var(--surface2); }
+.toggle-title {
+  font-size:12px;
+  font-weight:600;
+  color:var(--ink);
+}
+.toggle-body {
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+  padding:0 14px;
+}
+.toggle-body.open {
+  max-height:2400px;
+  padding:0 14px 14px;
+}
+
+/* ── ALERT FEED (rich cards — pattern référence) ── */
+.alit-feed { display:flex; flex-direction:column; gap:10px; padding:12px 12px; }
+.alit-card { background:var(--surface); border:1px solid var(--border2); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
+.alit-card-inner { padding:14px 14px 12px; }
+.alit-header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:7px; }
+.alit-title { font-size:13px; font-weight:600; color:var(--ink); line-height:1.3; flex:1; }
+.alit-badge { font-size:9px; font-weight:700; font-family:'DM Mono',monospace; border-radius:100px; padding:3px 9px; white-space:nowrap; flex-shrink:0; }
+.alit-badge-danger { background:var(--danger-tint); color:var(--danger); }
+.alit-badge-warn   { background:var(--warning-tint); color:var(--warning); }
+.alit-badge-info   { background:var(--c-savt-t); color:var(--c-savt); }
+.alit-desc { font-size:12px; color:var(--slate); line-height:1.55; margin-bottom:10px; }
+.alit-meta-row { display:flex; align-items:center; gap:6px; margin-bottom:11px; flex-wrap:nowrap; overflow:hidden; }
+.alit-trans-chip { font-size:10px; font-weight:700; font-family:'DM Mono',monospace; border-radius:100px; padding:2px 8px; white-space:nowrap; flex-shrink:0; }
+.alit-trans-danger { background:var(--danger-tint); color:var(--danger); }
+.alit-trans-warn   { background:var(--warning-tint); color:var(--warning); }
+.alit-trans-info   { background:var(--primary-tint); color:var(--primary); }
+.alit-sep { font-size:10px; color:var(--border2); flex-shrink:0; }
+.alit-meta-text { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; flex-shrink:0; }
+.alit-meta-amount { font-size:10px; font-weight:700; font-family:'DM Mono',monospace; color:var(--ink); white-space:nowrap; flex-shrink:0; }
+/* 3-CTA row */
+.alit-cta-row { display:flex; gap:7px; align-items:stretch; }
+.alit-cta-primary { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; background:var(--ink); color:var(--surface); border:none; border-radius:8px; padding:8px 12px; cursor:pointer; transition:opacity 0.12s; white-space:nowrap; }
+[data-theme="dark"] .alit-cta-primary { background:var(--surface2); color:var(--ink); border:1px solid var(--border2); }
+.alit-cta-primary:active { opacity:0.75; }
+.alit-cta-save { width:38px; border:1px solid var(--border2); background:var(--surface2); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.15s; flex-shrink:0; }
+.alit-cta-save:active, .alit-cta-save.saved { background:var(--success-tint); border-color:rgba(42,149,84,0.3); color:var(--success); }
+.alit-cta-analyse { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; background:var(--success-tint); color:var(--success); border:none; border-radius:8px; padding:8px 12px; cursor:pointer; transition:opacity 0.12s; white-space:nowrap; margin-left:auto; }
+.alit-cta-analyse:active { opacity:0.75; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ── SIGNAL FEED (pattern home cross-modules) ── */
+.signal-feed {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:10px 12px 14px;
+}
+/* Chaque signal = une card avec bordure et accent gauche */
+.signal-row {
+  display:flex;
+  align-items:flex-start;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+  transition:opacity 0.2s;
+  box-shadow:var(--card-shadow);
+}
+.signal-row:active { opacity:0.85; }
+/* Accent barre gauche colorée */
+.signal-row-left {
+  width:4px;
+  align-self:stretch;
+  flex-shrink:0;
+}
+.signal-row-danger .signal-row-left { background:var(--danger); }
+.signal-row-warn   .signal-row-left { background:var(--warning); }
+.signal-row-info   .signal-row-left { background:var(--primary); }
+/* Contenu intérieur */
+.signal-row-inner {
+  flex:1;
+  display:flex;
+  align-items:flex-start;
+  gap:0;
+  padding:12px 10px 12px 12px;
+  min-width:0;
+}
+.signal-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  margin-top:3px;
+  margin-right:8px;
+  animation:pulse 2s infinite;
+  flex-shrink:0;
+}
+.signal-dot-danger { background:var(--danger); }
+.signal-dot-warn   { background:var(--warning); }
+.signal-dot-info   { background:var(--primary); }
+.signal-row-body {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.signal-source {
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  font-family:'DM Mono',monospace;
+  line-height:1;
+}
+.signal-text { font-size:12px; line-height:1.4; }
+.signal-title { font-weight:600; }
+.signal-title-danger { color:var(--danger); }
+.signal-title-warn   { color:var(--warning); }
+.signal-title-info   { color:var(--primary); }
+.signal-desc { color:var(--slate); }
+
+.signal-row-ctas {
+  display:flex;
+  align-items:flex-end;
+  gap:5px;
+  flex-shrink:0;
+  flex-direction:column;
+  padding:12px 10px 12px 6px;
+}
+.signal-cta-ia {
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:10px;
+  font-weight:600;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--violet);
+  color:white;
+  border:none;
+  border-radius:100px;
+  padding:5px 10px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:opacity 0.12s;
+}
+.signal-cta-ia:active { opacity:0.8; }
+.signal-cta-save {
+  display:flex;
+  align-items:center;
+  gap:4px;
+  font-size:10px;
+  font-weight:500;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--surface2);
+  color:var(--slate);
+  border:1px solid var(--border2);
+  border-radius:100px;
+  padding:5px 10px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all 0.15s;
+}
+.signal-cta-save.saved {
+  background:var(--success-tint);
+  color:var(--success);
+  border-color:rgba(42,149,84,0.25);
+  cursor:default;
+}
+.signal-cta-dismiss {
+  width:22px; height:22px;
+  border-radius:50%;
+  border:1px solid var(--border2);
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:var(--muted);
+  transition:all 0.12s;
+  flex-shrink:0;
+  margin-top:auto;
+}
+.signal-cta-dismiss:active { background:var(--surface2); }
+
+/* ── État "lu" / grisé ── */
+.signal-row.signal-read {
+  opacity:0.38;
+  filter:grayscale(0.6);
+  box-shadow:none;
+  border-color:var(--border);
+}
+.signal-row.signal-read .signal-dot { animation:none; }
+.signal-row.dismissed { display:none; }
+
+
+.trans-tbl { border-collapse:collapse; font-size:11px; min-width:480px; width:100%; }
+.trans-tbl th { font-size:8px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
+.trans-tbl td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; white-space:nowrap; }
+.trans-tbl tbody tr:last-child td { border-bottom:none; }
+.trans-bar { height:5px; background:var(--border2); border-radius:100px; overflow:hidden; min-width:60px; }
+.trans-fill { height:100%; border-radius:100px; }
+
+/* ── BOTTOM BAR — navigation globale persistante ── */
+.bottombar {
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  z-index:300;
+  display:flex;
+  align-items:center;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  gap:10px;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.07);
+  min-height:calc(64px + env(safe-area-inset-bottom));
+}
+
+/* Côtés — Analyses & Alertes */
+.bb-tab {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  cursor:pointer;
+  flex-shrink:0;
+  width:52px;
+  position:relative;
+  transition:opacity 0.12s;
+}
+.bb-tab:active { opacity:0.7; }
+.bb-tab-icon {
+  width:26px; height:26px;
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+}
+.bb-tab-icon svg { width:15px; height:15px; }
+.bb-tab-label {
+  font-size:9px; font-weight:600;
+  font-family:'DM Mono',monospace;
+  letter-spacing:0.04em;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.bb-tab-badge {
+  position:absolute;
+  top:-2px; right:2px;
+  min-width:16px; height:16px;
+  border-radius:100px;
+  background:var(--danger);
+  color:white;
+  font-size:8px; font-weight:700;
+  font-family:'DM Mono',monospace;
+  display:flex; align-items:center; justify-content:center;
+  padding:0 4px;
+  border:1.5px solid var(--surface);
+}
+.bb-tab-badge.blue {
+  background:var(--primary);
+}
+
+/* Centre — champ elo·IA pill */
+.bb-ai-pill {
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:100px;
+  padding:9px 14px;
+  cursor:pointer;
+  transition:border-color 0.15s, box-shadow 0.15s;
+  min-width:0;
+}
+.bb-ai-pill:active { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
+.bb-ai-avatar {
+  width:26px; height:26px;
+  border-radius:50%;
+  background:var(--violet);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.bb-ai-avatar svg { width:13px; height:13px; }
+.bb-ai-placeholder {
+  flex:1;
+  font-size:12px;
+  color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.bb-ai-send {
+  width:28px; height:28px;
+  border-radius:50%;
+  background:var(--violet);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  opacity:0.45;
+}
+.bb-ai-send svg { width:12px; height:12px; }
+
+/* ── elo·IA SHEET (bottom drawer) ── */
+.ai-sheet-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.45);
+  z-index:400; opacity:0; pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.ai-sheet-overlay.open { opacity:1; pointer-events:all; }
+.ai-sheet {
+  position:fixed; bottom:0; left:0; right:0;
+  height:75vh;
+  background:var(--surface);
+  border-radius:18px 18px 0 0;
+  border-top:1px solid var(--border);
+  z-index:401;
+  transform:translateY(100%);
+  transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.ai-sheet.open { transform:translateY(0); }
+.ai-sheet-handle {
+  width:36px; height:4px; border-radius:100px;
+  background:var(--border2); margin:10px auto 0;
+  flex-shrink:0;
+}
+.ai-sheet-head {
+  padding:10px 16px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+  flex-shrink:0;
+}
+.ai-av {
+  width:30px; height:30px; border-radius:8px;
+  background:var(--violet);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.ai-av svg { width:15px; height:15px; }
+.ai-sheet-title { font-size:13px; font-weight:600; color:var(--ink); }
+.ai-sheet-sub { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
+.live-badge { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:600; font-family:'DM Mono',monospace; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:4px 10px; white-space:nowrap; margin-left:auto; }
+.live-pulse { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+.ai-sheet-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.chat-area { padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+.chat-bubble-wrap { display:flex; flex-direction:column; gap:3px; }
+.chat-bubble-wrap.user-wrap { align-items:flex-end; }
+.chat-bubble-wrap.ai-wrap { align-items:flex-start; }
+.chat-bubble { padding:9px 12px; border-radius:12px; font-size:12px; line-height:1.55; max-width:88%; }
+.chat-bubble.user { background:var(--violet); color:white; border-radius:12px 12px 3px 12px; }
+.chat-bubble.ai { background:var(--surface2); border:1px solid var(--border); color:var(--ink); border-radius:12px 12px 12px 3px; }
+.chat-bubble-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; padding:0 3px; }
+.ai-conclusion { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.2); border-radius:10px; padding:10px 12px; margin:8px 0; }
+[data-theme="dark"] .ai-conclusion { border-color:rgba(167,139,255,0.25); }
+.ai-conclusion-head { display:flex; align-items:center; gap:6px; font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:6px; }
+.ai-conclusion-head svg { width:12px; height:12px; }
+.ai-conclusion-body { font-size:11px; color:var(--ink); line-height:1.6; }
+.qs-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:10px 14px 6px; }
+.qs-grid { display:flex; flex-direction:column; gap:5px; padding:0 14px 10px; }
+.q-chip { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:8px 12px; font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.q-chip:active { border-color:var(--violet); color:var(--ink); background:var(--violet-tint); }
+.q-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.ai-input-row { padding:10px 12px; border-top:1px solid var(--border); display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.chat-input { flex:1; background:var(--surface2); border:1px solid var(--border2); border-radius:20px; padding:9px 14px; font-size:12px; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.chat-input:focus { border-color:var(--violet); color:var(--ink); }
+.send-btn { width:32px; height:32px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.4; transition:opacity 0.15s; }
+.send-btn.ready { opacity:1; }
+.send-btn svg { width:13px; height:13px; }
+
+/* ── ALERT SHEET ── */
+.alert-sheet {
+  position:fixed; bottom:0; left:0; right:0;
+  height:70vh;
+  background:var(--surface);
+  border-radius:18px 18px 0 0;
+  border-top:1px solid var(--border);
+  z-index:401;
+  transform:translateY(100%);
+  transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.alert-sheet.open { transform:translateY(0); }
+.alert-sheet-head {
+  padding:10px 16px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+  flex-shrink:0;
+}
+.alert-sheet-title { font-size:13px; font-weight:600; color:var(--ink); }
+.alert-sheet-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+/* ── AA (analyses & actions) ── */
+.aa-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
+.aa-head { padding:11px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.aa-head-title { font-size:12px; font-weight:600; color:var(--ink); }
+.aa-head-badge { font-size:10px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
+.aa-body { padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
+.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:3px; }
+.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:5px; }
+.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
+
+.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; display:flex; align-items:flex-start; gap:9px; }
+.action-check { width:16px; height:16px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.action-check.done { border-color:var(--success); background:var(--success); }
+.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
+.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
+
+.aa-add-row { padding:8px 12px; border-top:1px solid var(--border); }
+.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:7px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.aa-add-input:focus { border-color:var(--violet); }
+
+/* ── SCROLL HINT ── */
+.scroll-hint {
+  display:flex; align-items:center; gap:4px;
+  font-size:9px; color:var(--muted); font-family:'DM Mono',monospace;
+  padding:4px 0 0 2px;
+}
+.scroll-hint svg { width:11px; height:11px; opacity:0.5; }
+</style>
+</head>
+<body>
+
+<canvas id="grain-canvas" aria-hidden="true"></canvas>
+
+<!-- ══ DRAWER OVERLAY ══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- ══ DRAWER MENU ══ -->
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div style="width:28px;height:28px;border-radius:7px;background:var(--primary);display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" style="width:14px;height:14px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:300;color:var(--ink);letter-spacing:-0.02em;">elo<strong>logik</strong></div>
+      <span style="font-size:10px;color:var(--primary);font-family:'DM Mono',monospace;">(flow)</span>
+    </div>
+    <div class="drawer-close" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+  <div class="nav-section">Principal</div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Tableau de bord
+  </div>
+  <div class="nav-section">Modules</div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    Business
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    Qualité logistique
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    Qualité transport
+  </div>
+  <div class="nav-item active">
+    <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    Litiges transport <span class="nav-badge">12</span>
+  </div>
+  <div class="nav-item" style="opacity:0.5;">
+    <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
+    Retours <span class="nav-badge-warn">24</span>
+  </div>
+  <div class="nav-item" style="opacity:0.5;">
+    <div class="nav-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+    Stocks <span class="nav-badge">8</span>
+  </div>
+  <div class="drawer-bottom">
+    <div class="nav-llm">
+      <div class="nav-llm-top"><span class="nav-llm-label">elo · IA</span><span class="nav-llm-count">31/50</span></div>
+      <div class="nav-llm-bar"><div class="nav-llm-fill"></div></div>
+      <div class="nav-llm-sub">19 requêtes restantes ce mois</div>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar">VL</div>
+      <div><div class="nav-user-name">Victor L.</div><div class="nav-user-role">Admin logistique</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <div class="burger-btn" onclick="openDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </div>
+  <div class="topbar-brand">
+    <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <span class="brand-name">elo<strong>logik</strong> <span style="color:var(--muted);font-weight:300;font-size:11px;">/ Litiges</span></span>
+  </div>
+  <div class="topbar-right">
+    <div class="theme-toggle" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </div>
+    <div class="icon-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <div class="notif-dot"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ SCROLL AREA ══ -->
+<div class="scroll-area">
+<div class="content">
+
+  <!-- Period selector -->
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="period-bar" style="flex:1;">
+      <button class="ts-btn" onclick="setPeriod(this,'Jour')">Jour</button>
+      <button class="ts-btn active" onclick="setPeriod(this,'Semaine')">Semaine</button>
+      <button class="ts-btn" onclick="setPeriod(this,'Mois')">Mois</button>
+      <button class="ts-btn" onclick="setPeriod(this,'Année')">Année</button>
+    </div>
+    <div class="date-range-pill" id="dateRangePill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="width:12px;height:12px;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span id="dateRangeLabel">17 – 23 mars</span>
+    </div>
+  </div>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-eyebrow">Module</div>
+    <div class="page-title"><span>Litiges Transport</span></div>
+    <div class="page-sub">S17–23 mars 2025 · tous transporteurs</div>
+  </div>
+
+  <!-- KPI CARDS 2×2 -->
+  <div>
+    <div class="section-label">
+      <div style="width:16px;height:16px;border-radius:4px;background:var(--c-savt-t);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      Indicateurs clés
+    </div>
+    <div class="kpi-grid-2x2">
+
+      <!-- Résolus -->
+      <div class="kpi-card" style="--module-color:var(--success)">
+        <div class="kpi-label">Résolus</div>
+        <div class="kpi-big" style="color:var(--success)">8</div>
+        <div class="kpi-secondary">sur 55 créés · 14,5%</div>
+        <div class="kpi-sub-row"><span class="delta-up">↑ +3</span><span style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;">vs S préc.</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--success);width:14.5%"></div></div></div>
+      </div>
+
+      <!-- Litiges ouverts -->
+      <div class="kpi-card" style="--module-color:var(--danger)">
+        <div class="kpi-label">Litiges ouverts</div>
+        <div class="kpi-big" style="color:var(--danger)">12</div>
+        <div class="kpi-secondary">en attente · +57%</div>
+        <div class="kpi-sub-row"><span class="delta-dn">↑ +4</span><span style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;">cette semaine</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:78%"></div></div></div>
+      </div>
+
+      <!-- Coût -->
+      <div class="kpi-card" style="--module-color:var(--c-savt)">
+        <div class="kpi-label">Coût litiges</div>
+        <div class="kpi-big" style="color:var(--c-savt)">18 420<span class="unit">€</span></div>
+        <div class="kpi-secondary">résolus · 3 240€</div>
+        <div class="kpi-sub-row"><span class="delta-dn">↑ +4 120€</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-savt);width:62%"></div></div></div>
+      </div>
+
+      <!-- TPS résolution -->
+      <div class="kpi-card" style="--module-color:var(--warning)">
+        <div class="kpi-label">TPS résolution</div>
+        <div class="kpi-big" style="color:var(--warning)">8,2<span class="unit"> j</span></div>
+        <div class="kpi-secondary">objectif ≤ 5j · hors cible</div>
+        <div class="kpi-sub-row"><span class="delta-dn">↑ +1,4j</span><span style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;">vs S préc.</span></div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:61%"></div></div></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- CARD : Indemnités totales + TPS résolution -->
+  <div style="display:flex;flex-direction:column;gap:10px;">
+
+    <!-- ── Indemnités totales reçues ── -->
+    <div class="rich-card">
+      <div class="rich-card-head">
+        <div class="rich-card-title">Indemnités totales reçues</div>
+        <span class="rich-badge-neutral">12 clôturés</span>
+      </div>
+      <div class="rich-card-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;">
+          <div>
+            <div style="font-size:26px;font-weight:300;letter-spacing:-0.03em;color:var(--ink);line-height:1;">3 240 <span style="font-size:16px;">€</span></div>
+            <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;">remboursements · S 17–23 mars</div>
+          </div>
+          <span class="delta-badge-green">+1 240 € vs S16</span>
+        </div>
+        <!-- Deux sous-blocs sombres -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="indem-bloc indem-trans">
+            <div class="indem-bloc-label">Transporteur</div>
+            <div class="indem-bloc-value">2 180 €</div>
+          </div>
+          <div class="indem-bloc indem-elogik">
+            <div class="indem-bloc-label">e-LOGIK</div>
+            <div class="indem-bloc-value">1 060 €</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TPS résolution moyen ── -->
+    <div class="rich-card">
+      <div class="rich-card-head">
+        <div class="rich-card-title">TPS résolution moyen</div>
+        <span class="rich-badge-warn">Hors cible</span>
+      </div>
+      <div class="rich-card-body">
+        <div style="display:flex;align-items:center;gap:18px;">
+          <!-- Donut canvas -->
+          <div style="position:relative;flex-shrink:0;width:72px;height:72px;">
+            <canvas id="donutTPS" width="72" height="72"></canvas>
+          </div>
+          <!-- Texte droite -->
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:34px;font-weight:300;letter-spacing:-0.04em;color:var(--warning);line-height:1;">8,2 <span style="font-size:18px;font-weight:300;">j</span></div>
+            <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;margin-bottom:10px;">objectif ≤ 5j · +1,4j vs S16</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="trans-chip chip-danger">GLS 11,4 j</span>
+              <span class="trans-chip chip-success">DHL 2,1 j</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ ALERTES LITIGES — toggle collapsible ══ -->
+  <div class="toggle-section" id="alertesToggleSection">
+
+    <!-- Header cliquable -->
+    <div class="toggle-header" onclick="toggleAlertes()" id="alertesToggleHeader">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+        <div style="width:16px;height:16px;border-radius:4px;background:var(--danger-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </div>
+        <span class="toggle-title">Alertes litiges</span>
+        <span style="font-size:9px;font-weight:700;font-family:'DM Mono',monospace;background:var(--danger-tint);color:var(--danger);padding:1px 7px;border-radius:100px;">5 actives</span>
+      </div>
+      <svg id="alertesChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;transition:transform 0.25s;"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+
+    <!-- Corps collapsible — fermé par défaut -->
+    <div class="toggle-body" id="alertesToggleBody">
+      <div style="display:flex;flex-direction:column;gap:10px;padding-top:2px;">
+
+        <!-- Alerte 1 — Critique -->
+        <div class="alit-card">
+          <div class="alit-card-inner">
+            <div class="alit-header">
+              <div class="alit-title">Colis non réceptionné — CMD-48221</div>
+              <span class="alit-badge alit-badge-danger">Critique</span>
+            </div>
+            <div class="alit-desc">Dernière position : hub Lyon-Sud (GLS). Délai dépassé de 48h. Client récurrent — risque de résiliation.</div>
+            <div class="alit-meta-row">
+              <span class="alit-trans-chip alit-trans-danger">GLS</span>
+              <span class="alit-sep">·</span>
+              <span class="alit-meta-text">14 mars</span>
+              <span class="alit-meta-amount">847 €</span>
+              <span style="flex:1;text-align:right;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Beauté Pro Paris</span>
+            </div>
+            <div class="alit-cta-row">
+              <button class="alit-cta-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Voir dans ekan</button>
+              <button class="alit-cta-save" onclick="this.classList.toggle('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              <button class="alit-cta-analyse" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerte 2 — À traiter -->
+        <div class="alit-card">
+          <div class="alit-card-inner">
+            <div class="alit-header">
+              <div class="alit-title">Colis endommagé — CMD-48199</div>
+              <span class="alit-badge alit-badge-warn">À traiter</span>
+            </div>
+            <div class="alit-desc">Photo de preuve reçue. Remboursement à initier auprès de Chronopost. SLA : 2 jours restants.</div>
+            <div class="alit-meta-row">
+              <span class="alit-trans-chip alit-trans-warn">Chronopost</span>
+              <span class="alit-sep">·</span>
+              <span class="alit-meta-text">13 mars</span>
+              <span class="alit-meta-amount">612 €</span>
+              <span style="flex:1;text-align:right;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Salon Kera Bordeaux</span>
+            </div>
+            <div class="alit-cta-row">
+              <button class="alit-cta-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Voir dans ekan</button>
+              <button class="alit-cta-save" onclick="this.classList.toggle('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              <button class="alit-cta-analyse" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerte 3 — À traiter -->
+        <div class="alit-card">
+          <div class="alit-card-inner">
+            <div class="alit-header">
+              <div class="alit-title">Retard 24h — 3 commandes DHL</div>
+              <span class="alit-badge alit-badge-warn">À traiter</span>
+            </div>
+            <div class="alit-desc">CMD-48240, CMD-48241, CMD-48255 — incident réseau DHL Île-de-France. Mise à jour attendue ce soir.</div>
+            <div class="alit-meta-row">
+              <span class="alit-trans-chip alit-trans-info">DHL</span>
+              <span class="alit-sep">·</span>
+              <span class="alit-meta-text">Ce matin</span>
+              <span class="alit-meta-amount">1 357 €</span>
+              <span style="flex:1;text-align:right;font-size:10px;color:var(--warning);font-family:'DM Mono',monospace;white-space:nowrap;">Impact client</span>
+            </div>
+            <div class="alit-cta-row">
+              <button class="alit-cta-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Voir dans ekan</button>
+              <button class="alit-cta-save" onclick="this.classList.toggle('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              <button class="alit-cta-analyse" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerte 4 — Critique -->
+        <div class="alit-card">
+          <div class="alit-card-inner">
+            <div class="alit-header">
+              <div class="alit-title">Litige GLS non répondu — 11 jours</div>
+              <span class="alit-badge alit-badge-danger">Critique</span>
+            </div>
+            <div class="alit-desc">CMD-48190 — adresse incorrecte signalée par GLS. Aucune réponse depuis l'ouverture. Escalade requise.</div>
+            <div class="alit-meta-row">
+              <span class="alit-trans-chip alit-trans-danger">GLS</span>
+              <span class="alit-sep">·</span>
+              <span class="alit-meta-text">12 mars</span>
+              <span class="alit-meta-amount">412 €</span>
+              <span style="flex:1;text-align:right;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Beauty Group SAS</span>
+            </div>
+            <div class="alit-cta-row">
+              <button class="alit-cta-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Escalader</button>
+              <button class="alit-cta-save" onclick="this.classList.toggle('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              <button class="alit-cta-analyse" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerte 5 — Suivi -->
+        <div class="alit-card">
+          <div class="alit-card-inner">
+            <div class="alit-header">
+              <div class="alit-title">Hausse coût litiges · +26% sur 4 semaines</div>
+              <span class="alit-badge alit-badge-info">Suivi</span>
+            </div>
+            <div class="alit-desc">Coût S17 : 18 420€ vs 14 600€ en S13. Tendance en accélération.</div>
+            <div class="alit-meta-row">
+              <span class="alit-meta-text">23 mars</span>
+              <span class="alit-meta-amount" style="color:var(--danger);">+3 820 €</span>
+              <span style="flex:1;text-align:right;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">Tous transporteurs</span>
+            </div>
+            <div class="alit-cta-row">
+              <button class="alit-cta-primary" style="background:var(--c-savt-t);color:var(--c-savt);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Voir graphe</button>
+              <button class="alit-cta-save" onclick="this.classList.toggle('saved')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:13px;height:13px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+              <button class="alit-cta-analyse" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAPHE évolution litiges -->
+  <div>
+    <div class="section-label">
+      <div style="width:16px;height:16px;border-radius:4px;background:var(--c-savt-t);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+      Évolution litiges
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-title">Volume · 12 semaines</div><div class="card-sub">Ouverts vs résolus</div></div>
+      </div>
+      <div class="chart-tabs" id="litChartTabs">
+        <button class="ct-btn active" onclick="switchLitChart(this,'volume')">Volume</button>
+        <button class="ct-btn" onclick="switchLitChart(this,'cout')">Coût €</button>
+      </div>
+      <div class="chart-legend" id="litLegend">
+        <div class="cl-item"><div class="cl-dot" style="background:var(--c-savt)"></div>Litiges ouverts</div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--success)"></div>Litiges résolus</div>
+      </div>
+      <div class="scroll-hint" style="padding:0 14px 4px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        Scroll horizontal
+      </div>
+      <div class="chart-scroll-wrap">
+        <div class="chart-inner"><canvas id="chartLitiges"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLEAU état litiges -->
+  <div>
+    <div class="section-label">
+      <div style="width:16px;height:16px;border-radius:4px;background:var(--c-savt-t);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-savt)" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+      Suivi des litiges
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-title">État des litiges en cours</div><div class="card-sub">12 litiges actifs · S17–23 mars 2025</div></div>
+        <span class="card-badge cb-bad">12 ouverts</span>
+      </div>
+      <div class="scroll-hint" style="padding:6px 14px 4px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        Scroll horizontal
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Référence</th>
+              <th>Transporteur</th>
+              <th>Type</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th class="center">Montant</th>
+              <th class="center">Âge</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48221</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Beauté Pro Paris</div></td>
+              <td><span class="num-bad">GLS</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Non réceptionné</span></td>
+              <td><span class="badge-pill bp-ouvert">Ouvert</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">14 mars</span></td>
+              <td class="center"><span class="num-bad">847 €</span></td>
+              <td class="center"><span class="num-bad">9j</span></td>
+              <td><span class="source-chip sc-client">Client</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48199</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Salon Kera Bordeaux</div></td>
+              <td><span class="num-warn">Chronopost</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Colis endommagé</span></td>
+              <td><span class="badge-pill bp-encours">En cours</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">13 mars</span></td>
+              <td class="center"><span class="num-warn">612 €</span></td>
+              <td class="center"><span class="num-warn">10j</span></td>
+              <td><span class="source-chip sc-trans">Trans.</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48255</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Institut Nüber Paris</div></td>
+              <td><span class="num-warn" style="color:var(--c-qtrans)">DHL</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Retard livraison</span></td>
+              <td><span class="badge-pill bp-encours">En cours</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">18 mars</span></td>
+              <td class="center"><span class="num-warn">534 €</span></td>
+              <td class="center"><span class="num-mono">5j</span></td>
+              <td><span class="source-chip sc-client">Client</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48240</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">ProCoiff Lyon</div></td>
+              <td><span class="num-warn" style="color:var(--c-qtrans)">DHL</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Retard livraison</span></td>
+              <td><span class="badge-pill bp-attente">Att. réponse</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">18 mars</span></td>
+              <td class="center"><span class="num-mono">289 €</span></td>
+              <td class="center"><span class="num-mono">5j</span></td>
+              <td><span class="source-chip sc-client">Client</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48190</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Beauty Group SAS</div></td>
+              <td><span class="num-bad">GLS</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Adresse incorrecte</span></td>
+              <td><span class="badge-pill bp-ouvert">Ouvert</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">12 mars</span></td>
+              <td class="center"><span class="num-warn">412 €</span></td>
+              <td class="center"><span class="num-bad">11j</span></td>
+              <td><span class="source-chip sc-trans">Trans.</span></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;color:var(--ink)">CMD-48312</span><div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace">Argan Beauty Tlse</div></td>
+              <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--success)">Colissimo</span></td>
+              <td><span style="font-size:10px;color:var(--slate)">Perte colis</span></td>
+              <td><span class="badge-pill bp-resolu">Résolu</span></td>
+              <td><span class="num-mono" style="color:var(--muted)">10 mars</span></td>
+              <td class="center"><span class="num-mono">198 €</span></td>
+              <td class="center"><span class="num-good">13j</span></td>
+              <td><span class="source-chip sc-client">Client</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:8px 14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px;">
+        <span>Affichage 6 sur 12</span>
+        <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500;">Voir tous →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSPORTEURS -->
+  <div class="card">
+    <div class="card-head">
+      <div><div class="card-title">Répartition transporteurs</div><div class="card-sub">TPS résolution · sources</div></div>
+      <span class="card-badge cb-savt">5 trans.</span>
+    </div>
+    <div class="scroll-hint" style="padding:6px 14px 4px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      Scroll horizontal
+    </div>
+    <div class="tbl-wrap">
+      <table class="trans-tbl">
+        <thead>
+          <tr>
+            <th>Transporteur</th>
+            <th class="center">Litiges</th>
+            <th class="center">TPS moy.</th>
+            <th>Part</th>
+            <th class="center">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="num-bad">GLS</span></td>
+            <td class="center"><span class="num-bad">23</span></td>
+            <td class="center"><span class="num-bad">11.4j</span></td>
+            <td><div class="trans-bar"><div class="trans-fill" style="background:var(--danger);width:49%"></div></div></td>
+            <td class="center"><span class="badge-pill bp-ouvert">Critique</span></td>
+          </tr>
+          <tr>
+            <td><span class="num-warn">Chronopost</span></td>
+            <td class="center"><span class="num-warn">9</span></td>
+            <td class="center"><span class="num-warn">7.8j</span></td>
+            <td><div class="trans-bar"><div class="trans-fill" style="background:var(--warning);width:30%"></div></div></td>
+            <td class="center"><span class="badge-pill bp-encours">Surveiller</span></td>
+          </tr>
+          <tr>
+            <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--c-qtrans)">DHL</span></td>
+            <td class="center"><span class="num-mono">7</span></td>
+            <td class="center"><span class="num-good">2.1j</span></td>
+            <td><div class="trans-bar"><div class="trans-fill" style="background:var(--c-qtrans);width:24%"></div></div></td>
+            <td class="center"><span class="badge-pill bp-attente">Stable</span></td>
+          </tr>
+          <tr>
+            <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--success)">Colissimo</span></td>
+            <td class="center"><span class="num-mono">5</span></td>
+            <td class="center"><span class="num-good">3.2j</span></td>
+            <td><div class="trans-bar"><div class="trans-fill" style="background:var(--success);width:18%"></div></div></td>
+            <td class="center"><span class="badge-pill bp-resolu">OK</span></td>
+          </tr>
+          <tr>
+            <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">Colis Privé</span></td>
+            <td class="center"><span class="num-good">0</span></td>
+            <td class="center"><span class="num-mono">—</span></td>
+            <td><div class="trans-bar"><div class="trans-fill" style="background:var(--success);width:1%"></div></div></td>
+            <td class="center"><span class="badge-pill bp-resolu">Excellent</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /scroll-area -->
+
+<!-- ══ BOTTOM BAR — navigation globale ══ -->
+<div class="bottombar">
+
+  <!-- Analyses (gauche) -->
+  <div class="bb-tab" onclick="openAnalysisSheet()">
+    <div class="bb-tab-badge blue" id="bbAnalysisCount">2</div>
+    <div class="bb-tab-icon" style="background:var(--primary-tint);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <span class="bb-tab-label">Analyses</span>
+  </div>
+
+  <!-- elo·IA — champ pill central -->
+  <div class="bb-ai-pill" onclick="openAISheet()">
+    <div class="bb-ai-avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+    </div>
+    <span class="bb-ai-placeholder">Posez une question sur vos…</span>
+    <div class="bb-ai-send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Alertes (droite) -->
+  <div class="bb-tab" onclick="openAlertSheet()">
+    <div class="bb-tab-badge" id="bbAlertCount">5</div>
+    <div class="bb-tab-icon" style="background:var(--danger-tint);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 01-3.46 0"/>
+      </svg>
+    </div>
+    <span class="bb-tab-label">Alertes</span>
+  </div>
+
+</div>
+
+<!-- ══ ANALYSES & ACTIONS SHEET (fusionné) ══ -->
+<div class="alert-sheet" id="analysisSheet" style="height:76vh;">
+  <div class="ai-sheet-handle"></div>
+  <div class="alert-sheet-head">
+    <div style="width:22px;height:22px;border-radius:6px;background:var(--primary-tint);display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <div class="alert-sheet-title">Analyses & Actions</div>
+    <div style="display:flex;gap:5px;margin-left:auto;">
+      <span style="font-size:10px;font-weight:700;background:var(--primary-tint);color:var(--primary);padding:2px 8px;border-radius:100px;font-family:'DM Mono',monospace;" id="analysisSheetCount">2</span>
+      <span style="font-size:10px;font-weight:700;background:var(--violet-tint);color:var(--violet);padding:2px 8px;border-radius:100px;font-family:'DM Mono',monospace;" id="actionCount">0</span>
+    </div>
+    <div style="width:26px;height:26px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:8px;" onclick="closeAnalysisSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+
+  <div class="alert-sheet-body" style="display:flex;flex-direction:column;overflow:hidden;">
+
+    <!-- Section Analyses -->
+    <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px;background:var(--surface2);border-bottom:1px solid var(--border);">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Analyses sauvegardées
+      </div>
+      <span style="font-size:9px;font-weight:700;background:var(--primary-tint);color:var(--primary);padding:1px 6px;border-radius:100px;font-family:'DM Mono',monospace;" id="analysisSheetCount2">2</span>
+    </div>
+    <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid var(--border);">
+      <div class="analysis-item">
+        <div class="analysis-q">Quels transporteurs ont le plus de litiges non résolus ?</div>
+        <div class="analysis-answer">GLS concentre 49% des litiges (23/47) avec un TPS de 11.4j. Escalade contractuelle recommandée.</div>
+        <div class="analysis-footer"><span class="analysis-time">10h18 · 23 mars</span><span class="analysis-src">Litiges Transport</span></div>
+      </div>
+      <div class="analysis-item">
+        <div class="analysis-q">Évolution du coût des litiges sur 4 semaines ?</div>
+        <div class="analysis-answer">Hausse de +26% sur 4 semaines. Coût total S17 : 18 420€ vs 14 600€ en S13.</div>
+        <div class="analysis-footer"><span class="analysis-time">09h44 · 23 mars</span><span class="analysis-src">Litiges Transport</span></div>
+      </div>
+    </div>
+
+    <!-- Section Actions -->
+    <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px;background:var(--surface2);border-bottom:1px solid var(--border);">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Plan d'actions
+      </div>
+      <span style="font-size:9px;font-weight:700;background:var(--violet-tint);color:var(--violet);padding:1px 6px;border-radius:100px;font-family:'DM Mono',monospace;" id="actionCountInner">0</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px;" id="actionList">
+      <div style="text-align:center;padding:20px 14px;color:var(--muted);font-size:12px;" id="actionEmpty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:22px;height:22px;opacity:0.3;margin:0 auto 6px;display:block;"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Aucune action planifiée
+      </div>
+    </div>
+    <div style="padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px;">
+      <input class="aa-add-input" id="actionInput" placeholder="Ajouter une action..." style="flex:1;" onkeypress="if(event.key==='Enter')addAction()"/>
+      <button onclick="addAction()" style="width:34px;height:34px;border-radius:8px;background:var(--violet);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ elo·IA SHEET ══ -->
+<div class="ai-sheet-overlay" id="aiSheetOverlay" onclick="closeAISheet()"></div>
+<div class="ai-sheet" id="aiSheet">
+  <div class="ai-sheet-handle"></div>
+  <div class="ai-sheet-head">
+    <div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+    <div>
+      <div class="ai-sheet-title">elo · IA</div>
+      <div class="ai-sheet-sub">claude-sonnet · contexte Litiges Transport</div>
+    </div>
+    <div class="live-badge"><div class="live-pulse"></div>Live</div>
+  </div>
+  <div class="ai-sheet-body">
+    <div class="chat-area" id="chatArea">
+      <div class="chat-bubble-wrap user-wrap">
+        <div class="chat-bubble user">Quels sont les litiges les plus critiques en attente de traitement ?</div>
+        <div class="chat-bubble-time">10h18</div>
+      </div>
+      <div class="chat-bubble-wrap ai-wrap">
+        <div class="chat-bubble ai" style="max-width:100%;width:100%;padding:11px 13px;">
+          <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px;">Analyse S17–S23 mars 2025 · Litiges Transport</div>
+          <div class="ai-conclusion">
+            <div class="ai-conclusion-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Préconisation elo · IA</div>
+            <div class="ai-conclusion-body"><strong>3 litiges critiques</strong> dépassent 500€ : CMD-48221 (GLS, 847€), CMD-48199 (Chronopost, 612€) et CMD-48255 (DHL, 534€). <span style="color:var(--warning);font-weight:500">GLS cumule 23 litiges</span> — TPS 11.4j, 2× la cible. Action : escalade contractuelle GLS + basculement vers Colis Privé.</div>
+          </div>
+          <div class="chat-bubble-time" style="margin-top:4px;">10h18</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 14px 10px;">
+      <div class="qs-label">Questions contextualisées</div>
+      <div class="qs-grid">
+        <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--danger)"></div><span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Litiges critiques par montant</span></div>
+        <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--warning)"></div><span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Transporteurs non résolus</span></div>
+        <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--c-savt)"></div><span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">TPS résolution par transporteur</span></div>
+        <div class="q-chip" onclick="fillChat(this)"><div class="q-dot" style="background:var(--violet)"></div><span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Évolution coût 4 semaines</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ai-input-row">
+    <input class="chat-input" id="chatInputSheet" placeholder="Posez votre question à elo IA..." oninput="toggleSendSheet(this)"/>
+    <button class="send-btn" id="sendBtnSheet" onclick="sendChatSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+
+<!-- ══ ALERT SHEET — Signaux elo · IA (cross-modules) ══ -->
+<div class="alert-sheet" id="alertSheet" style="height:82vh;">
+  <div class="ai-sheet-handle"></div>
+  <div class="alert-sheet-head">
+    <div style="width:22px;height:22px;border-radius:6px;background:var(--violet-tint);display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </div>
+    <div>
+      <div class="alert-sheet-title">Signaux elo · IA</div>
+      <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;">Tous modules · temps réel</div>
+    </div>
+    <span style="margin-left:auto;font-size:10px;font-weight:700;background:var(--violet-tint);color:var(--violet);padding:2px 8px;border-radius:100px;font-family:'DM Mono',monospace;">5 signaux</span>
+    <div style="width:26px;height:26px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:6px;" onclick="closeAlertSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+  <div class="alert-sheet-body">
+    <div class="signal-feed">
+
+      <!-- Signal 1 — Actif -->
+      <div class="signal-row signal-row-danger">
+        <div class="signal-row-left"></div>
+        <div class="signal-row-inner">
+          <div class="signal-dot signal-dot-danger"></div>
+          <div class="signal-row-body">
+            <div class="signal-source" style="color:var(--danger);">Transport · DHL IDF</div>
+            <div class="signal-text"><span class="signal-title signal-title-danger">Incident hub Roissy</span><span class="signal-desc"> — 3 commandes bloquées depuis 06h00</span></div>
+          </div>
+          <div class="signal-row-ctas">
+            <button class="signal-cta-ia" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px;flex-shrink:0;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser IA</button>
+            <button class="signal-cta-save" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Sauvegarder</button>
+            <button class="signal-cta-dismiss" onclick="dismissSignal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal 2 — Actif -->
+      <div class="signal-row signal-row-warn">
+        <div class="signal-row-left"></div>
+        <div class="signal-row-inner">
+          <div class="signal-dot signal-dot-warn"></div>
+          <div class="signal-row-body">
+            <div class="signal-source" style="color:var(--warning);">Litiges Transport</div>
+            <div class="signal-text"><span class="signal-title signal-title-warn">47 litiges ouverts</span><span class="signal-desc"> — objectif ≤ 30 dépassé de +57 %</span></div>
+          </div>
+          <div class="signal-row-ctas">
+            <button class="signal-cta-ia" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px;flex-shrink:0;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser IA</button>
+            <button class="signal-cta-save" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Sauvegarder</button>
+            <button class="signal-cta-dismiss" onclick="dismissSignal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal 3 — Actif -->
+      <div class="signal-row signal-row-warn">
+        <div class="signal-row-left"></div>
+        <div class="signal-row-inner">
+          <div class="signal-dot signal-dot-warn"></div>
+          <div class="signal-row-body">
+            <div class="signal-source" style="color:var(--warning);">Qualité Transport · GLS</div>
+            <div class="signal-text"><span class="signal-title signal-title-warn">Lead time 3,4 j</span><span class="signal-desc"> — objectif 2,0 j dépassé de +1,4 j</span></div>
+          </div>
+          <div class="signal-row-ctas">
+            <button class="signal-cta-ia" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px;flex-shrink:0;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser IA</button>
+            <button class="signal-cta-save" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Sauvegarder</button>
+            <button class="signal-cta-dismiss" onclick="dismissSignal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal 4 — Lu / grisé -->
+      <div class="signal-row signal-row-danger signal-read">
+        <div class="signal-row-left"></div>
+        <div class="signal-row-inner">
+          <div class="signal-dot signal-dot-danger"></div>
+          <div class="signal-row-body">
+            <div class="signal-source" style="color:var(--danger);">Stocks · Ruptures</div>
+            <div class="signal-text"><span class="signal-title signal-title-danger">3 ruptures de stock imminentes</span><span class="signal-desc"> — SKU-0821, SKU-1104, SKU-2290</span></div>
+          </div>
+          <div class="signal-row-ctas">
+            <button class="signal-cta-ia" onclick="openAISheet()"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px;flex-shrink:0;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser IA</button>
+            <button class="signal-cta-save" onclick="toggleSave(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Sauvegarder</button>
+            <button class="signal-cta-dismiss" onclick="dismissSignal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal 5 — Lu + Enregistré -->
+      <div class="signal-row signal-row-info signal-read">
+        <div class="signal-row-left"></div>
+        <div class="signal-row-inner">
+          <div class="signal-dot signal-dot-info"></div>
+          <div class="signal-row-body">
+            <div class="signal-source" style="color:var(--primary);">Stocks · Rotation</div>
+            <div class="signal-text"><span class="signal-title signal-title-info">247 références sans rotation ≥ 6 semaines</span><span class="signal-desc"> — 34 820 €</span></div>
+          </div>
+          <div class="signal-row-ctas">
+            <button class="signal-cta-ia" style="pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" style="width:10px;height:10px;flex-shrink:0;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Analyser IA</button>
+            <button class="signal-cta-save saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px;"><polyline points="20 6 9 17 4 12"/></svg>Enregistrée</button>
+            <div style="width:22px;"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+/* ── GRAIN CANVAS (photographic film grain) ── */
+(function() {
+  var canvas = document.getElementById('grain-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    paint();
+  }
+
+  function paint() {
+    var imgData = ctx.createImageData(W, H);
+    var data = imgData.data;
+    /* Fine photographic grain: high-frequency monochrome noise
+       Each pixel gets an independent random luminance offset.
+       We use a seeded-like approach with dense packing for
+       a smooth, paper-like texture rather than coarse digital blocks. */
+    for (var i = 0; i < data.length; i += 4) {
+      /* Gaussian-ish distribution via averaging multiple randoms (CLT) */
+      var g = (Math.random() + Math.random() + Math.random()) / 3;
+      /* Remap to 0-255, center around mid-grey for multiply blend */
+      var v = Math.round(g * 255);
+      data[i]   = v;
+      data[i+1] = v;
+      data[i+2] = v;
+      data[i+3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  /* Repaint on resize, no animation loop — static grain like film */
+  window.addEventListener('resize', resize);
+  resize();
+})();
+
+/* ── TOGGLE ALERTES ── */
+function toggleAlertes() {
+  var body = document.getElementById('alertesToggleBody');
+  var chevron = document.getElementById('alertesChevron');
+  var isOpen = body.classList.toggle('open');
+  chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+/* ── SIGNAL HELPERS ── */
+function toggleSave(btn) {
+  btn.classList.toggle('saved');
+  if (btn.classList.contains('saved')) {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg>Enregistrée';
+  } else {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:11px;height:11px;"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Sauvegarder';
+  }
+}
+function dismissSignal(btn) {
+  var row = btn.closest('.signal-row');
+  if (!row) return;
+  row.style.transition = 'opacity 0.2s, max-height 0.25s, padding 0.25s';
+  row.style.overflow = 'hidden';
+  row.style.maxHeight = row.offsetHeight + 'px';
+  requestAnimationFrame(function() {
+    row.style.opacity = '0';
+    row.style.maxHeight = '0';
+    row.style.paddingTop = '0';
+    row.style.paddingBottom = '0';
+  });
+  setTimeout(function() { row.classList.add('dismissed'); }, 280);
+  var badge = document.getElementById('bbAlertCount');
+  if (badge) badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
+}
+
+function toggleTheme() {
+  var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  rebuildCharts();
+}
+
+/* ── DRAWER ── */
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+/* ── PERIOD ── */
+var periodLabels = { 'Jour':'23 mars', 'Semaine':'17 – 23 mars', 'Mois':'Mars 2025', 'Année':'2025' };
+function setPeriod(btn, label) {
+  document.querySelectorAll('.period-bar .ts-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var lbl = label || btn.textContent.trim();
+  var rangeEl = document.getElementById('dateRangeLabel');
+  if (rangeEl && periodLabels[lbl]) rangeEl.textContent = periodLabels[lbl];
+}
+
+/* ── AI SHEET ── */
+function openAISheet() {
+  document.getElementById('aiSheet').classList.add('open');
+  document.getElementById('aiSheetOverlay').classList.add('open');
+}
+function closeAISheet() {
+  document.getElementById('aiSheet').classList.remove('open');
+  document.getElementById('aiSheetOverlay').classList.remove('open');
+}
+
+/* ── ALERT SHEET ── */
+function openAlertSheet() {
+  document.getElementById('alertSheet').classList.add('open');
+  document.getElementById('aiSheetOverlay').classList.add('open');
+  document.getElementById('aiSheetOverlay').onclick = closeAlertSheet;
+}
+function closeAlertSheet() {
+  document.getElementById('alertSheet').classList.remove('open');
+  document.getElementById('aiSheetOverlay').classList.remove('open');
+  document.getElementById('aiSheetOverlay').onclick = closeAISheet;
+}
+
+/* ── ANALYSIS SHEET ── */
+function openAnalysisSheet() {
+  document.getElementById('analysisSheet').classList.add('open');
+  document.getElementById('aiSheetOverlay').classList.add('open');
+  document.getElementById('aiSheetOverlay').onclick = closeAnalysisSheet;
+}
+function closeAnalysisSheet() {
+  document.getElementById('analysisSheet').classList.remove('open');
+  document.getElementById('aiSheetOverlay').classList.remove('open');
+  document.getElementById('aiSheetOverlay').onclick = closeAISheet;
+}
+
+/* ── ACTIONS SHEET ── */
+function openActionsSheet() { openAnalysisSheet(); }
+function closeActionsSheet() { closeAnalysisSheet(); }
+
+/* ── SCROLL TO ACTIONS ── */
+function scrollToActions() {
+  var el = document.querySelector('.scroll-area');
+  el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+}
+
+/* ── CHAT SHEET ── */
+function toggleSendSheet(input) {
+  document.getElementById('sendBtnSheet').classList.toggle('ready', input.value.trim().length > 0);
+}
+function fillChat(chip) {
+  var txt = chip.querySelector('span').textContent;
+  document.getElementById('chatInputSheet').value = txt;
+  document.getElementById('sendBtnSheet').classList.add('ready');
+}
+function sendChatSheet() {
+  var inp = document.getElementById('chatInputSheet');
+  var val = inp.value.trim();
+  if (!val) return;
+  var area = document.getElementById('chatArea');
+  var wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap user-wrap';
+  wrap.innerHTML = '<div class="chat-bubble user">' + val + '</div><div class="chat-bubble-time">maintenant</div>';
+  area.appendChild(wrap);
+  inp.value = '';
+  document.getElementById('sendBtnSheet').classList.remove('ready');
+  area.scrollTop = area.scrollHeight;
+}
+
+/* ── ACTIONS ── */
+var actions = [];
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim();
+  if (!val) return;
+  actions.push({ id: Date.now(), text: val, done: false });
+  inp.value = '';
+  renderActions();
+}
+function renderActions() {
+  var list = document.getElementById('actionList');
+  var empty = document.getElementById('actionEmpty');
+  var count = actions.length;
+  ['actionCount','actionCountInner','bbActionCount'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = count;
+  });
+  if (count === 0) { if (empty) empty.style.display = 'flex'; return; }
+  if (empty) empty.style.display = 'none';
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  actions.forEach(function(a) {
+    var div = document.createElement('div');
+    div.className = 'action-item';
+    div.innerHTML = '<div class="action-check' + (a.done ? ' done' : '') + '" onclick="toggleAction(' + a.id + ')"></div><div><div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div><div class="action-meta">' + new Date(a.id).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}) + '</div></div>';
+    list.appendChild(div);
+  });
+}
+function toggleAction(id) {
+  var a = actions.find(function(x) { return x.id === id; });
+  if (a) { a.done = !a.done; renderActions(); }
+}
+
+/* ── CHARTS ── */
+var chartLitInst;
+var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
+var dataVolume = { ouverts:[28,31,29,34,36,38,35,39,42,44,47,47], resolus:[22,24,26,28,25,30,28,32,30,34,32,8] };
+var dataCout = { ouverts:[9200,10400,9800,11200,12100,12800,11900,13400,14800,15600,18420,18420], resolus:[7200,8100,8800,9400,8500,10200,9600,10800,10200,11400,10800,3240] };
+var litMode = 'volume';
+
+function getTC() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return { grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', text: isDark ? '#5A6C7D' : '#8A95A3' };
+}
+function getCSSVal(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function switchLitChart(btn, mode) {
+  document.getElementById('litChartTabs').querySelectorAll('.ct-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  litMode = mode;
+  buildLitChart();
+  var legend = document.getElementById('litLegend');
+  if (mode === 'volume') {
+    legend.innerHTML = '<div class="cl-item"><div class="cl-dot" style="background:var(--c-savt)"></div>Litiges ouverts</div><div class="cl-item"><div class="cl-dot" style="background:var(--success)"></div>Litiges résolus</div>';
+  } else {
+    legend.innerHTML = '<div class="cl-item"><div class="cl-dot" style="background:var(--c-savt)"></div>Coût ouverts (€)</div><div class="cl-item"><div class="cl-dot" style="background:var(--success)"></div>Coût résolus (€)</div>';
+  }
+}
+
+function buildLitChart() {
+  var ctx = document.getElementById('chartLitiges');
+  if (!ctx) return;
+  if (chartLitInst) chartLitInst.destroy();
+  var tc = getTC();
+  var savt = getCSSVal('--c-savt');
+  var succ = getCSSVal('--success');
+  var d = litMode === 'volume' ? dataVolume : dataCout;
+  var yLabel = litMode === 'volume' ? function(v) { return v; } : function(v) { return (v/1000).toFixed(0) + 'k€'; };
+  chartLitInst = new Chart(ctx, {
+    type:'bar',
+    data: {
+      labels:weeks,
+      datasets:[
+        { label:'Ouverts', data:d.ouverts, backgroundColor:savt+'CC', borderRadius:3, order:2 },
+        { label:'Résolus', data:d.resolus, type:'line', borderColor:succ, backgroundColor:succ+'22', fill:true, tension:0.4, pointRadius:2, pointBackgroundColor:succ, borderWidth:2, order:1 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ grid:{ color:tc.grid }, ticks:{ color:tc.text, font:{ size:8, family:'DM Mono' } } },
+        y:{ grid:{ color:tc.grid }, ticks:{ color:tc.text, font:{ size:8, family:'DM Mono' }, callback:yLabel } }
+      }
+    }
+  });
+}
+
+function rebuildCharts() { buildLitChart(); buildDonut(); }
+
+/* ── DONUT TPS ── */
+function buildDonut() {
+  var canvas = document.getElementById('donutTPS');
+  if (!canvas) return;
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var cx = W / 2, cy = H / 2;
+  var r = W / 2 - 6;
+  var lineW = 8;
+  /* TPS = 8.2j, objectif = 5j, max visuel = 15j */
+  var ratio = Math.min(8.2 / 15, 1);
+  var startAngle = Math.PI * 0.75;   /* départ bas-gauche, comme la ref */
+  var fullSweep  = Math.PI * 1.5;    /* 270° arc total */
+  var filledSweep = fullSweep * ratio;
+  ctx.clearRect(0, 0, W, H);
+  /* Track (fond) */
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, startAngle + fullSweep);
+  ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+  ctx.lineWidth = lineW;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+  /* Arc rempli — couleur warning */
+  var warnColor = isDark ? '#FFB020' : '#C27B00';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, startAngle, startAngle + filledSweep);
+  ctx.strokeStyle = warnColor;
+  ctx.lineWidth = lineW;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  buildLitChart();
+  buildDonut();
+});
+
+var themeObserver = new MutationObserver(function(muts) {
+  muts.forEach(function(m) { if (m.attributeName === 'data-theme') rebuildCharts(); });
+});
+themeObserver.observe(document.documentElement, { attributes:true });
+</script>
+</body>
+</html>
