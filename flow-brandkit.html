@@ -3,22 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flow — Brand Kit v1.0 · eLogik</title>
+<title>Flow — Brand Kit v2.0 · eLogik</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cyan:#29ABE2;--cyan-dark:#075E8A;--cyan-mid:#0E8FCC;--cyan-tint:#C6EBF8;--cyan-light:#EAF6FD;
-  --lime:#8DC63F;--lime-dark:#3A6B10;--lime-mid:#78B82A;--lime-tint:#EDF7D9;
-  --anthracite:#58595B;--amber:#F5A623;--amber-tint:#FEF3DC;--red:#E2274A;--red-tint:#FDEAED;
-  --violet:#7E57C2;--ink:#1A1C1E;--slate:#4A5568;--muted:#8A95A3;
-  --surface:#EEF1F5;--canvas:#F8FAFB;--white:#FFFFFF;--border:rgba(0,0,0,0.09);
+  --cyan:#44A5DD;--cyan-dark:#1A6A99;--cyan-mid:#2E8FC0;--cyan-tint:#C8E8F6;--cyan-light:#EAF5FC;
+  --lime:#a6c43f;--lime-dark:#5A7A10;--lime-mid:#8FB033;--lime-tint:#EEF6D0;
+  --anthracite:#70706F;--grey-dark:#3B3B3C;--grey-light:#B2B2B2;
+  --amber:#F5A623;--amber-tint:#FEF3DC;--red:#E2274A;--red-tint:#FDEAED;
+  --violet:#7E57C2;--ink:#3B3B3C;--slate:#70706F;--muted:#B2B2B2;
+  --surface:#F2F2F2;--canvas:#F8F8F8;--white:#FFFFFF;--border:rgba(0,0,0,0.09);
   --dk-deep:#0B0E13;--dk-surface:#141920;--dk-elevated:#1C2330;--dk-border:#253040;
   --dk-text:#C8D3E0;--dk-muted:#5A6478;
   --fluo-cyan:#1ADCFF;--fluo-green:#22FF7A;--fluo-yellow:#FFE040;--fluo-red:#FF3B6A;
-  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+  --font:'Nunito Sans',sans-serif;--mono:'DM Mono',monospace;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-height:1.5}
@@ -244,7 +245,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
     </div>
     <div class="cover-title">Brand Kit<br><em>Design System</em></div>
     <div class="cover-sub">Palette, typographie, composants UI et regles d'usage pour l'outil de data visualization logistique de la famille eLogik.</div>
-    <div class="cover-meta">Version 1.0 · Mars 2026 · eLogik Fine Logistic</div>
+    <div class="cover-meta">Version 2.0 · Mai 2026 · eLogik Fine Logistic</div>
   </div>
   <div class="cover-right">
     <div class="cover-pill active">Foundations</div>
@@ -278,47 +279,50 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
 <section class="section" id="palette">
   <div class="section-eyebrow">Foundations</div>
   <div class="section-title">Palette de couleurs</div>
-  <div class="section-desc">Heritee directement du logo eLogik. Le cyan est la couleur primaire de Flow, le lime est l'accent action/succes.</div>
+  <div class="section-desc">Identite Flow &amp; eLogik — vert pomme signature principale, bleu 2e couleur primaire, gris neutres.</div>
   <div class="card">
-    <div class="card-label">Couleurs brand — extraites du logo eLogik</div>
+    <div class="card-label">Couleurs brand — signatures Flow · eLogik</div>
     <div class="palette-row">
-      <div class="swatch-tall"><div class="swatch-color" style="background:#29ABE2"></div><div class="swatch-info"><div class="swatch-name">Cyan eLogik</div><div class="swatch-hex">#29ABE2</div><div class="swatch-role">Brand · Primary</div></div></div>
-      <div class="swatch-tall"><div class="swatch-color" style="background:#8DC63F"></div><div class="swatch-info"><div class="swatch-name">Lime eLogik</div><div class="swatch-hex">#8DC63F</div><div class="swatch-role">Brand · Accent</div></div></div>
-      <div class="swatch-tall"><div class="swatch-color" style="background:#58595B"></div><div class="swatch-info"><div class="swatch-name">Anthracite</div><div class="swatch-hex">#58595B</div><div class="swatch-role">Brand · Neutral</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#a6c43f"></div><div class="swatch-info"><div class="swatch-name">Vert pomme</div><div class="swatch-hex">#a6c43f</div><div class="swatch-role">Signature · Primary</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#44A5DD"></div><div class="swatch-info"><div class="swatch-name">Bleu</div><div class="swatch-hex">#44A5DD</div><div class="swatch-role">Signature · Secondary</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#70706F"></div><div class="swatch-info"><div class="swatch-name">Gris</div><div class="swatch-hex">#70706F</div><div class="swatch-role">Neutre · Fonds</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#3B3B3C"></div><div class="swatch-info"><div class="swatch-name">Gris fonce</div><div class="swatch-hex">#3B3B3C</div><div class="swatch-role">Neutre · Fonds</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#FFFFFF;border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">Blanc</div><div class="swatch-hex">#FFFFFF</div><div class="swatch-role">Base</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#B2B2B2"></div><div class="swatch-info"><div class="swatch-name">Gris clair</div><div class="swatch-hex">#B2B2B2</div><div class="swatch-role">Neutre · Texte</div></div></div>
     </div>
   </div>
   <div class="g2 mt12">
     <div class="card">
-      <div class="card-label">Declinaisons Cyan</div>
-      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#EAF6FD"></div><div class="ramp-stop" style="background:#C6EBF8"></div><div class="ramp-stop" style="background:#75CBF0"></div><div class="ramp-stop" style="background:#29ABE2"></div><div class="ramp-stop" style="background:#0E8FCC"></div><div class="ramp-stop" style="background:#075E8A"></div><div class="ramp-stop" style="background:#033A56"></div></div>
+      <div class="card-label">Declinaisons Vert pomme</div>
+      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#F5FBEB"></div><div class="ramp-stop" style="background:#EEF6D0"></div><div class="ramp-stop" style="background:#C8DF7A"></div><div class="ramp-stop" style="background:#a6c43f"></div><div class="ramp-stop" style="background:#8FB033"></div><div class="ramp-stop" style="background:#5A7A10"></div><div class="ramp-stop" style="background:#304206"></div></div>
       <div class="palette-row">
-        <div class="swatch-tall"><div class="swatch-color" style="background:#EAF6FD;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EAF6FD</div><div class="swatch-role">Tint</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#29ABE2;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#29ABE2</div><div class="swatch-role">Brand</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#0E8FCC;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#0E8FCC</div><div class="swatch-role">CTA</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#075E8A;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#075E8A</div><div class="swatch-role">Hover</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#EEF6D0;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EEF6D0</div><div class="swatch-role">Tint</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#a6c43f;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#a6c43f</div><div class="swatch-role">Brand</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#8FB033;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#8FB033</div><div class="swatch-role">CTA</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#5A7A10;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#5A7A10</div><div class="swatch-role">Hover</div></div></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-label">Declinaisons Lime</div>
-      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#F0F9E2"></div><div class="ramp-stop" style="background:#EDF7D9"></div><div class="ramp-stop" style="background:#BDE47A"></div><div class="ramp-stop" style="background:#8DC63F"></div><div class="ramp-stop" style="background:#78B82A"></div><div class="ramp-stop" style="background:#3A6B10"></div><div class="ramp-stop" style="background:#1E3B06"></div></div>
+      <div class="card-label">Declinaisons Bleu</div>
+      <div class="ramp-strip mb12"><div class="ramp-stop" style="background:#EAF5FC"></div><div class="ramp-stop" style="background:#C8E8F6"></div><div class="ramp-stop" style="background:#7FCAED"></div><div class="ramp-stop" style="background:#44A5DD"></div><div class="ramp-stop" style="background:#2E8FC0"></div><div class="ramp-stop" style="background:#1A6A99"></div><div class="ramp-stop" style="background:#0C3F5E"></div></div>
       <div class="palette-row">
-        <div class="swatch-tall"><div class="swatch-color" style="background:#EDF7D9;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EDF7D9</div><div class="swatch-role">Tint</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#8DC63F;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#8DC63F</div><div class="swatch-role">Brand</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#78B82A;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#78B82A</div><div class="swatch-role">Succes</div></div></div>
-        <div class="swatch-tall"><div class="swatch-color" style="background:#3A6B10;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#3A6B10</div><div class="swatch-role">Dark</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#EAF5FC;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#EAF5FC</div><div class="swatch-role">Tint</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#44A5DD;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#44A5DD</div><div class="swatch-role">Brand</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#2E8FC0;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#2E8FC0</div><div class="swatch-role">CTA</div></div></div>
+        <div class="swatch-tall"><div class="swatch-color" style="background:#1A6A99;height:40px"></div><div class="swatch-info"><div class="swatch-hex">#1A6A99</div><div class="swatch-role">Hover</div></div></div>
       </div>
     </div>
   </div>
   <div class="card mt12">
     <div class="card-label">Semantiques &amp; Neutrals</div>
     <div class="palette-row">
-      <div class="swatch-tall"><div class="swatch-color" style="background:#78B82A"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#78B82A</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#8FB033"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#8FB033</div></div></div>
       <div class="swatch-tall"><div class="swatch-color" style="background:#F5A623"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-hex">#F5A623</div></div></div>
       <div class="swatch-tall"><div class="swatch-color" style="background:#E2274A"></div><div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#E2274A</div></div></div>
       <div class="swatch-tall"><div class="swatch-color" style="background:#7E57C2"></div><div class="swatch-info"><div class="swatch-name">Violet</div><div class="swatch-hex">#7E57C2</div></div></div>
-      <div class="swatch-tall"><div class="swatch-color" style="background:#1A1C1E"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#1A1C1E</div></div></div>
-      <div class="swatch-tall"><div class="swatch-color" style="background:#4A5568"></div><div class="swatch-info"><div class="swatch-name">Slate</div><div class="swatch-hex">#4A5568</div></div></div>
-      <div class="swatch-tall"><div class="swatch-color" style="background:#EEF1F5;border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#EEF1F5</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#3B3B3C"></div><div class="swatch-info"><div class="swatch-name">Ink</div><div class="swatch-hex">#3B3B3C</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#70706F"></div><div class="swatch-info"><div class="swatch-name">Gris</div><div class="swatch-hex">#70706F</div></div></div>
+      <div class="swatch-tall"><div class="swatch-color" style="background:#B2B2B2"></div><div class="swatch-info"><div class="swatch-name">Gris clair</div><div class="swatch-hex">#B2B2B2</div></div></div>
     </div>
   </div>
   <div class="card mt12" style="background:var(--dk-deep);border-color:var(--dk-border)">
@@ -336,8 +340,8 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
 <div class="divider"></div>
 <section class="section" id="typo">
   <div class="section-eyebrow">Foundations</div>
-  <div class="section-title">Typographie — Plus Jakarta Sans</div>
-  <div class="section-desc">Moderne, lisible, distinctive. DM Mono pour les donnees techniques.</div>
+  <div class="section-title">Typographie — Nunito Sans · Gotham</div>
+  <div class="section-desc">Nunito Sans (web) · Gotham (print / offline) — sans-serif. DM Mono pour les donnees techniques.</div>
   <div class="card">
     <div class="type-specimen"><div class="type-meta">H1 · 40px · weight 300 · letter-spacing -0.04em</div><div class="t-h1">1 248 commandes actives</div></div>
     <div class="type-specimen"><div class="type-meta">H2 · 26px · weight 300 · letter-spacing -0.03em</div><div class="t-h2">Vue d'ensemble des flux logistiques</div></div>
@@ -636,22 +640,22 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
 </div>
 
 <footer class="footer">
-  <div class="footer-left">Flow Design System · eLogik Fine Logistic · v1.0 · Mars 2026<br>Plus Jakarta Sans · DM Mono · Lucide Icons</div>
+  <div class="footer-left">Flow Design System · eLogik Fine Logistic · v2.0 · Mai 2026<br>Nunito Sans · Gotham · DM Mono · Lucide Icons</div>
   <div class="footer-right"><span class="badge bdg-cyan">Foundations</span><span class="badge bdg-lime">Atoms</span><span class="badge bdg-gray">Organisms</span></div>
 </footer>
 
 <script>
 const labels7=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-const fontOpts={family:"'Plus Jakarta Sans', sans-serif",size:11};
+const fontOpts={family:"'Nunito Sans', sans-serif",size:11};
 const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:14,font:fontOpts,color:'#8A95A3'}}},scales:{x:{grid:{display:false},ticks:{font:fontOpts,color:'#8A95A3'},border:{display:false}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:fontOpts,color:'#8A95A3'},border:{display:false}}}};
 
-new Chart(document.getElementById('chartBar'),{type:'bar',data:{labels:labels7,datasets:[{label:'En transit',data:[380,340,410,370,420,290,260],backgroundColor:'#29ABE2',borderRadius:4,borderSkipped:false},{label:'Livre',data:[290,310,360,330,380,240,180],backgroundColor:'#8DC63F',borderRadius:4,borderSkipped:false},{label:'En attente',data:[80,60,90,70,60,40,50],backgroundColor:'#F5A623',borderRadius:4,borderSkipped:false},{label:'Retard',data:[30,20,40,25,20,10,15],backgroundColor:'#E2274A',borderRadius:4,borderSkipped:false}]},options:{...baseOpts,scales:{...baseOpts.scales,x:{...baseOpts.scales.x,stacked:true},y:{...baseOpts.scales.y,stacked:true}}}});
+new Chart(document.getElementById('chartBar'),{type:'bar',data:{labels:labels7,datasets:[{label:'En transit',data:[380,340,410,370,420,290,260],backgroundColor:'#44A5DD',borderRadius:4,borderSkipped:false},{label:'Livre',data:[290,310,360,330,380,240,180],backgroundColor:'#a6c43f',borderRadius:4,borderSkipped:false},{label:'En attente',data:[80,60,90,70,60,40,50],backgroundColor:'#F5A623',borderRadius:4,borderSkipped:false},{label:'Retard',data:[30,20,40,25,20,10,15],backgroundColor:'#E2274A',borderRadius:4,borderSkipped:false}]},options:{...baseOpts,scales:{...baseOpts.scales,x:{...baseOpts.scales.x,stacked:true},y:{...baseOpts.scales.y,stacked:true}}}});
 
-new Chart(document.getElementById('chartDonut'),{type:'doughnut',data:{labels:['En transit','Livre','En attente','Retard','Inactif'],datasets:[{data:[380,620,80,47,121],backgroundColor:['#29ABE2','#8DC63F','#F5A623','#E2274A','#58595B'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:12,font:fontOpts,color:'#8A95A3'}}}}});
+new Chart(document.getElementById('chartDonut'),{type:'doughnut',data:{labels:['En transit','Livre','En attente','Retard','Inactif'],datasets:[{data:[380,620,80,47,121],backgroundColor:['#44A5DD','#a6c43f','#F5A623','#E2274A','#70706F'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'right',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:12,font:fontOpts,color:'#B2B2B2'}}}}});
 
 const lineData=[95.2,96.0,95.8,96.4,95.1,96.8,97.1,96.4,95.9,96.2,97.0,96.7,96.4,95.8,96.1,96.9,97.2,96.8,95.5,96.3,97.0,96.4,95.7,96.2,97.1,96.8,96.0,95.8,96.4,96.4];
 const lineLabels=Array.from({length:30},(_,i)=>i%5===0?'J-'+(30-i):'');
-new Chart(document.getElementById('chartLine'),{type:'line',data:{labels:lineLabels,datasets:[{label:'Taux livraison',data:lineData,borderColor:'#29ABE2',backgroundColor:'rgba(41,171,226,0.08)',fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4},{label:'Objectif 95%',data:Array(30).fill(95),borderColor:'#8DC63F',borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:baseOpts});
+new Chart(document.getElementById('chartLine'),{type:'line',data:{labels:lineLabels,datasets:[{label:'Taux livraison',data:lineData,borderColor:'#44A5DD',backgroundColor:'rgba(68,165,221,0.08)',fill:true,tension:0.4,borderWidth:2,pointRadius:0,pointHoverRadius:4},{label:'Objectif 95%',data:Array(30).fill(95),borderColor:'#a6c43f',borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:baseOpts});
 
 new Chart(document.getElementById('chartDark'),{type:'line',data:{labels:labels7,datasets:[{label:'En transit',data:[380,340,410,370,420,290,260],borderColor:'#1ADCFF',backgroundColor:'rgba(26,220,255,0.07)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#1ADCFF'},{label:'Livre',data:[290,310,360,330,380,240,180],borderColor:'#22FF7A',backgroundColor:'rgba(34,255,122,0.06)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#22FF7A'},{label:'Retard',data:[30,20,40,25,20,10,15],borderColor:'#FF3B6A',backgroundColor:'rgba(255,59,106,0.06)',fill:true,tension:0.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#FF3B6A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,boxHeight:10,borderRadius:3,padding:14,font:fontOpts,color:'#5A6478'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5A6478',font:fontOpts},border:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#5A6478',font:fontOpts},border:{display:false}}}}});
 
