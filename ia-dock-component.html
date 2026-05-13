@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elogik · Design System — IA Dock v4 · Full Height</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   DESIGN TOKENS elogik (flow) — requis par le composant
+   Source canonique : inclure avant le composant dans chaque page
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root, [data-theme="light"] {
+  --bg:           #F2F4F8;
+  --surface:      #FFFFFF;
+  --surface2:     #F4F6FA;
+  --border:       rgba(0,0,0,0.07);
+  --border2:      rgba(0,0,0,0.13);
+  --ink:          #1A1C1E;
+  --slate:        #4A5568;
+  --muted:        #8A95A3;
+  --primary:      #0E8FCC;
+  --primary-tint: #EAF6FD;
+  --success:      #2A9554;
+  --success-tint: #E8F8EF;
+  --warning:      #C27B00;
+  --warning-tint: #FEF4E0;
+  --danger:       #D63050;
+  --danger-tint:  #FDEAED;
+  --violet:       #6C47E8;
+  --violet-tint:  #F0EDFF;
+  --dock-shadow:  0 -4px 32px rgba(0,0,0,0.10);
+}
+[data-theme="dark"] {
+  --bg:           #0C0F14;
+  --surface:      #181E28;
+  --surface2:     #1F2736;
+  --border:       rgba(255,255,255,0.10);
+  --border2:      rgba(255,255,255,0.18);
+  --ink:          #E2EAF4;
+  --slate:        #9AAABB;
+  --muted:        #5A6C7D;
+  --primary:      #1ADCFF;
+  --primary-tint: rgba(26,220,255,0.13);
+  --success:      #22FF7A;
+  --success-tint: rgba(34,255,122,0.13);
+  --warning:      #FFB020;
+  --warning-tint: rgba(255,176,32,0.13);
+  --danger:       #FF3B6A;
+  --danger-tint:  rgba(255,59,106,0.13);
+  --violet:       #A78BFF;
+  --violet-tint:  rgba(167,139,255,0.13);
+  --dock-shadow:  0 -4px 32px rgba(0,0,0,0.40);
+}
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); transition: background 0.25s, color 0.25s; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ============================================================
+   ██████╗  ██████╗  ██████╗██╗  ██╗    ██╗ █████╗
+   ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝    ██║██╔══██╗
+   ██║  ██║██║   ██║██║     █████╔╝     ██║███████║
+   ██║  ██║██║   ██║██║     ██╔═██╗     ██║██╔══██║
+   ██████╔╝╚██████╔╝╚██████╗██║  ██╗    ██║██║  ██║
+   ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝    ╚═╝╚═╝  ╚═╝
+
+   COMPOSANT : IA Dock — Bottom Bar elo·IA
+   Version   : 4.0 · Full Height (elogik flow)
+
+   USAGE :
+     1. Inclure les tokens CSS ci-dessus dans la page hôte
+     2. Coller le bloc HTML <!-- IA DOCK --> dans le <body>,
+        hors du layout principal (.app/.sidenav)
+     3. Inclure le bloc <script> du composant
+     4. Appeler updateDockHeight() au DOMContentLoaded
+        pour que la page s'adapte à la hauteur du dock
+
+   POSITIONNEMENT :
+     Le dock est position:fixed, bottom:0, left:VAR_SIDEBAR_WIDTH, right:0
+     Ajuster --dock-left selon la largeur de la sidebar de la page hôte
+     (220px par défaut, 0 sur mobile)
+
+   API JS PUBLIQUE :
+     openDock()                    → ouvre le volet
+     toggleDock()                  → bascule ouvert/fermé
+     switchDockTab('chat'|'analyses') → active un onglet
+     askIA(query: string)          → préremplit + envoie une question
+     saveSignal(id, text)          → enregistre un signal IA en analyse
+     dismissSignal(id)             → ferme un signal IA flottant
+     updateDockHeight()            → recalcule le padding-bottom de .main
+
+   HOOKS À BRANCHER SELON LA PAGE HÔTE :
+     getResponse(query)            → à remplacer par l'appel API réel
+     injectAnalysis(q, answer)     → peut être étendu pour persister en BDD
+
+   ============================================================ */
+
+/* ── ANCRE DE POSITIONNEMENT ── */
+:root { --dock-left: 220px; } /* = largeur de .sidenav */
+@media (max-width: 640px) { :root { --dock-left: 0px; } }
+
+.ia-dock-anchor {
+  position: fixed;
+  bottom: 0;
+  left: var(--dock-left);
+  right: 0;
+  z-index: 150; /* sous .sidenav (z:200), sous .nav-overlay (z:190) */
+  pointer-events: none;
+}
+.ia-dock-inner {
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SIGNAL IA (zone flottante au-dessus du dock) ── */
+.ia-signal-zone {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+/* Signal card */
+.signal-ia {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--dock-shadow);
+  position: relative;
+  pointer-events: auto;
+  animation: signalIn 0.35s ease both;
+}
+@keyframes signalIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.signal-ia.dismissing { animation: signalOut 0.28s ease forwards; }
+@keyframes signalOut { to{opacity:0;transform:translateY(-6px);max-height:0;overflow:hidden;} }
+.signal-ia::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0;
+}
+.signal-ia[data-severity="danger"]::before  { background: var(--danger); }
+.signal-ia[data-severity="warning"]::before { background: var(--warning); }
+.signal-ia[data-severity="info"]::before    { background: var(--primary); }
+.signal-ia[data-severity="success"]::before { background: var(--success); }
+
+/* Signal head */
+.signal-ia-head { display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px; gap:10px; }
+.signal-ia-head-left { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
+.signal-ia-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon { background:var(--danger-tint); }
+.signal-ia[data-severity="warning"] .signal-ia-icon { background:var(--warning-tint); }
+.signal-ia[data-severity="info"]    .signal-ia-icon { background:var(--primary-tint); }
+.signal-ia[data-severity="success"] .signal-ia-icon { background:var(--success-tint); }
+.signal-ia-icon svg { width:13px; height:13px; }
+.signal-ia[data-severity="danger"]  .signal-ia-icon svg { stroke:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-icon svg { stroke:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-icon svg { stroke:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-icon svg { stroke:var(--success); }
+
+.signal-ia-meta { min-width:0; flex:1; }
+.signal-ia-source {
+  font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px;
+}
+.signal-ia[data-severity="danger"]  .signal-ia-source { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source { color:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source { color:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-source { color:var(--success); }
+.signal-ia-source-dot { width:5px; height:5px; border-radius:50%; animation:pulse 2s infinite; flex-shrink:0; }
+.signal-ia[data-severity="danger"]  .signal-ia-source-dot { background:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-source-dot { background:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-source-dot { background:var(--primary); }
+.signal-ia[data-severity="success"] .signal-ia-source-dot { background:var(--success); }
+
+.signal-ia-text-inline { font-size:12px; color:var(--ink); line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.signal-ia-text-inline strong { font-weight:600; }
+.signal-ia[data-severity="danger"]  .signal-ia-text-inline strong { color:var(--danger); }
+.signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color:var(--warning); }
+.signal-ia[data-severity="info"]    .signal-ia-text-inline strong { color:var(--primary); }
+
+.signal-ia-head-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+
+/* Signal body (reco — toujours visible) */
+.signal-ia-reco { padding:0 14px 12px; display:block; }
+.signal-ia-reco-inner { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.15); border-radius:10px; padding:9px 12px; }
+[data-theme="dark"] .signal-ia-reco-inner { border-color:rgba(167,139,255,0.18); }
+.signal-ia-reco-head {
+  display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--violet);
+  font-family:'DM Mono',monospace; margin-bottom:5px;
+}
+.signal-ia-reco-head svg { width:10px; height:10px; }
+.signal-ia-reco-body { font-size:11.5px; color:var(--ink); line-height:1.6; }
+.signal-ia-reco-body strong { color:var(--violet); font-weight:600; }
+
+/* Signal buttons */
+.signal-ia-btn {
+  font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif;
+  padding:5px 12px; border-radius:100px; border:none; cursor:pointer;
+  display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap;
+}
+.signal-ia-btn svg { width:10px; height:10px; }
+.signal-ia-btn-primary { background:var(--violet); color:white; }
+.signal-ia-btn-primary:hover { background:#5535D0; }
+.signal-ia-btn-save { background:var(--surface2); border:1px solid var(--border2); color:var(--slate); }
+.signal-ia-btn-save:hover { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
+.signal-ia-btn-save.saved { background:var(--success-tint); border-color:rgba(42,149,84,0.2); color:var(--success); cursor:default; }
+.signal-ia-dismiss {
+  width:22px; height:22px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0;
+}
+.signal-ia-dismiss:hover { background:var(--surface2); color:var(--ink); }
+.signal-ia-dismiss svg { width:11px; height:11px; }
+
+/* ═══════════════════════════════════════════
+   DOCK PRINCIPAL
+   ═══════════════════════════════════════════ */
+.ia-dock {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: var(--dock-shadow);
+  transition: background 0.25s, border-color 0.25s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse; /* barre EN BAS, corps AU-DESSUS */
+}
+
+/* ── BARRE PRINCIPALE (toujours visible) ──
+   Ordre visuel : [brand] [Analyses] [Actions] [champ IA →] [toggle]
+   Le champ utilise order:10 pour se positionner après les previews
+   sans modifier l'ordre DOM.
+*/
+.ia-dock-bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 52px;
+  border-top: 1px solid var(--border);
+}
+.ia-dock-zone {
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  min-width: 0; flex-shrink: 0;
+}
+.ia-dock-zone.ia-dock-input-zone {
+  flex: 1; flex-shrink: 1; min-width: 0;
+  order: 10; border-right: none;
+  gap: 8px;
+}
+.ia-dock-toggle { order: 11; }
+.ia-dock-zone:first-child { order: 0; }
+.ia-dock-zone:last-child { border-right: none; }
+
+/* Brand */
+.ia-dock-brand { display:flex; align-items:center; gap:9px; }
+.ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ia-dock-av svg { width:14px; height:14px; }
+.ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
+.ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
+
+/* Champ de saisie */
+.ia-dock-input-wrap {
+  flex:1; display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:100px; padding:7px 14px;
+  transition:border-color 0.15s, background 0.25s;
+}
+.ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
+.ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
+.ia-dock-input::placeholder { color:var(--muted); }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s, transform 0.12s; }
+.ia-dock-send.ready { opacity:1; }
+.ia-dock-send:hover.ready { transform:scale(1.08); }
+.ia-dock-send svg { width:11px; height:11px; }
+
+/* Pill "Enregistrée" */
+.ia-saved-pill {
+  display:none; align-items:center; gap:5px;
+  font-size:10px; font-weight:500; color:var(--success);
+  background:var(--success-tint); border:1px solid rgba(42,149,84,0.2);
+  border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
+.ia-saved-pill.visible { display:flex; }
+.ia-saved-pill svg { width:10px; height:10px; }
+
+/* Zones preview (Analyses / Actions) dans la barre */
+.ia-dock-preview {
+  align-items:center !important; flex-direction:row;
+  justify-content:flex-start; padding:0 16px !important;
+  cursor:pointer; gap:10px; width:200px; flex-shrink:0;
+  transition:background 0.12s;
+}
+.ia-dock-preview:hover { background:rgba(0,0,0,0.025); }
+[data-theme="dark"] .ia-dock-preview:hover { background:rgba(255,255,255,0.03); }
+.ia-dock-preview-head { display:flex; align-items:center; gap:10px; width:100%; }
+.ia-dock-preview-title { font-size:10px; font-weight:600; color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.ia-dock-preview-title svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-preview-items { display:none !important; }  /* toujours masqués */
+.ia-dock-preview-input-row { display:none !important; } /* toujours masqués */
+
+/* Badges */
+.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+
+/* Toggle */
+.ia-dock-toggle { width:44px; flex-shrink:0; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.12s; }
+.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
+.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; transform:rotate(180deg); }
+.ia-dock.open .ia-dock-toggle svg { transform:rotate(0deg); }
+.ia-dock.fullpage .ia-dock-toggle svg { transform:rotate(0deg); }
+/* Onglets dans la barre principale — indicateur en haut, pas de fond actif */
+.ia-bar-tab { height:100%; border-bottom:none !important; border-top:2px solid transparent; }
+.ia-bar-tab.active { border-top-color:var(--primary); border-bottom:none !important; background:none !important; }
+
+/* ── CORPS EXPANDABLE ── */
+.ia-dock-body { overflow:hidden; max-height:0; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); border-bottom:1px solid var(--border); }
+.ia-dock.open .ia-dock-body { max-height:360px; }
+/* Full-page : le panel s'étend jusqu'sous la topbar */
+.ia-dock.fullpage .ia-dock-body { max-height:calc(100vh - 52px); overflow-y:auto; }
+
+/* Tabbar */
+.ia-dock-tabs { display:flex; align-items:stretch; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
+.ia-dock-tab-btn {
+  display:flex; align-items:center; gap:7px; padding:0 20px; height:38px;
+  font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif;
+  background:none; border:none; border-bottom:2px solid transparent;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
+.ia-dock-tab-btn svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-tab-btn:hover { color:var(--ink); }
+.ia-dock-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--surface); }
+.ia-dock-tab-btn.active svg { opacity:1; }
+.ia-dock-tab-btn .ia-count,
+.ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+
+/* Panneaux */
+.ia-dock-panel { display:none; flex-direction:column; height:322px; overflow:hidden; }
+.ia-dock-panel.active { display:flex; }
+/* Full-page : le panneau prend toute la hauteur dispo */
+.ia-dock.fullpage .ia-dock-panel { height:calc(100vh - 52px - 38px); } /* 52px barre + 38px tabbar */
+
+/* Scroll générique panneau */
+.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:9px; }
+.ia-dock-panel-scroll::-webkit-scrollbar { width:3px; }
+.ia-dock-panel-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
+
+/* Section head dans panneau fusionné */
+.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px 6px; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-merged-section-title { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:6px; }
+.ia-merged-section-title svg { width:10px; height:10px; }
+
+/* Footer panneau */
+.ia-dock-panel-footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--surface2); padding:8px 14px; }
+
+/* ── Messages conversation ── */
+.ia-msg-user { align-self:flex-end; max-width:88%; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:11.5px; line-height:1.5; }
+.ia-msg-ai-wrap { align-self:flex-start; width:100%; display:flex; flex-direction:column; gap:5px; }
+.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-msg-ai-meta svg { width:9px; height:9px; }
+.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:8px 11px; font-size:11.5px; line-height:1.6; color:var(--ink); }
+.ia-msg-ai strong { font-weight:600; color:var(--violet); }
+.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; align-self:flex-end; }
+.ia-typing { display:flex; align-items:center; gap:4px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
+.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--violet); animation:pulse 1.2s infinite; }
+.ia-tdot:nth-child(2) { animation-delay:0.2s; }
+.ia-tdot:nth-child(3) { animation-delay:0.4s; }
+
+/* Suggestions */
+.ia-dock-sugg { padding:7px 12px 8px; border-top:1px solid var(--border); flex-shrink:0; display:flex; flex-direction:column; gap:4px; background:var(--surface2); }
+.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
+.ia-sugg { display:flex; align-items:center; gap:6px; padding:5px 8px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.ia-sugg:hover { border-color:var(--violet); background:var(--violet-tint); color:var(--ink); }
+.ia-sugg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+
+/* ── Analyses ── */
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; cursor:pointer; transition:border-color 0.12s, box-shadow 0.25s; }
+.analysis-item:hover { border-color:var(--primary); }
+.analysis-item.highlight { border-color:var(--violet) !important; box-shadow:0 0 0 3px var(--violet-tint); }
+.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; margin-bottom:3px; }
+.analysis-mod-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
+.analysis-archive-btn { width:18px; height:18px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
+.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
+.analysis-archive-btn svg { width:10px; height:10px; }
+.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
+.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
+.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
+
+/* ── Actions ── */
+.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; display:flex; align-items:flex-start; gap:9px; transition:border-color 0.12s; }
+.action-item:hover { border-color:var(--violet); }
+.action-check { width:15px; height:15px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.action-check:hover { border-color:var(--success); background:var(--success-tint); }
+.action-check.done { border-color:var(--success); background:var(--success); }
+.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
+.action-text { flex:1; min-width:0; }
+.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
+.action-title.done-text { text-decoration:line-through; color:var(--muted); }
+.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
+.action-ctrl-btn { width:18px; height:18px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); flex-shrink:0; }
+.action-ctrl-btn svg { width:10px; height:10px; }
+
+/* Champ ajout action */
+.ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
+.ia-dock-add-input:focus { border-color:var(--violet); }
+
+/* Empty state */
+.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
+.dock-empty svg { width:24px; height:24px; opacity:0.3; }
+
+/* ============================================================
+   FIN DU COMPOSANT — styles page de documentation ci-dessous
+   ============================================================ */
+.doc-page { max-width: 900px; margin: 0 auto; padding: 40px 24px 500px; }
+.doc-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:6px; }
+.doc-title { font-size:22px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); margin-bottom:6px; }
+.doc-title strong { font-weight:600; color:var(--violet); }
+.doc-desc { font-size:13px; color:var(--muted); line-height:1.6; max-width:560px; margin-bottom:32px; }
+.doc-section { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin:28px 0 14px; display:flex; align-items:center; gap:10px; }
+.doc-section::after { content:''; flex:1; height:1px; background:var(--border); }
+.doc-controls { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.doc-btn { font-size:11px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; padding:7px 16px; border-radius:8px; border:1px solid var(--border2); background:var(--surface); color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.doc-btn:hover { background:var(--surface2); color:var(--ink); }
+.doc-btn.active { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
+.doc-prop-table { width:100%; border-collapse:collapse; font-size:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.doc-prop-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); }
+.doc-prop-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:top; line-height:1.5; }
+.doc-prop-table tr:last-child td { border-bottom:none; }
+.doc-prop-table code { font-family:'DM Mono',monospace; font-size:10px; background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:1px 6px; color:var(--violet); }
+.icon-sun { display:block; } .icon-moon { display:none; }
+[data-theme="dark"] .icon-sun { display:none; }
+[data-theme="dark"] .icon-moon { display:block; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     PAGE DE DOCUMENTATION
+     ════════════════════════════════════════════ -->
+<div class="doc-page">
+  <div class="doc-eyebrow">elogik · Design System — Composant v4.0 · Full Height</div>
+  <div class="doc-title"><strong>IA Dock</strong> — Bottom Bar elo·IA</div>
+  <div class="doc-desc">Barre flottante fixée en bas de l'écran. Au clic sur le chevron, le volet s'étend sur toute la hauteur disponible (jusqu'sous la topbar). Les onglets de la barre restent synchronisés avec le volet. L'enregistrement d'une analyse est explicite : un CTA "Enregistrer" apparaît sous chaque réponse IA.</div>
+
+  <div class="doc-controls">
+    <button class="doc-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      Basculer dark/light
+    </button>
+    <button class="doc-btn" onclick="toggleDock()">Ouvrir / Fermer le dock</button>
+    <button class="doc-btn" onclick="switchDockTab('chat')">Onglet Chat</button>
+    <button class="doc-btn" onclick="switchDockTab('analyses')">Onglet Analyses & Actions</button>
+    <button class="doc-btn" onclick="askIA('Quels transporteurs ont le plus de retards ?')">Simuler une question IA</button>
+    <button class="doc-btn" onclick="showSignalDemo()">Afficher un Signal IA</button>
+  </div>
+
+  <div class="doc-section">API JS publique</div>
+  <table class="doc-prop-table">
+    <thead><tr><th>Fonction</th><th>Paramètres</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>openDock()</code></td><td>—</td><td>Ouvre le volet en mode full height.</td></tr>
+      <tr><td><code>toggleDock()</code></td><td>—</td><td>Chevron : bascule full height / fermé.</td></tr>
+      <tr><td><code>switchDockTab(tab)</code></td><td><code>'chat' | 'analyses'</code></td><td>Active un onglet (barre + volet) et ouvre en full height.</td></tr>
+      <tr><td><code>askIA(query)</code></td><td><code>string</code></td><td>Préremplit le champ et envoie la question.</td></tr>
+      <tr><td><code>saveMsg(btn, id, q, answer)</code></td><td><code>el, string, string, string</code></td><td>Enregistre une réponse IA en analyse (CTA explicite sous chaque message).</td></tr>
+      <tr><td><code>saveSignal(id, text)</code></td><td><code>string, string</code></td><td>Enregistre un signal IA comme analyse.</td></tr>
+      <tr><td><code>dismissSignal(id)</code></td><td><code>string</code></td><td>Ferme un signal avec animation.</td></tr>
+      <tr><td><code>injectAnalysis(q, answer)</code></td><td><code>string, string</code></td><td>Insère une carte dans l'onglet Analyses (appelé par saveMsg et saveSignal).</td></tr>
+      <tr><td><code>updateDockHeight()</code></td><td>—</td><td>Recalcule le <code>padding-bottom</code> de <code>.main</code>. Appeler au DOMContentLoaded et au resize.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="doc-section">Intégration dans une page</div>
+  <table class="doc-prop-table">
+    <thead><tr><th>Étape</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><code>1</code></td><td>Inclure les <strong>tokens CSS</strong> elogik (<code>:root</code>, <code>[data-theme="dark"]</code>) dans le <code>&lt;style&gt;</code> de la page.</td></tr>
+      <tr><td><code>2</code></td><td>Coller le bloc HTML <code>&lt;!-- IA DOCK --&gt;</code> dans le <code>&lt;body&gt;</code>, <strong>hors</strong> du <code>.app</code> ou de tout conteneur <code>overflow:hidden</code>.</td></tr>
+      <tr><td><code>3</code></td><td>Ajuster <code>--dock-left</code> dans <code>:root</code> pour correspondre à la largeur réelle de la sidebar de la page hôte.</td></tr>
+      <tr><td><code>4</code></td><td>Inclure le bloc <code>&lt;script&gt;</code> du composant. Appeler <code>updateDockHeight()</code> au <code>DOMContentLoaded</code>.</td></tr>
+      <tr><td><code>5</code></td><td>Remplacer <code>getResponse(q)</code> par l'appel à l'API elo·IA réelle.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="doc-section">Signal IA — data-severity</div>
+  <table class="doc-prop-table">
+    <thead><tr><th>Valeur</th><th>Couleur</th><th>Cas d'usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>danger</code></td><td>var(--danger)</td><td>Seuil critique franchi — action immédiate requise.</td></tr>
+      <tr><td><code>warning</code></td><td>var(--warning)</td><td>Dérive progressive — surveiller, anticiper.</td></tr>
+      <tr><td><code>info</code></td><td>var(--primary)</td><td>Opportunité ou information contextuelle.</td></tr>
+      <tr><td><code>success</code></td><td>var(--success)</td><td>Objectif atteint ou anomalie résolue.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════
+     IA DOCK — COMPOSANT HTML
+     Coller ce bloc dans la page hôte
+     ════════════════════════════════════════════ -->
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+
+    <!-- Zone Signal IA (flottante, au-dessus du dock) -->
+    <div class="ia-signal-zone" id="iaSignalZone">
+      <!-- Les signaux sont injectés dynamiquement via showSignalDemo() ou saveSignal() -->
+    </div>
+
+    <!-- Dock principal -->
+    <div class="ia-dock" id="iaDock">
+
+      <!-- BARRE PRINCIPALE (toujours visible) -->
+      <div class="ia-dock-bar">
+
+        <!-- Zone 1 : Brand elo·IA — cliquable → ouvre Conversation -->
+        <div class="ia-dock-zone" style="cursor:pointer;" onclick="switchDockTab('chat')">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre fermée : onglet Analyses -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-analyses" onclick="switchDockTab('analyses')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyses
+          <span class="ia-count" id="analysisCount">3</span>
+        </button>
+
+        <!-- Barre fermée : onglet Alertes -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-alertes" onclick="switchDockTab('alertes')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          Alertes
+          <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCount">2</span>
+        </button>
+
+        <!-- Zone input (order:10) -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput"
+              placeholder="Posez une question sur vos données…"
+              oninput="toggleSend(this)"
+              onkeydown="if(event.key==='Enter')sendIA()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+
+        <!-- Toggle chevron (order:11) -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+
+      </div><!-- /ia-dock-bar -->
+
+      <!-- CORPS EXPANDABLE -->
+      <div class="ia-dock-body" id="iaDockBody">
+
+        <!-- Tabbar volet ouvert : 3 onglets -->
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">3</span>
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-alertes" onclick="switchDockTab('alertes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Alertes
+            <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCountFull">2</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+            <div class="ia-msg-user">Quels transporteurs ont le plus de retards cette semaine ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Démonstration composant
+              </div>
+              <div class="ia-msg-ai"><strong>DHL</strong> en tête avec 19 retards (6,6 %) — incident hub IDF confirmé. Chronopost suit avec 8 retards (2,6 %). Les 4 autres transporteurs sont dans les normes.</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
+                <button onclick="saveMsg(this,'msg-demo','Quels transporteurs ont le plus de retards ?','DHL en tête avec 19 retards')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                  Enregistrer
+                </button>
+                <span class="ia-msg-time">demo</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div class="ia-sugg-label" style="margin-bottom:6px">Suggestions</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSend('Impact client de l\'incident DHL')"><div class="ia-sugg-dot" style="background:var(--danger)"></div>Impact client DHL</div>
+              <div class="ia-sugg" onclick="fillAndSend('Taux de litiges par transporteur')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Litiges par transporteur</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comparer S-1 vs semaine actuelle')"><div class="ia-sugg-dot" style="background:var(--primary)"></div>Comparer S-1 vs actuel</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions (50/50) -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountPanel">3</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--danger)"></div><div class="analysis-q">Transporteurs avec le plus de retards</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 19 retards (6,6 %) · Chronopost : 8 retards (2,6 %). Incident DHL IDF confirmé.</div>
+                  <div class="analysis-footer"><span class="analysis-time">16 mars · 09h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-2" onclick="loadAnalysisInIA(2)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--warning)"></div><div class="analysis-q">Évolution du taux de livraison sur 7 jours</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">96,4 % global — recul de −0,4 pt vs S-1.</div>
+                  <div class="analysis-footer"><span class="analysis-time">15 mars · 16h30</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-3" onclick="loadAnalysisInIA(3)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--primary)"></div><div class="analysis-q">Litiges ouverts — répartition par transporteur</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 4 litiges · Chronopost : 3 · GLS : 2.</div>
+                  <div class="analysis-footer"><span class="analysis-time">14 mars · 11h02</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountPanel">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
+              </div>
+            </div>
+          </div>
+        </div><!-- /panel-analyses -->
+
+        <!-- Panneau Alertes -->
+        <div class="ia-dock-panel" id="panel-alertes">
+          <div class="ia-dock-panel-scroll" id="alertesList">
+
+            <div class="signal-ia" data-severity="danger" id="alerte-1">
+              <div class="signal-ia-head">
+                <div class="signal-ia-head-left">
+                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                  <div class="signal-ia-meta">
+                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Litiges transport</div>
+                    <div class="signal-ia-text-inline"><strong>GLS : +8 litiges vs S-1</strong> — seuil critique franchi (23/sem.)</div>
+                  </div>
+                </div>
+                <div class="signal-ia-head-right">
+                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser la hausse des litiges GLS')">Analyser IA</button>
+                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-1" onclick="saveSignal('alerte-1','Litiges GLS · +8 vs S-1 · seuil critique franchi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
+                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+              <div class="signal-ia-reco">
+                <div class="signal-ia-reco-inner">
+                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
+                  <div class="signal-ia-reco-body">Basculer <strong>30–40 % des flux GLS vers Colis Privé</strong> (réseau elogik, 98 % qualité). Estimation : ≈ 15–20 litiges/sem. évités.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="signal-ia" data-severity="warning" id="alerte-2">
+              <div class="signal-ia-head">
+                <div class="signal-ia-head-left">
+                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                  <div class="signal-ia-meta">
+                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Stocks</div>
+                    <div class="signal-ia-text-inline"><strong>5 références en rupture imminente</strong> — stock &lt; 48h</div>
+                  </div>
+                </div>
+                <div class="signal-ia-head-right">
+                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Quelles références sont en rupture imminente ?')">Analyser IA</button>
+                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-2" onclick="saveSignal('alerte-2','Stocks · 5 références rupture imminente · &lt;48h')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
+                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+              <div class="signal-ia-reco">
+                <div class="signal-ia-reco-inner">
+                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
+                  <div class="signal-ia-reco-body">Déclencher un <strong>réappro prioritaire sur REF-2341, REF-8812, REF-0093</strong> avant 17h pour éviter une rupture de service demain matin.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /panel-alertes -->
+
+      </div><!-- /ia-dock-body -->
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
+
+<!-- ════════════════════════════════════════════
+     SCRIPT DU COMPOSANT — inclure dans la page hôte
+     ════════════════════════════════════════════ -->
+<script>
+/* ── DOCK HEIGHT — adapte le padding-bottom de .main ── */
+function updateDockHeight() {
+  var anchor = document.getElementById('iaDockAnchor');
+  var h = anchor ? anchor.getBoundingClientRect().height : 60;
+  var main = document.querySelector('.main');
+  if (main) main.style.paddingBottom = (h + 8) + 'px';
+}
+
+/* ── OPEN / CLOSE / TOGGLE ── */
+function toggleDock() {
+  /* Chevron : bascule entre fullpage et fermé */
+  var dock = document.getElementById('iaDock');
+  if (dock.classList.contains('fullpage')) {
+    dock.classList.remove('fullpage', 'open');
+  } else {
+    dock.classList.add('open', 'fullpage');
+  }
+  setTimeout(updateDockHeight, 360);
+}
+function openDock() {
+  var dock = document.getElementById('iaDock');
+  dock.classList.add('open', 'fullpage');
+  setTimeout(updateDockHeight, 320);
+}
+
+/* ── TABS ── */
+var currentDockTab = 'chat';
+function switchDockTab(tab) {
+  if (tab === 'actions') tab = 'analyses';
+  currentDockTab = tab;
+  ['chat', 'analyses', 'alertes'].forEach(function(t) {
+    var btn    = document.getElementById('tab-' + t);
+    var barBtn = document.getElementById('bar-tab-' + t);
+    var panel  = document.getElementById('panel-' + t);
+    if (btn)    btn.classList.toggle('active', t === tab);
+    if (barBtn) barBtn.classList.toggle('active', t === tab);
+    if (panel)  panel.classList.toggle('active', t === tab);
+  });
+  openDock();
+}
+
+/* ── ALERTES ── */
+function _syncAlertCount() {
+  var n = document.getElementById('alertesList')
+    ? document.getElementById('alertesList').querySelectorAll('.signal-ia').length : 0;
+  ['alertCount','alertCountFull'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = n;
+  });
+}
+function dismissAlerte(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() { el.remove(); _syncAlertCount(); updateDockHeight(); }, 300);
+}
+function showSignalDemo() {
+  _demoSigCount++;
+  var id = 'sig-demo-' + _demoSigCount;
+  var list = document.getElementById('alertesList');
+  var div = document.createElement('div');
+  div.className = 'signal-ia';
+  div.setAttribute('data-severity', _demoSigCount % 2 === 0 ? 'warning' : 'danger');
+  div.id = id;
+  div.innerHTML =
+    '<div class="signal-ia-head">' +
+      '<div class="signal-ia-head-left">' +
+        '<div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+        '<div class="signal-ia-meta">' +
+          '<div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Signal #' + _demoSigCount + '</div>' +
+          '<div class="signal-ia-text-inline"><strong>Anomalie détectée</strong> — seuil d\'alerte franchi</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="signal-ia-head-right">' +
+        '<button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA(\'Analyser l\\\'anomalie\')">Analyser IA</button>' +
+        '<button class="signal-ia-btn signal-ia-btn-save" id="save-' + id + '" onclick="saveSignal(\'' + id + '\',\'Signal #' + _demoSigCount + ' · Anomalie · Seuil d\\\'alerte franchi\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>' +
+        '<button class="signal-ia-dismiss" onclick="dismissAlerte(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="signal-ia-reco"><div class="signal-ia-reco-inner">' +
+      '<div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>' +
+      '<div class="signal-ia-reco-body"><strong>Action recommandée</strong> — vérifier les données sources.</div>' +
+    '</div></div>';
+  list.appendChild(div);
+  _syncAlertCount();
+  switchDockTab('alertes');
+}
+
+/* ── CHAMP DE SAISIE ── */
+function toggleSend(inp) {
+  document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0);
+}
+
+/* ── RÉPONSES IA — remplacer par l'appel API réel ── */
+var _aiResponses = {
+  'retard': "<strong>DHL</strong> en tête avec 19 retards (6,6 %) — incident hub IDF. Chronopost : 8 retards (2,6 %). Les 4 autres transporteurs sont dans les normes.",
+  'litige': "DHL : 1,4 % (4/287) · Chronopost : 1,0 % (3/312) · GLS : 1,0 % (2/198). <strong>DHL seul au-dessus du seuil cible 1,0 %.</strong>",
+  'impact': "3 commandes impactées. Risque de <strong>3 réclamations SAV</strong> si non résolues avant 18h. Recommandation : email proactif + rebooking GLS.",
+  'comparer': "Taux livraison : 96,8 % (S-1) → 96,4 % (−0,4 pt). <strong>Hors incident DHL, toutes les métriques s'améliorent.</strong>",
+};
+function getResponse(q) {
+  var ql = q.toLowerCase();
+  for (var k in _aiResponses) { if (ql.indexOf(k) > -1) return _aiResponses[k]; }
+  return "Analyse en cours… <strong>Aucune anomalie supplémentaire détectée</strong> au-delà des signaux déjà remontés.";
+}
+
+/* ── ENVOI MESSAGE ── */
+var _nextAnalysisId = 4;
+var _actions = [];
+var _demoSigCount = 0;
+
+function appendMsg(type, text, question) {
+  var scroll = document.getElementById('iaConvoScroll');
+  var div = document.createElement('div');
+  if (type === 'user') {
+    div.className = 'ia-msg-user';
+    div.textContent = text;
+  } else {
+    div.className = 'ia-msg-ai-wrap';
+    var now = new Date();
+    var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+    var msgId = 'msg-' + Date.now();
+    var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    div.innerHTML =
+      '<div class="ia-msg-ai-meta">' + icon + ' elo·IA · ' + hm + '</div>' +
+      '<div class="ia-msg-ai">' + text + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;">' +
+        '<button id="' + msgId + '" onclick="saveMsg(this,\'' + msgId + '\',\'' + (question||'').replace(/'/g,"\\'") + '\',\'' + text.replace(/'/g,"\\'") + '\')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>' +
+          'Enregistrer' +
+        '</button>' +
+        '<span class="ia-msg-time">' + hm + '</span>' +
+      '</div>';
+  }
+  scroll.appendChild(div);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function saveMsg(btn, id, question, answer) {
+  if (btn.dataset.saved) return;
+  btn.dataset.saved = '1';
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg> Enregistré';
+  btn.style.color = 'var(--success)';
+  btn.style.background = 'var(--success-tint)';
+  btn.style.borderColor = 'rgba(42,149,84,0.2)';
+  btn.style.cursor = 'default';
+  injectAnalysis(question, answer);
+}
+
+function showTyping() {
+  var scroll = document.getElementById('iaConvoScroll');
+  var t = document.createElement('div');
+  t.className = 'ia-typing'; t.id = 'iaTyping';
+  t.innerHTML = '<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop = scroll.scrollHeight;
+}
+function hideTyping() { var t = document.getElementById('iaTyping'); if (t) t.remove(); }
+
+function sendIA() {
+  var inp = document.getElementById('iaDockInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = '';
+  document.getElementById('iaSendBtn').classList.remove('ready');
+  switchDockTab('chat');
+  appendMsg('user', val);
+  showTyping();
+  var resp = getResponse(val);
+  setTimeout(function() {
+    hideTyping();
+    appendMsg('ai', resp, val);
+  }, 800 + Math.random() * 500);
+}
+function askIA(q) {
+  document.getElementById('iaDockInput').value = q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  openDock();
+  setTimeout(sendIA, 150);
+}
+function fillAndSend(q) {
+  document.getElementById('iaDockInput').value = q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  sendIA();
+}
+
+/* ── ANALYSES ── */
+function _syncCounts() {
+  var list = document.getElementById('analysesList');
+  var n = list ? list.querySelectorAll('.analysis-item').length : 0;
+  ['analysisCount','analysisCountFull','analysisCountPanel'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = n;
+  });
+}
+function injectAnalysis(q, answer) {
+  var clean = answer.replace(/<[^>]+>/g, '');
+  var list  = document.getElementById('analysesList');
+  var id    = _nextAnalysisId++;
+  var cols  = ['var(--primary)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col   = cols[(id - 1) % cols.length];
+  var now   = new Date();
+  var hm    = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+  var card  = document.createElement('div');
+  card.className = 'analysis-item'; card.id = 'analysis-card-' + id;
+  card.onclick = function() { loadAnalysisInIA(id); };
+  card.innerHTML =
+    '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:' + col + '"></div>' +
+    '<div class="analysis-q">' + q + '</div>' +
+    '<button class="analysis-archive-btn" onclick="archiveAnalysis(event,' + id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>' +
+    '<div class="analysis-answer">' + clean.slice(0,120) + (clean.length > 120 ? '…' : '') + '</div>' +
+    '<div class="analysis-footer"><span class="analysis-time">demo · ' + hm + '</span><span class="analysis-src">elo·IA</span></div>';
+  list.insertBefore(card, list.querySelector('.analysis-item') || null);
+  _syncCounts();
+  setTimeout(function() { card.classList.add('highlight'); }, 20);
+  setTimeout(function() { card.classList.remove('highlight'); }, 2000);
+  var pill = document.getElementById('iaSavedPill');
+  if (pill) { pill.classList.add('visible'); setTimeout(function() { pill.classList.remove('visible'); }, 3500); }
+}
+function archiveAnalysis(e, id) {
+  e.stopPropagation();
+  var card = document.getElementById('analysis-card-' + id);
+  if (card) { card.remove(); _syncCounts(); }
+}
+function loadAnalysisInIA(id) {
+  var card = document.getElementById('analysis-card-' + id); if (!card) return;
+  document.getElementById('iaDockInput').value = '↩ ' + card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  switchDockTab('chat');
+  document.getElementById('iaDockInput').focus();
+}
+
+/* ── ACTIONS ── */
+function _syncActionCounts() {
+  ['actionCount','actionCountFull','actionCountPanel'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = _actions.length;
+  });
+}
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = '';
+  _actions.push({ id: Date.now(), text: val, done: false });
+  _renderActions();
+}
+function _renderActions() {
+  var list  = document.getElementById('actionsList');
+  var empty = document.getElementById('actionsEmpty');
+  _syncActionCounts();
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  if (_actions.length === 0) { if (empty) empty.style.display = ''; return; }
+  if (empty) empty.style.display = 'none';
+  _actions.forEach(function(a) {
+    var div = document.createElement('div'); div.className = 'action-item';
+    div.innerHTML =
+      '<div class="action-check' + (a.done ? ' done' : '') + '" onclick="_toggleAction(' + a.id + ')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+      '<div class="action-text"><div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div>' +
+      '<div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) + '</div></div>' +
+      '<button class="action-ctrl-btn" onclick="_removeAction(' + a.id + ')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
+    list.appendChild(div);
+  });
+}
+function _toggleAction(id) {
+  var a = _actions.find(function(x) { return x.id === id; });
+  if (a) { a.done = !a.done; _renderActions(); }
+}
+function _removeAction(id) {
+  _actions = _actions.filter(function(x) { return x.id !== id; });
+  _renderActions();
+}
+
+/* ── SIGNAL IA ── */
+var _signalSaved = {};
+function dismissSignal(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() { el.remove(); updateDockHeight(); }, 300);
+}
+function saveSignal(sigId, analysisText) {
+  if (_signalSaved[sigId]) return;
+  _signalSaved[sigId] = true;
+  var btn = document.getElementById('save-' + sigId);
+  if (btn) {
+    btn.classList.add('saved');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+    btn.onclick = null;
+  }
+  injectAnalysis('Signal · ' + analysisText.split('·')[0].trim(), analysisText);
+}
+
+/* ── THEME (doc uniquement) ── */
+function toggleTheme() {
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', function() {
+  _syncAlertCount();
+  updateDockHeight();
+  window.addEventListener('resize', updateDockHeight);
+});
+</script>
+</body>
+</html>

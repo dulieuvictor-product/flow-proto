@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flow — Brand Kit v2.0 · eLogik</title>
+<title>Flow — Brand Kit v3.0 · eLogik</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -22,6 +22,22 @@
   --font:'Nunito Sans',sans-serif;--mono:'DM Mono',monospace;
 }
 html{scroll-behavior:smooth}
+/* COMPONENT SECTION */
+.comp-iframe-wrap{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#F2F4F8;position:relative}
+.comp-iframe-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:10px 16px;border-bottom:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:space-between}
+.comp-iframe-label a{font-size:10px;font-weight:600;color:var(--cyan-mid);text-decoration:none;font-family:var(--mono);display:flex;align-items:center;gap:5px}
+.comp-iframe-label a:hover{text-decoration:underline}
+.comp-iframe-wrap iframe{width:100%;height:680px;border:none;display:block}
+.comp-api-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:20px}
+.comp-api-table th{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface)}
+.comp-api-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink);vertical-align:top;line-height:1.5}
+.comp-api-table tr:last-child td{border-bottom:none}
+.comp-api-table code{font-family:var(--mono);font-size:10px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--violet)}
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.comp-spec{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.comp-spec-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:8px}
+.comp-spec-val{font-size:13px;font-weight:500;color:var(--ink);line-height:1.5}
+.comp-spec-sub{font-size:11px;color:var(--slate);margin-top:3px;line-height:1.5}
 body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-height:1.5}
 .page{max-width:1100px;margin:0 auto;padding:0 32px 80px}
 
@@ -245,7 +261,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
     </div>
     <div class="cover-title">Brand Kit<br><em>Design System</em></div>
     <div class="cover-sub">Palette, typographie, composants UI et regles d'usage pour l'outil de data visualization logistique de la famille eLogik.</div>
-    <div class="cover-meta">Version 2.0 · Mai 2026 · eLogik Fine Logistic</div>
+    <div class="cover-meta">Version 3.0 · Mai 2026 · eLogik Fine Logistic</div>
   </div>
   <div class="cover-right">
     <div class="cover-pill active">Foundations</div>
@@ -253,6 +269,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
     <div class="cover-pill active">Molecules</div>
     <div class="cover-pill active">Organisms</div>
     <div class="cover-pill active">Dark Mode</div>
+    <div class="cover-pill active">Composants clés</div>
   </div>
 </div>
 
@@ -271,6 +288,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
   <a href="#table" class="nav-link">Table</a>
   <a href="#modal" class="nav-link">Modal</a>
   <a href="#darkmode" class="nav-link">Dark Mode</a>
+  <a href="#components" class="nav-link">Composants</a>
 </nav>
 
 <div class="page">
@@ -637,11 +655,79 @@ body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-heig
   </div>
 </section>
 
+<!-- COMPOSANTS CLÉS -->
+<div class="divider"></div>
+<section class="section" id="components">
+  <div class="section-eyebrow">Composants clés</div>
+  <div class="section-title">elo·IA Dock</div>
+  <div class="section-desc">Barre flottante persistante fixée en bas de chaque page module. Au clic sur le chevron, le volet s'étend en pleine hauteur jusqu'sous la topbar. Trois onglets : Conversation IA, Analyses sauvegardées &amp; Actions, Alertes.</div>
+
+  <div class="comp-iframe-wrap">
+    <div class="comp-iframe-label">
+      <span>Aperçu interactif — elo·IA Dock v4.0 · Full Height</span>
+      <a href="ia-dock-component.html" target="_blank">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ouvrir en plein écran
+      </a>
+    </div>
+    <iframe src="ia-dock-component.html" title="elo·IA Dock — composant interactif"></iframe>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-spec">
+      <div class="comp-spec-label">Positionnement</div>
+      <div class="comp-spec-val">position: fixed · bottom: 0</div>
+      <div class="comp-spec-sub">left: var(--dock-left) — à ajuster selon la largeur de la sidebar (220px par défaut, 0 sur mobile)</div>
+    </div>
+    <div class="comp-spec">
+      <div class="comp-spec-label">z-index</div>
+      <div class="comp-spec-val">150</div>
+      <div class="comp-spec-sub">Sous la sidenav (z: 200) et le nav-overlay (z: 190). Au-dessus du contenu principal.</div>
+    </div>
+    <div class="comp-spec">
+      <div class="comp-spec-label">Hauteur barre</div>
+      <div class="comp-spec-val">52px (min-height)</div>
+      <div class="comp-spec-sub">Toujours visible. Le volet expandé s'arrête à calc(100vh − 52px) pour respecter la topbar.</div>
+    </div>
+    <div class="comp-spec">
+      <div class="comp-spec-label">Tokens requis</div>
+      <div class="comp-spec-val">elogik flow · Design Tokens</div>
+      <div class="comp-spec-sub">--violet, --primary, --surface, --ink, --border, --success, --danger, --warning + variantes tint.</div>
+    </div>
+  </div>
+
+  <table class="comp-api-table" style="margin-top:28px">
+    <thead><tr><th>Fonction JS</th><th>Paramètres</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>openDock()</code></td><td>—</td><td>Ouvre le volet en mode full height.</td></tr>
+      <tr><td><code>toggleDock()</code></td><td>—</td><td>Bascule full height / fermé (chevron).</td></tr>
+      <tr><td><code>switchDockTab(tab)</code></td><td><code>'chat' | 'analyses' | 'alertes'</code></td><td>Active un onglet et ouvre le volet.</td></tr>
+      <tr><td><code>askIA(query)</code></td><td><code>string</code></td><td>Préremplit le champ et envoie la question.</td></tr>
+      <tr><td><code>saveMsg(btn, id, q, answer)</code></td><td><code>el, string, string, string</code></td><td>Enregistre une réponse IA en analyse (CTA explicite sous chaque message).</td></tr>
+      <tr><td><code>saveSignal(id, text)</code></td><td><code>string, string</code></td><td>Enregistre un signal IA flottant comme analyse.</td></tr>
+      <tr><td><code>dismissSignal(id)</code></td><td><code>string</code></td><td>Ferme un signal avec animation de sortie.</td></tr>
+      <tr><td><code>injectAnalysis(q, answer)</code></td><td><code>string, string</code></td><td>Insère une carte dans l'onglet Analyses.</td></tr>
+      <tr><td><code>updateDockHeight()</code></td><td>—</td><td>Recalcule le <code>padding-bottom</code> de <code>.main</code>. Appeler au DOMContentLoaded &amp; resize.</td></tr>
+    </tbody>
+  </table>
+
+  <table class="comp-api-table">
+    <thead><tr><th>Étape</th><th>Intégration dans une page hôte</th></tr></thead>
+    <tbody>
+      <tr><td><code>1</code></td><td>Inclure les <strong>tokens CSS elogik flow</strong> (<code>:root</code>, <code>[data-theme="dark"]</code>) dans le <code>&lt;style&gt;</code> de la page.</td></tr>
+      <tr><td><code>2</code></td><td>Coller le bloc HTML <code>&lt;!-- IA DOCK --&gt;</code> dans le <code>&lt;body&gt;</code>, <strong>hors</strong> de tout conteneur <code>overflow:hidden</code>.</td></tr>
+      <tr><td><code>3</code></td><td>Ajuster <code>--dock-left</code> dans <code>:root</code> selon la largeur réelle de la sidebar.</td></tr>
+      <tr><td><code>4</code></td><td>Inclure le bloc <code>&lt;script&gt;</code> du composant. Appeler <code>updateDockHeight()</code> au <code>DOMContentLoaded</code>.</td></tr>
+      <tr><td><code>5</code></td><td>Remplacer <code>getResponse(q)</code> par l'appel à l'API elo·IA réelle. Adapter les suggestions dans le footer du panneau Chat.</td></tr>
+    </tbody>
+  </table>
+</section>
+
 </div>
 
 <footer class="footer">
-  <div class="footer-left">Flow Design System · eLogik Fine Logistic · v2.0 · Mai 2026<br>Nunito Sans · Gotham · DM Mono · Lucide Icons</div>
-  <div class="footer-right"><span class="badge bdg-cyan">Foundations</span><span class="badge bdg-lime">Atoms</span><span class="badge bdg-gray">Organisms</span></div>
+  <div class="footer-left">Flow Design System · eLogik Fine Logistic · v3.0 · Mai 2026<br>Nunito Sans · Gotham · DM Mono · Lucide Icons</div>
+  <div class="footer-right"><span class="badge bdg-cyan">Foundations</span><span class="badge bdg-lime">Atoms</span><span class="badge bdg-gray">Organisms</span><span class="badge bdg-cyan">Composants clés</span></div>
 </footer>
 
 <script>
