@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
+<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elogik (flow) — Tableau de bord</title>
@@ -952,7 +953,9 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 ============================================================ */
 function toggleTheme() {
   var h = document.documentElement;
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 /* ============================================================
@@ -1673,7 +1676,9 @@ function saveSignal(sigId, analysisText) {
 /* ── THEME (doc uniquement) ── */
 function toggleTheme() {
   var h = document.documentElement;
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 /* ── INIT ── */

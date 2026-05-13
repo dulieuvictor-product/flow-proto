@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
+<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elogik (flow) — Tableau de bord</title>
@@ -1221,7 +1222,9 @@ body:not(.signals-active) .main > .topbar {
 ============================================================ */
 function toggleTheme() {
   var h = document.documentElement;
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 /* ============================================================

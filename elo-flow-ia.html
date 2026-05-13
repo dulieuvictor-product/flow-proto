@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
+<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elo (flow) — IA & Prédictif</title>
@@ -630,10 +631,10 @@ function openNav()  { document.getElementById('sidenav').classList.add('open'); 
 function closeNav() { document.getElementById('sidenav').classList.remove('open'); document.getElementById('navOverlay').classList.remove('open'); }
 
 function toggleTheme() {
-  const d = document.documentElement;
-  const isDark = d.getAttribute('data-theme') === 'dark';
-  d.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeLabel').textContent = isDark ? 'Mode sombre' : 'Mode clair';
+  var h = document.documentElement;
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 function showTab(id, btn) {

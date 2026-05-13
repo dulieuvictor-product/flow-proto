@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
+<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elogik (flow) — Retours</title>
@@ -1393,9 +1394,10 @@ body.signals-active .signal-overlay { background:rgba(0,0,0,0.28); pointer-event
 <script>
 /* THEME */
 function toggleTheme() {
-  var d = document.documentElement;
-  d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  rebuildCharts();
+  var h = document.documentElement;
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 /* ════════════════════════════════════════════════

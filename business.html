@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
+<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>elogik (flow) — Business</title>
@@ -715,9 +716,10 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 // THEME
 function toggleTheme() {
   var h = document.documentElement;
-  var isDark = h.getAttribute('data-theme') === 'dark';
-  h.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  setTimeout(function() { rebuildAllCharts(); }, 50);
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
+}, 50);
 }
 
 // PERIOD
