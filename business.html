@@ -1556,28 +1556,60 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- ════════════════════════════════════════════
-     IA DOCK — nouveau composant (home-v9 / ia-dock-component v1.0)
-     Positionné hors du .main, fixed en bas de l'écran
+     IA DOCK — composant v4.0 Full Height
      ════════════════════════════════════════════ -->
 <style>
 /* ── ANCRE DE POSITIONNEMENT ── */
-:root { --dock-left: 220px; }
+:root { --dock-left: 220px; } /* = largeur de .sidenav */
 @media (max-width: 640px) { :root { --dock-left: 0px; } }
+
+.ia-dock-anchor {
+  position: fixed;
+  bottom: 0;
+  left: var(--dock-left);
+  right: 0;
+  z-index: 150; /* sous .sidenav (z:200), sous .nav-overlay (z:190) */
+  pointer-events: none;
+}
+.ia-dock-inner {
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SIGNAL IA (zone flottante au-dessus du dock) ── */
+.ia-signal-zone {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+/* Signal card */
+.signal-ia {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--dock-shadow);
+  position: relative;
+  pointer-events: auto;
+  animation: signalIn 0.35s ease both;
+}
 @keyframes signalIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.signal-ia.dismissing { animation: signalOut 0.28s ease forwards; }
 @keyframes signalOut { to{opacity:0;transform:translateY(-6px);max-height:0;overflow:hidden;} }
+.signal-ia::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0;
+}
+.signal-ia[data-severity="danger"]::before  { background: var(--danger); }
+.signal-ia[data-severity="warning"]::before { background: var(--warning); }
+.signal-ia[data-severity="info"]::before    { background: var(--primary); }
+.signal-ia[data-severity="success"]::before { background: var(--success); }
 
-.ia-dock-anchor { position:fixed; bottom:0; left:var(--dock-left); right:0; z-index:150; pointer-events:none; }
-.ia-dock-inner { width:100%; pointer-events:none; display:flex; flex-direction:column; }
-
-/* Signal zone */
-.ia-signal-zone { pointer-events:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:6px; }
-.signal-ia { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--dock-shadow,0 -4px 32px rgba(0,0,0,0.10)); position:relative; pointer-events:auto; animation:signalIn 0.35s ease both; }
-.signal-ia.dismissing { animation:signalOut 0.28s ease forwards; }
-.signal-ia::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0; }
-.signal-ia[data-severity="danger"]::before  { background:var(--danger); }
-.signal-ia[data-severity="warning"]::before { background:var(--warning); }
-.signal-ia[data-severity="info"]::before    { background:var(--primary); }
-.signal-ia[data-severity="success"]::before { background:var(--success); }
+/* Signal head */
 .signal-ia-head { display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px; gap:10px; }
 .signal-ia-head-left { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
 .signal-ia-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -1591,7 +1623,10 @@ window.addEventListener('DOMContentLoaded', function() {
 .signal-ia[data-severity="info"]    .signal-ia-icon svg { stroke:var(--primary); }
 .signal-ia[data-severity="success"] .signal-ia-icon svg { stroke:var(--success); }
 .signal-ia-meta { min-width:0; flex:1; }
-.signal-ia-source { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px; }
+.signal-ia-source {
+  font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px;
+}
 .signal-ia[data-severity="danger"]  .signal-ia-source { color:var(--danger); }
 .signal-ia[data-severity="warning"] .signal-ia-source { color:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-source { color:var(--primary); }
@@ -1607,36 +1642,73 @@ window.addEventListener('DOMContentLoaded', function() {
 .signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-text-inline strong { color:var(--primary); }
 .signal-ia-head-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-.signal-ia-reco { padding:0 14px 12px; }
+/* Signal body (reco) */
+.signal-ia-reco { padding:0 14px 12px; display:block; }
 .signal-ia-reco-inner { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.15); border-radius:10px; padding:9px 12px; }
 [data-theme="dark"] .signal-ia-reco-inner { border-color:rgba(167,139,255,0.18); }
-.signal-ia-reco-head { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:5px; }
+.signal-ia-reco-head {
+  display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--violet);
+  font-family:'DM Mono',monospace; margin-bottom:5px;
+}
 .signal-ia-reco-head svg { width:10px; height:10px; }
 .signal-ia-reco-body { font-size:11.5px; color:var(--ink); line-height:1.6; }
 .signal-ia-reco-body strong { color:var(--violet); font-weight:600; }
-.signal-ia-btn { font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 12px; border-radius:100px; border:none; cursor:pointer; display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap; }
+/* Signal buttons */
+.signal-ia-btn {
+  font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif;
+  padding:5px 12px; border-radius:100px; border:none; cursor:pointer;
+  display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap;
+}
 .signal-ia-btn svg { width:10px; height:10px; }
 .signal-ia-btn-primary { background:var(--violet); color:white; }
 .signal-ia-btn-primary:hover { background:#5535D0; }
 .signal-ia-btn-save { background:var(--surface2); border:1px solid var(--border2); color:var(--slate); }
 .signal-ia-btn-save:hover { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
 .signal-ia-btn-save.saved { background:var(--success-tint); border-color:rgba(42,149,84,0.2); color:var(--success); cursor:default; }
-.signal-ia-dismiss { width:22px; height:22px; border-radius:6px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0; }
+.signal-ia-dismiss {
+  width:22px; height:22px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0;
+}
 .signal-ia-dismiss:hover { background:var(--surface2); color:var(--ink); }
 .signal-ia-dismiss svg { width:11px; height:11px; }
 
-/* Dock principal */
-.ia-dock { pointer-events:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:0; box-shadow:0 -4px 32px rgba(0,0,0,0.10); transition:background 0.25s,border-color 0.25s; overflow:hidden; display:flex; flex-direction:column-reverse; }
-[data-theme="dark"] .ia-dock { box-shadow:0 -4px 32px rgba(0,0,0,0.40); }
-.ia-dock-bar { display:flex; align-items:stretch; min-height:52px; border-top:1px solid var(--border); }
-.ia-dock-zone { display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--border); min-width:0; flex-shrink:0; }
-.ia-dock-zone.ia-dock-input-zone { flex:1; flex-shrink:1; min-width:0; order:10; border-right:none; gap:8px; }
-.ia-dock-toggle { order:11; width:44px; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:background 0.12s,transform 0.25s; flex-shrink:0; }
-.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
-.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; }
-.ia-dock.open .ia-dock-toggle svg { transform:rotate(180deg); }
-.ia-dock-zone:first-child { order:0; }
-
+/* ═══════════════════════════════════════════
+   DOCK PRINCIPAL
+   ═══════════════════════════════════════════ */
+.ia-dock {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: var(--dock-shadow);
+  transition: background 0.25s, border-color 0.25s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.ia-dock-bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 52px;
+  border-top: 1px solid var(--border);
+}
+.ia-dock-zone {
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  min-width: 0; flex-shrink: 0;
+}
+.ia-dock-zone.ia-dock-input-zone {
+  flex: 1; flex-shrink: 1; min-width: 0;
+  order: 10; border-right: none;
+  gap: 8px;
+}
+.ia-dock-toggle { order: 11; }
+.ia-dock-zone:first-child { order: 0; }
+.ia-dock-zone:last-child { border-right: none; }
 /* Brand */
 .ia-dock-brand { display:flex; align-items:center; gap:9px; }
 .ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -1644,93 +1716,171 @@ window.addEventListener('DOMContentLoaded', function() {
 .ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
 .ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
 .ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
-
-/* Preview zones */
-.ia-dock-preview { cursor:pointer; align-items:center; padding:0 16px; min-width:120px; transition:background 0.12s; }
-.ia-dock-preview:hover { background:var(--surface2); }
-.ia-dock-preview-head { display:flex; align-items:center; gap:6px; }
-.ia-dock-preview-title { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:600; color:var(--slate); }
-.ia-dock-preview-title svg { width:11px; height:11px; }
-.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
-.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
-
-/* Input */
-.ia-dock-input-wrap { flex:1; display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 14px; transition:border-color 0.15s,background 0.25s; }
+/* Champ de saisie */
+.ia-dock-input-wrap {
+  flex:1; display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:100px; padding:7px 14px;
+  transition:border-color 0.15s, background 0.25s;
+}
 .ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
 .ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
 .ia-dock-input::placeholder { color:var(--muted); }
-.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s,transform 0.12s; }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s, transform 0.12s; }
 .ia-dock-send.ready { opacity:1; }
 .ia-dock-send:hover.ready { transform:scale(1.08); }
 .ia-dock-send svg { width:11px; height:11px; }
-
-/* Saved pill */
-.ia-saved-pill { display:none; align-items:center; gap:5px; background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:4px 10px; font-size:11px; font-weight:600; color:var(--success); cursor:pointer; white-space:nowrap; flex-shrink:0; }
-.ia-saved-pill svg { width:10px; height:10px; }
+/* Pill "Enregistrée" */
+.ia-saved-pill {
+  display:none; align-items:center; gap:5px;
+  font-size:10px; font-weight:500; color:var(--success);
+  background:var(--success-tint); border:1px solid rgba(42,149,84,0.2);
+  border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
 .ia-saved-pill.visible { display:flex; }
+.ia-saved-pill svg { width:10px; height:10px; }
+/* Zones preview (Analyses / Actions) dans la barre */
+.ia-dock-preview {
+  align-items:center !important; flex-direction:row;
+  justify-content:flex-start; padding:0 16px !important;
+  cursor:pointer; gap:10px; width:200px; flex-shrink:0;
+  transition:background 0.12s;
+}
+.ia-dock-preview:hover { background:rgba(0,0,0,0.025); }
+[data-theme="dark"] .ia-dock-preview:hover { background:rgba(255,255,255,0.03); }
+.ia-dock-preview-head { display:flex; align-items:center; gap:10px; width:100%; }
+.ia-dock-preview-title { font-size:10px; font-weight:600; color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.ia-dock-preview-title svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-preview-items { display:none !important; }
+.ia-dock-preview-input-row { display:none !important; }
+/* Badges */
+.ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+/* Toggle */
+.ia-dock-toggle { width:44px; flex-shrink:0; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.12s; }
+.ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
+.ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; transform:rotate(180deg); }
+.ia-dock.open .ia-dock-toggle svg { transform:rotate(0deg); }
+.ia-dock.fullpage .ia-dock-toggle svg { transform:rotate(0deg); }
+/* Onglets dans la barre principale */
+.ia-bar-tab { height:100%; border-bottom:none !important; border-top:2px solid transparent; }
+.ia-bar-tab.active { border-top-color:var(--primary); border-bottom:none !important; background:none !important; }
 
-/* Body expandable */
-.ia-dock-body { display:none; flex-direction:column; max-height:320px; }
-.ia-dock.open .ia-dock-body { display:flex; }
-.ia-dock-tabs { display:flex; border-bottom:1px solid var(--border); flex-shrink:0; }
-.ia-dock-tab-btn { display:flex; align-items:center; gap:6px; padding:9px 18px; font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; color:var(--muted); background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.15s; }
-.ia-dock-tab-btn svg { width:12px; height:12px; }
-.ia-dock-tab-btn:hover { color:var(--ink); background:var(--surface2); }
-.ia-dock-tab-btn.active { color:var(--violet); border-bottom-color:var(--violet); }
-.ia-dock-panel { display:none; flex:1; flex-direction:column; overflow:hidden; min-height:0; }
+/* ── CORPS EXPANDABLE ── */
+.ia-dock-body { overflow:hidden; max-height:0; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); border-bottom:1px solid var(--border); }
+.ia-dock.open .ia-dock-body { max-height:360px; }
+/* Full-page : le panel s'étend jusqu'sous la topbar */
+.ia-dock.fullpage .ia-dock-body { max-height:calc(100vh - 52px); overflow-y:auto; }
+
+/* Tabbar */
+.ia-dock-tabs { display:flex; align-items:stretch; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
+.ia-dock-tab-btn {
+  display:flex; align-items:center; gap:7px; padding:0 20px; height:38px;
+  font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif;
+  background:none; border:none; border-bottom:2px solid transparent;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
+.ia-dock-tab-btn svg { width:13px; height:13px; opacity:0.6; }
+.ia-dock-tab-btn:hover { color:var(--ink); }
+.ia-dock-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--surface); }
+.ia-dock-tab-btn.active svg { opacity:1; }
+.ia-dock-tab-btn .ia-count,
+.ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+
+/* Panneaux */
+.ia-dock-panel { display:none; flex-direction:column; height:322px; overflow:hidden; }
 .ia-dock-panel.active { display:flex; }
-.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:10px 16px; display:flex; flex-direction:column; gap:8px; }
-.ia-dock-panel-footer { padding:8px 16px 10px; border-top:1px solid var(--border); flex-shrink:0; }
+/* Full-page : le panneau prend toute la hauteur dispo */
+.ia-dock.fullpage .ia-dock-panel { height:calc(100vh - 52px - 38px); }
 
-/* Messages */
-.ia-msg-user { align-self:flex-end; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:12px; line-height:1.5; max-width:80%; }
-.ia-msg-ai-wrap { display:flex; flex-direction:column; gap:3px; }
-.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; }
-.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:9px 12px; font-size:12px; line-height:1.6; color:var(--ink); }
-.ia-msg-ai strong { font-weight:600; }
-.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
-.ia-typing { display:flex; gap:4px; padding:10px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
-.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--muted); animation:pulse 1.2s infinite; }
+/* Scroll générique panneau */
+.ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:9px; }
+.ia-dock-panel-scroll::-webkit-scrollbar { width:3px; }
+.ia-dock-panel-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
+
+/* Section head dans panneau fusionné */
+.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px 6px; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; }
+.ia-merged-section-title { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:6px; }
+.ia-merged-section-title svg { width:10px; height:10px; }
+
+/* Footer panneau */
+.ia-dock-panel-footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--surface2); padding:8px 14px; }
+
+/* ── Messages conversation ── */
+.ia-msg-user { align-self:flex-end; max-width:88%; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:11.5px; line-height:1.5; }
+.ia-msg-ai-wrap { align-self:flex-start; width:100%; display:flex; flex-direction:column; gap:5px; }
+.ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
+.ia-msg-ai-meta svg { width:9px; height:9px; }
+.ia-msg-ai { background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; padding:8px 11px; font-size:11.5px; line-height:1.6; color:var(--ink); }
+.ia-msg-ai strong { font-weight:600; color:var(--violet); }
+.ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; align-self:flex-end; }
+.ia-typing { display:flex; align-items:center; gap:4px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
+.ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--violet); animation:pulse 1.2s infinite; }
 .ia-tdot:nth-child(2) { animation-delay:0.2s; }
 .ia-tdot:nth-child(3) { animation-delay:0.4s; }
 
 /* Suggestions */
-.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
-.ia-sugg { display:inline-flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:5px 12px; font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
-.ia-sugg:hover { border-color:var(--violet); color:var(--violet); background:var(--violet-tint); }
-.ia-sugg-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.ia-dock-sugg { padding:7px 12px 8px; border-top:1px solid var(--border); flex-shrink:0; display:flex; flex-direction:column; gap:4px; background:var(--surface2); }
+.ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
+.ia-sugg { display:flex; align-items:center; gap:6px; padding:5px 8px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
+.ia-sugg:hover { border-color:var(--violet); background:var(--violet-tint); color:var(--ink); }
+.ia-sugg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
 
-/* Analyses & actions panneau */
-.ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
-.ia-merged-section-title { display:flex; align-items:center; gap:6px; font-size:10px; font-weight:600; color:var(--slate); }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 10px; cursor:pointer; transition:border-color 0.12s; }
-.analysis-item:hover { border-color:var(--violet); }
-.analysis-item.highlight { border-color:var(--primary); background:var(--primary-tint); }
-.analysis-item-head { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
-.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.analysis-q { font-size:11px; font-weight:500; color:var(--ink); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.analysis-archive-btn { width:16px; height:16px; border-radius:4px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); flex-shrink:0; }
+/* ── Analyses ── */
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; cursor:pointer; transition:border-color 0.12s, box-shadow 0.25s; }
+.analysis-item:hover { border-color:var(--primary); }
+.analysis-item.highlight { border-color:var(--violet) !important; box-shadow:0 0 0 3px var(--violet-tint); }
+.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; margin-bottom:3px; }
+.analysis-mod-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
+.analysis-archive-btn { width:18px; height:18px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
+.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
 .analysis-archive-btn svg { width:10px; height:10px; }
 .analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
 .analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
 .analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
 .analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
-.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
-.dock-empty svg { width:24px; height:24px; opacity:0.3; }
+
+/* ── Actions ── */
+.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; display:flex; align-items:flex-start; gap:9px; transition:border-color 0.12s; }
+.action-item:hover { border-color:var(--violet); }
+.action-check { width:15px; height:15px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.action-check:hover { border-color:var(--success); background:var(--success-tint); }
+.action-check.done { border-color:var(--success); background:var(--success); }
+.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
+.action-text { flex:1; min-width:0; }
+.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
+.action-title.done-text { text-decoration:line-through; color:var(--muted); }
+.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
+.action-ctrl-btn { width:18px; height:18px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); flex-shrink:0; }
+.action-ctrl-btn svg { width:10px; height:10px; }
+
+/* Champ ajout action */
 .ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
 .ia-dock-add-input:focus { border-color:var(--violet); }
+
+/* Empty state */
+.dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
+.dock-empty svg { width:24px; height:24px; opacity:0.3; }
 </style>
 
 <div class="ia-dock-anchor" id="iaDockAnchor">
   <div class="ia-dock-inner">
-    <!-- Zone Signal IA -->
-    <div class="ia-signal-zone" id="iaSignalZone"></div>
+
+    <!-- Zone Signal IA (flottante, au-dessus du dock) -->
+    <div class="ia-signal-zone" id="iaSignalZone">
+      <!-- Les signaux sont injectés dynamiquement via showSignalDemo() ou saveSignal() -->
+    </div>
+
     <!-- Dock principal -->
     <div class="ia-dock" id="iaDock">
-      <!-- BARRE PRINCIPALE -->
+
+      <!-- BARRE PRINCIPALE (toujours visible) -->
       <div class="ia-dock-bar">
-        <!-- Zone 1 : Brand -->
-        <div class="ia-dock-zone">
+
+        <!-- Zone 1 : Brand elo·IA — cliquable → ouvre Conversation -->
+        <div class="ia-dock-zone" style="cursor:pointer;" onclick="switchDockTab('chat')">
           <div class="ia-dock-brand">
             <div class="ia-dock-av">
               <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -1741,27 +1891,22 @@ window.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
         </div>
-        <!-- Zone 2 : Analyses -->
-        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewAnalyses">
-          <div class="ia-dock-preview-head">
-            <div class="ia-dock-preview-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Analyses
-            </div>
-            <span class="ia-count" id="analysisCount">2</span>
-          </div>
-        </div>
-        <!-- Zone 3 : Actions -->
-        <div class="ia-dock-zone ia-dock-preview" onclick="switchDockTab('analyses')" id="previewActions">
-          <div class="ia-dock-preview-head">
-            <div class="ia-dock-preview-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              Actions
-            </div>
-            <span class="ia-count-action" id="actionCount">0</span>
-          </div>
-        </div>
-        <!-- Zone 4 : Champ IA -->
+
+        <!-- Barre fermée : onglet Analyses -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-analyses" onclick="switchDockTab('analyses')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyses
+          <span class="ia-count" id="analysisCount">2</span>
+        </button>
+
+        <!-- Barre fermée : onglet Alertes -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-alertes" onclick="switchDockTab('alertes')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          Alertes
+          <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCount">0</span>
+        </button>
+
+        <!-- Zone input (order:10) -->
         <div class="ia-dock-zone ia-dock-input-zone">
           <div class="ia-dock-input-wrap">
             <input class="ia-dock-input" id="iaDockInput"
@@ -1777,14 +1922,18 @@ window.addEventListener('DOMContentLoaded', function() {
             Enregistrée
           </div>
         </div>
-        <!-- Zone 5 : Toggle -->
+
+        <!-- Toggle chevron (order:11) -->
         <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
         </button>
+
       </div><!-- /ia-dock-bar -->
 
-      <!-- CORPS -->
+      <!-- CORPS EXPANDABLE -->
       <div class="ia-dock-body" id="iaDockBody">
+
+        <!-- Tabbar volet ouvert : 3 onglets -->
         <div class="ia-dock-tabs">
           <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -1794,7 +1943,11 @@ window.addEventListener('DOMContentLoaded', function() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Analyses &amp; Actions
             <span class="ia-count" id="analysisCountFull">2</span>
-            <span class="ia-count-action" id="actionCountFull">0</span>
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-alertes" onclick="switchDockTab('alertes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Alertes
+            <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCountFull">0</span>
           </button>
         </div>
 
@@ -1808,7 +1961,13 @@ window.addEventListener('DOMContentLoaded', function() {
                 elo·IA · contexte Business · 09h14
               </div>
               <div class="ia-msg-ai"><strong>Masque Kératine Pro</strong> concentre 50 % du CA B2C (38 420 €, +34 % vs S-1). Sérum Argan en forte croissance (+18 %). <span style="color:var(--warning);font-weight:500">Huile Argan : 3 semaines consécutives de baisse (−8 %)</span> — opportunité promotionnelle à considérer.</div>
-              <div class="ia-msg-time">09h14</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
+                <button onclick="saveMsg(this,'msg-demo-biz','Références CA e-commerce','Masque Kératine Pro concentre 50 % du CA B2C')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                  Enregistrer
+                </button>
+                <span class="ia-msg-time">09h14</span>
+              </div>
             </div>
           </div>
           <div class="ia-dock-panel-footer">
@@ -1821,7 +1980,7 @@ window.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>
 
-        <!-- Panneau Analyses & Actions -->
+        <!-- Panneau Analyses & Actions (50/50) -->
         <div class="ia-dock-panel" id="panel-analyses">
           <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
             <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
@@ -1860,47 +2019,88 @@ window.addEventListener('DOMContentLoaded', function() {
                 </div>
               </div>
               <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
-                <input class="ia-dock-add-input" id="dockActionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addDockAction()" style="width:100%"/>
+                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
               </div>
             </div>
           </div>
-        </div>
+        </div><!-- /panel-analyses -->
+
+        <!-- Panneau Alertes -->
+        <div class="ia-dock-panel" id="panel-alertes">
+          <div class="ia-dock-panel-scroll" id="alertesList">
+            <div class="dock-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              Aucune alerte active.
+            </div>
+          </div>
+        </div><!-- /panel-alertes -->
+
       </div><!-- /ia-dock-body -->
     </div><!-- /ia-dock -->
   </div><!-- /ia-dock-inner -->
 </div><!-- /ia-dock-anchor -->
 
 <script>
-/* ── DOCK IA — Script composant ── */
+/* ── DOCK HEIGHT — adapte le padding-bottom de .main ── */
 function updateDockHeight() {
   var anchor = document.getElementById('iaDockAnchor');
   var h = anchor ? anchor.getBoundingClientRect().height : 60;
   var main = document.querySelector('.main');
   if (main) main.style.paddingBottom = (h + 8) + 'px';
 }
+
+/* ── OPEN / CLOSE / TOGGLE ── */
 function toggleDock() {
-  document.getElementById('iaDock').classList.toggle('open');
-  setTimeout(updateDockHeight, 320);
+  var dock = document.getElementById('iaDock');
+  if (dock.classList.contains('fullpage')) {
+    dock.classList.remove('fullpage', 'open');
+  } else {
+    dock.classList.add('open', 'fullpage');
+  }
+  setTimeout(updateDockHeight, 360);
 }
 function openDock() {
-  document.getElementById('iaDock').classList.add('open');
+  var dock = document.getElementById('iaDock');
+  dock.classList.add('open', 'fullpage');
   setTimeout(updateDockHeight, 320);
 }
+
+/* ── TABS ── */
 var currentDockTab = 'chat';
 function switchDockTab(tab) {
   if (tab === 'actions') tab = 'analyses';
   currentDockTab = tab;
-  ['chat','analyses'].forEach(function(t) {
-    var btn = document.getElementById('tab-'+t);
-    var panel = document.getElementById('panel-'+t);
-    if (btn) btn.classList.toggle('active', t===tab);
-    if (panel) panel.classList.toggle('active', t===tab);
+  ['chat', 'analyses', 'alertes'].forEach(function(t) {
+    var btn    = document.getElementById('tab-' + t);
+    var barBtn = document.getElementById('bar-tab-' + t);
+    var panel  = document.getElementById('panel-' + t);
+    if (btn)    btn.classList.toggle('active', t === tab);
+    if (barBtn) barBtn.classList.toggle('active', t === tab);
+    if (panel)  panel.classList.toggle('active', t === tab);
   });
   openDock();
 }
-function toggleSend(inp) {
-  document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length>0);
+
+/* ── ALERTES ── */
+function _syncAlertCount() {
+  var n = document.getElementById('alertesList')
+    ? document.getElementById('alertesList').querySelectorAll('.signal-ia').length : 0;
+  ['alertCount','alertCountFull'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = n;
+  });
 }
+function dismissAlerte(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() { el.remove(); _syncAlertCount(); updateDockHeight(); }, 300);
+}
+
+/* ── CHAMP DE SAISIE ── */
+function toggleSend(inp) {
+  document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0);
+}
+
+/* ── RÉPONSES IA ── */
 var _dockAiResponses = {
   'aov': "AOV moyen cette semaine : <strong>112 €</strong> (B2C) · 248 € (B2B). B2C en hausse de +4 € vs S-1.",
   'ca': "<strong>Top 3 :</strong> Masque Kératine Pro 38 420 € · Sérum Argan 24 110 € · Huile Argan 14 780 €.",
@@ -1909,100 +2109,201 @@ var _dockAiResponses = {
   'articles': "Nb moyen d'articles/commande : 2,3 (stable). B2B : 4,1 articles. B2C : 1,6 article.",
   'objectif': "3 références sous objectif : Huile Argan (−8 %), Pack Duo Argan (−3 %), Baume Lissant (−12 %).",
 };
-function _getDockResponse(q) {
+function getResponse(q) {
   var ql = q.toLowerCase();
-  for (var k in _dockAiResponses) { if (ql.indexOf(k)>-1) return _dockAiResponses[k]; }
+  for (var k in _dockAiResponses) { if (ql.indexOf(k) > -1) return _dockAiResponses[k]; }
   return "Analyse en cours… <strong>Aucune anomalie supplémentaire</strong> sur le module Business pour la période sélectionnée.";
 }
-var _nextDockAnalysisId = 3;
-var _dockActions = [];
-function appendDockMsg(type, text) {
+
+/* ── ENVOI MESSAGE ── */
+var _nextAnalysisId = 3;
+var _actions = [];
+var _demoSigCount = 0;
+
+function appendMsg(type, text, question) {
   var scroll = document.getElementById('iaConvoScroll');
   var div = document.createElement('div');
-  if (type==='user') {
-    div.className='ia-msg-user'; div.textContent=text;
+  if (type === 'user') {
+    div.className = 'ia-msg-user';
+    div.textContent = text;
   } else {
-    var now=new Date(); var hm=now.getHours()+'h'+String(now.getMinutes()).padStart(2,'0');
-    div.className='ia-msg-ai-wrap';
-    div.innerHTML='<div class="ia-msg-ai-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> elo·IA · Business · '+hm+'</div><div class="ia-msg-ai">'+text+'</div><div class="ia-msg-time">'+hm+'</div>';
+    div.className = 'ia-msg-ai-wrap';
+    var now = new Date();
+    var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+    var msgId = 'msg-' + Date.now();
+    var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    div.innerHTML =
+      '<div class="ia-msg-ai-meta">' + icon + ' elo·IA · ' + hm + '</div>' +
+      '<div class="ia-msg-ai">' + text + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;">' +
+        '<button id="' + msgId + '" onclick="saveMsg(this,\'' + msgId + '\',\'' + (question||'').replace(/'/g,"\\'") + '\',\'' + text.replace(/'/g,"\\'") + '\')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>' +
+          'Enregistrer' +
+        '</button>' +
+        '<span class="ia-msg-time">' + hm + '</span>' +
+      '</div>';
   }
-  scroll.appendChild(div); scroll.scrollTop=scroll.scrollHeight;
+  scroll.appendChild(div);
+  scroll.scrollTop = scroll.scrollHeight;
 }
-function showDockTyping() {
-  var scroll=document.getElementById('iaConvoScroll');
-  var t=document.createElement('div'); t.className='ia-typing'; t.id='iaDockTyping';
-  t.innerHTML='<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
-  scroll.appendChild(t); scroll.scrollTop=scroll.scrollHeight;
+
+function saveMsg(btn, id, question, answer) {
+  if (btn.dataset.saved) return;
+  btn.dataset.saved = '1';
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:9px;height:9px"><polyline points="20 6 9 17 4 12"/></svg> Enregistré';
+  btn.style.color = 'var(--success)';
+  btn.style.background = 'var(--success-tint)';
+  btn.style.borderColor = 'rgba(42,149,84,0.2)';
+  btn.style.cursor = 'default';
+  injectAnalysis(question, answer);
 }
-function hideDockTyping() { var t=document.getElementById('iaDockTyping'); if(t) t.remove(); }
+
+function showTyping() {
+  var scroll = document.getElementById('iaConvoScroll');
+  var t = document.createElement('div');
+  t.className = 'ia-typing'; t.id = 'iaTyping';
+  t.innerHTML = '<div class="ia-tdot"></div><div class="ia-tdot"></div><div class="ia-tdot"></div>';
+  scroll.appendChild(t); scroll.scrollTop = scroll.scrollHeight;
+}
+function hideTyping() { var t = document.getElementById('iaTyping'); if (t) t.remove(); }
+
 function sendIA() {
-  var inp=document.getElementById('iaDockInput');
-  var val=inp.value.trim(); if(!val) return;
-  inp.value=''; document.getElementById('iaSendBtn').classList.remove('ready');
-  switchDockTab('chat'); appendDockMsg('user',val); showDockTyping();
-  var resp=_getDockResponse(val);
-  setTimeout(function() { hideDockTyping(); appendDockMsg('ai',resp); injectDockAnalysis(val,resp); }, 800+Math.random()*500);
+  var inp = document.getElementById('iaDockInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = '';
+  document.getElementById('iaSendBtn').classList.remove('ready');
+  switchDockTab('chat');
+  appendMsg('user', val);
+  showTyping();
+  var resp = getResponse(val);
+  setTimeout(function() {
+    hideTyping();
+    appendMsg('ai', resp, val);
+  }, 800 + Math.random() * 500);
 }
-function askIA(q) { document.getElementById('iaDockInput').value=q; document.getElementById('iaSendBtn').classList.add('ready'); openDock(); setTimeout(sendIA,150); }
-function fillAndSend(q) { document.getElementById('iaDockInput').value=q; document.getElementById('iaSendBtn').classList.add('ready'); sendIA(); }
-function _syncDockCounts() {
-  var list=document.getElementById('analysesList');
-  var n=list?list.querySelectorAll('.analysis-item').length:0;
-  ['analysisCount','analysisCountFull','analysisCountPanel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=n; });
+function askIA(q) {
+  document.getElementById('iaDockInput').value = q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  openDock();
+  setTimeout(sendIA, 150);
 }
-function injectDockAnalysis(q, answer) {
-  var clean=answer.replace(/<[^>]+>/g,'');
-  var list=document.getElementById('analysesList');
-  var id=_nextDockAnalysisId++;
-  var cols=['var(--c-business)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
-  var col=cols[(id-1)%cols.length];
-  var now=new Date(); var hm=now.getHours()+'h'+String(now.getMinutes()).padStart(2,'0');
-  var card=document.createElement('div');
-  card.className='analysis-item'; card.id='analysis-card-'+id;
-  card.onclick=function(){loadAnalysisInIA(id);};
-  card.innerHTML='<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:'+col+'"></div><div class="analysis-q">'+q+'</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,'+id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div><div class="analysis-answer">'+clean.slice(0,120)+(clean.length>120?'…':'')+'</div><div class="analysis-footer"><span class="analysis-time">aujourd\'hui · '+hm+'</span><span class="analysis-src">elo·IA</span></div>';
-  list.insertBefore(card, list.querySelector('.analysis-item')||null);
-  _syncDockCounts();
-  setTimeout(function(){card.classList.add('highlight');},20);
-  setTimeout(function(){card.classList.remove('highlight');},2000);
-  var pill=document.getElementById('iaSavedPill');
-  if(pill){pill.classList.add('visible');setTimeout(function(){pill.classList.remove('visible');},3500);}
-  switchDockTab('analyses');
+function fillAndSend(q) {
+  document.getElementById('iaDockInput').value = q;
+  document.getElementById('iaSendBtn').classList.add('ready');
+  sendIA();
+}
+
+/* ── ANALYSES ── */
+function _syncCounts() {
+  var list = document.getElementById('analysesList');
+  var n = list ? list.querySelectorAll('.analysis-item').length : 0;
+  ['analysisCount','analysisCountFull','analysisCountPanel'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = n;
+  });
+}
+function injectAnalysis(q, answer) {
+  var clean = answer.replace(/<[^>]+>/g, '');
+  var list  = document.getElementById('analysesList');
+  var id    = _nextAnalysisId++;
+  var cols  = ['var(--c-business)','var(--success)','var(--warning)','var(--danger)','var(--violet)'];
+  var col   = cols[(id - 1) % cols.length];
+  var now   = new Date();
+  var hm    = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
+  var card  = document.createElement('div');
+  card.className = 'analysis-item'; card.id = 'analysis-card-' + id;
+  card.onclick = function() { loadAnalysisInIA(id); };
+  card.innerHTML =
+    '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:' + col + '"></div>' +
+    '<div class="analysis-q">' + q + '</div>' +
+    '<button class="analysis-archive-btn" onclick="archiveAnalysis(event,' + id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>' +
+    '<div class="analysis-answer">' + clean.slice(0,120) + (clean.length > 120 ? '…' : '') + '</div>' +
+    '<div class="analysis-footer"><span class="analysis-time">aujourd\'hui · ' + hm + '</span><span class="analysis-src">elo·IA</span></div>';
+  list.insertBefore(card, list.querySelector('.analysis-item') || null);
+  _syncCounts();
+  setTimeout(function() { card.classList.add('highlight'); }, 20);
+  setTimeout(function() { card.classList.remove('highlight'); }, 2000);
+  var pill = document.getElementById('iaSavedPill');
+  if (pill) { pill.classList.add('visible'); setTimeout(function() { pill.classList.remove('visible'); }, 3500); }
 }
 function archiveAnalysis(e, id) {
   e.stopPropagation();
-  var card=document.getElementById('analysis-card-'+id);
-  if(card){card.remove();_syncDockCounts();}
+  var card = document.getElementById('analysis-card-' + id);
+  if (card) { card.remove(); _syncCounts(); }
 }
 function loadAnalysisInIA(id) {
-  var card=document.getElementById('analysis-card-'+id); if(!card) return;
-  document.getElementById('iaDockInput').value='↩ '+card.querySelector('.analysis-q').textContent;
+  var card = document.getElementById('analysis-card-' + id); if (!card) return;
+  document.getElementById('iaDockInput').value = '↩ ' + card.querySelector('.analysis-q').textContent;
   document.getElementById('iaSendBtn').classList.add('ready');
-  switchDockTab('chat'); document.getElementById('iaDockInput').focus();
+  switchDockTab('chat');
+  document.getElementById('iaDockInput').focus();
 }
-function addDockAction() {
-  var inp=document.getElementById('dockActionInput');
-  var val=inp.value.trim(); if(!val) return;
-  inp.value='';
-  _dockActions.push({id:Date.now(),text:val,done:false});
-  _renderDockActions();
+
+/* ── ACTIONS ── */
+function _syncActionCounts() {
+  ['actionCount','actionCountFull','actionCountPanel'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = _actions.length;
+  });
 }
-function _renderDockActions() {
-  var list=document.getElementById('actionsList');
-  var empty=document.getElementById('actionsEmpty');
-  ['actionCount','actionCountFull','actionCountPanel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=_dockActions.length; });
-  list.querySelectorAll('.action-item').forEach(function(el){el.remove();});
-  if(_dockActions.length===0){if(empty)empty.style.display='';return;}
-  if(empty)empty.style.display='none';
-  _dockActions.forEach(function(a){
-    var div=document.createElement('div'); div.className='action-item';
-    div.innerHTML='<div class="action-check'+(a.done?' done':'')+'" onclick="_toggleDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="action-text"><div class="action-title'+(a.done?' done-text':'')+'">'+a.text+'</div><div class="action-meta">'+new Date(a.id).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</div></div><button class="action-ctrl-btn" onclick="_removeDockAction('+a.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
+function addAction() {
+  var inp = document.getElementById('actionInput');
+  var val = inp.value.trim(); if (!val) return;
+  inp.value = '';
+  _actions.push({ id: Date.now(), text: val, done: false });
+  _renderActions();
+}
+function _renderActions() {
+  var list  = document.getElementById('actionsList');
+  var empty = document.getElementById('actionsEmpty');
+  _syncActionCounts();
+  list.querySelectorAll('.action-item').forEach(function(el) { el.remove(); });
+  if (_actions.length === 0) { if (empty) empty.style.display = ''; return; }
+  if (empty) empty.style.display = 'none';
+  _actions.forEach(function(a) {
+    var div = document.createElement('div'); div.className = 'action-item';
+    div.innerHTML =
+      '<div class="action-check' + (a.done ? ' done' : '') + '" onclick="_toggleAction(' + a.id + ')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+      '<div class="action-text"><div class="action-title' + (a.done ? ' done-text' : '') + '">' + a.text + '</div>' +
+      '<div class="action-meta">' + new Date(a.id).toLocaleDateString('fr-FR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) + '</div></div>' +
+      '<button class="action-ctrl-btn" onclick="_removeAction(' + a.id + ')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button>';
     list.appendChild(div);
   });
 }
-function _toggleDockAction(id){ var a=_dockActions.find(function(x){return x.id===id;}); if(a){a.done=!a.done;_renderDockActions();} }
-function _removeDockAction(id){ _dockActions=_dockActions.filter(function(x){return x.id!==id;}); _renderDockActions(); }
-function dismissSignal(id){ var el=document.getElementById(id); if(!el)return; el.classList.add('dismissing'); setTimeout(function(){el.remove();updateDockHeight();},300); }
+function _toggleAction(id) {
+  var a = _actions.find(function(x) { return x.id === id; });
+  if (a) { a.done = !a.done; _renderActions(); }
+}
+function _removeAction(id) {
+  _actions = _actions.filter(function(x) { return x.id !== id; });
+  _renderActions();
+}
+
+/* ── SIGNAL IA ── */
+var _signalSaved = {};
+function dismissSignal(id) {
+  var el = document.getElementById(id); if (!el) return;
+  el.classList.add('dismissing');
+  setTimeout(function() { el.remove(); updateDockHeight(); }, 300);
+}
+function saveSignal(sigId, analysisText) {
+  if (_signalSaved[sigId]) return;
+  _signalSaved[sigId] = true;
+  var btn = document.getElementById('save-' + sigId);
+  if (btn) {
+    btn.classList.add('saved');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
+    btn.onclick = null;
+  }
+  injectAnalysis('Signal · ' + analysisText.split('·')[0].trim(), analysisText);
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', function() {
+  _syncAlertCount();
+  updateDockHeight();
+  window.addEventListener('resize', updateDockHeight);
+});
 </script>
 </body>
 </html>
