@@ -2090,6 +2090,7 @@ var aiResponsesPrep = {
 function getResponse(q) {
   var ql = q.toLowerCase();
   for (var k in aiResponsesPrep) { if (ql.indexOf(k) > -1) return aiResponsesPrep[k]; }
+}
 
 /* ── DOCK HEIGHT — adapte le padding-bottom de .main ── */
 function updateDockHeight() {
