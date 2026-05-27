@@ -241,6 +241,67 @@ header {
 .rec-text { font-size:11.5px; color:var(--muted); line-height:1.7; }
 .rec-text strong { color:var(--p4); font-weight:500; }
 
+/* ── MARKET SIGNALS ── */
+.signals-section { margin-top:60px; padding-top:48px; border-top:1px solid var(--border); }
+.section-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--p4); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.section-eyebrow::before { content:''; width:24px; height:1px; background:var(--p4); opacity:.4; }
+.section-title { font-size:clamp(20px,2.5vw,28px); font-weight:200; letter-spacing:-.04em; color:var(--white); margin-bottom:8px; }
+.section-title strong { font-weight:600; }
+.section-sub { font-size:13px; color:var(--muted); line-height:1.75; max-width:580px; margin-bottom:32px; }
+
+.signals-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:52px; }
+.signal-card { border-radius:16px; border:1px solid var(--border); background:var(--surface); padding:22px 24px; }
+.signal-value { font-family:var(--mono); font-size:32px; font-weight:400; letter-spacing:-.04em; line-height:1; margin-bottom:10px; }
+.signal-label { font-size:12px; color:var(--muted); line-height:1.65; }
+.signal-label strong { color:var(--text); }
+.signal-card.s-green { border-color:rgba(34,255,122,.18); }
+.signal-card.s-green .signal-value { color:var(--p1); }
+.signal-card.s-amber { border-color:rgba(255,176,32,.18); }
+.signal-card.s-amber .signal-value { color:var(--p2); }
+.signal-card.s-violet { border-color:rgba(167,139,255,.18); }
+.signal-card.s-violet .signal-value { color:var(--p3); }
+
+/* ── BENCHMARK GRID ── */
+.bench-section { margin-top:52px; }
+.bench-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.bench-card { border-radius:16px; border:1px solid var(--border); background:var(--surface); padding:22px 24px; }
+.bench-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.bench-company { font-size:15px; font-weight:600; color:var(--white); }
+.bench-tag { font-family:var(--mono); font-size:8px; letter-spacing:.1em; text-transform:uppercase; padding:3px 8px; border-radius:100px; border:1px solid; white-space:nowrap; }
+.bench-tag-native     { color:var(--p4); border-color:rgba(26,220,255,.25);  background:rgba(26,220,255,.07); }
+.bench-tag-transition { color:var(--p2); border-color:rgba(255,176,32,.25);  background:rgba(255,176,32,.07); }
+.bench-tag-hybrid     { color:var(--p3); border-color:rgba(167,139,255,.25); background:rgba(167,139,255,.07); }
+.bench-model { font-size:11.5px; color:var(--muted); line-height:1.65; margin-bottom:10px; }
+.bench-model strong { color:var(--text); }
+.bench-verdict { font-size:11px; font-style:italic; color:var(--muted); border-left:2px solid var(--b2); padding-left:10px; margin-bottom:10px; line-height:1.6; }
+.bench-stat { font-family:var(--mono); font-size:9.5px; color:var(--muted); background:var(--s2); border:1px solid var(--border); border-radius:6px; padding:4px 9px; display:inline-block; }
+
+/* ── ARGUMENTS GRID ── */
+.args-section { margin-top:52px; }
+.args-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.args-col { border-radius:16px; border:1px solid var(--border); background:var(--surface); padding:22px 24px; }
+.args-col-title { font-size:12px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.args-col.pour   .args-col-title { color:#22FF7A; }
+.args-col.contre .args-col-title { color:#FF5C5C; }
+.arg-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:12px; font-size:11.5px; color:var(--muted); line-height:1.65; }
+.arg-item:last-child { margin-bottom:0; }
+.arg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+.args-col.pour   .arg-dot { background:#22FF7A; }
+.args-col.contre .arg-dot { background:#FF5C5C; }
+.arg-item strong { color:var(--text); font-weight:500; }
+
+/* final rec */
+.final-rec {
+  margin-top:14px; display:flex; align-items:flex-start; gap:14px;
+  background:rgba(167,139,255,.04); border:1px solid rgba(167,139,255,.2);
+  border-radius:14px; padding:20px 22px;
+}
+.final-rec-icon { width:36px; height:36px; border-radius:10px; flex-shrink:0; background:rgba(167,139,255,.1); border:1px solid rgba(167,139,255,.2); display:flex; align-items:center; justify-content:center; }
+.final-rec-icon svg { width:16px; height:16px; stroke:var(--p3); }
+.final-rec-title { font-size:12px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.final-rec-text  { font-size:11.5px; color:var(--muted); line-height:1.75; }
+.final-rec-text strong { color:var(--p3); font-weight:500; }
+
 /* ── FOOTER ── */
 footer { border-top:1px solid var(--border); padding:24px 52px; display:flex; align-items:center; justify-content:space-between; max-width:1280px; margin:0 auto; position:relative; z-index:1; margin-top:60px; }
 .ft-logo { display:flex; align-items:center; gap:8px; }
@@ -599,6 +660,145 @@ footer { border-top:1px solid var(--border); padding:24px 52px; display:flex; al
       </div>
 
     </div>
+  </div>
+
+  <!-- ═══════════════════════
+       ARGUMENTAIRE & BENCHMARK MARCHÉ
+  ═══════════════════════ -->
+  <div class="signals-section">
+
+    <div class="section-eyebrow">Benchmark &amp; Argumentaire</div>
+    <h2 class="section-title"><strong>Pricing par crédit</strong> — signaux marché 2025</h2>
+    <p class="section-sub">Ce que font les acteurs IA cette année, et pourquoi le débat features vs crédits n'est pas tranché pour les SaaS B2B mid-market.</p>
+
+    <!-- SIGNAL STRIP -->
+    <div class="signals-grid">
+      <div class="signal-card s-green">
+        <div class="signal-value">+126%</div>
+        <div class="signal-label"><strong>Croissance des modèles par crédit</strong> dans le SaaS IA en 2025 — chaque acteur IA native a adopté le crédit comme unité de monétisation de base.</div>
+      </div>
+      <div class="signal-card s-amber">
+        <div class="signal-value">3–6 mois</div>
+        <div class="signal-label"><strong>Durée moyenne avant retour au modèle features</strong> pour les SaaS B2B ayant testé le crédit. Coût cognitif trop élevé pour leurs acheteurs.</div>
+      </div>
+      <div class="signal-card s-violet">
+        <div class="signal-value">2026</div>
+        <div class="signal-label"><strong>Prédiction :</strong> retour du balancier vers le pricing features pour les acteurs mid-market B2B — les crédits resteront l'apanage des pure-players IA.</div>
+      </div>
+    </div>
+
+    <!-- BENCHMARK GRID -->
+    <div class="bench-section">
+      <h3 style="font-size:15px;font-weight:600;color:var(--white);margin-bottom:16px;">Ce que font les autres</h3>
+      <div class="bench-grid">
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">Anthropic / Claude</div>
+            <span class="bench-tag bench-tag-hybrid">Hybride</span>
+          </div>
+          <div class="bench-model"><strong>API par tokens + plans teams</strong> — L'API facture au token (crédit pur). Les offres entreprise (Claude.ai Teams / Enterprise) facturent par siège avec usage illimité en façade.</div>
+          <div class="bench-verdict">Deux marchés distincts : les devs paient au crédit, les équipes paient par siège.</div>
+          <span class="bench-stat">API : ~$15/M tokens · Teams : $25/siège/mois</span>
+        </div>
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">Mistral AI</div>
+            <span class="bench-tag bench-tag-native">IA Native</span>
+          </div>
+          <div class="bench-model"><strong>Crédit pur sur la plateforme</strong> — Facturation 100% à la consommation (tokens). Pas de plan features. La valeur = la puissance du modèle, l'unité = le token.</div>
+          <div class="bench-verdict">Cohérent pour un acteur infra/API. Inadapté au B2B applicatif où l'acheteur n'est pas un ingénieur.</div>
+          <span class="bench-stat">À partir de €2/M tokens</span>
+        </div>
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">Intercom / Fin AI</div>
+            <span class="bench-tag bench-tag-transition">SaaS Transition</span>
+          </div>
+          <div class="bench-model"><strong>Résolution IA facturée à l'acte</strong> — Fin facture chaque "résolution" client résolue par l'IA. Passage du pricing par siège (support humain) au pricing par résultat (IA).</div>
+          <div class="bench-verdict">Modèle ambitieux mais risqué : le client paie quand l'IA réussit — définir "résolution" reste complexe.</div>
+          <span class="bench-stat">~$0.99 par résolution IA</span>
+        </div>
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">HubSpot</div>
+            <span class="bench-tag bench-tag-transition">SaaS Transition</span>
+          </div>
+          <div class="bench-model"><strong>Crédits IA sur base features</strong> — HubSpot a conservé son pricing par features (Starter / Pro / Enterprise) et ajouté des "AI credits" pour les fonctions génératives (Breeze AI). Les crédits sont additionnels, pas centraux.</div>
+          <div class="bench-verdict">Bonne approche : le crédit reste un add-on invisible, la valeur perçue reste liée aux features.</div>
+          <span class="bench-stat">AI credits inclus selon le plan</span>
+        </div>
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">Salesforce / Agentforce</div>
+            <span class="bench-tag bench-tag-hybrid">Hybride</span>
+          </div>
+          <div class="bench-model"><strong>Par conversation agent</strong> — Agentforce facture $2 par conversation gérée par un agent IA. S'ajoute au pricing Salesforce existant (licences). La base est licences, l'IA est au crédit.</div>
+          <div class="bench-verdict">Double couche de facturation difficile à défendre — incompréhensible pour la plupart des acheteurs.</div>
+          <span class="bench-stat">$2 / conversation agent</span>
+        </div>
+
+        <div class="bench-card">
+          <div class="bench-header">
+            <div class="bench-company">Notion · Lovable · Figma</div>
+            <span class="bench-tag bench-tag-transition">SaaS Transition</span>
+          </div>
+          <div class="bench-model"><strong>Features en façade, quotas en arrière</strong> — Ces trois acteurs ont gardé un pricing par features. L'IA est incluse avec des quotas raisonnables par plan — visibles ou non — mais jamais présentée comme unité de valeur.</div>
+          <div class="bench-verdict">Le modèle le plus adopté par les SaaS B2B mid-market. Friction zéro, upsell motivé par la valeur.</div>
+          <span class="bench-stat">IA incluse dès le plan Pro</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ARGUMENTS PRO / CONTRE -->
+    <div class="args-section">
+      <h3 style="font-size:15px;font-weight:600;color:var(--white);margin-bottom:16px;">Arguments</h3>
+      <div class="args-grid">
+
+        <div class="args-col pour">
+          <div class="args-col-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22FF7A" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Pour le pricing par crédit
+          </div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Coûts infra corrélés au revenu.</strong> Chaque plan correspond à un plafond de consommation prévisible — plus de risque de subventionner un power-user.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Prix d'entrée bas possible.</strong> Un plan à 10 crédits peut être affiché à 29€/mois, abaissant la barrière d'acquisition sans s'exposer à un usage illimité.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Les power-users paient plus.</strong> Le modèle est auto-segmentant : ceux qui utilisent le plus paient le plus — sans avoir à justifier chaque palier de prix.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Signal de valeur perçu.</strong> Dépenser un crédit = percevoir que l'IA fait quelque chose de coûteux. Peut renforcer la perception de valeur de chaque interaction.</span></div>
+        </div>
+
+        <div class="args-col contre">
+          <div class="args-col-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF5C5C" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Contre le pricing par crédit
+          </div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Frein cognitif à l'usage.</strong> Un utilisateur qui hésite à "dépenser un crédit" ne posera pas la question — l'inverse de ce qu'on veut. Le crédit crée de l'auto-censure.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Unité abstraite pour les acheteurs B2B.</strong> "10 crédits" ne parle pas à un responsable ops ou un DAF. Convertir crédit → valeur métier est un effort cognitif qu'ils n'ont pas envie de faire.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Complexifie la décision d'achat.</strong> En B2B, le CFO valide le budget. Un pricing en crédits demande une projection d'usage — inconnue au moment de la signature.</span></div>
+          <div class="arg-item"><div class="arg-dot"></div><span><strong>Churn sur épuisement de quota.</strong> Un client à 0 crédit le 20 du mois vit une expérience dégradée — et associe ce sentiment à la marque, pas à son usage.</span></div>
+        </div>
+
+      </div>
+
+      <!-- FINAL RECOMMENDATION -->
+      <div class="final-rec">
+        <div class="final-rec-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <div class="final-rec-title">Recommandation — Garder le modèle par features en façade</div>
+          <div class="final-rec-text">
+            Piloter les coûts par <strong>quotas invisibles</strong> par plan, sans exposer le mot "crédit" au client. Si un utilisateur dépasse le quota de son plan, c'est un signal d'upsell — pas une pénalité. C'est le modèle de <strong>Notion, HubSpot, et Linear</strong> : le client paie pour une valeur (accès à une capacité), pas pour une unité technique. La transparence sur les limites vient au moment de l'upgrade, pas au moment de l'usage.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
 </div><!-- /wrap -->
