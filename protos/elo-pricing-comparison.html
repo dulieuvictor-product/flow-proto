@@ -310,9 +310,39 @@ footer { border-top:1px solid var(--border); padding:24px 52px; display:flex; al
 .ft-name { font-size:11px; font-weight:300; color:var(--muted); }
 .ft-name strong { font-weight:600; color:var(--white); }
 .ft-meta { font-family:var(--mono); font-size:10px; color:var(--muted); }
+
+/* ── PASSWORD WALL ── */
+#pw-wall{position:fixed;inset:0;z-index:9999;background:#070A0F;display:flex;align-items:center;justify-content:center;}
+#pw-card{background:#0F1319;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:40px 36px;width:340px;text-align:center;}
+#pw-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0E8FCC,#1ADCFF);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+#pw-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;}
+#pw-sub{font-size:12px;color:#4A5568;margin-bottom:24px;line-height:1.6;}
+#pw-input{width:100%;background:#161C26;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;margin-bottom:10px;letter-spacing:.08em;}
+#pw-input:focus{border-color:rgba(26,220,255,.3);}
+#pw-btn{width:100%;background:rgba(26,220,255,.1);border:1px solid rgba(26,220,255,.25);color:#1ADCFF;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;padding:11px;border-radius:10px;cursor:pointer;transition:filter .15s;}
+#pw-btn:hover{filter:brightness(1.15);}
+#pw-err{font-size:11px;color:#FF5C5C;margin-top:10px;min-height:16px;transition:opacity .2s;opacity:0;}
+#pw-err.show{opacity:1;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.shake{animation:shake .35s ease;}
 </style>
 </head>
 <body>
+
+<div id="pw-wall">
+  <div id="pw-card">
+    <div id="pw-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div id="pw-title">Accès restreint</div>
+    <div id="pw-sub">Ce document est réservé à un usage interne.</div>
+    <input id="pw-input" type="password" placeholder="Mot de passe" autocomplete="off"/>
+    <button id="pw-btn" onclick="checkPw()">Accéder →</button>
+    <div id="pw-err">Mot de passe incorrect</div>
+  </div>
+</div>
+<script>
+(function(){if(sessionStorage.getItem('pw_ok')==='1'){document.getElementById('pw-wall').style.display='none';}document.getElementById('pw-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPw();});})();
+function checkPw(){var v=document.getElementById('pw-input').value;if(v==='Elo-flow-2030*'){sessionStorage.setItem('pw_ok','1');document.getElementById('pw-wall').style.display='none';}else{var c=document.getElementById('pw-card');var e=document.getElementById('pw-err');e.classList.add('show');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');}}
+</script>
 
 <header>
   <div class="logo">
