@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elo.bench — Recommandations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#F2F4F8; --surface:#FFFFFF; --surface2:#F4F6FA; --surface3:#ECEEF4;
+  --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.12);
+  --ink:#1A1C1E; --slate:#4A5568; --muted:#8A95A3;
+  --primary:#0E8FCC; --primary-tint:#EAF6FD;
+  --success:#2A9554; --success-tint:#E8F8EF;
+  --warning:#C27B00; --warning-tint:#FEF4E0;
+  --danger:#D63050; --danger-tint:#FDEAED;
+  --violet:#6C47E8; --violet-tint:#F0EDFF;
+  --gold:#D4A017; --gold-tint:#FDF8E7;
+  --nav-bg:#FFFFFF; --nav-active-bg:#EAF6FD; --nav-active-tx:#0E8FCC;
+  --topbar-bg:#FFFFFF;
+  --c-business:#2563EB; --c-business-t:#EFF6FF;
+  --c-qlog:#0E7490; --c-qlog-t:#ECFEFF;
+  --c-qtrans:#0284C7; --c-qtrans-t:#F0F9FF;
+  --c-savt:#6366F1; --c-savt-t:#EEF2FF;
+  --c-savl:#9333EA; --c-savl-t:#FDF4FF;
+  --c-stocks:#D97706; --c-stocks-t:#FFFBEB;
+}
+[data-theme="dark"] {
+  --bg:#0C0F14; --surface:#181E28; --surface2:#1F2736; --surface3:#242D3C;
+  --border:rgba(255,255,255,0.09); --border2:rgba(255,255,255,0.16);
+  --ink:#E2EAF4; --slate:#9AAABB; --muted:#5A6C7D;
+  --primary:#1ADCFF; --primary-tint:rgba(26,220,255,0.12);
+  --success:#22FF7A; --success-tint:rgba(34,255,122,0.12);
+  --warning:#FFB020; --warning-tint:rgba(255,176,32,0.12);
+  --danger:#FF3B6A; --danger-tint:rgba(255,59,106,0.12);
+  --violet:#A78BFF; --violet-tint:rgba(167,139,255,0.12);
+  --gold:#FFD666; --gold-tint:rgba(255,214,102,0.12);
+  --nav-bg:#141A22; --nav-active-bg:rgba(26,220,255,0.12); --nav-active-tx:#1ADCFF;
+  --topbar-bg:#141A22;
+  --c-business:#60A5FA; --c-business-t:rgba(96,165,250,0.13);
+  --c-qlog:#22D3EE; --c-qlog-t:rgba(34,211,238,0.13);
+  --c-qtrans:#38BDF8; --c-qtrans-t:rgba(56,189,248,0.13);
+  --c-savt:#A5B4FC; --c-savt-t:rgba(165,180,252,0.13);
+  --c-savl:#C084FC; --c-savl-t:rgba(192,132,252,0.13);
+  --c-stocks:#FCD34D; --c-stocks-t:rgba(252,211,77,0.13);
+}
+html,body { height:100%; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--ink); display:flex; transition:background .25s,color .25s; }
+
+/* ══ SIDENAV ══ */
+.sidenav { width:220px; flex-shrink:0; background:var(--nav-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; height:100vh; position:sticky; top:0; z-index:200; }
+.nav-brand { padding:18px 14px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); cursor:pointer; }
+.nav-brand-mark { width:32px; height:32px; border-radius:8px; background:var(--primary); display:flex; align-items:center; justify-content:center; }
+.nav-brand-mark svg { width:18px; height:18px; }
+.nav-brand-name { font-size:14px; font-weight:300; color:var(--ink); letter-spacing:-0.02em; line-height:1.2; }
+.nav-brand-name strong { font-weight:600; }
+.nav-brand-sub { font-size:10px; color:var(--primary); font-family:'DM Mono',monospace; display:block; margin-top:1px; }
+.nav-section { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); padding:14px 14px 5px; font-family:'DM Mono',monospace; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:9px 10px; margin:1px 6px; border-radius:9px; font-size:13px; color:var(--slate); cursor:pointer; transition:background .12s; }
+.nav-item svg { width:16px; height:16px; flex-shrink:0; opacity:.75; }
+.nav-item:hover { background:var(--surface2); }
+.nav-mod-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-mod-icon svg { width:13px; height:13px; }
+.nav-badge { margin-left:auto; font-size:10px; font-weight:700; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nav-badge-warn { margin-left:auto; font-size:10px; font-weight:700; background:var(--warning-tint); color:var(--warning); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+.nav-item-bench { display:flex; align-items:center; gap:10px; padding:9px 10px; margin:1px 6px; border-radius:9px; font-size:13px; font-weight:500; color:var(--violet); cursor:pointer; background:var(--violet-tint); outline:1.5px solid var(--violet); outline-offset:-1px; }
+.nav-bench-icon { width:22px; height:22px; border-radius:6px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.nav-bench-icon svg { width:12px; height:12px; stroke:#fff; }
+.nav-badge-new { margin-left:auto; font-size:9px; font-weight:700; background:var(--violet); color:#fff; padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; letter-spacing:.04em; text-transform:uppercase; }
+.nav-bottom { margin-top:auto; padding:10px 6px 14px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:4px; }
+.nav-llm { margin:0 4px 2px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:9px 12px; }
+.nav-llm-top { display:flex; justify-content:space-between; margin-bottom:5px; }
+.nav-llm-label { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.nav-llm-count { font-size:12px; font-weight:600; font-family:'DM Mono',monospace; color:var(--violet); }
+.nav-llm-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
+.nav-llm-fill { height:100%; background:var(--violet); border-radius:100px; width:62%; }
+.nav-llm-sub { font-size:10px; color:var(--muted); margin-top:4px; }
+.nav-user { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:9px; cursor:pointer; }
+.nav-avatar { width:28px; height:28px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:white; }
+.nav-user-name { font-size:12px; font-weight:500; color:var(--ink); }
+.nav-user-role { font-size:10px; color:var(--muted); }
+
+/* ══ MAIN ══ */
+.main { flex:1; display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+.topbar { background:var(--topbar-bg); border-bottom:1px solid var(--border); padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; }
+.bc-parent { color:var(--muted); cursor:pointer; }
+.bc-sep { color:var(--border2); }
+.bc-bench { font-weight:600; color:var(--violet); }
+.bc-current { font-weight:500; color:var(--ink); }
+.theme-btn { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:0 12px; height:34px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:500; color:var(--slate); transition:all .12s; }
+.theme-btn svg { width:15px; height:15px; }
+.icon-sun { display:block; } .icon-moon { display:none; }
+[data-theme="dark"] .icon-sun { display:none; } [data-theme="dark"] .icon-moon { display:block; }
+
+/* ══ STEPPER ══ */
+.stepper-wrap { background:var(--topbar-bg); border-bottom:1px solid var(--border); padding:0 32px; height:56px; display:flex; align-items:center; flex-shrink:0; }
+.step-item { display:flex; align-items:center; }
+.step-node { display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; cursor:default; }
+.step-node.clickable { cursor:pointer; }
+.step-circle { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; font-family:'DM Mono',monospace; color:var(--muted); background:var(--surface); }
+.step-circle.active { background:var(--violet); border-color:var(--violet); color:#fff; box-shadow:0 0 0 3px rgba(108,71,232,0.15); }
+.step-circle.done { background:var(--success); border-color:var(--success); color:#fff; }
+.step-label { font-size:12px; font-weight:500; color:var(--muted); white-space:nowrap; }
+.step-label.active { color:var(--violet); font-weight:600; }
+.step-label.done { color:var(--success); }
+.step-connector { width:28px; height:1.5px; background:var(--border2); flex-shrink:0; margin:0 2px; }
+.step-connector.done { background:var(--success); }
+
+/* ══ VIEWS ══ */
+.scroll-zone { flex:1; overflow-y:auto; }
+.page-content { padding:28px 32px 60px; max-width:1160px; margin:0 auto; }
+.view { display:none; }
+.view.active { display:block; animation:fadeUp .3s ease both; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══ SECTION LABEL ══ */
+.section-label { font-size:9px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; font-family:'DM Mono',monospace; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ══ VIEW 1 : RECOMMANDATIONS ══ */
+.reco-header { margin-bottom:24px; }
+.reco-title { font-size:24px; font-weight:300; color:var(--ink); letter-spacing:-0.02em; margin-bottom:5px; }
+.reco-title strong { font-weight:700; }
+.reco-subtitle { font-size:13.5px; color:var(--slate); line-height:1.5; }
+
+/* Score recap pill */
+.score-recap { display:inline-flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 18px; margin-bottom:20px; }
+.score-recap-num { font-size:22px; font-weight:700; font-family:'DM Mono',monospace; color:var(--violet); }
+.score-recap-label { font-size:11px; color:var(--muted); line-height:1.3; }
+.score-recap-label strong { color:var(--ink); display:block; font-size:13px; }
+.score-recap-potential { display:flex; align-items:center; gap:6px; padding-left:14px; border-left:1px solid var(--border); }
+.score-recap-potential-val { font-size:16px; font-weight:700; font-family:'DM Mono',monospace; color:var(--success); }
+.score-recap-potential-label { font-size:11px; color:var(--muted); }
+
+/* Reco cards */
+.reco-list { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+.reco-card { background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:18px 20px; display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; cursor:pointer; transition:all .18s; position:relative; }
+.reco-card::before { content:''; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:0 3px 3px 0; }
+.reco-card.p1::before { background:var(--success); }
+.reco-card.p2::before { background:var(--primary); }
+.reco-card.p3::before { background:var(--warning); }
+.reco-card:hover { border-color:var(--border2); box-shadow:0 4px 16px rgba(0,0,0,.06); transform:translateY(-1px); }
+.reco-card:hover .reco-sim-btn { opacity:1; }
+.reco-left { padding-left:10px; display:flex; flex-direction:column; gap:7px; }
+.reco-tags { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.reco-prio { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-family:'DM Mono',monospace; padding:2px 8px; border-radius:100px; }
+.prio-1 { background:var(--success-tint); color:var(--success); }
+.prio-2 { background:var(--primary-tint); color:var(--primary); }
+.prio-3 { background:var(--warning-tint); color:var(--warning); }
+.reco-type-tag { font-size:9px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-family:'DM Mono',monospace; color:var(--muted); }
+.reco-title-card { font-size:14.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; line-height:1.3; }
+.reco-desc-card { font-size:12px; color:var(--slate); line-height:1.55; }
+.reco-desc-card strong { color:var(--ink); font-weight:600; }
+.reco-score-bar { display:flex; align-items:center; gap:8px; }
+.rsb-label { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+.rsb-track { flex:1; height:4px; background:var(--surface2); border-radius:100px; max-width:120px; overflow:hidden; }
+.rsb-fill { height:100%; background:var(--violet); border-radius:100px; }
+.rsb-pts { font-size:11px; font-weight:700; font-family:'DM Mono',monospace; color:var(--violet); }
+.reco-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.reco-gain-main { text-align:right; }
+.reco-gain-val { font-size:22px; font-weight:700; font-family:'DM Mono',monospace; color:var(--success); line-height:1; }
+.reco-gain-label { font-size:10px; color:var(--muted); }
+.reco-gain-delay { font-size:9.5px; font-weight:700; font-family:'DM Mono',monospace; }
+.delay-fast { color:var(--success); }
+.delay-mid { color:var(--warning); }
+.reco-sim-btn { display:flex; align-items:center; gap:6px; background:var(--primary); color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:12px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; opacity:0; transition:opacity .15s; white-space:nowrap; }
+.reco-sim-btn svg { width:12px; height:12px; }
+
+/* ══ VIEW 2 : SIMULATEUR ══ */
+.sim-topbar { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.sim-back { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:7px 14px; font-size:12.5px; font-weight:500; color:var(--slate); cursor:pointer; transition:all .12s; }
+.sim-back:hover { background:var(--surface); }
+.sim-back svg { width:14px; height:14px; }
+.sim-title { font-size:20px; font-weight:300; color:var(--ink); letter-spacing:-.02em; flex:1; }
+.sim-title strong { font-weight:700; }
+.sim-actions-top { display:flex; gap:8px; }
+.sim-reset { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:7px 14px; font-size:12px; font-weight:500; color:var(--slate); cursor:pointer; transition:all .12s; }
+.sim-reset:hover { background:var(--surface); }
+.sim-scenario-btn { display:flex; align-items:center; gap:6px; background:var(--primary-tint); border:1.5px solid var(--primary); border-radius:8px; padding:7px 14px; font-size:12px; font-weight:600; color:var(--primary); cursor:pointer; }
+
+/* Main sim grid */
+.sim-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+
+/* Panels A / B */
+.sim-panel { background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:20px; }
+.sim-panel.panel-b { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,143,204,0.08); }
+.sim-panel-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.sim-panel-badge { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'DM Mono',monospace; }
+.badge-a { background:var(--surface2); color:var(--slate); }
+.badge-b { background:var(--primary); color:#fff; }
+.sim-panel-title { font-size:13px; font-weight:600; color:var(--ink); }
+.sim-panel-sub { font-size:10.5px; color:var(--muted); font-family:'DM Mono',monospace; margin-left:auto; }
+
+/* Baseline rows */
+.sim-row { margin-bottom:16px; }
+.sim-row-label { font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-family:'DM Mono',monospace; color:var(--muted); margin-bottom:4px; }
+.sim-row-val { font-size:22px; font-weight:700; color:var(--ink); letter-spacing:-.02em; }
+.sim-row-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.sim-row-sub.warn { color:var(--warning); font-weight:500; }
+.sim-row-sub.ok { color:var(--success); font-weight:500; }
+.sim-divider { height:1px; background:var(--border); margin:14px 0; }
+
+/* KPIs comparaison */
+.sim-kpis { display:flex; flex-direction:column; gap:8px; }
+.sim-kpi-row { display:flex; align-items:center; justify-content:space-between; }
+.sim-kpi-name { font-size:12px; color:var(--slate); }
+.sim-kpi-val { font-size:13px; font-weight:700; font-family:'DM Mono',monospace; color:var(--ink); }
+.sim-kpi-delta { font-size:11px; font-weight:700; font-family:'DM Mono',monospace; padding:1px 7px; border-radius:100px; }
+.delta-pos { background:var(--success-tint); color:var(--success); }
+.delta-neg { background:var(--danger-tint); color:var(--danger); }
+.delta-neu { background:var(--surface2); color:var(--muted); }
+
+/* Controls panel B */
+.sim-control { margin-bottom:18px; }
+.sim-control-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.sim-control-label { font-size:12px; font-weight:500; color:var(--ink); }
+.sim-control-val { font-size:15px; font-weight:700; font-family:'DM Mono',monospace; color:var(--primary); }
+.sim-control-sub { font-size:10.5px; color:var(--muted); margin-bottom:8px; }
+
+/* Slider */
+.sim-slider-wrap { position:relative; padding:4px 0; }
+.sim-slider { -webkit-appearance:none; width:100%; height:5px; border-radius:100px; background:var(--border2); outline:none; cursor:pointer; }
+.sim-slider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--surface); border:2.5px solid var(--primary); box-shadow:0 1px 6px rgba(14,143,204,0.3); cursor:grab; transition:box-shadow .15s; }
+.sim-slider::-webkit-slider-thumb:active { cursor:grabbing; box-shadow:0 0 0 5px rgba(14,143,204,0.15); }
+.sim-slider-marks { display:flex; justify-content:space-between; font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
+
+/* Segment control */
+.seg-control { display:flex; gap:6px; flex-wrap:wrap; }
+.seg-btn { padding:6px 14px; border-radius:8px; border:1.5px solid var(--border2); font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; color:var(--slate); background:var(--surface); cursor:pointer; transition:all .12s; }
+.seg-btn.active { background:var(--primary); border-color:var(--primary); color:#fff; font-weight:600; }
+.seg-btn:not(.active):hover { border-color:var(--primary); color:var(--primary); }
+
+/* IA Commentary */
+.ia-commentary { background:linear-gradient(135deg,var(--primary-tint),rgba(108,71,232,0.06)); border:1px solid rgba(14,143,204,0.2); border-radius:12px; padding:16px 18px; margin-bottom:16px; border-left:3px solid var(--primary); }
+.ia-commentary-label { font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-family:'DM Mono',monospace; color:var(--primary); margin-bottom:6px; }
+.ia-commentary-text { font-size:12.5px; color:var(--slate); line-height:1.6; }
+.ia-commentary-text strong { color:var(--ink); font-weight:600; }
+.ia-risk { margin-top:10px; padding-top:10px; border-top:1px solid rgba(14,143,204,0.15); font-size:12px; color:var(--warning); line-height:1.5; }
+.ia-risk strong { color:var(--warning); font-weight:700; }
+
+/* Footer */
+.bench-footer { display:flex; align-items:center; justify-content:space-between; margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
+.sim-save-btn { display:flex; align-items:center; gap:7px; background:var(--surface); border:1.5px solid var(--border2); border-radius:9px; padding:10px 18px; font-size:12.5px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; color:var(--slate); cursor:pointer; transition:all .15s; }
+.sim-save-btn:hover { border-color:var(--violet); color:var(--violet); background:var(--violet-tint); }
+.sim-save-btn.saved { border-color:var(--success); color:var(--success); background:var(--success-tint); cursor:default; }
+.sim-save-toast { display:flex; align-items:center; gap:7px; position:absolute; bottom:calc(100% + 10px); right:0; background:var(--success); color:#fff; border-radius:10px; padding:9px 16px; font-size:12px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; opacity:0; transform:translateY(6px); transition:all .25s; pointer-events:none; box-shadow:0 4px 16px rgba(42,149,84,0.3); }
+.sim-save-toast.show { opacity:1; transform:translateY(0); }
+.bench-back-btn { display:flex; align-items:center; gap:7px; background:var(--surface2); border:1px solid var(--border2); border-radius:9px; padding:10px 18px; font-size:12.5px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; color:var(--slate); cursor:pointer; transition:all .12s; }
+.bench-back-btn:hover { background:var(--surface); }
+.bench-back-btn svg { width:15px; height:15px; }
+.bench-continue-btn { display:flex; align-items:center; gap:8px; background:var(--violet); color:#fff; border:none; border-radius:10px; padding:11px 22px; font-size:13px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:opacity .15s; }
+.bench-continue-btn:hover { opacity:.88; }
+.bench-continue-btn svg { width:16px; height:16px; }
+</style>
+</head>
+<body>
+<div style="display:flex;width:100%;height:100vh;">
+
+<!-- ══ SIDENAV ══ -->
+<aside class="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
+  </div>
+  <div class="nav-section">Principal</div>
+  <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</div>
+  <div class="nav-item-bench"><div class="nav-bench-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div>elo.bench<span class="nav-badge-new">Nouveau</span></div>
+  <div class="nav-section">Modules</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-business-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Business</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-qlog-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Préparation</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-qtrans-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>Transport</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-savt-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>Litiges<span class="nav-badge">47</span></div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-savl-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/></svg></div>Retours<span class="nav-badge-warn">24</span></div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-stocks-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>Stocks<span class="nav-badge">8</span></div>
+  <div class="nav-bottom">
+    <div class="nav-llm"><div class="nav-llm-top"><span class="nav-llm-label">elo · IA</span><span class="nav-llm-count">31/50</span></div><div class="nav-llm-bar"><div class="nav-llm-fill"></div></div><div class="nav-llm-sub">Questions restantes ce mois</div></div>
+    <div class="nav-user"><div class="nav-avatar">VL</div><div><div class="nav-user-name">Victor L.</div><div class="nav-user-role">Admin logistique</div></div></div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span class="bc-parent">Tableau de bord</span><span class="bc-sep">/</span>
+      <span class="bc-bench">elo.bench</span><span class="bc-sep">/</span>
+      <span class="bc-current" id="bcCurrent">Recommandations</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      Mode sombre
+    </button>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper-wrap">
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Thème</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Périmètre</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Sources</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Diagnostic</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle active">5</div><span class="step-label active">Recommandations</span></div></div>
+  </div>
+
+  <div class="scroll-zone">
+  <div class="page-content">
+
+    <!-- ══ VIEW 1 : LISTE DES RECOMMANDATIONS ══ -->
+    <div class="view active" id="view1">
+
+      <div class="reco-header">
+        <div class="reco-title">Vos leviers d'amélioration <strong>classés par impact</strong></div>
+        <div class="reco-subtitle">Cliquez sur "Simuler" pour ajuster les paramètres et mesurer l'impact réel sur votre P&amp;L.</div>
+      </div>
+
+      <!-- Score recap -->
+      <div class="score-recap">
+        <div>
+          <div class="score-recap-num">63<span style="font-size:13px;color:var(--muted);font-weight:400;">/100</span></div>
+          <div class="score-recap-label">Score actuel<strong>Frais de port · Réseau elogik</strong></div>
+        </div>
+        <div style="padding-left:14px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:11px;color:var(--muted);">Si toutes les actions</div>
+          <div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--violet);">82/100</div>
+          <div style="font-size:10px;color:var(--violet);">Top 15 % réseau</div>
+        </div>
+        <div class="score-recap-potential">
+          <div>
+            <div class="score-recap-potential-val">38,2 k€</div>
+            <div class="score-recap-potential-label">potentiel / an</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Actions recommandées · triées par impact score</div>
+
+      <div class="reco-list">
+
+        <!-- Reco 1 -->
+        <div class="reco-card p1">
+          <div class="reco-left">
+            <div class="reco-tags">
+              <span class="reco-prio prio-1">Priorité 1</span>
+              <span class="reco-type-tag">Transporteur</span>
+            </div>
+            <div class="reco-title-card">Diversifier le mix transporteur sur les colis > 2 kg</div>
+            <div class="reco-desc-card">Votre concentration Chronopost à <strong>78 %</strong> est le double de la médiane réseau. Des clients comparables utilisent Colis Privé ou DPD avec des tarifs 12–18 % inférieurs pour une qualité de service similaire sur ce segment.</div>
+            <div class="reco-score-bar">
+              <span class="rsb-label">Impact score</span>
+              <div class="rsb-track"><div class="rsb-fill" style="width:85%;"></div></div>
+              <span class="rsb-pts">+11 pts</span>
+            </div>
+          </div>
+          <div class="reco-right">
+            <div class="reco-gain-main">
+              <div class="reco-gain-val">23,8 k€</div>
+              <div class="reco-gain-label">économisés / an</div>
+              <div class="reco-gain-delay delay-mid">⏱ 1 à 3 mois</div>
+            </div>
+            <button class="reco-sim-btn" onclick="openSim('transporteur')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Simuler
+            </button>
+          </div>
+        </div>
+
+        <!-- Reco 2 -->
+        <div class="reco-card p1">
+          <div class="reco-left">
+            <div class="reco-tags">
+              <span class="reco-prio prio-1">Priorité 1</span>
+              <span class="reco-type-tag">Tarification</span>
+            </div>
+            <div class="reco-title-card">Répercuter les surcharges zone B/C sur le tarif client</div>
+            <div class="reco-desc-card">34 % de vos commandes partent en zone B/C sans surcharge. La médiane réseau applique <strong>1,80 € de surcharge zone</strong> — en dessous du seuil de friction client identifié. Aucun impact conversion attendu selon les données réseau.</div>
+            <div class="reco-score-bar">
+              <span class="rsb-label">Impact score</span>
+              <div class="rsb-track"><div class="rsb-fill" style="width:62%;"></div></div>
+              <span class="rsb-pts">+8 pts</span>
+            </div>
+          </div>
+          <div class="reco-right">
+            <div class="reco-gain-main">
+              <div class="reco-gain-val">14,4 k€</div>
+              <div class="reco-gain-label">récupérés / an</div>
+              <div class="reco-gain-delay delay-fast">⚡ Sous 30 jours</div>
+            </div>
+            <button class="reco-sim-btn" onclick="openSim('surcharge')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Simuler
+            </button>
+          </div>
+        </div>
+
+        <!-- Reco 3 -->
+        <div class="reco-card p2">
+          <div class="reco-left">
+            <div class="reco-tags">
+              <span class="reco-prio prio-2">Priorité 2</span>
+              <span class="reco-type-tag">Seuil gratuité</span>
+            </div>
+            <div class="reco-title-card">Baisser le seuil de gratuité domicile de 59 € à 49 €</div>
+            <div class="reco-desc-card">La médiane réseau est à <strong>49 €</strong>. −10 € de seuil = +3,2 pts de conversion estimés (ColisConsult 2024, catégorie Mode). L'impact P&amp;L est modulable selon votre panier moyen — simulez pour trouver votre optimum.</div>
+            <div class="reco-score-bar">
+              <span class="rsb-label">Impact score</span>
+              <div class="rsb-track"><div class="rsb-fill" style="width:46%;"></div></div>
+              <span class="rsb-pts">+6 pts</span>
+            </div>
+          </div>
+          <div class="reco-right">
+            <div class="reco-gain-main">
+              <div class="reco-gain-val" style="color:var(--primary);">+3,2 %</div>
+              <div class="reco-gain-label">conversion</div>
+              <div class="reco-gain-delay delay-fast">⚡ Immédiat</div>
+            </div>
+            <button class="reco-sim-btn" onclick="openSim('seuil')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Simuler
+            </button>
+          </div>
+        </div>
+
+        <!-- Reco 4 -->
+        <div class="reco-card p3">
+          <div class="reco-left">
+            <div class="reco-tags">
+              <span class="reco-prio prio-3">Priorité 3</span>
+              <span class="reco-type-tag">Offre livraison</span>
+            </div>
+            <div class="reco-title-card">Activer la livraison express en point relais</div>
+            <div class="reco-desc-card">Seuls <strong>23 % des sites Mode</strong> proposent l'express relais — fort différenciateur. +2,1 % de conversion sur les clients sensibles au délai (FEVAD 2024). Nécessite une négociation avec votre transporteur actuel.</div>
+            <div class="reco-score-bar">
+              <span class="rsb-label">Impact score</span>
+              <div class="rsb-track"><div class="rsb-fill" style="width:30%;"></div></div>
+              <span class="rsb-pts">+4 pts</span>
+            </div>
+          </div>
+          <div class="reco-right">
+            <div class="reco-gain-main">
+              <div class="reco-gain-val" style="color:var(--primary);">+2,1 %</div>
+              <div class="reco-gain-label">conversion</div>
+              <div class="reco-gain-delay delay-mid">⏱ 1 à 2 mois</div>
+            </div>
+            <button class="reco-sim-btn" onclick="openSim('express')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Simuler
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bench-footer">
+        <button class="bench-back-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Retour · Diagnostic
+        </button>
+        <div style="position:relative;">
+          <button class="bench-continue-btn" id="planSaveBtn" onclick="savePlan()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Enregistrer dans elo·IA
+          </button>
+          <div id="planSaveToast" class="sim-save-toast">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            Plan d'action enregistré dans elo·IA
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VIEW 2 : SIMULATEUR ══ -->
+    <div class="view" id="view2">
+
+      <div class="sim-topbar">
+        <button class="sim-back" onclick="showView1()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Recommandations
+        </button>
+        <div class="sim-title" id="simTitle">Et si vous <strong>rééquilibriez le mix transporteur ?</strong></div>
+        <div class="sim-actions-top">
+          <button class="sim-reset" onclick="resetSim()">Réinitialiser</button>
+          <button class="sim-scenario-btn">+ Scénario C</button>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+
+        <!-- Panel A — Baseline -->
+        <div class="sim-panel">
+          <div class="sim-panel-header">
+            <div class="sim-panel-badge badge-a">A</div>
+            <div class="sim-panel-title">Aujourd'hui · baseline</div>
+            <div class="sim-panel-sub">Données réelles · Q3 2025</div>
+          </div>
+
+          <div class="sim-row">
+            <div class="sim-row-label" id="aLabel1">Chronopost sur > 2 kg éligible</div>
+            <div class="sim-row-val" id="aVal1">78 %</div>
+            <div class="sim-row-sub warn" id="aSub1">Médiane réseau : 42 %</div>
+          </div>
+          <div class="sim-row">
+            <div class="sim-row-label" id="aLabel2">Heure de cut-off préparation</div>
+            <div class="sim-row-val" id="aVal2">14h00</div>
+            <div class="sim-row-sub" id="aSub2"></div>
+          </div>
+          <div class="sim-row">
+            <div class="sim-row-label" id="aLabel3">Frais de port (commande &lt; seuil)</div>
+            <div class="sim-row-val" id="aVal3">4,90 €</div>
+            <div class="sim-row-sub" id="aSub3"></div>
+          </div>
+
+          <div class="sim-divider"></div>
+          <div class="sim-kpis">
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Coût moyen / colis > 2 kg</span>
+              <span class="sim-kpi-val" id="aKpi1">4,82 €</span>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Marge frais port / commande</span>
+              <span class="sim-kpi-val" id="aKpi2">−0,18 €</span>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Délai promis → livré</span>
+              <span class="sim-kpi-val" id="aKpi3">5,0 j</span>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Économie annuelle</span>
+              <span class="sim-kpi-val" id="aKpi4">— €</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel B — Hypothèse -->
+        <div class="sim-panel panel-b">
+          <div class="sim-panel-header">
+            <div class="sim-panel-badge badge-b">B</div>
+            <div class="sim-panel-title">Hypothèse · ajustez en temps réel</div>
+          </div>
+
+          <!-- Controls dynamiques -->
+          <div id="simControls"></div>
+
+          <div class="sim-divider"></div>
+          <div class="sim-kpis">
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Coût moyen / colis > 2 kg</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="sim-kpi-val" id="bKpi1">4,36 €</span>
+                <span class="sim-kpi-delta delta-pos" id="bDelta1">−0,46 €</span>
+              </div>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Marge frais port / commande</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="sim-kpi-val" id="bKpi2">−0,38 €</span>
+                <span class="sim-kpi-delta delta-neg" id="bDelta2">−0,20 €</span>
+              </div>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Délai promis → livré</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="sim-kpi-val" id="bKpi3">5,0 j</span>
+                <span class="sim-kpi-delta delta-neu" id="bDelta3">= 0</span>
+              </div>
+            </div>
+            <div class="sim-kpi-row">
+              <span class="sim-kpi-name">Économie annuelle</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="sim-kpi-val" style="color:var(--success);" id="bKpi4">23 800 €</span>
+                <span class="sim-kpi-delta delta-pos" id="bDelta4">+23 800 €</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Commentaire elo · IA -->
+      <div class="ia-commentary" id="iaCommentary">
+        <div class="ia-commentary-label">elo · IA — Ce que ça implique</div>
+        <div class="ia-commentary-text" id="iaCommentaryText">
+          À <strong>50 % de Mondial Relay</strong>, votre charge entrepôt augmente de ~4 % (vagues de tri relais). Avec cut-off à <strong>15h30</strong>, vos délais restent dans votre promesse. La qualité de service Mondial Relay sur le segment Mode est comparable à Chronopost sur les zones denses — la différence se creuse en zones rurales où Chronopost reste plus fiable.
+        </div>
+        <div class="ia-risk" id="iaRisk">
+          <strong>Risque détecté :</strong> 11 % de vos clients à panier > 120 € préfèrent la livraison à domicile. Surveillez le taux d'abandon panier sur ce segment lors de l'activation.
+        </div>
+      </div>
+
+      <div class="bench-footer">
+        <button class="bench-back-btn" onclick="showView1()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Retour · Recommandations
+        </button>
+        <div style="position:relative;">
+          <button class="bench-continue-btn" id="simSaveBtn" onclick="saveSimulation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Enregistrer dans elo·IA
+          </button>
+          <div id="simSaveToast" class="sim-save-toast">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:13px;height:13px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            Scénario enregistré dans elo·IA
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ── THEME ── */
+function toggleTheme() {
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── NAVIGATION VIEWS ── */
+function showView1() {
+  document.getElementById('view1').className = 'view active';
+  document.getElementById('view2').className = 'view';
+  document.getElementById('bcCurrent').textContent = 'Recommandations';
+}
+
+function showView2() {
+  document.getElementById('view1').className = 'view';
+  document.getElementById('view2').className = 'view active';
+  document.getElementById('bcCurrent').textContent = 'Simulation';
+}
+
+/* ── CONFIGS SIMULATEUR ── */
+var simConfigs = {
+
+  transporteur: {
+    title: 'Et si vous <strong>rééquilibriez le mix transporteur ?</strong>',
+    aLabels: ['Chronopost sur > 2 kg éligible', 'Heure de cut-off préparation', 'Frais de port (commande < seuil)'],
+    aVals:   ['78 %', '14h00', '4,90 €'],
+    aSubs:   ['Médiane réseau : 42 %', '', ''],
+    aSubTypes: ['warn','',''],
+    aKpis:   ['4,82 €', '−0,18 €', '5,0 j', '— €'],
+    controls: [
+      { type:'slider', label:'Mondial Relay sur > 2 kg éligible', id:'c1', min:0, max:100, step:1, val:50, unit:'%', sub:'Médiane réseau : 22 %', marks:['0 %','50 %','100 %'] },
+      { type:'segment', label:'Heure de cut-off préparation', id:'c2', opts:['14h00','15h30','17h00'], val:'15h30' },
+      { type:'slider', label:'Frais de port (commande < 49 €)', id:'c3', min:0, max:9.9, step:0.1, val:2.9, unit:'€', sub:'', marks:['0 €','5 €','9,90 €'] },
+    ],
+    calcB: function(vals) {
+      var mrPct = vals.c1 / 100;
+      var cutoff = vals.c2;
+      var frais = vals.c3;
+      var coutBase = 4.82;
+      var coutB = (coutBase * (1 - mrPct) + 4.10 * mrPct).toFixed(2);
+      var saving = ((coutBase - coutB) * 8240 * 12).toFixed(0);
+      var marge = (-0.18 - (frais - 4.9) * 0.3).toFixed(2);
+      var margeDelta = (marge - (-0.18)).toFixed(2);
+      var delai = cutoff === '17h00' ? '5,5 j' : '5,0 j';
+      return {
+        kpis: [coutB + ' €', marge + ' €', delai, Number(saving).toLocaleString('fr') + ' €'],
+        deltas: [
+          { val: (coutB - coutBase).toFixed(2) + ' €', type: coutB < coutBase ? 'pos' : 'neg' },
+          { val: margeDelta + ' €', type: margeDelta >= 0 ? 'pos' : 'neg' },
+          { val: cutoff === '17h00' ? '+0,5 j' : '= 0', type: cutoff === '17h00' ? 'neg' : 'neu' },
+          { val: '+' + Number(saving).toLocaleString('fr') + ' €', type: 'pos' },
+        ],
+        commentary: 'À <strong>' + vals.c1 + ' % de Mondial Relay</strong>, votre charge entrepôt augmente de ~4 % (vagues de tri relais). Avec cut-off à <strong>' + cutoff + '</strong>, vos délais restent dans votre promesse. La qualité de service Mondial Relay sur le segment Mode est comparable à Chronopost sur les zones denses.',
+        risk: vals.c1 > 60 ? '<strong>Risque détecté :</strong> Au-delà de 60 %, 11 % de vos clients à panier > 120 € préfèrent la livraison à domicile. Surveillez le taux d\'abandon panier sur ce segment.' : null
+      };
+    }
+  },
+
+  seuil: {
+    title: 'Et si vous <strong>baissez votre seuil de gratuité ?</strong>',
+    aLabels: ['Seuil gratuité domicile actuel', 'Seuil gratuité relais actuel', 'Coût livraison moyen'],
+    aVals:   ['59 €', '39 €', '4,90 €'],
+    aSubs:   ['Médiane réseau : 49 €', 'Médiane réseau : 35 €', ''],
+    aSubTypes: ['warn','warn',''],
+    aKpis:   ['−0,18 €', '+2,4 %', '5,0 j', '— €'],
+    controls: [
+      { type:'slider', label:'Seuil gratuité domicile', id:'c1', min:29, max:79, step:1, val:49, unit:'€', sub:'Médiane réseau : 49 €', marks:['29 €','49 €','79 €'] },
+      { type:'slider', label:'Seuil gratuité relais', id:'c2', min:19, max:59, step:1, val:35, unit:'€', sub:'Médiane réseau : 35 €', marks:['19 €','35 €','59 €'] },
+    ],
+    calcB: function(vals) {
+      var seuilDom = vals.c1;
+      var seuilRel = vals.c2;
+      var convGain = ((59 - seuilDom) * 0.32).toFixed(1);
+      var margeImpact = -((59 - seuilDom) * 0.018).toFixed(2);
+      var annuel = ((59 - seuilDom) * 420).toFixed(0);
+      return {
+        kpis: [margeImpact + ' €', '+' + convGain + ' %', '5,0 j', seuilDom < 59 ? '+' + Number(annuel).toLocaleString('fr') + ' € CA' : '— €'],
+        deltas: [
+          { val: margeImpact + ' €', type: margeImpact < 0 ? 'neg' : 'neu' },
+          { val: '+' + convGain + ' %', type: 'pos' },
+          { val: '= 0', type: 'neu' },
+          { val: seuilDom < 59 ? '+' + Number(annuel).toLocaleString('fr') + ' € CA' : '= 0', type: seuilDom < 59 ? 'pos' : 'neu' },
+        ],
+        commentary: 'À <strong>' + seuilDom + ' € de seuil domicile</strong>, vous rejoignez la médiane réseau. L\'impact P&L est limité si la commande additionnelle absorbe le coût : pour votre panier moyen de 56,80 €, environ <strong>68 % des commandes entre ' + seuilDom + ' et 59 € génèrent une marge positive</strong> après coût livraison.',
+        risk: seuilDom < 39 ? '<strong>Attention :</strong> En dessous de 39 €, le coût de livraison absorbe la marge sur vos commandes à faible panier. Testez en A/B sur un segment avant de généraliser.' : null
+      };
+    }
+  },
+
+  surcharge: {
+    title: 'Et si vous <strong>répercutiez les surcharges zone B/C ?</strong>',
+    aLabels: ['Surcharge zone B appliquée', 'Surcharge zone C appliquée', '% commandes zones B/C'],
+    aVals:   ['0,00 €', '0,00 €', '34 %'],
+    aSubs:   ['Médiane réseau : 1,20 €', 'Médiane réseau : 1,80 €', ''],
+    aSubTypes: ['warn','warn',''],
+    aKpis:   ['−0,18 €', '14 400 €/an perdus', '5,0 j', '— €'],
+    controls: [
+      { type:'slider', label:'Surcharge zone B', id:'c1', min:0, max:2.5, step:0.1, val:1.2, unit:'€', sub:'Médiane réseau : 1,20 €', marks:['0 €','1,20 €','2,50 €'] },
+      { type:'slider', label:'Surcharge zone C', id:'c2', min:0, max:3.5, step:0.1, val:1.8, unit:'€', sub:'Médiane réseau : 1,80 €', marks:['0 €','1,80 €','3,50 €'] },
+    ],
+    calcB: function(vals) {
+      var sb = vals.c1;
+      var sc = vals.c2;
+      var gain = ((sb * 0.2 + sc * 0.14) * 8240 * 12).toFixed(0);
+      var marge = (parseFloat(gain) / 8240 / 12).toFixed(2);
+      return {
+        kpis: ['+' + marge + ' €', '−' + Number(gain).toLocaleString('fr') + ' € récupérés', '5,0 j', '+' + Number(gain).toLocaleString('fr') + ' €'],
+        deltas: [
+          { val: '+' + marge + ' €', type: 'pos' },
+          { val: '+' + Number(gain).toLocaleString('fr') + ' €', type: 'pos' },
+          { val: '= 0', type: 'neu' },
+          { val: '+' + Number(gain).toLocaleString('fr') + ' €', type: 'pos' },
+        ],
+        commentary: 'Avec <strong>' + sb.toFixed(1) + ' € en zone B</strong> et <strong>' + sc.toFixed(1) + ' € en zone C</strong>, vous restez en dessous du seuil de friction client identifié par les données réseau (' + (sb > 1.5 ? 'attention, vous approchez la limite' : 'seuil confortable') + '). Cette surcharge est standard dans le secteur — 78 % des sites la pratiquent selon le Palmarès ColisConsult 2024.',
+        risk: sb > 2.0 || sc > 2.8 ? '<strong>Risque perçu :</strong> Au-delà de ces niveaux, certains clients perçoivent la surcharge comme excessive. Préférez une communication transparente ("frais de livraison zone éloignée") pour limiter les abandons.' : null
+      };
+    }
+  },
+
+  express: {
+    title: 'Et si vous <strong>activiez la livraison express relais ?</strong>',
+    aLabels: ['Express relais proposé', 'Délai standard relais', 'Part du chiffre d\'affaires relais'],
+    aVals:   ['Non', 'J+3 à J+5', '83 %'],
+    aSubs:   ['23 % des sites Mode le proposent', 'Médiane réseau : J+3', ''],
+    aSubTypes: ['warn','',''],
+    aKpis:   ['+0 %', '5,0 j', '0 €', '— €'],
+    controls: [
+      { type:'segment', label:'Transporteur express relais', id:'c1', opts:['Mondial Relay','Chronopost','GLS'], val:'GLS' },
+      { type:'slider', label:'Prix express relais proposé', id:'c2', min:2.9, max:7.9, step:0.1, val:4.9, unit:'€', sub:'Recommandé : 4,90 € (médiane réseau)', marks:['2,90 €','4,90 €','7,90 €'] },
+    ],
+    calcB: function(vals) {
+      var prix = vals.c2;
+      var conv = prix < 4.5 ? '+2.8 %' : prix < 5.5 ? '+2.1 %' : '+1.4 %';
+      var nps = vals.c1 === 'GLS' ? '+0.6' : vals.c1 === 'Mondial Relay' ? '+0.4' : '+0.3';
+      return {
+        kpis: [conv, 'J+1 J+2', '+' + nps + ' NPS', 'Selon CA'],
+        deltas: [
+          { val: conv, type: 'pos' },
+          { val: '−2 à 3 j', type: 'pos' },
+          { val: '+' + nps, type: 'pos' },
+          { val: 'variable', type: 'neu' },
+        ],
+        commentary: '<strong>' + vals.c1 + ' Express</strong> propose des tarifs compétitifs sur le segment Mode en J+1/J+2. À ' + prix.toFixed(2) + ' €, vous restez sous le prix moyen marché (' + (prix < 5 ? 'très attractif pour vos clients' : 'dans la norme') + '). 23 % des sites Mode le proposent — vous rejoindrez les pionniers de ce service.',
+        risk: prix < 3.5 ? '<strong>Attention :</strong> En dessous de 3,50 €, vous vendez sous votre coût transporteur. Vérifiez la grille tarifaire négociée avec ' + vals.c1 + ' avant de fixer ce prix.' : null
+      };
+    }
+  }
+};
+
+var currentSim = 'transporteur';
+var currentVals = {};
+
+function openSim(type) {
+  currentSim = type;
+  var cfg = simConfigs[type];
+  currentVals = {};
+
+  // Reset default vals
+  cfg.controls.forEach(function(c) { currentVals[c.id] = c.val; });
+
+  // Update title
+  document.getElementById('simTitle').innerHTML = cfg.title;
+
+  // Update panel A
+  cfg.aLabels.forEach(function(l, i) {
+    document.getElementById('aLabel' + (i+1)).textContent = l;
+    document.getElementById('aVal' + (i+1)).textContent = cfg.aVals[i];
+    var subEl = document.getElementById('aSub' + (i+1));
+    subEl.textContent = cfg.aSubs[i];
+    subEl.className = 'sim-row-sub' + (cfg.aSubTypes[i] ? ' ' + cfg.aSubTypes[i] : '');
+  });
+  document.getElementById('aKpi1').textContent = cfg.aKpis[0];
+  document.getElementById('aKpi2').textContent = cfg.aKpis[1];
+  document.getElementById('aKpi3').textContent = cfg.aKpis[2];
+  document.getElementById('aKpi4').textContent = cfg.aKpis[3];
+
+  // Build controls
+  buildControls(cfg);
+  updateSim();
+  showView2();
+}
+
+function buildControls(cfg) {
+  var container = document.getElementById('simControls');
+  container.innerHTML = '';
+  cfg.controls.forEach(function(c) {
+    var div = document.createElement('div');
+    div.className = 'sim-control';
+    var topDiv = '<div class="sim-control-top"><span class="sim-control-label">' + c.label + '</span>';
+
+    if (c.type === 'slider') {
+      topDiv += '<span class="sim-control-val" id="val_' + c.id + '">' + c.val + ' ' + c.unit + '</span></div>';
+      if (c.sub) topDiv += '<div class="sim-control-sub">' + c.sub + '</div>';
+      topDiv += '<div class="sim-slider-wrap"><input class="sim-slider" type="range" id="ctrl_' + c.id + '" min="' + c.min + '" max="' + c.max + '" step="' + c.step + '" value="' + c.val + '" oninput="onSlider(\'' + c.id + '\',this.value,\'' + c.unit + '\')">';
+      topDiv += '</div><div class="sim-slider-marks"><span>' + c.marks[0] + '</span><span>' + c.marks[1] + '</span><span>' + c.marks[2] + '</span></div>';
+    } else if (c.type === 'segment') {
+      topDiv += '</div>';
+      topDiv += '<div class="seg-control">';
+      c.opts.forEach(function(opt) {
+        topDiv += '<button class="seg-btn' + (opt === c.val ? ' active' : '') + '" onclick="onSegment(\'' + c.id + '\',\'' + opt + '\',this)">' + opt + '</button>';
+      });
+      topDiv += '</div>';
+    }
+
+    div.innerHTML = topDiv;
+    container.appendChild(div);
+  });
+}
+
+function onSlider(id, val, unit) {
+  currentVals[id] = parseFloat(val);
+  var formatted = parseFloat(val) % 1 === 0 ? val : parseFloat(val).toFixed(1);
+  document.getElementById('val_' + id).textContent = formatted + ' ' + unit;
+  updateSim();
+}
+
+function onSegment(id, val, btn) {
+  currentVals[id] = val;
+  btn.closest('.seg-control').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  updateSim();
+}
+
+function updateSim() {
+  var cfg = simConfigs[currentSim];
+  var result = cfg.calcB(currentVals);
+  var kpis = result.kpis;
+  var deltas = result.deltas;
+
+  ['bKpi1','bKpi2','bKpi3','bKpi4'].forEach(function(id, i) {
+    document.getElementById(id).textContent = kpis[i];
+  });
+  ['bDelta1','bDelta2','bDelta3','bDelta4'].forEach(function(id, i) {
+    var el = document.getElementById(id);
+    el.textContent = deltas[i].val;
+    el.className = 'sim-kpi-delta delta-' + deltas[i].type;
+  });
+
+  document.getElementById('iaCommentaryText').innerHTML = result.commentary;
+  var riskEl = document.getElementById('iaRisk');
+  if (result.risk) {
+    riskEl.innerHTML = result.risk;
+    riskEl.style.display = '';
+  } else {
+    riskEl.style.display = 'none';
+  }
+}
+
+function resetSim() {
+  var cfg = simConfigs[currentSim];
+  cfg.controls.forEach(function(c) {
+    currentVals[c.id] = c.val;
+    if (c.type === 'slider') {
+      document.getElementById('ctrl_' + c.id).value = c.val;
+      document.getElementById('val_' + c.id).textContent = c.val + ' ' + c.unit;
+    } else if (c.type === 'segment') {
+      document.querySelectorAll('.seg-btn').forEach(function(b) {
+        b.classList.toggle('active', b.textContent === c.val);
+      });
+    }
+  });
+  updateSim();
+}
+
+function savePlan() {
+  var btn = document.getElementById('planSaveBtn');
+  var toast = document.getElementById('planSaveToast');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg> Enregistré dans elo·IA';
+  btn.style.background = 'var(--success)';
+  btn.disabled = true;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 3200);
+}
+
+function saveRecos() {
+  var btn = document.getElementById('recoSaveBtn');
+  var toast = document.getElementById('recoSaveToast');
+  btn.classList.add('saved');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg> Enregistré';
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 3200);
+}
+
+function saveSimulation() {
+  var btn = document.getElementById('simSaveBtn');
+  var toast = document.getElementById('simSaveToast');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg> Enregistré dans elo·IA';
+  btn.style.background = 'var(--success)';
+  btn.disabled = true;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 3200);
+}
+</script>
+</body>
+</html>

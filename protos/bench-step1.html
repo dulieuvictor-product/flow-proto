@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elo.bench — Choisir un thème</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="light"] {
+  --bg:            #F2F4F8;
+  --surface:       #FFFFFF;
+  --surface2:      #F4F6FA;
+  --border:        rgba(0,0,0,0.07);
+  --border2:       rgba(0,0,0,0.13);
+  --ink:           #1A1C1E;
+  --slate:         #4A5568;
+  --muted:         #8A95A3;
+  --primary:       #0E8FCC;
+  --primary-tint:  #EAF6FD;
+  --success:       #2A9554;
+  --success-tint:  #E8F8EF;
+  --warning:       #C27B00;
+  --warning-tint:  #FEF4E0;
+  --danger:        #D63050;
+  --danger-tint:   #FDEAED;
+  --violet:        #6C47E8;
+  --violet-tint:   #F0EDFF;
+  --nav-bg:        #FFFFFF;
+  --nav-active-bg: #EAF6FD;
+  --nav-active-tx: #0E8FCC;
+  --topbar-bg:     #FFFFFF;
+  --card-shadow:   0 1px 3px rgba(0,0,0,0.06);
+  --c-business:   #2563EB;  --c-business-t: #EFF6FF;
+  --c-qlog:       #0E7490;  --c-qlog-t:     #ECFEFF;
+  --c-qtrans:     #0284C7;  --c-qtrans-t:   #F0F9FF;
+  --c-savt:       #6366F1;  --c-savt-t:     #EEF2FF;
+  --c-savl:       #9333EA;  --c-savl-t:     #FDF4FF;
+  --c-stocks:     #D97706;  --c-stocks-t:   #FFFBEB;
+}
+[data-theme="dark"] {
+  --bg:            #0C0F14;
+  --surface:       #181E28;
+  --surface2:      #1F2736;
+  --border:        rgba(255,255,255,0.10);
+  --border2:       rgba(255,255,255,0.18);
+  --ink:           #E2EAF4;
+  --slate:         #9AAABB;
+  --muted:         #5A6C7D;
+  --primary:       #1ADCFF;
+  --primary-tint:  rgba(26,220,255,0.13);
+  --success:       #22FF7A;
+  --success-tint:  rgba(34,255,122,0.13);
+  --warning:       #FFB020;
+  --warning-tint:  rgba(255,176,32,0.13);
+  --danger:        #FF3B6A;
+  --danger-tint:   rgba(255,59,106,0.13);
+  --violet:        #A78BFF;
+  --violet-tint:   rgba(167,139,255,0.13);
+  --nav-bg:        #141A22;
+  --nav-active-bg: rgba(26,220,255,0.12);
+  --nav-active-tx: #1ADCFF;
+  --topbar-bg:     #141A22;
+  --card-shadow:   0 1px 0 rgba(255,255,255,0.04);
+  --c-business:   #60A5FA; --c-business-t: rgba(96,165,250,0.13);
+  --c-qlog:       #22D3EE; --c-qlog-t:     rgba(34,211,238,0.13);
+  --c-qtrans:     #38BDF8; --c-qtrans-t:   rgba(56,189,248,0.13);
+  --c-savt:       #A5B4FC; --c-savt-t:     rgba(165,180,252,0.13);
+  --c-savl:       #C084FC; --c-savl-t:     rgba(192,132,252,0.13);
+  --c-stocks:     #FCD34D; --c-stocks-t:   rgba(252,211,77,0.13);
+}
+
+html, body { height: 100%; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); display: flex; transition: background 0.25s, color 0.25s; }
+
+/* ── SIDENAV ── */
+.sidenav { width: 220px; flex-shrink: 0; background: var(--nav-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; z-index: 200; transition: background 0.25s, border-color 0.25s; }
+.nav-brand { padding: 18px 14px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.nav-brand-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-brand-mark svg { width: 18px; height: 18px; }
+.nav-brand-name { font-size: 14px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; line-height: 1.2; }
+.nav-brand-name strong { font-weight: 600; }
+.nav-brand-sub { font-size: 10px; color: var(--primary); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+.nav-section { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 14px 14px 5px; font-family: 'DM Mono', monospace; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 1px 6px; border-radius: 9px; font-size: 13px; color: var(--slate); cursor: pointer; transition: background 0.12s, color 0.12s; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; }
+.nav-item:hover { background: var(--surface2); color: var(--ink); }
+.nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-tx); font-weight: 500; }
+.nav-item.active svg { opacity: 1; }
+.nav-mod-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-mod-icon svg { width: 13px; height: 13px; opacity: 1; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--danger-tint); color: var(--danger); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-badge-warn { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--warning-tint); color: var(--warning); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-item-bench { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 1px 6px; border-radius: 9px; font-size: 13px; font-weight: 500; color: var(--violet); cursor: pointer; background: var(--violet-tint); transition: filter 0.12s; }
+.nav-item-bench.active { outline: 1.5px solid var(--violet); outline-offset: -1px; }
+.nav-bench-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-bench-icon svg { width: 12px; height: 12px; stroke: #fff; opacity: 1; }
+.nav-badge-new { margin-left: auto; font-size: 9px; font-weight: 700; background: var(--violet); color: #fff; padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; text-transform: uppercase; }
+.nav-bottom { margin-top: auto; padding: 10px 6px 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.nav-llm { margin: 0 4px 2px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 9px 12px; }
+.nav-llm-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.nav-llm-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+.nav-llm-count { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--violet); }
+.nav-llm-bar { height: 3px; background: var(--border2); border-radius: 100px; overflow: hidden; }
+.nav-llm-fill { height: 100%; background: var(--violet); border-radius: 100px; width: 62%; transition: width 0.5s ease; }
+.nav-llm-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.nav-user { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; cursor: pointer; transition: background 0.12s; }
+.nav-user:hover { background: var(--surface2); }
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; }
+.nav-user-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.nav-user-role { font-size: 10px; color: var(--muted); }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow-y: auto; height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 100; transition: background 0.25s; flex-shrink: 0; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.bc-parent { color: var(--muted); cursor: pointer; }
+.bc-parent:hover { color: var(--ink); }
+.bc-sep { color: var(--border2); }
+.bc-current { font-weight: 500; color: var(--ink); }
+.bc-bench { font-weight: 600; color: var(--violet); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.theme-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 0 12px; height: 34px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--slate); white-space: nowrap; transition: all 0.12s; }
+.theme-btn:hover { background: var(--primary-tint); color: var(--primary); border-color: var(--primary); }
+.theme-btn svg { width: 15px; height: 15px; }
+.icon-sun  { display: block; }
+.icon-moon { display: none; }
+[data-theme="dark"] .icon-sun  { display: none; }
+[data-theme="dark"] .icon-moon { display: block; }
+
+/* ── STEPPER ── */
+.stepper-wrap { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; gap: 0; flex-shrink: 0; transition: background 0.25s; }
+.step-item { display: flex; align-items: center; gap: 0; }
+.step-node { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; cursor: default; }
+.step-node.clickable { cursor: pointer; }
+.step-node.clickable:hover .step-label { color: var(--ink); }
+.step-circle { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--muted); flex-shrink: 0; transition: all 0.2s; background: var(--surface); }
+.step-circle.active { background: var(--violet); border-color: var(--violet); color: #fff; box-shadow: 0 0 0 3px rgba(108,71,232,0.15); }
+.step-circle.done { background: var(--success); border-color: var(--success); color: #fff; }
+.step-label { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; transition: color 0.15s; }
+.step-label.active { color: var(--violet); font-weight: 600; }
+.step-label.done { color: var(--success); }
+.step-connector { width: 28px; height: 1.5px; background: var(--border2); flex-shrink: 0; margin: 0 2px; }
+.step-connector.done { background: var(--success); }
+
+/* ── CONTENT ── */
+.bench-content { flex: 1; padding: 20px 40px 28px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.bench-header { margin-bottom: 16px; }
+.bench-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.bench-eyebrow-logo { width: 20px; height: 20px; border-radius: 5px; background: var(--violet); display: flex; align-items: center; justify-content: center; }
+.bench-eyebrow-logo svg { width: 11px; height: 11px; stroke: #fff; }
+.bench-eyebrow-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--violet); }
+.bench-title { font-size: 24px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 6px; }
+.bench-title strong { font-weight: 600; }
+.bench-subtitle { font-size: 14px; color: var(--slate); line-height: 1.55; }
+.bench-subtitle strong { font-weight: 600; color: var(--ink); }
+
+/* ── THEME GRID ── */
+.theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+
+.theme-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.18s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.theme-card:hover { border-color: var(--border2); box-shadow: 0 4px 16px rgba(0,0,0,0.07); transform: translateY(-1px); }
+.theme-card.selected { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(108,71,232,0.1); }
+.theme-card.locked { cursor: default; opacity: 0.62; }
+.theme-card.locked:hover { border-color: var(--border); box-shadow: none; transform: none; }
+
+.theme-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 12px; }
+.theme-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.theme-icon svg { width: 18px; height: 18px; }
+.theme-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.theme-pill { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'DM Mono', monospace; padding: 3px 8px; border-radius: 100px; }
+.pill-rentabilite { background: #EFF6FF; color: #2563EB; }
+.pill-tresorerie { background: #FEF4E0; color: #C27B00; }
+.pill-experience { background: #EEF2FF; color: #6366F1; }
+[data-theme="dark"] .pill-rentabilite { background: rgba(96,165,250,0.13); color: #60A5FA; }
+[data-theme="dark"] .pill-tresorerie { background: rgba(255,176,32,0.13); color: #FFB020; }
+[data-theme="dark"] .pill-experience { background: rgba(165,180,252,0.13); color: #A5B4FC; }
+
+.theme-name { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 6px; letter-spacing: -0.01em; }
+.theme-desc { font-size: 11.5px; color: var(--slate); line-height: 1.5; margin-bottom: 10px; flex: 1; }
+
+/* Opportunité gain — gamification / FOMO */
+.theme-gain { display: flex; align-items: center; gap: 8px; background: var(--success-tint); border: 1px solid rgba(42,149,84,0.18); border-radius: 8px; padding: 8px 12px; }
+.theme-gain svg { width: 13px; height: 13px; stroke: var(--success); flex-shrink: 0; }
+.theme-gain-text { font-size: 11px; color: var(--success); font-weight: 600; line-height: 1.4; }
+.theme-gain-text span { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+/* Coming soon overlay */
+.theme-soon-badge { position: absolute; top: 14px; right: 14px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 100px; padding: 3px 10px; font-size: 10px; font-weight: 600; color: var(--muted); font-family: 'DM Mono', monospace; }
+.theme-card.locked .theme-gain { display: none; }
+.theme-card.locked .theme-coming { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
+.theme-coming { display: none; }
+.theme-coming-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); opacity: 0.4; }
+.theme-coming-label { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+/* Selected check */
+.theme-check { position: absolute; top: 14px; right: 14px; width: 20px; height: 20px; border-radius: 50%; background: var(--violet); display: none; align-items: center; justify-content: center; }
+.theme-check svg { width: 11px; height: 11px; stroke: #fff; }
+.theme-card.selected .theme-check { display: flex; }
+.theme-card.selected .theme-soon-badge { display: none; }
+
+/* ── IA SECTION ── */
+.ia-section { background: linear-gradient(135deg, var(--violet-tint), rgba(14,143,204,0.06)); border: 1px solid rgba(108,71,232,0.2); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+[data-theme="dark"] .ia-section { background: linear-gradient(135deg, rgba(167,139,255,0.08), rgba(26,220,255,0.06)); border-color: rgba(167,139,255,0.2); }
+.ia-section-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ia-section-icon svg { width: 18px; height: 18px; stroke: #fff; }
+.ia-section-body { flex: 1; min-width: 0; }
+.ia-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--violet); margin-bottom: 4px; }
+.ia-section-question { font-size: 12px; color: var(--muted); margin-bottom: 9px; }
+.ia-input-wrap { display: flex; gap: 8px; align-items: center; }
+.ia-input { flex: 1; border: 1px solid var(--border2); border-radius: 8px; background: var(--surface); padding: 9px 13px; font-size: 12.5px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--ink); outline: none; transition: border-color 0.15s; }
+.ia-input::placeholder { color: var(--muted); }
+.ia-input:focus { border-color: var(--violet); }
+.ia-btn { display: flex; align-items: center; gap: 6px; background: var(--violet); color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-size: 12px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; }
+.ia-btn:hover { opacity: 0.88; }
+.ia-btn svg { width: 13px; height: 13px; }
+
+/* ── FOOTER NAV ── */
+.bench-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.bench-footer-left { font-size: 12px; color: var(--muted); }
+.bench-continue-btn { display: flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-size: 13px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: opacity 0.15s; }
+.bench-continue-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.bench-continue-btn:not(:disabled):hover { opacity: 0.88; }
+.bench-continue-btn svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh;width:100%">
+
+<!-- ══ SIDENAV ══ -->
+<aside class="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
+  </div>
+
+  <div class="nav-section">Principal</div>
+  <div class="nav-item" onclick="location.href='home-bench-insights.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Tableau de bord
+  </div>
+
+  <div class="nav-item-bench active">
+    <div class="nav-bench-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg>
+    </div>
+    elo.bench
+    <span class="nav-badge-new">Nouveau</span>
+  </div>
+
+  <div class="nav-section">Modules</div>
+
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-business-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    Business
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-qlog-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    Préparation
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-qtrans-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    </div>
+    Transport
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-savt-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    Litiges
+    <span class="nav-badge">47</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-savl-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg>
+    </div>
+    Retours
+    <span class="nav-badge-warn">24</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-mod-icon" style="background:var(--c-stocks-t);">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>
+    </div>
+    Stocks
+    <span class="nav-badge">8</span>
+  </div>
+
+  <div class="nav-bottom">
+    <div class="nav-llm">
+      <div class="nav-llm-top">
+        <span class="nav-llm-label">elo · IA</span>
+        <span class="nav-llm-count">31/50</span>
+      </div>
+      <div class="nav-llm-bar"><div class="nav-llm-fill"></div></div>
+      <div class="nav-llm-sub">Questions restantes ce mois</div>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar">VL</div>
+      <div>
+        <div class="nav-user-name">Victor L.</div>
+        <div class="nav-user-role">Admin logistique</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span class="bc-parent" onclick="location.href='home-bench-insights.html'">Tableau de bord</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-bench">elo.bench</span>
+      <span class="bc-sep">/</span>
+      <span class="bc-current">Thème</span>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        Mode sombre
+      </button>
+    </div>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper-wrap">
+    <div class="step-item"><div class="step-node"><div class="step-circle active">1</div><span class="step-label active">Thème</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">2</div><span class="step-label">Périmètre</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">3</div><span class="step-label">Sources</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">4</div><span class="step-label">Diagnostic</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">5</div><span class="step-label">Recommandations</span></div></div>
+  </div>
+        <span class="step-label active">Thème</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-node">
+        <div class="step-circle">2</div>
+        <span class="step-label">Périmètre</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-node">
+        <div class="step-circle">3</div>
+        <span class="step-label">Sources</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-node">
+        <div class="step-circle">4</div>
+        <span class="step-label">Diagnostic</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-node">
+        <div class="step-circle">5</div>
+        <span class="step-label">Simulation</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-node">
+        <div class="step-circle">6</div>
+        <span class="step-label">Actions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div style="flex:1;overflow-y:auto;padding:0 16px;">
+  <div class="bench-content">
+
+    <div class="bench-header">
+      <div class="bench-title">Quel thème souhaitez-vous soumettre aux <strong>données du réseau</strong> aujourd'hui ?</div>
+      <div class="bench-subtitle">elo.bench compare vos données à toutes les <strong>sources du réseau elogik</strong> sur l'axe de votre choix. Résultat en 3 étapes, sans paramétrage avancé.<br><span style="font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;margin-top:5px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:12px;height:12px;flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Toutes les données du réseau sont agrégées et anonymisées — aucune donnée individuelle n'est exposée.</span></div>
+    </div>
+
+    <!-- Grille des thèmes -->
+    <div class="theme-grid">
+
+      <!-- THÈME 1 — Actif -->
+      <div class="theme-card" id="card-fraisport" onclick="selectTheme('fraisport')">
+        <div class="theme-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="theme-card-top">
+          <div class="theme-icon" style="background:#EFF6FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="theme-pills">
+            <span class="theme-pill pill-rentabilite">Rentabilité</span>
+          </div>
+        </div>
+        <div class="theme-name">Challenge de votre politique frais de port</div>
+        <div class="theme-desc">Comparez vos seuils de gratuité, vos mix livraison et vos frais facturés à la cohorte. Identifiez les leviers pour améliorer votre marge nette par colis.</div>
+        <div class="theme-gain">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <div class="theme-gain-text">Gain médian réseau&nbsp;: <span>+6 200 € / mois</span></div>
+        </div>
+      </div>
+
+      <!-- THÈME 2 — À venir -->
+      <div class="theme-card locked" id="card-stocks">
+        <div class="theme-card-top">
+          <div class="theme-icon" style="background:#FFFBEB;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg>
+          </div>
+          <div class="theme-pills">
+            <span class="theme-pill pill-tresorerie">Trésorerie</span>
+          </div>
+        </div>
+        <div class="theme-name">Opportunités sur les stocks</div>
+        <div class="theme-desc">Analysez vos taux de rotation, niveaux de stock-out et immobilisations financières face aux références de la cohorte.</div>
+        <div class="theme-coming">
+          <div class="theme-coming-dot"></div>
+          <span class="theme-coming-label">Disponible prochainement</span>
+        </div>
+      </div>
+
+      <!-- THÈME 3 — À venir -->
+      <div class="theme-card locked" id="card-transporteurs">
+        <div class="theme-card-top">
+          <div class="theme-icon" style="background:#F0F9FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="theme-pills">
+            <span class="theme-pill pill-tresorerie">Trésorerie</span>
+          </div>
+        </div>
+        <div class="theme-name">Opportunités sur vos transporteurs</div>
+        <div class="theme-desc">Comparez vos taux d'incidents, délais réels et coûts par transporteur aux standards du réseau pour rééquilibrer votre mix.</div>
+        <div class="theme-coming">
+          <div class="theme-coming-dot"></div>
+          <span class="theme-coming-label">Disponible prochainement</span>
+        </div>
+      </div>
+
+      <!-- THÈME 4 — À venir -->
+      <div class="theme-card locked" id="card-qualite">
+        <div class="theme-card-top">
+          <div class="theme-icon" style="background:#EEF2FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="theme-pills">
+            <span class="theme-pill pill-experience">Expérience client</span>
+          </div>
+        </div>
+        <div class="theme-name">Impacts de la qualité sur les revenus</div>
+        <div class="theme-desc">Mesurez l'effet de votre NPS, taux de litige et délais perçus sur la rétention et le chiffre d'affaires comparé à la cohorte.</div>
+        <div class="theme-coming">
+          <div class="theme-coming-dot"></div>
+          <span class="theme-coming-label">Disponible prochainement</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section elo · IA -->
+    <div class="ia-section">
+      <div class="ia-section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="ia-section-body">
+        <div class="ia-section-label">elo · IA — Vous ne savez pas par où commencer ?</div>
+        <div class="ia-section-question">Décrivez votre problème et elo · IA sélectionne le thème le plus pertinent pour vous.</div>
+        <div class="ia-input-wrap">
+          <input class="ia-input" type="text" id="iaPromptInput" placeholder="ex. mes coûts d'expédition ont augmenté de 12% ce trimestre…" />
+          <button class="ia-btn" onclick="analyzeWithIA()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Analyser
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bench-footer">
+      <span class="bench-footer-left">Sélectionnez un thème pour continuer</span>
+      <button class="bench-continue-btn" id="continueBtn" disabled>
+        Continuer
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
+  </div>
+  </div>
+</div><!-- /.main -->
+</div>
+
+<script>
+var selectedTheme = null;
+
+function selectTheme(id) {
+  // Retire toutes les sélections
+  document.querySelectorAll('.theme-card:not(.locked)').forEach(function(c) {
+    c.classList.remove('selected');
+  });
+  // Sélectionne la carte
+  var card = document.getElementById('card-' + id);
+  if (card) card.classList.add('selected');
+  selectedTheme = id;
+  // Active le bouton continuer
+  document.getElementById('continueBtn').disabled = false;
+  document.querySelector('.bench-footer-left').textContent = 'Thème sélectionné — cliquez sur Continuer';
+}
+
+function analyzeWithIA() {
+  var input = document.getElementById('iaPromptInput').value.trim();
+  if (!input) return;
+  // Simule une recommandation IA → sélectionne le seul thème disponible
+  setTimeout(function() {
+    selectTheme('fraisport');
+    document.getElementById('iaPromptInput').value = '';
+  }, 600);
+}
+
+function toggleTheme() {
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elo.bench — Sources de données</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="light"] {
+  --bg: #F2F4F8; --surface: #FFFFFF; --surface2: #F4F6FA;
+  --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
+  --ink: #1A1C1E; --slate: #4A5568; --muted: #8A95A3;
+  --primary: #0E8FCC; --primary-tint: #EAF6FD;
+  --success: #2A9554; --success-tint: #E8F8EF;
+  --warning: #C27B00; --warning-tint: #FEF4E0;
+  --danger: #D63050; --danger-tint: #FDEAED;
+  --violet: #6C47E8; --violet-tint: #F0EDFF;
+  --nav-bg: #FFFFFF; --nav-active-bg: #EAF6FD; --nav-active-tx: #0E8FCC;
+  --topbar-bg: #FFFFFF;
+  --c-business: #2563EB; --c-business-t: #EFF6FF;
+  --c-qlog: #0E7490; --c-qlog-t: #ECFEFF;
+  --c-qtrans: #0284C7; --c-qtrans-t: #F0F9FF;
+  --c-savt: #6366F1; --c-savt-t: #EEF2FF;
+  --c-savl: #9333EA; --c-savl-t: #FDF4FF;
+  --c-stocks: #D97706; --c-stocks-t: #FFFBEB;
+}
+[data-theme="dark"] {
+  --bg: #0C0F14; --surface: #181E28; --surface2: #1F2736;
+  --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.18);
+  --ink: #E2EAF4; --slate: #9AAABB; --muted: #5A6C7D;
+  --primary: #1ADCFF; --primary-tint: rgba(26,220,255,0.13);
+  --success: #22FF7A; --success-tint: rgba(34,255,122,0.13);
+  --warning: #FFB020; --warning-tint: rgba(255,176,32,0.13);
+  --danger: #FF3B6A; --danger-tint: rgba(255,59,106,0.13);
+  --violet: #A78BFF; --violet-tint: rgba(167,139,255,0.13);
+  --nav-bg: #141A22; --nav-active-bg: rgba(26,220,255,0.12); --nav-active-tx: #1ADCFF;
+  --topbar-bg: #141A22;
+  --c-business: #60A5FA; --c-business-t: rgba(96,165,250,0.13);
+  --c-qlog: #22D3EE; --c-qlog-t: rgba(34,211,238,0.13);
+  --c-qtrans: #38BDF8; --c-qtrans-t: rgba(56,189,248,0.13);
+  --c-savt: #A5B4FC; --c-savt-t: rgba(165,180,252,0.13);
+  --c-savl: #C084FC; --c-savl-t: rgba(192,132,252,0.13);
+  --c-stocks: #FCD34D; --c-stocks-t: rgba(252,211,77,0.13);
+}
+
+html, body { height: 100%; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); display: flex; transition: background 0.25s, color 0.25s; }
+
+/* ── SIDENAV ── */
+.sidenav { width: 220px; flex-shrink: 0; background: var(--nav-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; z-index: 200; }
+.nav-brand { padding: 18px 14px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.nav-brand-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; }
+.nav-brand-mark svg { width: 18px; height: 18px; }
+.nav-brand-name { font-size: 14px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; line-height: 1.2; }
+.nav-brand-name strong { font-weight: 600; }
+.nav-brand-sub { font-size: 10px; color: var(--primary); font-family: 'DM Mono', monospace; display: block; margin-top: 1px; }
+.nav-section { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 14px 14px 5px; font-family: 'DM Mono', monospace; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 1px 6px; border-radius: 9px; font-size: 13px; color: var(--slate); cursor: pointer; transition: background 0.12s; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; }
+.nav-item:hover { background: var(--surface2); }
+.nav-mod-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-mod-icon svg { width: 13px; height: 13px; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--danger-tint); color: var(--danger); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-badge-warn { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--warning-tint); color: var(--warning); padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; }
+.nav-item-bench { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 1px 6px; border-radius: 9px; font-size: 13px; font-weight: 500; color: var(--violet); cursor: pointer; background: var(--violet-tint); outline: 1.5px solid var(--violet); outline-offset: -1px; }
+.nav-bench-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-bench-icon svg { width: 12px; height: 12px; stroke: #fff; }
+.nav-badge-new { margin-left: auto; font-size: 9px; font-weight: 700; background: var(--violet); color: #fff; padding: 1px 6px; border-radius: 100px; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; text-transform: uppercase; }
+.nav-bottom { margin-top: auto; padding: 10px 6px 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.nav-llm { margin: 0 4px 2px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 9px 12px; }
+.nav-llm-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.nav-llm-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+.nav-llm-count { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--violet); }
+.nav-llm-bar { height: 3px; background: var(--border2); border-radius: 100px; overflow: hidden; }
+.nav-llm-fill { height: 100%; background: var(--violet); border-radius: 100px; width: 62%; }
+.nav-llm-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.nav-user { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; cursor: pointer; }
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.nav-user-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.nav-user-role { font-size: 10px; color: var(--muted); }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.topbar { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.bc-parent { color: var(--muted); cursor: pointer; }
+.bc-sep { color: var(--border2); }
+.bc-bench { font-weight: 600; color: var(--violet); }
+.bc-current { font-weight: 500; color: var(--ink); }
+.theme-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 0 12px; height: 34px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--slate); transition: all 0.12s; }
+.theme-btn:hover { background: var(--primary-tint); color: var(--primary); border-color: var(--primary); }
+.theme-btn svg { width: 15px; height: 15px; }
+.icon-sun { display: block; } .icon-moon { display: none; }
+[data-theme="dark"] .icon-sun { display: none; } [data-theme="dark"] .icon-moon { display: block; }
+
+/* ── STEPPER ── */
+.stepper-wrap { background: var(--topbar-bg); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; flex-shrink: 0; }
+.step-item { display: flex; align-items: center; }
+.step-node { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; }
+.step-node.clickable { cursor: pointer; }
+.step-circle { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--muted); background: var(--surface); }
+.step-circle.active { background: var(--violet); border-color: var(--violet); color: #fff; box-shadow: 0 0 0 3px rgba(108,71,232,0.15); }
+.step-circle.done { background: var(--success); border-color: var(--success); color: #fff; }
+.step-label { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.step-label.active { color: var(--violet); font-weight: 600; }
+.step-label.done { color: var(--success); }
+.step-connector { width: 28px; height: 1.5px; background: var(--border2); flex-shrink: 0; margin: 0 2px; }
+.step-connector.done { background: var(--success); }
+
+/* ── SCROLL ── */
+.scroll-zone { flex: 1; overflow-y: auto; padding: 0 24px; }
+.bench-content { padding: 24px 16px 36px; max-width: 1100px; margin: 0 auto; animation: fadeUp 0.35s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── HEADER ── */
+.bench-header { margin-bottom: 24px; }
+.bench-title { font-size: 24px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 5px; }
+.bench-title strong { font-weight: 600; }
+.bench-subtitle { font-size: 13.5px; color: var(--slate); line-height: 1.5; }
+
+/* ── LOADER BAR ── */
+.loader-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+.loader-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--violet-tint); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+.loader-icon svg { width: 18px; height: 18px; stroke: var(--violet); animation: pulse-icon 2s ease-in-out infinite; }
+@keyframes pulse-icon { 0%,100% { opacity:0.7; transform:scale(1); } 50% { opacity:1; transform:scale(1.1); } }
+.loader-body { flex: 1; min-width: 0; }
+.loader-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--violet); margin-bottom: 4px; }
+.loader-step { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+.loader-step span { color: var(--muted); font-weight: 400; }
+.loader-bar-track { height: 4px; background: var(--border2); border-radius: 100px; overflow: hidden; }
+.loader-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--violet)); border-radius: 100px; animation: loader-progress 8s ease-in-out forwards; }
+@keyframes loader-progress { 0% { width:0%; } 20% { width:22%; } 45% { width:48%; } 70% { width:71%; } 88% { width:88%; } 100% { width:95%; } }
+.loader-pct { font-size: 13px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--violet); flex-shrink: 0; width: 36px; text-align: right; }
+
+/* ── REASSURANCE CARDS ── */
+.reassurance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.r-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.r-card-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.r-card-icon svg { width: 17px; height: 17px; }
+.r-card-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.r-card-desc { font-size: 11.5px; color: var(--slate); line-height: 1.55; flex: 1; }
+.r-card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.r-tag { font-size: 9.5px; font-weight: 500; font-family: 'DM Mono', monospace; padding: 3px 8px; border-radius: 100px; border: 1px solid var(--border2); color: var(--muted); }
+
+/* ── IA SPOTLIGHT ── */
+.ia-spotlight { background: linear-gradient(135deg, #5B35D5 0%, #3B82F6 100%); border-radius: 16px; padding: 22px 26px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; position: relative; overflow: hidden; }
+.ia-spotlight::before { content:''; position:absolute; right:-40px; top:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.06); }
+.ia-spotlight::after { content:''; position:absolute; right:80px; bottom:-60px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.ia-spot-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
+.ia-spot-icon svg { width: 22px; height: 22px; stroke: #fff; }
+.ia-spot-body { flex: 1; min-width: 0; z-index: 1; }
+.ia-spot-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ia-spot-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.7); }
+.ia-spot-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; background: rgba(255,255,255,0.18); color: #fff; padding: 2px 8px; border-radius: 100px; }
+.ia-spot-title { font-size: 18px; font-weight: 600; color: #fff; line-height: 1.25; margin-bottom: 8px; letter-spacing: -0.01em; }
+.ia-spot-desc { font-size: 12.5px; color: rgba(255,255,255,0.8); line-height: 1.55; }
+.ia-spot-desc strong { color: #fff; font-weight: 600; }
+.ia-spot-btn { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.3); color: #fff; border-radius: 10px; padding: 10px 18px; font-size: 12.5px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; z-index: 1; transition: background 0.15s; }
+.ia-spot-btn:hover { background: rgba(255,255,255,0.28); }
+.ia-spot-btn svg { width: 14px; height: 14px; }
+
+/* ── BOTTOM ROW : fun fact + études ── */
+.bottom-row { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; }
+
+/* Fun fact */
+.funfact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.funfact-eyebrow { display: flex; align-items: center; gap: 7px; }
+.funfact-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); animation: blink 2.5s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.funfact-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--warning); }
+.funfact-quote { font-size: 22px; font-weight: 300; color: var(--ink); line-height: 1.2; letter-spacing: -0.02em; }
+.funfact-quote strong { font-weight: 700; color: var(--primary); }
+.funfact-body { font-size: 12px; color: var(--slate); line-height: 1.55; }
+.funfact-source { display: flex; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
+.funfact-source-logo { width: 22px; height: 22px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--slate); font-family: 'DM Mono', monospace; }
+.funfact-source-name { font-size: 10.5px; color: var(--muted); }
+.funfact-source-name strong { color: var(--ink); font-weight: 600; }
+.funfact-nav { display: flex; gap: 5px; margin-left: auto; }
+.funfact-nav-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; }
+.funfact-nav-btn:hover { background: var(--primary-tint); border-color: var(--primary); }
+.funfact-nav-btn svg { width: 12px; height: 12px; stroke: var(--slate); }
+
+/* Études récentes */
+.etudes-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.etudes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.etudes-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.etudes-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: blink 2s ease-in-out infinite; }
+.etudes-count { font-size: 11px; color: var(--primary); font-weight: 500; cursor: pointer; }
+.etudes-count:hover { text-decoration: underline; }
+.etude-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.etude-row:last-child { border-bottom: none; padding-bottom: 0; }
+.etude-logo { width: 34px; height: 34px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--slate); flex-shrink: 0; }
+.etude-body { flex: 1; min-width: 0; }
+.etude-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+.etude-name { font-size: 12.5px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.etude-new { font-size: 8.5px; font-weight: 700; background: var(--success-tint); color: var(--success); padding: 2px 7px; border-radius: 100px; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; flex-shrink: 0; }
+.etude-source { font-size: 10.5px; color: var(--muted); margin-bottom: 5px; }
+.etude-meta { display: flex; align-items: center; gap: 12px; }
+.etude-kpi { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--success); font-weight: 600; font-family: 'DM Mono', monospace; }
+.etude-kpi svg { width: 11px; height: 11px; }
+.etude-scope { display: flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.etude-scope svg { width: 11px; height: 11px; }
+.etude-age { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-left: auto; }
+.etude-link { font-size: 11px; color: var(--primary); font-weight: 500; cursor: pointer; white-space: nowrap; }
+.etude-link:hover { text-decoration: underline; }
+
+/* ── FOOTER ── */
+.bench-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 18px; padding-bottom: 20px; border-top: 1px solid var(--border); }
+.bench-back-btn { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 9px; padding: 10px 18px; font-size: 12.5px; font-weight: 500; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--slate); cursor: pointer; transition: all 0.12s; }
+.bench-back-btn:hover { background: var(--surface); }
+.bench-back-btn svg { width: 15px; height: 15px; }
+.bench-continue-btn { display: flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; border: none; border-radius: 10px; padding: 11px 22px; font-size: 13px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: opacity 0.15s; }
+.bench-continue-btn:hover { opacity: 0.88; }
+.bench-continue-btn svg { width: 16px; height: 16px; }
+.bench-continue-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<div style="display:flex;width:100%;height:100vh;">
+
+<!-- ══ SIDENAV ══ -->
+<aside class="sidenav">
+  <div class="nav-brand">
+    <div class="nav-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-brand-name">elo<strong>logik</strong><span class="nav-brand-sub">(flow)</span></div>
+  </div>
+  <div class="nav-section">Principal</div>
+  <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</div>
+  <div class="nav-item-bench">
+    <div class="nav-bench-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div>
+    elo.bench <span class="nav-badge-new">Nouveau</span>
+  </div>
+  <div class="nav-section">Modules</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-business-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Business</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-qlog-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Préparation</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-qtrans-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>Transport</div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-savt-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>Litiges<span class="nav-badge">47</span></div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-savl-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>Retours<span class="nav-badge-warn">24</span></div>
+  <div class="nav-item"><div class="nav-mod-icon" style="background:var(--c-stocks-t);"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-stocks)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>Stocks<span class="nav-badge">8</span></div>
+  <div class="nav-bottom">
+    <div class="nav-llm"><div class="nav-llm-top"><span class="nav-llm-label">elo · IA</span><span class="nav-llm-count">31/50</span></div><div class="nav-llm-bar"><div class="nav-llm-fill"></div></div><div class="nav-llm-sub">Questions restantes ce mois</div></div>
+    <div class="nav-user"><div class="nav-avatar">VL</div><div><div class="nav-user-name">Victor L.</div><div class="nav-user-role">Admin logistique</div></div></div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span class="bc-parent">Tableau de bord</span><span class="bc-sep">/</span>
+      <span class="bc-bench">elo.bench</span><span class="bc-sep">/</span>
+      <span class="bc-current">Sources de données</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      Mode sombre
+    </button>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper-wrap">
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Thème</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Périmètre</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle active">3</div><span class="step-label active">Sources</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">4</div><span class="step-label">Diagnostic</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">5</div><span class="step-label">Recommandations</span></div></div>
+  </div><span class="step-label done">Thème</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Périmètre</span></div></div>
+    <div class="step-connector done"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle active">3</div><span class="step-label active">Sources</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">4</div><span class="step-label">Diagnostic</span></div></div>
+    <div class="step-connector"></div>
+    <div class="step-item"><div class="step-node"><div class="step-circle">5</div><span class="step-label">Recommandations</span></div></div>
+  </div>
+
+  <div class="scroll-zone">
+  <div class="bench-content">
+
+    <!-- Header -->
+    <div class="bench-header">
+      <div class="bench-title">Voici ce qu'elo·IA va <strong>croiser avec vos données</strong></div>
+      <div class="bench-subtitle">Pendant la préparation de votre diagnostic, découvrez les sources mobilisées — réseau, marché et études sectorielles.</div>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader-wrap">
+      <div class="loader-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg>
+      </div>
+      <div class="loader-body">
+        <div class="loader-label">elo · IA — Préparation en cours</div>
+        <div class="loader-step" id="loaderStep">Croisement de vos données avec le Réseau elogik <span>· Mode &amp; accessoires, IDF</span></div>
+        <div class="loader-bar-track"><div class="loader-bar-fill" id="loaderBar"></div></div>
+      </div>
+      <div class="loader-pct" id="loaderPct">0%</div>
+    </div>
+
+    <!-- 4 cards de réassurance -->
+    <div class="reassurance-grid">
+
+      <div class="r-card">
+        <div class="r-card-icon" style="background:var(--primary-tint);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="r-card-title">+500 e-commerçants connectés</div>
+        <div class="r-card-desc">34 marques same-warehouse, 142 marques sectorielles, la communauté elogik — près de 3 Md€ de GMV agrégés.</div>
+        <div class="r-card-tags"><span class="r-tag">Anonymisé</span><span class="r-tag">k-anonymity ≥ 5</span></div>
+      </div>
+
+      <div class="r-card">
+        <div class="r-card-icon" style="background:#EFF6FF;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="r-card-title">Données marché & transporteurs</div>
+        <div class="r-card-desc">Benchmarks et white papers des principaux acteurs logistiques européens, grilles de tarifs transporteurs actualisées.</div>
+        <div class="r-card-tags"><span class="r-tag">Colissimo</span><span class="r-tag">DHL</span><span class="r-tag">Chronopost</span><span class="r-tag">+16</span></div>
+      </div>
+
+      <div class="r-card">
+        <div class="r-card-icon" style="background:var(--violet-tint);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="r-card-title">Modèle RAG elogik propriétaire</div>
+        <div class="r-card-desc">Notre moteur croise vos factures, contrats et flux opérationnels avec la base réseau, et cite chaque chiffre avec sa source.</div>
+        <div class="r-card-tags"><span class="r-tag">RAG · 4.2B tokens</span><span class="r-tag">Sources citées</span></div>
+      </div>
+
+      <div class="r-card">
+        <div class="r-card-icon" style="background:var(--success-tint);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="r-card-title">Anonymat & méthodologie</div>
+        <div class="r-card-desc">Vos chiffres ne sortent jamais à moins de 5 marques comparables. Méthodologie publiée, hébergement UE.</div>
+        <div class="r-card-tags"><span class="r-tag">k-anonymity ≥ 5</span><span class="r-tag">RGPD</span></div>
+      </div>
+
+    </div>
+
+    <!-- IA Spotlight -->
+    <div class="ia-spotlight" style="position:relative;">
+      <div class="ia-spot-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="ia-spot-body">
+        <div class="ia-spot-eyebrow">
+          <span class="ia-spot-label">elo · IA</span>
+          <span class="ia-spot-badge">Suggestion personnalisée</span>
+        </div>
+        <div class="ia-spot-title">3 études récentes couvrent directement vos KPIs transport</div>
+        <div class="ia-spot-desc">
+          Basé sur votre activité (Coûts &amp; tarifs transport, Mode &amp; accessoires, IDF), elo·IA a identifié les sources les plus pertinentes pour votre diagnostic. <strong>Le Palmarès ColisConsult 2024</strong> est particulièrement recommandé — il benchmark 518 sites e-commerce sur 29 critères de livraison, dont votre catégorie Mode.
+        </div>
+      </div>
+      <button class="ia-spot-btn" id="saveIaBtn" onclick="saveToIA()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Enregistrer dans elo·IA
+      </button>
+      <!-- Toast confirmation -->
+      <div id="saveToast" style="position:absolute;bottom:-52px;right:0;background:var(--success);color:#fff;border-radius:10px;padding:9px 16px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:8px;white-space:nowrap;opacity:0;transform:translateY(6px);transition:all 0.25s;pointer-events:none;box-shadow:0 4px 16px rgba(42,149,84,0.3);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+        Sélection enregistrée dans elo·IA
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bench-footer">
+      <button class="bench-back-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour · Périmètre
+      </button>
+      <button class="bench-continue-btn" id="continueBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;animation:spin 1s linear infinite;" id="continueSpinner"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Préparation en cours…
+      </button>
+    </div>
+
+    <div class="bottom-row">
+
+      <!-- Fun fact rotatif -->
+      <div class="funfact-card">
+        <div class="funfact-eyebrow">
+          <div class="funfact-dot"></div>
+          <span class="funfact-label">Le saviez-vous ?</span>
+        </div>
+        <div class="funfact-quote" id="ffQuote"><strong>64 %</strong> des sites e-commerce offrent les retours</div>
+        <div class="funfact-body" id="ffBody">Parmi les 518 sites audités par ColisConsult en 2024, 333 proposent les retours gratuits — un standard qui devient difficile à ignorer en Mode & accessoires où ce taux grimpe à 88 %.</div>
+        <div class="funfact-source">
+          <div class="funfact-source-logo" id="ffLogo">CC</div>
+          <div class="funfact-source-name"><strong id="ffSourceName">Palmarès ColisConsult 2024</strong> · <span id="ffSourceDate">518 sites · 29 critères</span></div>
+          <div class="funfact-nav">
+            <div class="funfact-nav-btn" onclick="prevFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+            <div class="funfact-nav-btn" onclick="nextFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Études récentes -->
+      <div class="etudes-card">
+        <div class="etudes-header">
+          <div class="etudes-label"><div class="etudes-live-dot"></div>Dernières études intégrées au benchmark</div>
+          <div class="etudes-count">47 sources actives · consulter la base →</div>
+        </div>
+
+        <div class="etude-row">
+          <div class="etude-logo" style="color:#2563EB;background:#EFF6FF;border-color:#BFDBFE;">CC</div>
+          <div class="etude-body">
+            <div class="etude-top">
+              <div class="etude-name">Palmarès Meilleure livraison e-commerce 2024</div>
+              <span class="etude-new">Nouveau</span>
+            </div>
+            <div class="etude-source">ColisConsult · 3ème édition annuelle</div>
+            <div class="etude-meta">
+              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12 KPI</div>
+              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>518 sites</div>
+              <div class="etude-age">il y a 2 jours</div>
+              <div class="etude-link">Voir l'impact →</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="etude-row">
+          <div class="etude-logo" style="color:#0284C7;background:#F0F9FF;border-color:#BAE6FD;">F.</div>
+          <div class="etude-body">
+            <div class="etude-top">
+              <div class="etude-name">Chiffres Clés du e-commerce français</div>
+              <span class="etude-new">Nouveau</span>
+            </div>
+            <div class="etude-source">FEVAD · Édition annuelle 2024</div>
+            <div class="etude-meta">
+              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+28 KPI</div>
+              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>FR macro</div>
+              <div class="etude-age">il y a 5 jours</div>
+              <div class="etude-link">Voir l'impact →</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="etude-row">
+          <div class="etude-logo" style="color:#9333EA;background:#FDF4FF;border-color:#E9D5FF;">SP</div>
+          <div class="etude-body">
+            <div class="etude-top">
+              <div class="etude-name">Livre Blanc — Logistique urbaine & e-commerce</div>
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div>
+            </div>
+            <div class="etude-source">SprintProject × GS1 France</div>
+            <div class="etude-meta">
+              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+9 KPI</div>
+              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>last-mile</div>
+              <div class="etude-age">il y a 1 sem.</div>
+              <div class="etude-link">Voir l'impact →</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="etude-row">
+          <div class="etude-logo" style="color:#D97706;background:#FFFBEB;border-color:#FDE68A;">MT</div>
+          <div class="etude-body">
+            <div class="etude-top">
+              <div class="etude-name">Baromètre Transport & Livraison Mode</div>
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div>
+            </div>
+            <div class="etude-source">ModeTransport · Q3 2024</div>
+            <div class="etude-meta">
+              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+7 KPI</div>
+              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>Mode FR</div>
+              <div class="etude-age">il y a 2 sem.</div>
+              <div class="etude-link">Voir l'impact →</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Bottom row -->
+
+<style>
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ── DELIGHT ANIMATIONS ── */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
+}
+@keyframes loader-success-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(42,149,84,0.5); }
+  60%  { box-shadow: 0 0 0 14px rgba(42,149,84,0); }
+  100% { box-shadow: 0 0 0 0 rgba(42,149,84,0); }
+}
+@keyframes slide-up-in {
+  from { opacity:0; transform:translateY(14px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes check-draw {
+  from { stroke-dashoffset: 40; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes badge-pop {
+  0%   { transform:scale(0.5); opacity:0; }
+  60%  { transform:scale(1.15); }
+  100% { transform:scale(1); opacity:1; }
+}
+
+.loader-wrap.success {
+  border-color: var(--success);
+  background: linear-gradient(135deg, var(--surface) 70%, var(--success-tint));
+  transition: all 0.5s ease;
+  animation: loader-success-pulse 0.7s ease 0.1s;
+}
+.loader-icon.success {
+  background: var(--success-tint) !important;
+  animation: loader-success-pulse 0.8s ease !important;
+}
+.loader-icon.success svg {
+  animation: none !important;
+  stroke: var(--success) !important;
+}
+.success-check {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: check-draw 0.45s ease 0.15s forwards;
+}
+.ready-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--success);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  padding: 3px 9px;
+  border-radius: 100px;
+  margin-left: 8px;
+  animation: badge-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+  vertical-align: middle;
+}
+.confetti-piece {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  pointer-events: none;
+  animation: confetti-fall 0.9s ease forwards;
+}
+#continueBtn.ready {
+  animation: badge-pop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.5s both;
+  box-shadow: 0 4px 20px rgba(14,143,204,0.35);
+}
+</style>
+
+<script>
+/* ── SAVE TO IA ── */
+function saveToIA() {
+  var btn = document.getElementById('saveIaBtn');
+  var toast = document.getElementById('saveToast');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg> Enregistré';
+  btn.style.background = 'rgba(42,149,84,0.4)';
+  btn.style.borderColor = 'rgba(255,255,255,0.4)';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(6px)';
+  }, 3500);
+}
+
+/* ── THEME ── */
+function toggleTheme() {
+  var h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+/* ── LOADER ── */
+var loaderSteps = [
+  'Croisement de vos données avec le Réseau elogik <span>· Mode & accessoires, IDF</span>',
+  'Intégration des grilles tarifaires transporteurs <span>· Colissimo, DHL, Chronopost…</span>',
+  'Lecture du Palmarès ColisConsult 2024 <span>· 518 sites, catégorie Mode</span>',
+  'Calcul de votre position relative dans la cohorte <span>· 142 marques comparées</span>',
+  'Génération des axes de travail prioritaires <span>· Frais de port & mix livraison</span>',
+];
+var loaderIdx = 0;
+var loaderPct = 0;
+var loaderInterval;
+
+function startLoader() {
+  loaderInterval = setInterval(function() {
+    loaderPct = Math.min(loaderPct + (Math.random() * 3 + 0.8), 95);
+    document.getElementById('loaderPct').textContent = Math.round(loaderPct) + '%';
+
+    var stepIdx = Math.floor(loaderPct / 20);
+    if (stepIdx !== loaderIdx && stepIdx < loaderSteps.length) {
+      loaderIdx = stepIdx;
+      var el = document.getElementById('loaderStep');
+      el.style.opacity = '0';
+      setTimeout(function() {
+        el.innerHTML = loaderSteps[loaderIdx];
+        el.style.opacity = '1';
+        el.style.transition = 'opacity 0.4s';
+      }, 200);
+    }
+
+    if (loaderPct >= 95) {
+      clearInterval(loaderInterval);
+      setTimeout(completeLoader, 600);
+    }
+  }, 280);
+}
+
+function completeLoader() {
+  // Finalise la barre
+  document.getElementById('loaderPct').textContent = '100%';
+  document.getElementById('loaderBar').style.width = '100%';
+  document.getElementById('loaderBar').style.background = 'var(--success)';
+  document.getElementById('loaderBar').style.transition = 'all 0.4s ease';
+
+  // Message avec badge animé
+  document.getElementById('loaderStep').innerHTML =
+    'Diagnostic prêt — vos résultats sont disponibles' +
+    '<span class="ready-badge">✓ Prêt</span>';
+
+  // Loader wrap : passe en success
+  var wrap = document.querySelector('.loader-wrap');
+  wrap.classList.add('success');
+
+  // Icône : checkmark animé
+  var iconWrap = document.querySelector('.loader-icon');
+  iconWrap.classList.add('success');
+  iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" style="width:20px;height:20px;stroke:var(--success);">' +
+    '<polyline class="success-check" points="20 6 9 17 4 12"/></svg>';
+
+  // Confettis
+  spawnConfetti(wrap);
+
+  // CTA : devient cliquable avec animation pop
+  setTimeout(function() {
+    var btn = document.getElementById('continueBtn');
+    btn.disabled = false;
+    btn.classList.add('ready');
+    btn.innerHTML =
+      'Voir le diagnostic' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px;">' +
+      '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  }, 400);
+}
+
+function spawnConfetti(parent) {
+  var colors = ['#6C47E8','#0E8FCC','#2A9554','#C27B00','#D63050','#A78BFF'];
+  var rect = parent.getBoundingClientRect();
+  for (var i = 0; i < 18; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = [
+          'left:' + (Math.random() * 100) + '%',
+          'top:0',
+          'background:' + colors[Math.floor(Math.random() * colors.length)],
+          'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+          'width:' + (5 + Math.random() * 5) + 'px',
+          'height:' + (5 + Math.random() * 5) + 'px',
+          'animation-duration:' + (0.7 + Math.random() * 0.5) + 's',
+          'animation-delay:' + (Math.random() * 0.2) + 's',
+        ].join(';');
+        parent.style.position = 'relative';
+        parent.style.overflow = 'visible';
+        parent.appendChild(el);
+        setTimeout(function() { el.remove(); }, 1200);
+      }, i * 40);
+    })(i);
+  }
+}
+
+/* ── FUN FACTS ── */
+var facts = [
+  {
+    quote: '<strong>64 %</strong> des sites e-commerce offrent les retours',
+    body: "Parmi les 518 sites audités par ColisConsult en 2024, 333 proposent les retours gratuits — un standard qui devient difficile à ignorer en Mode & accessoires où ce taux grimpe à 88 %.",
+    logo: 'CC', name: 'Palmarès ColisConsult 2024', date: '518 sites · 29 critères'
+  },
+  {
+    quote: '<strong>83 %</strong> des sites Mode proposent la livraison en point relais',
+    body: "En catégorie Mode & accessoires, le point relais est quasi-universel. Pourtant seuls 23 % proposent la livraison express en relais — un levier de différenciation encore peu exploité.",
+    logo: 'CC', name: 'Palmarès ColisConsult 2024', date: 'Catégorie Mode, 155 sites'
+  },
+  {
+    quote: 'Seuil de gratuité domicile : <strong>−2 € vs 2022</strong>',
+    body: "Le seuil de livraison gratuite à domicile a baissé de 2 € en moyenne par rapport à 2022, alors que le seuil point relais, lui, a augmenté de +9 €. Deux dynamiques opposées qui reflètent la guerre des coûts last-mile.",
+    logo: 'CC', name: 'Palmarès ColisConsult 2024', date: 'Seuils livraison offerte'
+  },
+  {
+    quote: '<strong>91,7 %</strong> des sites indiquent leur transporteur',
+    body: "La transparence transporteur est devenue un standard : 91,7 % des 518 sites audités communiquent clairement le nom de leurs prestataires de livraison — un signal de confiance fort pour le consommateur.",
+    logo: 'CC', name: 'Palmarès ColisConsult 2024', date: 'Taux de pénétration'
+  },
+];
+var factIdx = 0;
+
+function renderFact() {
+  var f = facts[factIdx];
+  var wrap = document.querySelector('.funfact-card');
+  wrap.style.opacity = '0';
+  setTimeout(function() {
+    document.getElementById('ffQuote').innerHTML = f.quote;
+    document.getElementById('ffBody').textContent = f.body;
+    document.getElementById('ffLogo').textContent = f.logo;
+    document.getElementById('ffSourceName').textContent = f.name;
+    document.getElementById('ffSourceDate').textContent = f.date;
+    wrap.style.opacity = '1';
+    wrap.style.transition = 'opacity 0.3s';
+  }, 180);
+}
+
+function nextFact() { factIdx = (factIdx + 1) % facts.length; renderFact(); }
+function prevFact() { factIdx = (factIdx - 1 + facts.length) % facts.length; renderFact(); }
+
+// Auto-rotate toutes les 8s
+setInterval(nextFact, 8000);
+
+// Init
+startLoader();
+</script>
+</body>
+</html>
