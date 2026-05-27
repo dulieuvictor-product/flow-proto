@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elo · Compétences data & outils</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --bg: #070A0F; --surface: #0F1319; --s2: #161C26;
+  --border: rgba(255,255,255,0.055); --b2: rgba(255,255,255,0.10);
+  --text: #C8D3E0; --muted: #4A5568; --white: #FFFFFF;
+  --data: #22FF7A; --ia: #FFB020; --alerts: #A78BFF; --bench: #1ADCFF;
+}
+html { scroll-behavior:smooth; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); overflow-x:hidden; }
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); opacity:.5;
+}
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ELO LOGOTYPE */
+.elo-lt { display:inline-flex; align-items:center; }
+.elo-lt .p { font-weight:700; color:var(--white); letter-spacing:-.05em; font-family:var(--font); line-height:1; }
+.elo-lt .d { display:inline-block; border-radius:50%; flex-shrink:0; }
+.elo-lt .s { font-weight:200; letter-spacing:-.05em; font-style:italic; font-family:var(--font); line-height:1; }
+.lt-sm .p{font-size:13px} .lt-sm .d{width:3px;height:3px;margin:0 2px} .lt-sm .s{font-size:13px}
+.lt-xs .p{font-size:10px} .lt-xs .d{width:2.5px;height:2.5px;margin:0 1px} .lt-xs .s{font-size:10px}
+.d-data{background:var(--data);box-shadow:0 0 6px rgba(34,255,122,.4)}
+.d-ia{background:var(--ia);box-shadow:0 0 6px rgba(255,176,32,.4)}
+.d-alerts{background:var(--alerts);box-shadow:0 0 6px rgba(167,139,255,.4)}
+.d-bench{background:var(--bench);box-shadow:0 0 6px rgba(26,220,255,.4)}
+.c-data{color:var(--data)} .c-ia{color:var(--ia)} .c-alerts{color:var(--alerts)} .c-bench{color:var(--bench)}
+
+header {
+  padding:28px 52px; display:flex; align-items:center; justify-content:space-between;
+  position:relative; z-index:1; max-width:1100px; margin:0 auto;
+  border-bottom:1px solid var(--border);
+}
+.logo { display:flex; align-items:center; gap:10px; }
+.logo-mark { width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,#0E8FCC,#1ADCFF); display:flex; align-items:center; justify-content:center; }
+.logo-mark svg { width:13px; height:13px; }
+.logo-name { font-size:13px; font-weight:300; color:var(--white); }
+.logo-name strong { font-weight:600; }
+
+.page { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:52px 52px 72px; }
+
+/* HERO */
+.hero { margin-bottom:64px; }
+.hero-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--bench); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.hero-eyebrow::before { content:''; width:20px; height:1px; background:var(--bench); opacity:.4; }
+.hero-title { font-size:clamp(28px,4vw,46px); font-weight:200; letter-spacing:-.06em; color:var(--white); line-height:1.05; margin-bottom:12px; }
+.hero-title strong { font-weight:700; }
+.hero-sub { font-size:13.5px; color:var(--muted); line-height:1.75; max-width:580px; }
+
+/* ═══════════════════════════════════════════
+   PROGRESSION TRACK — the main visualization
+═══════════════════════════════════════════ */
+.track-wrap { position:relative; }
+
+/* horizontal spine */
+.track-spine {
+  position:absolute;
+  top:52px; left:52px; right:52px; height:2px;
+  background:linear-gradient(90deg, var(--data), var(--ia), var(--alerts), var(--bench));
+  border-radius:100px;
+  z-index:0;
+  opacity:.35;
+}
+
+/* 4 columns */
+.track-cols {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:12px; position:relative; z-index:1;
+}
+
+/* STEP CARD */
+.step {
+  display:flex; flex-direction:column;
+  animation:up .6s ease both;
+}
+.step:nth-child(1){animation-delay:.05s}
+.step:nth-child(2){animation-delay:.14s}
+.step:nth-child(3){animation-delay:.23s}
+.step:nth-child(4){animation-delay:.32s}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* node at top */
+.step-node-wrap { display:flex; justify-content:center; margin-bottom:16px; }
+.step-node {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid; position:relative;
+  background:var(--bg);
+}
+.s1 .step-node { border-color:rgba(34,255,122,.5);  box-shadow:0 0 20px rgba(34,255,122,.15); }
+.s2 .step-node { border-color:rgba(255,176,32,.5);  box-shadow:0 0 20px rgba(255,176,32,.15); }
+.s3 .step-node { border-color:rgba(167,139,255,.5); box-shadow:0 0 20px rgba(167,139,255,.15); }
+.s4 .step-node { border-color:rgba(26,220,255,.5);  box-shadow:0 0 20px rgba(26,220,255,.15); }
+.step-node svg { width:18px; height:18px; }
+.s1 .step-node svg{stroke:var(--data)}
+.s2 .step-node svg{stroke:var(--ia)}
+.s3 .step-node svg{stroke:var(--alerts)}
+.s4 .step-node svg{stroke:var(--bench)}
+
+/* connector chevron between nodes */
+.step-connector {
+  position:absolute; right:-26px; top:50%; transform:translateY(-50%);
+  font-size:11px; color:var(--muted); z-index:2;
+  display:flex; align-items:center;
+}
+
+/* MAIN CARD */
+.step-card {
+  border-radius:16px; border:1px solid var(--border);
+  background:var(--surface); overflow:hidden;
+  transition:border-color .2s, transform .2s;
+  display:flex; flex-direction:column; height:100%;
+}
+.step-card:hover { transform:translateY(-3px); }
+.card-inner {
+  display:flex; flex-direction:column; flex:1; padding:18px;
+}
+/* Fixed height — same for all 4 cards */
+.card-text-zone {
+  display:flex; flex-direction:column; justify-content:flex-start;
+  padding-bottom:12px;
+}
+.s1 .step-card:hover { border-color:rgba(34,255,122,.2); }
+.s2 .step-card:hover { border-color:rgba(255,176,32,.2); }
+.s3 .step-card:hover { border-color:rgba(167,139,255,.2); }
+.s4 .step-card:hover { border-color:rgba(26,220,255,.2); }
+
+/* top accent */
+.step-card::before {
+  content:''; display:block; height:3px;
+}
+.s1 .step-card::before { background:linear-gradient(90deg,var(--data),rgba(34,255,122,.2)); }
+.s2 .step-card::before { background:linear-gradient(90deg,rgba(34,255,122,.2),var(--ia),rgba(255,176,32,.2)); }
+.s3 .step-card::before { background:linear-gradient(90deg,rgba(34,255,122,.1),rgba(255,176,32,.1),var(--alerts),rgba(167,139,255,.2)); }
+.s4 .step-card::before { background:linear-gradient(90deg,rgba(34,255,122,.1),rgba(255,176,32,.1),rgba(167,139,255,.1),var(--bench)); }
+
+
+/* axis badge */
+.axis-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--mono); font-size:9px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:4px 10px; border-radius:100px; border:1px solid;
+  margin-bottom:14px;
+}
+.s1 .axis-badge { color:var(--data);   border-color:rgba(34,255,122,.3);  background:rgba(34,255,122,.07); }
+.s2 .axis-badge { color:var(--ia);     border-color:rgba(255,176,32,.3);  background:rgba(255,176,32,.07); }
+.s3 .axis-badge { color:var(--alerts); border-color:rgba(167,139,255,.3); background:rgba(167,139,255,.07); }
+.s4 .axis-badge { color:var(--bench);  border-color:rgba(26,220,255,.3);  background:rgba(26,220,255,.07); }
+
+/* enjeu résolu */
+.enjeu-before {
+  font-size:11.5px; color:var(--text); font-style:italic;
+  padding:10px 12px 10px 20px; border-radius:8px;
+  background:rgba(255,255,255,.025); border:1px solid var(--border);
+  margin-bottom:0; line-height:1.65;
+  position:relative;
+}
+.enjeu-before::before {
+  content:'✗'; position:absolute; left:8px; top:8px;
+  font-size:10px; color:rgba(255,92,92,.5); font-style:normal;
+}
+
+.enjeu-arrow {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--muted); margin-bottom:10px; padding:0 4px;
+  margin-top:14px;
+}
+.enjeu-arrow svg { width:12px; height:12px; flex-shrink:0; }
+.s1 .enjeu-arrow svg{stroke:var(--data)}
+.s2 .enjeu-arrow svg{stroke:var(--ia)}
+.s3 .enjeu-arrow svg{stroke:var(--alerts)}
+.s4 .enjeu-arrow svg{stroke:var(--bench)}
+
+.enjeu-after {
+  font-size:11.5px; color:var(--text); line-height:1.6;
+  padding:8px 12px; border-radius:8px; border:1px solid;
+  margin-bottom:16px;
+}
+.s1 .enjeu-after { border-color:rgba(34,255,122,.15);  background:rgba(34,255,122,.04); }
+.s2 .enjeu-after { border-color:rgba(255,176,32,.15);  background:rgba(255,176,32,.04); }
+.s3 .enjeu-after { border-color:rgba(167,139,255,.15); background:rgba(167,139,255,.04); }
+.s4 .enjeu-after { border-color:rgba(26,220,255,.15);  background:rgba(26,220,255,.04); }
+.enjeu-after strong { color:var(--white); }
+
+/* CUMULATIVE STACK — capsules of what's active at this level */
+.stack { display:flex; flex-direction:column; gap:4px; padding-top:12px; border-top:1px solid var(--border); }
+.stack-label { font-family:var(--mono); font-size:8px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.stack-item {
+  display:flex; align-items:center; gap:6px;
+  padding:5px 8px; border-radius:6px; border:1px solid;
+  font-size:10px;
+}
+.stack-item.si-data   { border-color:rgba(34,255,122,.15);  background:rgba(34,255,122,.04);  color:var(--data); }
+.stack-item.si-ia     { border-color:rgba(255,176,32,.15);  background:rgba(255,176,32,.04);  color:var(--ia); }
+.stack-item.si-alerts { border-color:rgba(167,139,255,.15); background:rgba(167,139,255,.04); color:var(--alerts); }
+.stack-item.si-bench  { border-color:rgba(26,220,255,.15);  background:rgba(26,220,255,.04);  color:var(--bench); }
+/* inherited = dimmed */
+.stack-item.inherited { opacity:.45; }
+.stack-item.si-new { opacity:1; }
+.stack-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.si-data   .stack-dot { background:var(--data); }
+.si-ia     .stack-dot { background:var(--ia); }
+.si-alerts .stack-dot { background:var(--alerts); }
+.si-bench  .stack-dot { background:var(--bench); }
+.stack-new {
+  font-family:var(--mono); font-size:7px; letter-spacing:.08em; text-transform:uppercase;
+  padding:1px 5px; border-radius:3px; border:1px solid; margin-left:auto; flex-shrink:0;
+}
+.si-data   .stack-new { border-color:rgba(34,255,122,.3); }
+.si-ia     .stack-new { border-color:rgba(255,176,32,.3); }
+.si-alerts .stack-new { border-color:rgba(167,139,255,.3); }
+.si-bench  .stack-new { border-color:rgba(26,220,255,.3); }
+
+/* OUTCOME metric */
+.outcome {
+  display:flex; align-items:center; gap:8px;
+  margin-top:12px; padding:10px 12px;
+  background:var(--s2); border-radius:8px; border:1px solid var(--b2);
+  flex-shrink:0;
+}
+.outcome-num {
+  font-family:var(--mono); font-size:18px; font-weight:400; letter-spacing:-.03em; line-height:1; flex-shrink:0;
+}
+.s1 .outcome-num{color:var(--data)}
+.s2 .outcome-num{color:var(--ia)}
+.s3 .outcome-num{color:var(--alerts)}
+.s4 .outcome-num{color:var(--bench)}
+.outcome-lbl { font-size:10px; color:var(--muted); line-height:1.5; }
+
+/* ═══════════════════
+   PROGRESSION SUMMARY
+═══════════════════ */
+.summary {
+  margin-top:48px; padding:28px 32px;
+  background:var(--surface); border:1px solid var(--b2); border-radius:18px;
+  display:grid; grid-template-columns:1fr 3px 1fr 3px 1fr 3px 1fr;
+  align-items:center; gap:0;
+  position:relative; overflow:hidden;
+}
+.summary::before {
+  content:''; position:absolute; inset:0; opacity:.04;
+  background:linear-gradient(90deg,rgba(34,255,122,.3),rgba(255,176,32,.3),rgba(167,139,255,.3),rgba(26,220,255,.3));
+}
+.sum-item { padding:0 20px; position:relative; z-index:1; text-align:center; }
+.sum-item:first-child { padding-left:0; }
+.sum-item:last-child  { padding-right:0; }
+.sum-label { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.sum-value { font-size:13px; font-weight:600; color:var(--white); line-height:1.3; }
+.sum-sub   { font-size:10px; color:var(--muted); margin-top:3px; }
+.sum-div   { width:1px; height:40px; background:var(--border); }
+
+/* footer */
+footer {
+  border-top:1px solid var(--border); padding:24px 52px;
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1100px; margin:0 auto; position:relative; z-index:1;
+}
+.ft-logo { display:flex; align-items:center; gap:8px; }
+.ft-mark { width:20px; height:20px; border-radius:5px; background:linear-gradient(135deg,#0E8FCC,#1ADCFF); display:flex; align-items:center; justify-content:center; }
+.ft-mark svg { width:9px; height:9px; }
+.ft-name { font-size:11px; font-weight:300; color:var(--muted); }
+.ft-name strong { font-weight:600; color:var(--white); }
+.ft-meta { font-family:var(--mono); font-size:10px; color:var(--muted); }
+
+
+.lt-md .p{font-size:22px} .lt-md .d{width:5px;height:5px;margin:0 2px} .lt-md .s{font-size:22px}
+.lt-xl .p{font-size:40px} .lt-xl .d{width:9px;height:9px;margin:0 3px} .lt-xl .s{font-size:40px}
+.lt-lg .p{font-size:28px} .lt-lg .d{width:7px;height:7px;margin:0 3px} .lt-lg .s{font-size:28px}
+
+/* ═══ OUTILS STYLES ═══ */
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --bg: #070A0F; --surface: #0F1319; --s2: #161C26;
+  --border: rgba(255,255,255,0.055); --b2: rgba(255,255,255,0.10);
+  --text: #C8D3E0; --muted: #4A5568; --white: #FFFFFF;
+  --data: #22FF7A; --ia: #FFB020; --alerts: #A78BFF; --bench: #1ADCFF;
+}
+html { scroll-behavior:smooth; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); overflow-x:hidden; }
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); opacity:.5;
+}
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+.elo-lt { display:inline-flex; align-items:center; }
+.elo-lt .p { font-weight:700; color:var(--white); letter-spacing:-.05em; font-family:var(--font); line-height:1; }
+.elo-lt .d { display:inline-block; border-radius:50%; flex-shrink:0; }
+.elo-lt .s { font-weight:200; letter-spacing:-.05em; font-style:italic; font-family:var(--font); line-height:1; }
+.lt-xl .p{font-size:40px} .lt-xl .d{width:9px;height:9px;margin:0 3px} .lt-xl .s{font-size:40px}
+.lt-lg .p{font-size:28px} .lt-lg .d{width:7px;height:7px;margin:0 3px} .lt-lg .s{font-size:28px}
+.lt-sm .p{font-size:13px} .lt-sm .d{width:3px;height:3px;margin:0 2px} .lt-sm .s{font-size:13px}
+.d-data{background:var(--data);box-shadow:0 0 8px rgba(34,255,122,.4)}
+.d-ia{background:var(--ia);box-shadow:0 0 8px rgba(255,176,32,.4)}
+.d-alerts{background:var(--alerts);box-shadow:0 0 8px rgba(167,139,255,.4)}
+.d-bench{background:var(--bench);box-shadow:0 0 8px rgba(26,220,255,.4)}
+.c-data{color:var(--data)} .c-ia{color:var(--ia)} .c-alerts{color:var(--alerts)} .c-bench{color:var(--bench)}
+
+header {
+  padding:28px 52px; display:flex; align-items:center; justify-content:space-between;
+  position:relative; z-index:1; max-width:1100px; margin:0 auto;
+  border-bottom:1px solid var(--border);
+}
+.logo { display:flex; align-items:center; gap:10px; }
+.logo-mark { width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,#0E8FCC,#1ADCFF); display:flex; align-items:center; justify-content:center; }
+.logo-mark svg { width:13px; height:13px; }
+.logo-name { font-size:13px; font-weight:300; color:var(--white); }
+.logo-name strong { font-weight:600; }
+
+.page { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:52px 52px 72px; }
+
+/* HERO */
+.hero { margin-bottom:56px; }
+.hero-eyebrow { font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--bench); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.hero-eyebrow::before { content:''; width:20px; height:1px; background:var(--bench); opacity:.4; }
+.hero-title { font-size:clamp(28px,4vw,46px); font-weight:200; letter-spacing:-.06em; color:var(--white); line-height:1.05; margin-bottom:12px; }
+.hero-title strong { font-weight:700; }
+.hero-sub { font-size:13.5px; color:var(--muted); line-height:1.75; max-width:580px; }
+
+/* ═══════════════════════
+   TOOL CARDS — 4 stacked
+═══════════════════════ */
+.tools { display:flex; flex-direction:column; gap:14px; }
+
+.tool-card {
+  border-radius:20px; border:1px solid var(--border);
+  background:var(--surface); overflow:hidden;
+  display:grid; grid-template-columns:320px 1fr 280px;
+  transition:border-color .2s;
+  animation:up .55s ease both;
+}
+.tool-card:nth-child(1){animation-delay:.04s}
+.tool-card:nth-child(2){animation-delay:.12s}
+.tool-card:nth-child(3){animation-delay:.20s}
+.tool-card:nth-child(4){animation-delay:.28s}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.tc-data:hover   { border-color:rgba(34,255,122,.2); }
+.tc-ia:hover     { border-color:rgba(255,176,32,.2); }
+.tc-alerts:hover { border-color:rgba(167,139,255,.2); }
+.tc-bench:hover  { border-color:rgba(26,220,255,.2); }
+
+/* LEFT — identity */
+.tc-left {
+  padding:28px 28px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  border-right:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+/* bg glow */
+.tc-left::before {
+  content:''; position:absolute; top:-60px; left:-40px;
+  width:200px; height:200px; border-radius:50%; filter:blur(60px); opacity:.12;
+}
+.tc-data   .tc-left::before{background:var(--data)}
+.tc-ia     .tc-left::before{background:var(--ia)}
+.tc-alerts .tc-left::before{background:var(--alerts)}
+.tc-bench  .tc-left::before{background:var(--bench)}
+
+/* left accent bar */
+.tc-left::after {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+}
+.tc-data   .tc-left::after{background:var(--data)}
+.tc-ia     .tc-left::after{background:var(--ia)}
+.tc-alerts .tc-left::after{background:var(--alerts)}
+.tc-bench  .tc-left::after{background:var(--bench)}
+
+.tc-top { position:relative; z-index:1; display:flex; flex-direction:column; }
+.tc-offer-label { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; }
+.tc-axis {
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:var(--mono); font-size:9px; letter-spacing:.12em; text-transform:uppercase;
+  padding:3px 9px; border-radius:100px; border:1px solid; margin-bottom:14px;
+}
+.tc-data   .tc-axis{color:var(--data);border-color:rgba(34,255,122,.3);background:rgba(34,255,122,.06)}
+.tc-ia     .tc-axis{color:var(--ia);border-color:rgba(255,176,32,.3);background:rgba(255,176,32,.06)}
+.tc-alerts .tc-axis{color:var(--alerts);border-color:rgba(167,139,255,.3);background:rgba(167,139,255,.06)}
+.tc-bench  .tc-axis{color:var(--bench);border-color:rgba(26,220,255,.3);background:rgba(26,220,255,.06)}
+
+.tc-tagline { font-size:11.5px; color:var(--muted); line-height:1.6; position:relative; z-index:1; }
+
+.tc-bottom { position:relative; z-index:1; }
+.tc-price { font-family:var(--mono); font-size:28px; font-weight:400; letter-spacing:-.04em; color:var(--white); line-height:1; }
+.tc-price sub { font-size:11px; color:var(--muted); }
+.tc-cta {
+  display:inline-block; margin-top:12px;
+  font-size:11px; font-weight:500; font-family:var(--font); cursor:pointer;
+  padding:8px 18px; border-radius:8px; border:1px solid;
+  transition:filter .15s;
+}
+.tc-cta:hover { filter:brightness(1.1); }
+.tc-data   .tc-cta{color:var(--data);border-color:rgba(34,255,122,.25);background:rgba(34,255,122,.07)}
+.tc-ia     .tc-cta{color:var(--ia);border-color:rgba(255,176,32,.25);background:rgba(255,176,32,.07)}
+.tc-alerts .tc-cta{color:var(--alerts);border-color:rgba(167,139,255,.25);background:rgba(167,139,255,.07)}
+.tc-bench  .tc-cta{color:var(--bench);border-color:rgba(26,220,255,.25);background:rgba(26,220,255,.07)}
+
+/* MIDDLE — features */
+.tc-mid {
+  padding:24px 28px;
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column; gap:0;
+}
+.tc-feats-label { font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:14px; }
+.tc-feats { display:flex; flex-direction:column; gap:10px; flex:1; }
+.tc-feat { display:flex; align-items:flex-start; gap:10px; }
+.tc-feat-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.tc-data   .tc-feat-dot{background:var(--data)}
+.tc-ia     .tc-feat-dot{background:var(--ia)}
+.tc-alerts .tc-feat-dot{background:var(--alerts)}
+.tc-bench  .tc-feat-dot{background:var(--bench)}
+.tc-feat-text { font-size:12px; color:var(--text); line-height:1.55; }
+.tc-feat-text strong { color:var(--white); font-weight:600; }
+
+/* INHERITED badge for features included from previous */
+.tc-inherited-row {
+  margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
+  display:flex; align-items:center; gap:6px;
+  font-size:10px; color:var(--muted); font-family:var(--mono); letter-spacing:.04em;
+}
+.tc-inherited-dot { width:4px; height:4px; border-radius:50%; }
+
+/* RIGHT — screenshot */
+.tc-right { position:relative; overflow:hidden; min-height:220px; }
+.tc-screen { width:100%; height:100%; object-fit:cover; object-position:top left; display:block; opacity:.9; transition:opacity .25s; }
+.tool-card:hover .tc-screen { opacity:1; }
+.tc-screen-fade {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--surface) 0%, transparent 25%, transparent 75%, var(--surface) 100%);
+}
+
+/* footer */
+footer {
+  border-top:1px solid var(--border); padding:24px 52px;
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:1100px; margin:0 auto; position:relative; z-index:1;
+}
+.ft-logo { display:flex; align-items:center; gap:8px; }
+.ft-mark { width:20px; height:20px; border-radius:5px; background:linear-gradient(135deg,#0E8FCC,#1ADCFF); display:flex; align-items:center; justify-content:center; }
+.ft-mark svg { width:9px; height:9px; }
+.ft-name { font-size:11px; font-weight:300; color:var(--muted); }
+.ft-name strong { font-weight:600; color:var(--white); }
+.ft-meta { font-family:var(--mono); font-size:10px; color:var(--muted); }
+
+
+/* ── BRIDGE ── */
+.bridge-section {
+  padding:0 52px;
+  position:relative; z-index:1;
+  max-width:1100px; margin:0 auto;
+}
+.bridge-inner {
+  background:var(--surface); border:1px solid var(--b2); border-radius:18px;
+  padding:28px 32px; position:relative; overflow:hidden;
+}
+.bridge-inner::before {
+  content:''; position:absolute; inset:0; opacity:.03;
+  background:linear-gradient(90deg,rgba(34,255,122,1),rgba(255,176,32,1),rgba(167,139,255,1),rgba(26,220,255,1));
+}
+.bridge-label {
+  font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.15em;
+  text-transform:uppercase; margin-bottom:20px; position:relative; z-index:1;
+}
+.bridge-modules {
+  display:flex; align-items:center; gap:0;
+  position:relative; z-index:1; margin-bottom:16px; flex-wrap:wrap; gap:4px;
+}
+.bridge-module {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px; border-radius:12px; border:1px solid;
+  flex:1; min-width:180px;
+}
+.bm-data   { border-color:rgba(34,255,122,.2);  background:rgba(34,255,122,.04); }
+.bm-ia     { border-color:rgba(255,176,32,.2);  background:rgba(255,176,32,.04); }
+.bm-alerts { border-color:rgba(167,139,255,.2); background:rgba(167,139,255,.04); }
+.bm-bench  { border-color:rgba(26,220,255,.2);  background:rgba(26,220,255,.04); }
+.bridge-arrow { flex-shrink:0; }
+.bridge-arrow svg { width:14px; height:14px; }
+.bm-data   .bridge-arrow svg { stroke:var(--data); }
+.bm-ia     .bridge-arrow svg { stroke:var(--ia); }
+.bm-alerts .bridge-arrow svg { stroke:var(--alerts); }
+.bm-bench  .bridge-arrow svg { stroke:var(--bench); }
+.bridge-feat { font-size:10.5px; color:var(--muted); line-height:1.4; }
+.bridge-sep {
+  font-size:18px; color:var(--muted); padding:0 8px; flex-shrink:0;
+}
+.bridge-sub { font-size:11.5px; color:var(--muted); line-height:1.65; position:relative; z-index:1; }
+
+/* tools section header */
+.tools-section-head { padding:40px 52px 24px; max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+.tools-title { font-size:clamp(22px,3vw,34px); font-weight:200; letter-spacing:-.05em; color:var(--white); margin-bottom:8px; }
+.tools-title strong { font-weight:700; }
+.tools-sub { font-size:13px; color:var(--muted); line-height:1.7; }
+
+/* tools wrapper */
+.tools-wrap { padding:0 52px 72px; max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+
+
+/* ── SKILL CURVE ── */
+.skill-curve-wrap {
+  flex-shrink:0;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+}
+.skill-curve-label {
+  font-family:var(--mono); font-size:8px; color:var(--muted);
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px;
+}
+.skill-curve-svg { width:100%; }
+
+
+/* ═══ PRICING TABLE STYLES ═══ */
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --font:'Plus Jakarta Sans',sans-serif; --mono:'DM Mono',monospace;
+  --bg:#070A0F; --surface:#0F1319; --s2:#161C26; --s3:#1A2130;
+  --border:rgba(255,255,255,.055); --b2:rgba(255,255,255,.10);
+  --text:#C8D3E0; --muted:#4A5568; --white:#FFFFFF;
+  --c1:#22FF7A; --c2:#FFB020; --c3:#A78BFF; --c4:#1ADCFF;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.5}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:60px 60px}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 52px}
+
+/* ── ELO LOGOTYPE ── */
+.elo-lt{display:inline-flex;align-items:center}
+.elo-lt .p{font-weight:700;color:var(--white);letter-spacing:-.05em;font-family:var(--font);line-height:1}
+.elo-lt .d{display:inline-block;border-radius:50%;flex-shrink:0}
+.elo-lt .s{font-weight:200;letter-spacing:-.05em;font-style:italic;font-family:var(--font);line-height:1}
+.lt-xl .p{font-size:38px}.lt-xl .d{width:8px;height:8px;margin:0 3px}.lt-xl .s{font-size:38px}
+.lt-lg .p{font-size:26px}.lt-lg .d{width:6px;height:6px;margin:0 3px}.lt-lg .s{font-size:26px}
+.lt-sm .p{font-size:13px}.lt-sm .d{width:3px;height:3px;margin:0 2px}.lt-sm .s{font-size:13px}
+.lt-xs .p{font-size:10px}.lt-xs .d{width:2.5px;height:2.5px;margin:0 1px}.lt-xs .s{font-size:10px}
+.d-c1{background:var(--c1);box-shadow:0 0 8px rgba(34,255,122,.4)}
+.d-c2{background:var(--c2);box-shadow:0 0 8px rgba(255,176,32,.4)}
+.d-c3{background:var(--c3);box-shadow:0 0 8px rgba(167,139,255,.4)}
+.d-c4{background:var(--c4);box-shadow:0 0 8px rgba(26,220,255,.4)}
+.s-c1{color:var(--c1)}.s-c2{color:var(--c2)}.s-c3{color:var(--c3)}.s-c4{color:var(--c4)}
+
+/* ── HEADER ── */
+header{padding:28px 52px;display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:1;max-width:1200px;margin:0 auto;border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#0E8FCC,#1ADCFF);display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:13px;height:13px}
+.logo-name{font-size:13px;font-weight:300;color:var(--white)}
+.logo-name strong{font-weight:600}
+
+/* ── HERO ── */
+.hero{padding:64px 0 52px}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--c4);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:22px;height:1px;background:var(--c4);opacity:.4}
+.hero-title{font-size:clamp(28px,4vw,50px);font-weight:200;letter-spacing:-.06em;color:var(--white);line-height:1.04;margin-bottom:16px}
+.hero-title strong{font-weight:700}
+.hero-title em{font-style:normal;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.8;max-width:560px;margin-bottom:28px}
+.hero-tagline{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:100px;border:1px solid var(--b2);background:var(--surface);font-size:12px;font-weight:500;color:var(--white)}
+.hero-tagline-dot{width:7px;height:7px;border-radius:50%;background:var(--c4);box-shadow:0 0 8px rgba(26,220,255,.5);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+
+/* ══════════════════════════════════════════
+   COMPARISON TABLE
+══════════════════════════════════════════ */
+.table-section{margin-bottom:60px}
+.tbl-wrap{border:1px solid var(--b2);border-radius:20px;overflow:hidden;background:var(--surface)}
+
+/* header row */
+.tbl-head{display:grid;grid-template-columns:220px repeat(4,1fr);background:var(--s2);border-bottom:1px solid var(--b2)}
+.th-verbatim {
+  font-size:10px; color:var(--muted); font-style:italic; line-height:1.55;
+  margin-top:8px; padding:8px 10px;
+  border-left:2px solid rgba(34,255,122,.3);
+  background:rgba(34,255,122,.03); border-radius:0 6px 6px 0;
+  text-align:left;
+}
+;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
+.th:first-child{align-items:flex-start;border-left:none}
+.th::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.th1::after{background:var(--c1)}.th2::after{background:var(--c2)}
+.th3::after{background:var(--c3)}.th4::after{background:var(--c4)}
+.th4{background:rgba(26,220,255,.03)}
+.th-sup{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.th-price{font-family:var(--mono);font-size:20px;font-weight:400;letter-spacing:-.03em;color:var(--white)}
+.th-price sub{font-size:9px;color:var(--muted)}
+.th-best{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:100px;background:rgba(26,220,255,.1);border:1px solid rgba(26,220,255,.25);color:var(--c4)}
+
+/* group header */
+.tbl-grp{display:grid;grid-template-columns:220px repeat(4,1fr);background:rgba(255,255,255,.015);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.tbl-grp-cell{padding:8px 16px;grid-column:span 5;display:flex;align-items:center;gap:8px}
+.grp-ico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.grp-ico svg{width:10px;height:10px}
+.grp-title{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.grp-sub{font-size:9.5px;color:var(--muted);margin-left:4px}
+
+/* feature row */
+.tbl-row{display:grid;grid-template-columns:220px repeat(4,1fr);border-top:1px solid var(--border);transition:background .12s}
+.tbl-row:hover{background:rgba(255,255,255,.01)}
+.tbl-lbl{padding:12px 16px;display:flex;flex-direction:column;gap:2px}
+.lbl-main{font-size:11.5px;color:var(--text)}
+.lbl-sub{font-size:9.5px;color:var(--muted);font-family:var(--mono)}
+.tbl-val{padding:12px 16px;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border)}
+.col4{background:rgba(26,220,255,.018)}
+
+/* check cells */
+.yes{width:22px;height:22px;border-radius:50%;background:rgba(34,255,122,.09);border:1px solid rgba(34,255,122,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.yes svg{width:10px;height:10px;stroke:#22FF7A;stroke-width:2.5;fill:none;stroke-linecap:round}
+.no{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.no svg{width:9px;height:9px;stroke:rgba(255,255,255,.18);stroke-width:2;fill:none;stroke-linecap:round}
+.pill{font-family:var(--mono);font-size:8.5px;font-weight:500;padding:3px 8px;border-radius:5px;border:1px solid;text-align:center;line-height:1.4}
+.p-c1{color:var(--c1);border-color:rgba(34,255,122,.25);background:rgba(34,255,122,.07)}
+.p-c2{color:var(--c2);border-color:rgba(255,176,32,.25);background:rgba(255,176,32,.07)}
+.p-c3{color:var(--c3);border-color:rgba(167,139,255,.25);background:rgba(167,139,255,.07)}
+.p-c4{color:var(--c4);border-color:rgba(26,220,255,.25);background:rgba(26,220,255,.07)}
+
+/* accompagnement group — distinct bg */
+.tbl-grp.grp-human{background:rgba(255,255,255,.025)}
+.tbl-row.row-human:hover{background:rgba(255,255,255,.015)}
+
+/* tbl footer */
+.tbl-foot{display:grid;grid-template-columns:220px repeat(4,1fr);background:var(--s2);border-top:1px solid var(--b2)}
+.tf{padding:14px 16px;border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:5px}
+.tf:first-child{align-items:flex-start;border-left:none;justify-content:center}
+.tf-cta{width:100%;font-size:11px;font-weight:500;font-family:var(--font);padding:8px 0;border-radius:8px;border:1px solid;cursor:pointer;transition:filter .15s}
+.tf-cta:hover{filter:brightness(1.1)}
+.cta1{color:var(--c1);border-color:rgba(34,255,122,.22);background:rgba(34,255,122,.08)}
+.cta2{color:var(--c2);border-color:rgba(255,176,32,.22);background:rgba(255,176,32,.08)}
+.cta3{color:var(--c3);border-color:rgba(167,139,255,.22);background:rgba(167,139,255,.08)}
+.cta4{color:var(--c4);border-color:rgba(26,220,255,.22);background:rgba(26,220,255,.08)}
+
+/* ══════════════════════════════════════════
+   DETAIL CARDS — hover zoom + fake browser
+══════════════════════════════════════════ */
+.cards-section{margin-bottom:80px}
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+.dcard{
+  border-radius:18px;border:1px solid var(--border);
+  background:var(--surface);overflow:hidden;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), border-color .25s, box-shadow .3s;
+  cursor:default;animation:up .55s ease both;
+}
+.dcard:nth-child(1){animation-delay:.04s}.dcard:nth-child(2){animation-delay:.11s}
+.dcard:nth-child(3){animation-delay:.18s}.dcard:nth-child(4){animation-delay:.25s}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.dc1:hover{border-color:rgba(34,255,122,.3);  box-shadow:0 20px 60px rgba(34,255,122,.07);  transform:translateY(-6px) scale(1.02)}
+.dc2:hover{border-color:rgba(255,176,32,.3);  box-shadow:0 20px 60px rgba(255,176,32,.07);  transform:translateY(-6px) scale(1.02)}
+.dc3:hover{border-color:rgba(167,139,255,.3); box-shadow:0 20px 60px rgba(167,139,255,.07); transform:translateY(-6px) scale(1.02)}
+.dc4:hover{border-color:rgba(26,220,255,.3);  box-shadow:0 20px 60px rgba(26,220,255,.07);  transform:translateY(-6px) scale(1.02)}
+
+/* FAKE BROWSER */
+.fake-browser{border-radius:10px;overflow:hidden;border:1px solid var(--b2);margin:14px 14px 0;position:relative}
+.fb-chrome{background:var(--s3);padding:7px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.fb-dots{display:flex;gap:4px}
+.fb-dots span{width:7px;height:7px;border-radius:50%}
+.fb-dots span:nth-child(1){background:#FF5F57}
+.fb-dots span:nth-child(2){background:#FFBD2E}
+.fb-dots span:nth-child(3){background:#28C840}
+.fb-url{flex:1;background:var(--s2);border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.04em}
+.fb-img{width:100%;display:block;height:160px;object-fit:cover;object-position:top left}
+
+/* card body */
+.dc-body{padding:16px 16px 18px}
+.dc-offer-label{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.dc-axis{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:100px;border:1px solid;margin-bottom:10px}
+.dc1 .dc-axis{color:var(--c1);border-color:rgba(34,255,122,.3);background:rgba(34,255,122,.06)}
+.dc2 .dc-axis{color:var(--c2);border-color:rgba(255,176,32,.3);background:rgba(255,176,32,.06)}
+.dc3 .dc-axis{color:var(--c3);border-color:rgba(167,139,255,.3);background:rgba(167,139,255,.06)}
+.dc4 .dc-axis{color:var(--c4);border-color:rgba(26,220,255,.3);background:rgba(26,220,255,.06)}
+
+.dc-feats{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.dc-feat{display:flex;align-items:flex-start;gap:7px;font-size:10.5px;color:var(--text);line-height:1.5}
+.dc-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dc1 .dc-dot{background:var(--c1)} .dc2 .dc-dot{background:var(--c2)}
+.dc3 .dc-dot{background:var(--c3)} .dc4 .dc-dot{background:var(--c4)}
+
+/* human section in card */
+.dc-human{padding-top:12px;border-top:1px solid var(--border);margin-bottom:14px}
+.dc-human-label{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.dc-human-label svg{width:10px;height:10px;stroke:var(--muted)}
+.dc-human-item{display:flex;align-items:flex-start;gap:7px;font-size:10.5px;color:var(--text);line-height:1.5;margin-bottom:5px}
+.dc-human-item:last-child{margin-bottom:0}
+.dc-avatar{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;border:1px solid}
+.dc1 .dc-avatar{background:rgba(34,255,122,.1);border-color:rgba(34,255,122,.2);color:var(--c1)}
+.dc2 .dc-avatar{background:rgba(255,176,32,.1);border-color:rgba(255,176,32,.2);color:var(--c2)}
+.dc3 .dc-avatar{background:rgba(167,139,255,.1);border-color:rgba(167,139,255,.2);color:var(--c3)}
+.dc4 .dc-avatar{background:rgba(26,220,255,.1);border-color:rgba(26,220,255,.2);color:var(--c4)}
+
+.dc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)}
+.dc-price{font-family:var(--mono);font-size:16px;font-weight:400;letter-spacing:-.02em;color:var(--white)}
+.dc-price sub{font-size:9px;color:var(--muted)}
+.dc-cta-btn{font-size:10px;font-weight:500;font-family:var(--font);padding:6px 14px;border-radius:7px;border:1px solid;cursor:pointer;transition:filter .15s}
+.dc-cta-btn:hover{filter:brightness(1.1)}
+.dc1 .dc-cta-btn{color:var(--c1);border-color:rgba(34,255,122,.22);background:rgba(34,255,122,.07)}
+.dc2 .dc-cta-btn{color:var(--c2);border-color:rgba(255,176,32,.22);background:rgba(255,176,32,.07)}
+.dc3 .dc-cta-btn{color:var(--c3);border-color:rgba(167,139,255,.22);background:rgba(167,139,255,.07)}
+.dc4 .dc-cta-btn{color:var(--c4);border-color:rgba(26,220,255,.22);background:rgba(26,220,255,.07)}
+
+/* hover tooltip */
+.hover-hint{text-align:center;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.08em;margin-bottom:16px}
+
+/* footer */
+footer{border-top:1px solid var(--border);padding:24px 52px;display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.ft-logo{display:flex;align-items:center;gap:8px}
+.ft-mark{width:20px;height:20px;border-radius:5px;background:linear-gradient(135deg,#0E8FCC,#1ADCFF);display:flex;align-items:center;justify-content:center}
+.ft-mark svg{width:9px;height:9px}
+.ft-name{font-size:11px;font-weight:300;color:var(--muted)}
+.ft-name strong{font-weight:600;color:var(--white)}
+.ft-meta{font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="logo-name"><strong>eLogik</strong> Fine Logistic</div>
+  </div>
+  <nav style="display:flex;gap:6px">
+    <a href="#competences" style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;border:1px solid var(--b2);color:var(--muted);text-decoration:none">Compétences</a>
+    <a href="#outils"      style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;border:1px solid var(--b2);color:var(--muted);text-decoration:none">Outils & Pricing</a>
+  </nav>
+</header>
+
+<!-- SECTION 1 — COMPÉTENCES -->
+<div id="competences">
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">elo · flow — Montée en compétence progressive</div>
+    <h1 class="hero-title">
+      <strong>Finis les Excels</strong> — votre équipe<br>
+      améliore vos KPIs en<br>
+      <span style="font-weight:200;font-style:italic">maîtrisant les données logistiques</span>
+    </h1>
+    <p class="hero-sub">Le réseau eLogik allie accompagnement humain et outils data pour que vos équipes transforment vos données logistiques en décisions — sur vos revenus et l'expérience client.</p>
+  </div>
+
+  <!-- TRACK -->
+  <div class="track-wrap">
+    <div class="track-spine"></div>
+
+    <div class="track-cols">
+
+      <!-- ─── NIVEAU 1 · VISUALISER ─── -->
+      <div class="step s1">
+        <div class="step-node-wrap">
+          <div class="step-node" style="position:relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" opacity=".3"/></svg>
+            <div class="step-connector">›</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="card-inner">
+            <div class="axis-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Visualiser
+            </div>
+
+            <div class="card-text-zone"><div class="enjeu-before">"En terme de visibilité, on rame [...] il faut qu'on fasse des Excels, des tableaux croisés dynamiques, qu'on recoupe un petit peu toute la partie data."<div style="margin-top:6px;font-style:normal;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.06em;opacity:.7">— Site d'article de sport · client eLogik · Strasbourg</div></div>
+            <div class="enjeu-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              Avec Elo
+            </div>
+            <div class="enjeu-after">Mon équipe accède à ses données en temps réel — Business, Transport, Stocks, Litiges — sans jamais demander des exports de fichier (ni l'enregistrer en local).</div>
+
+            </div><div class="skill-curve-wrap">
+              <div class="skill-curve-label">Progression de compétence</div>
+              <svg viewBox="0 0 240 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:110px;display:block">
+<defs>
+      <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#22FF7A"/>
+        <stop offset="33%"  stop-color="#FFB020"/>
+        <stop offset="66%"  stop-color="#A78BFF"/>
+        <stop offset="100%" stop-color="#1ADCFF"/>
+      </linearGradient>
+    </defs>
+<line x1="10" y1="102" x2="230" y2="102" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 C 120.0 62 120.0 38 150 38 C 180.0 38 180.0 18 210 18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="3,4"/>
+<circle cx="30" cy="82" r="10" fill="#22FF7A" opacity="0.15"/>
+<circle cx="30" cy="82" r="6" fill="#22FF7A" opacity="0.9"/>
+<circle cx="30" cy="82" r="8" fill="none" stroke="#22FF7A" stroke-width="1" opacity="0.4"/>
+<text x="30" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="500" fill="#22FF7A">Data Analyst</text>
+<line x1="30" y1="102" x2="30" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="90" cy="62" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="90" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">LLM Engineer</text>
+<line x1="90" y1="102" x2="90" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="150" cy="38" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="150" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">Data Engineer</text>
+<line x1="150" y1="102" x2="150" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="210" cy="18" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="210" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">Data Scientist</text>
+<line x1="210" y1="102" x2="210" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+</svg>
+            </div>
+
+            <div class="outcome">
+              <div class="outcome-num">4h</div>
+              <div class="outcome-lbl">4h récupérées par semaine sur les exports et retraitements manuels</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── NIVEAU 2 · INTERROGER ─── -->
+      <div class="step s2">
+        <div class="step-node-wrap">
+          <div class="step-node" style="position:relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <div class="step-connector">›</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="card-inner">
+            <div class="axis-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Interroger
+            </div>
+
+            <div class="card-text-zone"><div class="enjeu-before">"Je sais pas lequel est le moins cher, lequel est le plus efficace. Je pense que ça mériterait un peu plus d'études en profondeur."<div style="margin-top:6px;font-style:normal;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.06em;opacity:.7">— Entreprise de cosmétiques · client eLogik · Suisse</div></div>
+            <div class="enjeu-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              Avec Elo
+            </div>
+            <div class="enjeu-after">Pour croiser des données, mon équipe pose ses questions en langage naturel et obtient des réponses actionnables — performance des transporteurs, SKU dormants, raisons de retours et litiges.</div>
+
+            </div><div class="skill-curve-wrap">
+              <div class="skill-curve-label">Progression de compétence</div>
+              <svg viewBox="0 0 240 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:110px;display:block">
+<defs>
+      <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#22FF7A"/>
+        <stop offset="33%"  stop-color="#FFB020"/>
+        <stop offset="66%"  stop-color="#A78BFF"/>
+        <stop offset="100%" stop-color="#1ADCFF"/>
+      </linearGradient>
+    </defs>
+<line x1="10" y1="102" x2="230" y2="102" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 L 90 102 L 30 102 Z" fill="url(#grad2)" opacity="0.06"/>
+<path d="M 90 62 C 120.0 62 120.0 38 150 38 C 180.0 38 180.0 18 210 18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="3,4"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62" fill="none" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round"/>
+<circle cx="30" cy="82" r="8" fill="#22FF7A" opacity="0.15"/>
+<circle cx="30" cy="82" r="4" fill="#22FF7A" opacity="0.9"/>
+<text x="30" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#22FF7A">Data Analyst</text>
+<line x1="30" y1="102" x2="30" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="90" cy="62" r="10" fill="#FFB020" opacity="0.15"/>
+<circle cx="90" cy="62" r="6" fill="#FFB020" opacity="0.9"/>
+<circle cx="90" cy="62" r="8" fill="none" stroke="#FFB020" stroke-width="1" opacity="0.4"/>
+<text x="90" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="500" fill="#FFB020">LLM Engineer</text>
+<line x1="90" y1="102" x2="90" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="150" cy="38" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="150" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">Data Engineer</text>
+<line x1="150" y1="102" x2="150" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="210" cy="18" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="210" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">Data Scientist</text>
+<line x1="210" y1="102" x2="210" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+</svg>
+            </div>
+
+            <div class="outcome">
+              <div class="outcome-num">10K€</div>
+              <div class="outcome-lbl">en moyenne récupérés sur le stockage du stock dormant</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── NIVEAU 3 · SURVEILLER ─── -->
+      <div class="step s3">
+        <div class="step-node-wrap">
+          <div class="step-node" style="position:relative">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M10 21a2 2 0 004 0"/><path d="M5.5 8.5A6.5 6.5 0 0112 2a6.5 6.5 0 016.5 6.5c0 6 2.5 8 2.5 8H3s2.5-2 2.5-8z"/></svg>
+            <div class="step-connector">›</div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="card-inner">
+            <div class="axis-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Surveiller
+            </div>
+
+            <div class="card-text-zone"><div class="enjeu-before">"Tous les jours, on va dans la partie stock et puis on fait notre extraction de stock pour voir où on en est, où est-ce qu'on a nos ruptures."<div style="margin-top:6px;font-style:normal;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.06em;opacity:.7">— Marque de mobilier de bureau · client eLogik · Paris Roissy</div></div>
+            <div class="enjeu-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              Avec Elo
+            </div>
+            <div class="enjeu-after">Mon équipe est <strong>alertée avant l'impact client</strong> — seuils de rupture, dérives SLA, anomalies réseau. Elle anticipe, elle n'éteint plus des incendies.</div>
+
+            </div><div class="skill-curve-wrap">
+              <div class="skill-curve-label">Progression de compétence</div>
+              <svg viewBox="0 0 240 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:110px;display:block">
+<defs>
+      <linearGradient id="grad3" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#22FF7A"/>
+        <stop offset="33%"  stop-color="#FFB020"/>
+        <stop offset="66%"  stop-color="#A78BFF"/>
+        <stop offset="100%" stop-color="#1ADCFF"/>
+      </linearGradient>
+    </defs>
+<line x1="10" y1="102" x2="230" y2="102" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 C 120.0 62 120.0 38 150 38 L 150 102 L 30 102 Z" fill="url(#grad3)" opacity="0.06"/>
+<path d="M 150 38 C 180.0 38 180.0 18 210 18" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="3,4"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 C 120.0 62 120.0 38 150 38" fill="none" stroke="url(#grad3)" stroke-width="2" stroke-linecap="round"/>
+<circle cx="30" cy="82" r="8" fill="#22FF7A" opacity="0.15"/>
+<circle cx="30" cy="82" r="4" fill="#22FF7A" opacity="0.9"/>
+<text x="30" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#22FF7A">Data Analyst</text>
+<line x1="30" y1="102" x2="30" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="90" cy="62" r="8" fill="#FFB020" opacity="0.15"/>
+<circle cx="90" cy="62" r="4" fill="#FFB020" opacity="0.9"/>
+<text x="90" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#FFB020">LLM Engineer</text>
+<line x1="90" y1="102" x2="90" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="150" cy="38" r="10" fill="#A78BFF" opacity="0.15"/>
+<circle cx="150" cy="38" r="6" fill="#A78BFF" opacity="0.9"/>
+<circle cx="150" cy="38" r="8" fill="none" stroke="#A78BFF" stroke-width="1" opacity="0.4"/>
+<text x="150" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="500" fill="#A78BFF">Data Engineer</text>
+<line x1="150" y1="102" x2="150" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="210" cy="18" r="3.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+<text x="210" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="300" fill="rgba(255,255,255,0.18)">Data Scientist</text>
+<line x1="210" y1="102" x2="210" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+</svg>
+            </div>
+
+            <div class="outcome">
+              <div class="outcome-num">24h</div>
+              <div class="outcome-lbl">de gagnés : les problèmes transporteurs sont notifiés au client (non l'inverse)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── NIVEAU 4 · ARBITRER ─── -->
+      <div class="step s4">
+        <div class="step-node-wrap">
+          <div class="step-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="11" width="5" height="10" rx="1"/><rect x="17" y="7" width="5" height="14" rx="1"/><line x1="12" y1="3" x2="12" y2="21" stroke-width=".8" opacity=".3"/><line x1="8.5" y1="14" x2="15.5" y2="14" stroke-width="1.3"/><polyline points="10,12.5 8.5,14 10,15.5" stroke-width="1.3"/><polyline points="14,12.5 15.5,14 14,15.5" stroke-width="1.3"/></svg>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="card-inner">
+            <div class="axis-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Arbitrer
+            </div>
+
+            <div class="card-text-zone"><div class="enjeu-before">"On dépense 14,8% du CA dans logistique et transport représente 60%. Mais je ne sais pas du tout si on est meilleurs que les autres."<div style="margin-top:6px;font-style:normal;font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.06em;opacity:.7">— Marque de jeux de société · client eLogik · Lyon</div></div>
+            <div class="enjeu-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              Avec Elo
+            </div>
+            <div class="enjeu-after">Mon équipe <strong>se positionne dans le réseau</strong> et prend des décisions d'arbitrage fondées sur des données de marché — pas sur des intuitions.</div>
+
+            </div><div class="skill-curve-wrap">
+              <div class="skill-curve-label">Progression de compétence</div>
+              <svg viewBox="0 0 240 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:110px;display:block">
+<defs>
+      <linearGradient id="grad4" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#22FF7A"/>
+        <stop offset="33%"  stop-color="#FFB020"/>
+        <stop offset="66%"  stop-color="#A78BFF"/>
+        <stop offset="100%" stop-color="#1ADCFF"/>
+      </linearGradient>
+    </defs>
+<line x1="10" y1="102" x2="230" y2="102" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 C 120.0 62 120.0 38 150 38 C 180.0 38 180.0 18 210 18 L 210 102 L 30 102 Z" fill="url(#grad4)" opacity="0.06"/>
+<path d="M 30 82 C 60.0 82 60.0 62 90 62 C 120.0 62 120.0 38 150 38 C 180.0 38 180.0 18 210 18" fill="none" stroke="url(#grad4)" stroke-width="2" stroke-linecap="round"/>
+<circle cx="30" cy="82" r="8" fill="#22FF7A" opacity="0.15"/>
+<circle cx="30" cy="82" r="4" fill="#22FF7A" opacity="0.9"/>
+<text x="30" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#22FF7A">Data Analyst</text>
+<line x1="30" y1="102" x2="30" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="90" cy="62" r="8" fill="#FFB020" opacity="0.15"/>
+<circle cx="90" cy="62" r="4" fill="#FFB020" opacity="0.9"/>
+<text x="90" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#FFB020">LLM Engineer</text>
+<line x1="90" y1="102" x2="90" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="150" cy="38" r="8" fill="#A78BFF" opacity="0.15"/>
+<circle cx="150" cy="38" r="4" fill="#A78BFF" opacity="0.9"/>
+<text x="150" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="400" fill="#A78BFF">Data Engineer</text>
+<line x1="150" y1="102" x2="150" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+<circle cx="210" cy="18" r="10" fill="#1ADCFF" opacity="0.15"/>
+<circle cx="210" cy="18" r="6" fill="#1ADCFF" opacity="0.9"/>
+<circle cx="210" cy="18" r="8" fill="none" stroke="#1ADCFF" stroke-width="1" opacity="0.4"/>
+<text x="210" y="107" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" font-weight="500" fill="#1ADCFF">Data Scientist</text>
+<line x1="210" y1="102" x2="210" y2="98" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+</svg>
+            </div>
+
+            <div class="outcome">
+              <div class="outcome-num">16K€</div>
+              <div class="outcome-lbl">d'écart identifié vs réseau sur les coûts de transport — plan d'action en 2 semaines</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /track-cols -->
+  </div><!-- /track-wrap -->
+
+
+
+</div>
+
+
+</div>
+
+<!-- BRIDGE -->
+
+<!-- ══════════════════════════════════════════════
+     BRIDGE — modules as the link between both parts
+══════════════════════════════════════════════ -->
+<div class="bridge-section">
+  <div class="bridge-inner">
+    <div class="bridge-label">Les modules qui activent chaque compétence</div>
+    <div class="bridge-modules">
+      <div class="bridge-module bm-data">
+        <div class="elo-lt lt-md"><span class="p">Elo</span><span class="d d-data" style="width:5px;height:5px;margin:0 2px"></span><span class="s c-data">data</span></div>
+        <div class="bridge-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div class="bridge-feat">Visualiser · lire ses flux</div>
+      </div>
+      <div class="bridge-sep">›</div>
+      <div class="bridge-module bm-ia">
+        <div class="elo-lt lt-md"><span class="p">Elo</span><span class="d d-ia" style="width:5px;height:5px;margin:0 2px"></span><span class="s c-ia">IA</span></div>
+        <div class="bridge-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div class="bridge-feat">Interroger · questionner ses données</div>
+      </div>
+      <div class="bridge-sep">›</div>
+      <div class="bridge-module bm-alerts">
+        <div class="elo-lt lt-md"><span class="p">Elo</span><span class="d d-alerts" style="width:5px;height:5px;margin:0 2px"></span><span class="s c-alerts">alerts</span></div>
+        <div class="bridge-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div class="bridge-feat">Surveiller · anticiper les risques</div>
+      </div>
+      <div class="bridge-sep">›</div>
+      <div class="bridge-module bm-bench">
+        <div class="elo-lt lt-md"><span class="p">Elo</span><span class="d d-bench" style="width:5px;height:5px;margin:0 2px"></span><span class="s c-bench">bench</span></div>
+        <div class="bridge-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </div>
+        <div class="bridge-feat">Arbitrer · se positionner dans le réseau</div>
+      </div>
+    </div>
+    <div class="bridge-sub">Chaque module est l'outil concret qui fait monter votre équipe en compétence — ci-dessous, le détail de ce qu'il met entre ses mains.</div>
+  </div>
+</div>
+
+
+<!-- SECTION 2 — TABLEAU PRICING -->
+<div class="tools-section-head">
+  <h1 class="tools-title" style="font-size:clamp(20px,2.5vw,30px)">
+    <strong>Un pilotage par l'humain et la donnée,</strong><br>
+    <span style="font-weight:200;font-style:italic;background:linear-gradient(90deg,var(--c1,#22FF7A),var(--c2,#FFB020),var(--c3,#A78BFF),var(--c4,#1ADCFF));-webkit-background-clip:text;background-clip:text;color:transparent">augmentés par l'IA</span>
+  </h1>
+  <p class="tools-sub">Chaque offre combine des outils data intelligents et un accompagnement humain par les équipes eLogik.</p>
+</div>
+
+<div id="outils" style="padding:0 52px 72px;max-width:1100px;margin:0 auto;position:relative;z-index:1;">
+  <!-- ══════════════════════
+       TABLEAU COMPARATIF
+  ══════════════════════ -->
+  <div class="table-section" id="table">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+      Vue synthétique
+      <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+    </div>
+
+    <div class="tbl-wrap">
+
+      <!-- HEAD -->
+      <div class="tbl-head">
+        <div class="th" style="border-left:none;align-items:flex-start">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">Offre</span>
+        </div>
+        <div class="th th1">
+          <div class="axis-badge" style="font-size:10px;padding:6px 14px;border-radius:100px;color:var(--c1);border-color:rgba(34,255,122,.3);background:rgba(34,255,122,.07)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--c1)" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Visualiser
+          </div>
+        </div>
+        <div class="th th2">
+          <div class="axis-badge" style="font-size:10px;padding:6px 14px;border-radius:100px;color:var(--c2);border-color:rgba(255,176,32,.3);background:rgba(255,176,32,.07)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--c2)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Interroger
+          </div>
+        </div>
+        <div class="th th3">
+          <div class="axis-badge" style="font-size:10px;padding:6px 14px;border-radius:100px;color:var(--c3);border-color:rgba(167,139,255,.3);background:rgba(167,139,255,.07)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--c3)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Surveiller
+          </div>
+        </div>
+        <div class="th th4">
+          <div class="axis-badge" style="font-size:10px;padding:6px 14px;border-radius:100px;color:var(--c4);border-color:rgba(26,220,255,.3);background:rgba(26,220,255,.07)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--c4)" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Arbitrer
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUP: ACCOMPAGNEMENT HUMAIN -->
+      <div class="tbl-grp grp-human">
+        <div class="tbl-grp-cell">
+          <div class="grp-ico" style="background:rgba(255,255,255,.06);border:1px solid var(--b2)"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <span class="grp-title" style="color:var(--white)">Accompagnement eLogik</span>
+          <span class="grp-sub">— L'humain au cœur du dispositif</span>
+        </div>
+      </div>
+      <div class="tbl-row row-human">
+        <div class="tbl-lbl">
+          <span class="lbl-main">Suivi personnalisé</span>
+          <span class="lbl-sub">Par l'adhérent & le support</span>
+        </div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row row-human">
+        <div class="tbl-lbl">
+          <span class="lbl-main">Account Manager eLogik dédié</span>
+          <span class="lbl-sub">Suivi stratégique & optimisation continue</span>
+        </div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row row-human">
+        <div class="tbl-lbl">
+          <span class="lbl-main">Data Scientist eLogik</span>
+          <span class="lbl-sub">1 étude ad hoc par mois · questions complexes</span>
+        </div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+
+      <!-- GROUP: elo data -->
+      <div class="tbl-grp">
+        <div class="tbl-grp-cell">
+          <div class="grp-ico" style="background:rgba(34,255,122,.1);border:1px solid rgba(34,255,122,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c1)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" opacity=".3"/></svg></div>
+          <span class="grp-title" style="color:var(--c1)">elo data</span>
+          <span class="grp-sub">— Visualisation & dashboard</span>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Data viz 6 activités logistiques</span></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Dashboard personnalisé · filtres</span></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+
+      <!-- GROUP: elo IA -->
+      <div class="tbl-grp">
+        <div class="tbl-grp-cell">
+          <div class="grp-ico" style="background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><line x1="12" y1="11" x2="6" y2="16"/><line x1="12" y1="11" x2="18" y2="16"/></svg></div>
+          <span class="grp-title" style="color:var(--c2)">elo IA</span>
+          <span class="grp-sub">— LLM sur vos données logistiques</span>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Requêtes IA en langage naturel</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="pill p-c2">3 / sem</div></div>
+        <div class="tbl-val"><div class="pill p-c3">15 / sem</div></div>
+        <div class="tbl-val col4"><div class="pill p-c4">∞</div></div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Détection SKU dormants</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+
+      <!-- GROUP: elo alerts -->
+      <div class="tbl-grp">
+        <div class="tbl-grp-cell">
+          <div class="grp-ico" style="background:rgba(167,139,255,.1);border:1px solid rgba(167,139,255,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c3)" stroke-width="2" stroke-linecap="round"><path d="M10 21a2 2 0 004 0"/><path d="M5.5 8.5A6.5 6.5 0 0112 2a6.5 6.5 0 016.5 6.5c0 6 2.5 8 2.5 8H3s2.5-2 2.5-8z"/></svg></div>
+          <span class="grp-title" style="color:var(--c3)">elo alerts</span>
+          <span class="grp-sub">— Alerting intelligent & monitoring SLA</span>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Alerting sur seuils personnalisés</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Monitoring SLA & anomalies réseau</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Sièges utilisateurs</span></div>
+        <div class="tbl-val"><div class="pill" style="color:var(--muted);border-color:var(--border);background:var(--s2)">1</div></div>
+        <div class="tbl-val"><div class="pill" style="color:var(--muted);border-color:var(--border);background:var(--s2)">1</div></div>
+        <div class="tbl-val"><div class="pill p-c3">∞</div></div>
+        <div class="tbl-val col4"><div class="pill p-c4">∞</div></div>
+      </div>
+
+      <!-- GROUP: elo bench -->
+      <div class="tbl-grp">
+        <div class="tbl-grp-cell">
+          <div class="grp-ico" style="background:rgba(26,220,255,.1);border:1px solid rgba(26,220,255,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c4)" stroke-width="2" stroke-linecap="round"><rect x="2" y="12" width="5" height="9" rx=".8"/><rect x="17" y="8" width="5" height="13" rx=".8"/><line x1="12" y1="4" x2="12" y2="20" stroke-width=".8" opacity=".3"/><line x1="8.5" y1="14" x2="15.5" y2="14"/></svg></div>
+          <span class="grp-title" style="color:var(--c4)">elo bench</span>
+          <span class="grp-sub">— Benchmarking réseau & avant-première</span>
+        </div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Benchmarking réseau anonymisé</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+      <div class="tbl-row">
+        <div class="tbl-lbl"><span class="lbl-main">Simulateur pricing & fonctions avant-première</span></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val"><div class="no"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div></div>
+        <div class="tbl-val col4"><div class="yes"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      </div>
+
+
+
+      <!-- FOOT -->
+      <div class="tbl-foot">
+        <div class="tf" style="justify-content:center"><span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">Activer</span></div>
+        <div class="tf">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Essential</span>
+          <div class="elo-lt lt-sm"><span class="p">Elo</span><span class="d d-c1" style="width:3px;height:3px;margin:0 1px"></span><span class="s s-c1">data</span></div>
+          <span style="font-family:var(--mono);font-size:20px;font-weight:400;letter-spacing:-.03em;color:var(--white)">89€ <sub style="font-size:9px;color:var(--muted)">/mois</sub></span>
+          <button class="tf-cta cta1">Activer</button>
+        </div>
+        <div class="tf">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Pro</span>
+          <div class="elo-lt lt-sm"><span class="p">Elo</span><span class="d d-c2" style="width:3px;height:3px;margin:0 1px"></span><span class="s s-c2">IA</span></div>
+          <span style="font-family:var(--mono);font-size:20px;font-weight:400;letter-spacing:-.03em;color:var(--white)">120€ <sub style="font-size:9px;color:var(--muted)">/mois</sub></span>
+          <button class="tf-cta cta2">Activer</button>
+        </div>
+        <div class="tf">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Intelligence</span>
+          <div class="elo-lt lt-sm"><span class="p">Elo</span><span class="d d-c3" style="width:3px;height:3px;margin:0 1px"></span><span class="s s-c3">alerts</span></div>
+          <span style="font-family:var(--mono);font-size:20px;font-weight:400;letter-spacing:-.03em;color:var(--white)">240€ <sub style="font-size:9px;color:var(--muted)">/mois</sub></span>
+          <button class="tf-cta cta3">Activer</button>
+        </div>
+        <div class="tf">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">Compare</span>
+          <div class="elo-lt lt-sm"><span class="p">Elo</span><span class="d d-c4" style="width:3px;height:3px;margin:0 1px"></span><span class="s s-c4">bench</span></div>
+          <span style="font-family:var(--mono);font-size:16px;font-weight:400;letter-spacing:-.02em;color:var(--c4)">Sur devis</span>
+          <button class="tf-cta cta4">Nous consulter</button>
+        </div>
+      </div>
+
+    </div><!-- /tbl-wrap -->
+  </div><!-- /table-section -->
+  <!-- ══════════════════════
+       DETAIL CARDS
+  ══════════════════════ -->
+
+</div><!-- /wrap -->
+</div>
+
+
+<footer>
+  <div class="ft-logo">
+    <div class="ft-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="ft-name"><strong>eLogik</strong> Fine Logistic — elo · flow 2025</div>
+  </div>
+  <div style="font-size:11px;color:var(--muted)">Visualiser → Interroger → Surveiller → Arbitrer</div>
+  <div class="ft-meta">elo · flow — Compétences & Outils · 2025</div>
+</footer>
+
+</body>
+</html>
