@@ -317,8 +317,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     <div class="step-item"><div class="step-node clickable"><div class="step-circle done"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-label done">Diagnostic</span></div></div>
     <div class="step-connector done"></div>
     <div class="step-item"><div class="step-node"><div class="step-circle active" id="stepCircle5">5</div><span class="step-label active" id="stepLabel5">Recommandations</span></div></div>
-    <div class="step-connector" id="stepConn6" style="display:none;"></div>
-    <div class="step-item" id="stepItem6" style="display:none;"><div class="step-node"><div class="step-circle active" id="stepCircle6">6</div><span class="step-label active" id="stepLabel6">Simulation</span></div></div>
+    <div class="step-connector" id="stepConn6"></div>
+    <div class="step-item" id="stepItem6"><div class="step-node"><div class="step-circle" id="stepCircle6">6</div><span class="step-label" id="stepLabel6">Simulation</span></div></div>
   </div>
 
 <div class="scroll-zone">
@@ -651,8 +651,9 @@ function showView1() {
   c5.className = 'step-circle active';
   c5.textContent = '5';
   document.getElementById('stepLabel5').className = 'step-label active';
-  document.getElementById('stepConn6').style.display = 'none';
-  document.getElementById('stepItem6').style.display = 'none';
+  document.getElementById('stepCircle6').className = 'step-circle';
+  document.getElementById('stepCircle6').textContent = '6';
+  document.getElementById('stepLabel6').className = 'step-label';
 }
 
 function showView2() {
@@ -664,8 +665,9 @@ function showView2() {
   c5.className = 'step-circle done';
   c5.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg>';
   document.getElementById('stepLabel5').className = 'step-label done';
-  document.getElementById('stepConn6').style.display = '';
-  document.getElementById('stepItem6').style.display = '';
+  document.getElementById('stepCircle6').className = 'step-circle active';
+  document.getElementById('stepCircle6').textContent = '6';
+  document.getElementById('stepLabel6').className = 'step-label active';
 }
 
 /* ── FILTRE PRIORITÉ ── */
