@@ -1719,7 +1719,7 @@ function sendChatMain() {
   area.appendChild(w); inp.value = '';
   document.getElementById('sendBtnMain').classList.remove('ready');
 }
-document.getElementById('chatInputMain').addEventListener('keydown', function(e){ if(e.key==='Enter') sendChatMain(); });
+document.addEventListener('DOMContentLoaded', function(){ var el = document.getElementById('chatInputMain'); if(el) el.addEventListener('keydown', function(e){ if(e.key==='Enter') sendChatMain(); }); });
 
 /* IA SAVE */
 var iaAnalysisSaved = false;
@@ -2206,7 +2206,7 @@ function appendMsg(type, text, question) {
       '<div class="ia-msg-ai-meta">' + icon + ' elo·IA · ' + hm + '</div>' +
       '<div class="ia-msg-ai">' + text + '</div>' +
       '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;">' +
-        '<button id="' + msgId + '" onclick="saveMsg(this,'' + msgId + '','' + (question||'').replace(/'/g,"\'") + '','' + text.replace(/'/g,"\'") + '')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
+        '<button id="' + msgId + '" onclick="saveMsg(this,\'' + msgId + '\',\'' + (question||'').replace(/'/g,"\\'") + '\',\'' + text.replace(/'/g,"\\'") + '\')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>' +
           'Enregistrer' +
         '</button>' +
