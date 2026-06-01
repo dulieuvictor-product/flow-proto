@@ -145,12 +145,26 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .band-top { background: var(--gold-tint); border-color: var(--gold); color: var(--gold); }
 .band-dot { width: 7px; height: 7px; border-radius: 50%; }
 
+/* Interpretive sentence */
+.score-interp { font-size: 12.5px; font-weight: 600; color: var(--violet); background: var(--violet-tint); border: 1px solid rgba(108,71,232,0.18); border-radius: 8px; padding: 7px 13px; display: inline-flex; align-items: center; gap: 7px; margin-top: 2px; }
+.score-interp svg { width: 13px; height: 13px; flex-shrink: 0; }
+
 /* Decile strip */
-.decile-strip { display: flex; gap: 3px; align-items: flex-end; height: 28px; margin-top: 10px; }
-.decile-bar { flex: 1; border-radius: 3px 3px 0 0; position: relative; transition: all 0.3s; cursor: default; }
-.decile-bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; font-size: 10px; padding: 3px 7px; border-radius: 5px; white-space: nowrap; font-family: 'DM Mono',monospace; pointer-events:none; }
-.decile-bar.you { outline: 2px solid var(--violet); outline-offset: 2px; }
-.decile-label { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); font-family: 'DM Mono',monospace; margin-top: 4px; }
+.decile-wrap { margin-top: 14px; }
+.decile-chart { position: relative; display: flex; gap: 4px; align-items: flex-end; height: 56px; padding-bottom: 0; }
+.decile-bar { flex: 1; border-radius: 4px 4px 0 0; position: relative; transition: height 0.8s cubic-bezier(0.4,0,0.2,1); cursor: default; }
+.decile-bar.you { background: var(--violet) !important; opacity: 1 !important; }
+.decile-bar.median-bar { position: relative; }
+.decile-bar.median-bar::after { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 1.5px; height: 8px; background: var(--slate); border-radius: 1px; }
+/* floating labels above bars */
+.dec-marker { position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; font-family: 'DM Mono',monospace; white-space: nowrap; padding: 2px 6px; border-radius: 5px; pointer-events: none; }
+.dec-marker.you-lbl { background: var(--violet); color: #fff; }
+.dec-marker.med-lbl { background: var(--surface3); color: var(--slate); border: 1px solid var(--border2); }
+/* bottom labels */
+.decile-labels { display: flex; gap: 4px; margin-top: 4px; }
+.decile-lbl { flex: 1; text-align: center; font-size: 8.5px; font-family: 'DM Mono',monospace; color: var(--muted); }
+.decile-lbl.you-lbl { color: var(--violet); font-weight: 700; }
+.decile-lbl.med-lbl { color: var(--slate); font-weight: 600; }
 
 /* Delight badge */
 .delight-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--success-tint); border: 1.5px solid rgba(42,149,84,0.25); color: var(--success); border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 600; margin-top: 12px; animation: badge-enter 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
@@ -348,9 +362,16 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
           <div class="score-band band-median"><div class="band-dot" style="background:#4A5568;"></div>Médiane réseau · 58</div>
           <div class="score-band band-top"><div class="band-dot" style="background:#D4A017;"></div>Top 10 % · 82</div>
         </div>
+        <!-- Phrase interprétative -->
+        <div class="score-interp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Vous êtes dans le top 37 % du réseau sur votre thème.
+        </div>
         <!-- Déciles -->
-        <div class="decile-strip" id="decileStrip"></div>
-        <div class="decile-label"><span>D1</span><span>D5 médiane</span><span>D10</span></div>
+        <div class="decile-wrap">
+          <div class="decile-chart" id="decileStrip"></div>
+          <div class="decile-labels" id="decileLabels"></div>
+        </div>
         <!-- Delight : au-dessus de la médiane -->
         <div class="delight-badge" id="delightBadge" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -582,19 +603,48 @@ function animateDonut() {
 /* ── DÉCILES ── */
 function buildDeciles() {
   var strip = document.getElementById('decileStrip');
-  var data = [12, 18, 28, 38, 45, 58, 63, 72, 78, 82]; // D1 à D10
+  var labelsEl = document.getElementById('decileLabels');
+  var data = [12, 18, 28, 38, 45, 58, 63, 72, 78, 82];
   var userScore = 63;
-  var colors = ['#F87171','#FB923C','#FBBF24','#A3E635','#4ADE80','#2A9554','#2A9554','#10B981','#059669','#D4A017'];
-  var maxH = 28;
+  var medianScore = 58;
+  var maxH = 56;
+  var colors = ['#F87171','#FB923C','#FBBF24','#A3E635','#4ADE80','#2A9554','#6C47E8','#10B981','#059669','#D4A017'];
 
   data.forEach(function(val, i) {
+    var isYou = val === userScore;
+    var isMedian = val === medianScore;
+    var h = Math.max(6, Math.round((val / 82) * maxH));
+
     var bar = document.createElement('div');
-    bar.className = 'decile-bar' + (val === userScore ? ' you' : '');
-    var h = Math.round((val / 82) * maxH);
-    bar.style.cssText = 'height:' + h + 'px;background:' + colors[i] + ';opacity:' + (val === userScore ? '1' : '0.35') + ';';
-    bar.setAttribute('data-tip', 'D' + (i+1) + ' · ' + val + '/100');
-    if (val === userScore) bar.style.opacity = '1';
+    bar.className = 'decile-bar' + (isYou ? ' you' : '') + (isMedian ? ' median-bar' : '');
+    bar.style.cssText = 'height:0px;background:' + (isYou ? 'var(--violet)' : colors[i]) + ';opacity:' + (isYou ? '1' : '0.38') + ';';
+
+    if (isYou) {
+      var lbl = document.createElement('div');
+      lbl.className = 'dec-marker you-lbl';
+      lbl.textContent = 'VOUS';
+      bar.appendChild(lbl);
+    }
+    if (isMedian) {
+      var lbl2 = document.createElement('div');
+      lbl2.className = 'dec-marker med-lbl';
+      lbl2.textContent = 'MÉDIANE';
+      bar.appendChild(lbl2);
+    }
+
     strip.appendChild(bar);
+
+    // bottom label
+    var lblDiv = document.createElement('div');
+    lblDiv.className = 'decile-lbl' + (isYou ? ' you-lbl' : '') + (isMedian ? ' med-lbl' : '');
+    lblDiv.textContent = isYou ? 'Vous' : (isMedian ? 'Méd.' : 'D' + (i+1));
+    labelsEl.appendChild(lblDiv);
+
+    // animate height
+    setTimeout(function(b, finalH) {
+      b.style.transition = 'height 0.7s cubic-bezier(0.4,0,0.2,1)';
+      b.style.height = finalH + 'px';
+    }, 300 + i * 60, bar, h);
   });
 }
 
