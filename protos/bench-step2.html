@@ -156,18 +156,12 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
 .card-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); margin-bottom: 14px; }
 
-/* ── ELO.IA BYPASS ── */
-.ia-bypass { background: linear-gradient(130deg, var(--violet-tint) 0%, rgba(14,143,204,0.07) 100%); border: 1.5px solid rgba(108,71,232,0.22); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
-[data-theme="dark"] .ia-bypass { background: linear-gradient(130deg, rgba(167,139,255,0.1) 0%, rgba(26,220,255,0.06) 100%); border-color: rgba(167,139,255,0.25); }
-.ia-bypass-icon { width: 40px; height: 40px; border-radius: 11px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ia-bypass-icon svg { width: 20px; height: 20px; stroke: #fff; }
-.ia-bypass-body { flex: 1; min-width: 0; }
-.ia-bypass-title { font-size: 13px; font-weight: 600; color: var(--violet); margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
-.ia-bypass-pill { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; background: var(--violet); color: #fff; padding: 2px 7px; border-radius: 100px; }
-.ia-bypass-desc { font-size: 12px; color: var(--slate); line-height: 1.45; }
-.ia-bypass-btn { display: flex; align-items: center; gap: 7px; background: var(--violet); color: #fff; border: none; border-radius: 9px; padding: 10px 18px; font-size: 12.5px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity 0.15s; }
-.ia-bypass-btn:hover { opacity: 0.88; }
-.ia-bypass-btn svg { width: 14px; height: 14px; }
+/* ── SECTION DIVIDER ── */
+.ref-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0 14px; }
+.ref-divider-line { flex: 1; height: 1px; background: var(--border); }
+.ref-divider-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 6px 14px; font-size: 11.5px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--slate); cursor: pointer; white-space: nowrap; transition: all 0.12s; }
+.ref-divider-btn:hover { background: var(--surface); color: var(--ink); border-color: var(--border2); }
+.ref-divider-btn svg { width: 13px; height: 13px; }
 
 /* ── PÉRIMÈTRE SLIDER ── */
 .perimeter-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
@@ -383,31 +377,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <div class="bench-subtitle">Vos choix de référence déterminent la pertinence du diagnostic. Vous pouvez les affiner ou faire confiance à elo·IA.</div>
     </div>
 
-    <!-- Bloc elo·IA bypass -->
-    <div class="ia-bypass">
-      <div class="ia-bypass-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div class="ia-bypass-body">
-        <div class="ia-bypass-title">
-          Mode elo·IA
-          <span class="ia-bypass-pill">elo · ia</span>
-        </div>
-        <div class="ia-bypass-desc">Laissez elo·IA croiser vos données avec les sources actives et vous proposer directement les axes de travail les plus pertinents — sans configuration manuelle.</div>
-      </div>
-      <button class="ia-bypass-btn" onclick="activateIA()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Laisser elo·IA décider
-      </button>
-    </div>
-
-    <!-- Séparateur -->
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--muted);">ou définir manuellement</span>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-    </div>
-
     <!-- Périmètre de comparaison -->
     <div class="perimeter-card">
       <div class="perimeter-label">Périmètre de comparaison</div>
@@ -426,46 +395,65 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
         </div>
       </div>
 
-      <!-- Track avec ancre fixe + stops cliquables -->
-      <div style="display:flex;align-items:stretch;gap:12px;margin-top:4px;">
-
-        <!-- Ancre fixe "Mes données" -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;padding-top:6px;">
-          <div class="peri-anchor-dot"></div>
-          <div class="peri-anchor-label" style="text-align:center;">Mes<br>données</div>
+      <!-- Track avec stops positionnés absolument sur le rail -->
+      <div style="position:relative;margin:8px 0 56px;padding:0 4px;">
+        <!-- Rail fond -->
+        <div style="height:6px;background:var(--border2);border-radius:100px;position:relative;" id="periTrack">
+          <div id="periFill" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--primary),var(--violet));border-radius:100px;width:50%;transition:width 0.35s cubic-bezier(.4,0,.2,1);"></div>
         </div>
 
-        <!-- Rail + stops -->
-        <div style="flex:1;position:relative;">
-          <!-- Rail visuel -->
-          <div style="position:relative;height:6px;background:var(--border2);border-radius:100px;margin-top:6px;" id="periTrack">
-            <div id="periFill" style="position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--primary),var(--violet));border-radius:100px;width:50%;transition:width 0.35s cubic-bezier(.4,0,.2,1);"></div>
-          </div>
+        <!-- Stop 0 — Même entrepôt -->
+        <div class="peri-stop-btn" id="stopBtn0" onclick="applyStop(0)"
+             style="position:absolute;top:-5px;left:0%;transform:translateX(-50%);align-items:center;">
+          <div class="peri-stop-dot reached" id="dot0"></div>
+          <div class="peri-stop-name reached" id="lbl0" style="white-space:nowrap;">Même entrepôt</div>
+          <div class="peri-stop-sub" id="sub0">34 marques</div>
+        </div>
 
-          <!-- Stops cliquables positionnés sur le rail -->
-          <div style="display:flex;justify-content:space-between;margin-top:0;position:relative;">
-            <div class="peri-stop-btn" id="stopBtn0" onclick="applyStop(0)" style="left:0%">
-              <div class="peri-stop-dot reached" id="dot0"></div>
-              <div class="peri-stop-name reached" id="lbl0">Même entrepôt</div>
-              <div class="peri-stop-sub" id="sub0">34 marques</div>
-            </div>
-            <div class="peri-stop-btn" id="stopBtn1" onclick="applyStop(1)" style="left:50%">
-              <div class="peri-stop-dot reached" id="dot1"></div>
-              <div class="peri-stop-name reached" id="lbl1">Réseau elogik</div>
-              <div class="peri-stop-sub" id="sub1">142 marques</div>
-            </div>
-            <div class="peri-stop-btn" id="stopBtn2" onclick="applyStop(2)" style="left:100%">
-              <div class="peri-stop-dot" id="dot2"></div>
-              <div class="peri-stop-name" id="lbl2">Marché élargi</div>
-              <div class="peri-stop-sub" id="sub2">2 840 marques</div>
-            </div>
-          </div>
+        <!-- Stop 1 — Réseau elogik -->
+        <div class="peri-stop-btn" id="stopBtn1" onclick="applyStop(1)"
+             style="position:absolute;top:-5px;left:50%;transform:translateX(-50%);align-items:center;">
+          <div class="peri-stop-dot reached" id="dot1"></div>
+          <div class="peri-stop-name reached" id="lbl1" style="white-space:nowrap;">Réseau elogik</div>
+          <div class="peri-stop-sub" id="sub1">142 marques</div>
+        </div>
+
+        <!-- Stop 2 — Marché élargi -->
+        <div class="peri-stop-btn" id="stopBtn2" onclick="applyStop(2)"
+             style="position:absolute;top:-5px;left:100%;transform:translateX(-50%);align-items:center;">
+          <div class="peri-stop-dot" id="dot2"></div>
+          <div class="peri-stop-name" id="lbl2" style="white-space:nowrap;">Marché élargi</div>
+          <div class="peri-stop-sub" id="sub2">2 840 marques</div>
         </div>
       </div>
-      <div class="peri-hint" style="margin-top:42px;">Plus le périmètre s'élargit, plus vous comparez à des marques variées</div>
+      <div class="peri-hint">Plus le périmètre s'élargit, plus vous comparez à des marques variées</div>
     </div>
 
-    <!-- Grille secteur + volume / zones + panier -->
+    <!-- Nav principale — directement accessible -->
+    <div class="bench-footer" style="margin-top:14px;padding-top:14px;">
+      <button class="bench-back-btn" onclick="location.href='bench-step1.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour · Thème
+      </button>
+      <button class="bench-continue-btn" onclick="location.href='bench-step3.html'">
+        Comparer les sources de donnée
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
+    <!-- Séparateur + CTA modifier référentiel -->
+    <div class="ref-divider">
+      <div class="ref-divider-line"></div>
+      <button class="ref-divider-btn" onclick="toggleReferentiel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Modifier votre référentiel
+        <svg id="refChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="ref-divider-line"></div>
+    </div>
+
+    <!-- Référentiel — panel repliable -->
+    <div id="refPanel" style="display:none;">
     <div class="form-grid">
 
       <!-- Secteur -->
@@ -569,18 +557,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <span class="anon-bar-text">Les comparaisons sont strictement anonymes et agrégées. Aucun client elogik n'a accès à vos chiffres individuels.</span>
       <span class="anon-bar-link">Méthodologie →</span>
     </div>
-
-    <!-- Footer -->
-    <div class="bench-footer">
-      <button class="bench-back-btn" onclick="location.href='bench-step1.html'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Retour · Thème
-      </button>
-      <button class="bench-continue-btn" onclick="location.href='bench-step3.html'">
-        Continuer · Sources
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>
+    </div><!-- /#refPanel -->
 
   </div>
   </div><!-- /.scroll-zone -->
@@ -767,21 +744,16 @@ function applyStop(idx, fromSector) {
   // Rail
   document.getElementById('periFill').style.width = periPcts[idx] + '%';
 
-  // Boutons actifs
+  // Boutons : active-stop uniquement sur le stop courant, reached sur les stops passés
   for (var i = 0; i < 3; i++) {
     var btn = document.getElementById('stopBtn' + i);
     var dot = document.getElementById('dot' + i);
     var lbl = document.getElementById('lbl' + i);
     var sub = document.getElementById('sub' + i);
-    if (i <= idx) {
-      if (btn) btn.classList.add('active-stop');
-      if (dot) dot.classList.add('reached');
-      if (lbl) lbl.classList.add('reached');
-    } else {
-      if (btn) btn.classList.remove('active-stop');
-      if (dot) dot.classList.remove('reached');
-      if (lbl) lbl.classList.remove('reached');
-    }
+
+    if (btn) btn.classList.toggle('active-stop', i === idx);
+    if (dot) dot.classList.toggle('reached', i <= idx);
+    if (lbl) lbl.classList.toggle('reached', i <= idx);
     if (sub) sub.textContent = formatCount(getPeriCount(i)) + ' marques';
   }
 
@@ -809,6 +781,15 @@ function refreshPerimeter() {
 }
 
 /* Pas de drag — stops cliquables uniquement */
+
+/* ── REFERENTIEL TOGGLE ── */
+function toggleReferentiel() {
+  var panel = document.getElementById('refPanel');
+  var chevron = document.getElementById('refChevron');
+  var open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+}
 
 /* ── VOLUME RANGE ── */
 var volLabels = ['0','1 000','3 000','5 000','10 000','15 000','30 000','50 000','100 000+'];
@@ -872,12 +853,17 @@ function startPanDrag(e, side) {
 }
 
 function syncPanierTrack() {
-  var min = Math.max(0, parseInt(document.getElementById('panMin').value) || 0);
-  var max = Math.min(500, parseInt(document.getElementById('panMax').value) || 500);
-  document.getElementById('panThumbL').style.left = (min / 500 * 100) + '%';
-  document.getElementById('panThumbR').style.left = (max / 500 * 100) + '%';
-  document.getElementById('panFill').style.left = (min / 500 * 100) + '%';
-  document.getElementById('panFill').style.right = (100 - max / 500 * 100) + '%';
+  var minEl = document.getElementById('panMin');
+  var maxEl = document.getElementById('panMax');
+  if (!minEl || !maxEl) return;
+  var min = Math.max(0, parseInt(minEl.value) || 0);
+  var max = Math.min(500, parseInt(maxEl.value) || 500);
+  var tL   = document.getElementById('panThumbL');
+  var tR   = document.getElementById('panThumbR');
+  var fill = document.getElementById('panFill');
+  if (tL)   tL.style.left    = (min / 500 * 100) + '%';
+  if (tR)   tR.style.left    = (max / 500 * 100) + '%';
+  if (fill) { fill.style.left  = (min / 500 * 100) + '%'; fill.style.right = (100 - max / 500 * 100) + '%'; }
 }
 
 // Init

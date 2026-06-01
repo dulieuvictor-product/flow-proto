@@ -148,7 +148,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .step-connector.done { background: var(--success); }
 
 /* ── CONTENT ── */
-.bench-content { flex: 1; padding: 20px 40px 28px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeUp 0.3s ease; }
+.bench-content { flex: 1; padding: 16px 40px 20px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeUp 0.3s ease; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
 .bench-header { margin-bottom: 16px; }
@@ -206,18 +206,14 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .theme-card.selected .theme-soon-badge { display: none; }
 
 /* ── IA SECTION ── */
-.ia-section { background: linear-gradient(135deg, var(--violet-tint), rgba(14,143,204,0.06)); border: 1px solid rgba(108,71,232,0.2); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
+.ia-section { background: linear-gradient(135deg, var(--violet-tint), rgba(14,143,204,0.06)); border: 1px solid rgba(108,71,232,0.2); border-radius: 12px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
 [data-theme="dark"] .ia-section { background: linear-gradient(135deg, rgba(167,139,255,0.08), rgba(26,220,255,0.06)); border-color: rgba(167,139,255,0.2); }
-.ia-section-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ia-section-icon svg { width: 18px; height: 18px; stroke: #fff; }
-.ia-section-body { flex: 1; min-width: 0; }
-.ia-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--violet); margin-bottom: 4px; }
-.ia-section-question { font-size: 12px; color: var(--muted); margin-bottom: 9px; }
-.ia-input-wrap { display: flex; gap: 8px; align-items: center; }
-.ia-input { flex: 1; border: 1px solid var(--border2); border-radius: 8px; background: var(--surface); padding: 9px 13px; font-size: 12.5px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--ink); outline: none; transition: border-color 0.15s; }
-.ia-input::placeholder { color: var(--muted); }
-.ia-input:focus { border-color: var(--violet); }
-.ia-btn { display: flex; align-items: center; gap: 6px; background: var(--violet); color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-size: 12px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; }
+.ia-section-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--violet); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ia-section-icon svg { width: 15px; height: 15px; stroke: #fff; }
+.ia-section-body { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; }
+.ia-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--violet); margin-bottom: 2px; }
+.ia-section-question { font-size: 12px; color: var(--slate); font-weight: 500; flex: 1; }
+.ia-btn { display: flex; align-items: center; gap: 6px; background: var(--violet); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0; }
 .ia-btn:hover { opacity: 0.88; }
 .ia-btn svg { width: 13px; height: 13px; }
 
@@ -362,6 +358,23 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <div class="bench-subtitle">elo.bench compare vos données à toutes les <strong>sources du réseau elogik</strong> sur l'axe de votre choix. Résultat en 3 étapes, sans paramétrage avancé.<br><span style="font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;margin-top:5px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:12px;height:12px;flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Toutes les données du réseau sont agrégées et anonymisées — aucune donnée individuelle n'est exposée.</span></div>
     </div>
 
+    <!-- Section elo · IA — détection automatique -->
+    <div class="ia-section" style="margin-bottom:12px;">
+      <div class="ia-section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="ia-section-body">
+        <div style="flex:1;min-width:0;">
+          <div class="ia-section-label">Elo · IA</div>
+          <div class="ia-section-question">Elo.IA a détecté <strong>3 sujets d'améliorations</strong> à partir de vos alertes et d'un benchmark rapide</div>
+        </div>
+        <button class="ia-btn" onclick="analyzeWithIA()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Analyser
+        </button>
+      </div>
+    </div>
+
     <!-- Grille des thèmes -->
     <div class="theme-grid">
 
@@ -440,24 +453,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
         </div>
       </div>
 
-    </div>
-
-    <!-- Section elo · IA -->
-    <div class="ia-section">
-      <div class="ia-section-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div class="ia-section-body">
-        <div class="ia-section-label">elo · IA — Vous ne savez pas par où commencer ?</div>
-        <div class="ia-section-question">Décrivez votre problème et elo · IA sélectionne le thème le plus pertinent pour vous.</div>
-        <div class="ia-input-wrap">
-          <input class="ia-input" type="text" id="iaPromptInput" placeholder="ex. mes coûts d'expédition ont augmenté de 12% ce trimestre…" />
-          <button class="ia-btn" onclick="analyzeWithIA()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Analyser
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Footer -->

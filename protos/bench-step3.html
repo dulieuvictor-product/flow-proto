@@ -135,8 +135,16 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 @keyframes loader-progress { 0% { width:0%; } 20% { width:22%; } 45% { width:48%; } 70% { width:71%; } 88% { width:88%; } 100% { width:95%; } }
 .loader-pct { font-size: 13px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--violet); flex-shrink: 0; width: 36px; text-align: right; }
 
-/* ── REASSURANCE CARDS ── */
-.reassurance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+/* ── 3-COL MAIN GRID ── */
+.main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; }
+.main-grid > * { display: flex; flex-direction: column; }
+
+/* ── COL HEADER (commun aux 3 colonnes) ── */
+.col-header { font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.col-header-label { display: flex; align-items: center; gap: 6px; }
+.col-header-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── CARROUSEL SOURCES ── */
 .r-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
 .r-card-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .r-card-icon svg { width: 17px; height: 17px; }
@@ -144,47 +152,39 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 .r-card-desc { font-size: 11.5px; color: var(--slate); line-height: 1.55; flex: 1; }
 .r-card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
 .r-tag { font-size: 9.5px; font-weight: 500; font-family: 'DM Mono', monospace; padding: 3px 8px; border-radius: 100px; border: 1px solid var(--border2); color: var(--muted); }
-
-/* ── IA SPOTLIGHT ── */
-.ia-spotlight { background: linear-gradient(135deg, #5B35D5 0%, #3B82F6 100%); border-radius: 16px; padding: 22px 26px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; position: relative; overflow: hidden; }
-.ia-spotlight::before { content:''; position:absolute; right:-40px; top:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.06); }
-.ia-spotlight::after { content:''; position:absolute; right:80px; bottom:-60px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.04); }
-.ia-spot-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
-.ia-spot-icon svg { width: 22px; height: 22px; stroke: #fff; }
-.ia-spot-body { flex: 1; min-width: 0; z-index: 1; }
-.ia-spot-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.ia-spot-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.7); }
-.ia-spot-badge { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Mono', monospace; background: rgba(255,255,255,0.18); color: #fff; padding: 2px 8px; border-radius: 100px; }
-.ia-spot-title { font-size: 18px; font-weight: 600; color: #fff; line-height: 1.25; margin-bottom: 8px; letter-spacing: -0.01em; }
-.ia-spot-desc { font-size: 12.5px; color: rgba(255,255,255,0.8); line-height: 1.55; }
-.ia-spot-desc strong { color: #fff; font-weight: 600; }
-.ia-spot-btn { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.3); color: #fff; border-radius: 10px; padding: 10px 18px; font-size: 12.5px; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; z-index: 1; transition: background 0.15s; }
-.ia-spot-btn:hover { background: rgba(255,255,255,0.28); }
-.ia-spot-btn svg { width: 14px; height: 14px; }
-
-/* ── BOTTOM ROW : fun fact + études ── */
-.bottom-row { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; }
+.carousel-wrap { overflow: hidden; border-radius: 14px; flex: 1; }
+.carousel-track { height: 100%; }
+.carousel-track .r-card { height: 100%; }
+.carousel-track { display: flex; transition: transform 0.3s cubic-bezier(.4,0,.2,1); }
+.carousel-track .r-card { flex: 0 0 100%; min-width: 100%; border-radius: 14px; }
+.carousel-nav { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+.car-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
+.car-btn:hover { background: var(--primary-tint); border-color: var(--primary); }
+.car-btn svg { width: 13px; height: 13px; stroke: var(--slate); }
+.car-dots { display: flex; gap: 5px; }
+.car-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); cursor: pointer; transition: all 0.2s; }
+.car-dot.active { background: var(--primary); transform: scale(1.3); }
 
 /* Fun fact */
-.funfact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.funfact-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .funfact-eyebrow { display: flex; align-items: center; gap: 7px; }
 .funfact-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); animation: blink 2.5s ease-in-out infinite; }
 @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 .funfact-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--warning); }
-.funfact-quote { font-size: 22px; font-weight: 300; color: var(--ink); line-height: 1.2; letter-spacing: -0.02em; }
+.funfact-quote { font-size: 16px; font-weight: 400; color: var(--ink); line-height: 1.35; letter-spacing: -0.01em; flex: 1; }
 .funfact-quote strong { font-weight: 700; color: var(--primary); }
-.funfact-body { font-size: 12px; color: var(--slate); line-height: 1.55; }
-.funfact-source { display: flex; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
-.funfact-source-logo { width: 22px; height: 22px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--slate); font-family: 'DM Mono', monospace; }
-.funfact-source-name { font-size: 10.5px; color: var(--muted); }
+.funfact-body { font-size: 11px; color: var(--slate); line-height: 1.55; }
+.funfact-source { display: flex; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); margin-top: auto; }
+.funfact-source-logo { width: 22px; height: 22px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--slate); font-family: 'DM Mono', monospace; flex-shrink: 0; }
+.funfact-source-name { font-size: 10px; color: var(--muted); flex: 1; min-width: 0; }
 .funfact-source-name strong { color: var(--ink); font-weight: 600; }
-.funfact-nav { display: flex; gap: 5px; margin-left: auto; }
+.funfact-nav { display: flex; gap: 5px; flex-shrink: 0; }
 .funfact-nav-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.12s; }
 .funfact-nav-btn:hover { background: var(--primary-tint); border-color: var(--primary); }
 .funfact-nav-btn svg { width: 12px; height: 12px; stroke: var(--slate); }
 
 /* Études récentes */
-.etudes-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.etudes-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; flex: 1; }
 .etudes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .etudes-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .etudes-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: blink 2s ease-in-out infinite; }
@@ -296,72 +296,166 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
       <div class="loader-pct" id="loaderPct">0%</div>
     </div>
 
-    <!-- 4 cards de réassurance -->
-    <div class="reassurance-grid">
+    <!-- 2 colonnes 50/50 -->
+    <div class="main-grid">
 
-      <div class="r-card">
-        <div class="r-card-icon" style="background:var(--primary-tint);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-        </div>
-        <div class="r-card-title">+500 e-commerçants connectés</div>
-        <div class="r-card-desc">34 marques same-warehouse, 142 marques sectorielles, la communauté elogik — près de 3 Md€ de GMV agrégés.</div>
-        <div class="r-card-tags"><span class="r-tag">Anonymisé</span><span class="r-tag">k-anonymity ≥ 5</span></div>
-      </div>
+      <!-- COL GAUCHE — Carrousel + Le saviez-vous -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
 
-      <div class="r-card">
-        <div class="r-card-icon" style="background:#EFF6FF;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        </div>
-        <div class="r-card-title">Données marché & transporteurs</div>
-        <div class="r-card-desc">Benchmarks et white papers des principaux acteurs logistiques européens, grilles de tarifs transporteurs actualisées.</div>
-        <div class="r-card-tags"><span class="r-tag">Colissimo</span><span class="r-tag">DHL</span><span class="r-tag">Chronopost</span><span class="r-tag">+16</span></div>
-      </div>
+        <!-- Sources fiables -->
+        <div style="display:flex;flex-direction:column;flex:1;">
+          <div class="col-header">
+            <div class="col-header-label">
+              <div class="col-header-dot" style="background:var(--primary);"></div>
+              Des sources fiables
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="car-btn" onclick="carMove(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+              <div class="car-dots" id="carDots">
+                <div class="car-dot active" onclick="carGo(0)"></div>
+                <div class="car-dot" onclick="carGo(1)"></div>
+                <div class="car-dot" onclick="carGo(2)"></div>
+                <div class="car-dot" onclick="carGo(3)"></div>
+              </div>
+              <div class="car-btn" onclick="carMove(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+          <div class="carousel-wrap">
+            <div class="carousel-track" id="carTrack">
 
-      <div class="r-card">
-        <div class="r-card-icon" style="background:var(--violet-tint);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div class="r-card-title">Modèle RAG elogik propriétaire</div>
-        <div class="r-card-desc">Notre moteur croise vos factures, contrats et flux opérationnels avec la base réseau, et cite chaque chiffre avec sa source.</div>
-        <div class="r-card-tags"><span class="r-tag">RAG · 4.2B tokens</span><span class="r-tag">Sources citées</span></div>
-      </div>
+              <div class="r-card">
+                <div class="r-card-icon" style="background:var(--primary-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+                <div class="r-card-title">+500 e-commerçants connectés</div>
+                <div class="r-card-desc">34 marques same-warehouse, 142 marques sectorielles, la communauté elogik — près de 3 Md€ de GMV agrégés.</div>
+                <div class="r-card-tags"><span class="r-tag">Anonymisé</span><span class="r-tag">k-anonymity ≥ 5</span></div>
+              </div>
 
-      <div class="r-card">
-        <div class="r-card-icon" style="background:var(--success-tint);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="r-card-title">Anonymat & méthodologie</div>
-        <div class="r-card-desc">Vos chiffres ne sortent jamais à moins de 5 marques comparables. Méthodologie publiée, hébergement UE.</div>
-        <div class="r-card-tags"><span class="r-tag">k-anonymity ≥ 5</span><span class="r-tag">RGPD</span></div>
-      </div>
+              <div class="r-card">
+                <div class="r-card-icon" style="background:#EFF6FF;"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+                <div class="r-card-title">Données marché & transporteurs</div>
+                <div class="r-card-desc">Benchmarks et white papers des principaux acteurs logistiques européens, grilles de tarifs transporteurs actualisées.</div>
+                <div class="r-card-tags"><span class="r-tag">Colissimo</span><span class="r-tag">DHL</span><span class="r-tag">Chronopost</span><span class="r-tag">+16</span></div>
+              </div>
 
-    </div>
+              <div class="r-card">
+                <div class="r-card-icon" style="background:var(--violet-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                <div class="r-card-title">Modèle RAG elogik propriétaire</div>
+                <div class="r-card-desc">Notre moteur croise vos factures, contrats et flux opérationnels avec la base réseau, et cite chaque chiffre avec sa source.</div>
+                <div class="r-card-tags"><span class="r-tag">RAG · 4.2B tokens</span><span class="r-tag">Sources citées</span></div>
+              </div>
 
-    <!-- IA Spotlight -->
-    <div class="ia-spotlight" style="position:relative;">
-      <div class="ia-spot-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div class="ia-spot-body">
-        <div class="ia-spot-eyebrow">
-          <span class="ia-spot-label">elo · IA</span>
-          <span class="ia-spot-badge">Suggestion personnalisée</span>
+              <div class="r-card">
+                <div class="r-card-icon" style="background:var(--success-tint);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                <div class="r-card-title">Anonymat & méthodologie</div>
+                <div class="r-card-desc">Vos chiffres ne sortent jamais à moins de 5 marques comparables. Méthodologie publiée, hébergement UE.</div>
+                <div class="r-card-tags"><span class="r-tag">k-anonymity ≥ 5</span><span class="r-tag">RGPD</span></div>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <div class="ia-spot-title">3 études récentes couvrent directement vos KPIs transport</div>
-        <div class="ia-spot-desc">
-          Basé sur votre activité (Coûts &amp; tarifs transport, Mode &amp; accessoires, IDF), elo·IA a identifié les sources les plus pertinentes pour votre diagnostic. <strong>Le Palmarès ColisConsult 2024</strong> est particulièrement recommandé — il benchmark 518 sites e-commerce sur 29 critères de livraison, dont votre catégorie Mode.
+
+        <!-- Le saviez-vous -->
+        <div style="display:flex;flex-direction:column;flex:1;">
+          <div class="col-header">
+            <div class="col-header-label">
+              <div class="col-header-dot" style="background:var(--warning);animation:blink 2.5s ease-in-out infinite;"></div>
+              Le saviez-vous ?
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="car-btn" onclick="prevFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+              <div class="car-dots" id="factDots">
+                <div class="car-dot active" onclick="goFact(0)"></div>
+                <div class="car-dot" onclick="goFact(1)"></div>
+                <div class="car-dot" onclick="goFact(2)"></div>
+                <div class="car-dot" onclick="goFact(3)"></div>
+              </div>
+              <div class="car-btn" onclick="nextFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+          </div>
+          <div class="funfact-card">
+            <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
+              <div class="funfact-quote" id="ffQuote"><strong>64 %</strong> des sites e-commerce offrent les retours</div>
+              <div class="funfact-body" id="ffBody">Parmi les 518 sites audités par ColisConsult en 2024, 333 proposent les retours gratuits — un standard difficile à ignorer en Mode &amp; accessoires où ce taux grimpe à 88 %.</div>
+            </div>
+            <div class="funfact-source">
+              <div class="funfact-source-logo" id="ffLogo">CC</div>
+              <div class="funfact-source-name"><strong id="ffSourceName">ColisConsult 2024</strong> · <span id="ffSourceDate">518 sites · 29 critères</span></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <button class="ia-spot-btn" id="saveIaBtn" onclick="saveToIA()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Enregistrer dans elo·IA
-      </button>
-      <!-- Toast confirmation -->
-      <div id="saveToast" style="position:absolute;bottom:-52px;right:0;background:var(--success);color:#fff;border-radius:10px;padding:9px 16px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:8px;white-space:nowrap;opacity:0;transform:translateY(6px);transition:all 0.25s;pointer-events:none;box-shadow:0 4px 16px rgba(42,149,84,0.3);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
-        Sélection enregistrée dans elo·IA
-      </div>
-    </div>
+
+      </div><!-- /col gauche -->
+
+      <!-- COL DROITE — Études récentes -->
+      <div style="display:flex;flex-direction:column;">
+        <div class="col-header">
+          <div class="col-header-label">
+            <div class="col-header-dot" style="background:var(--success);animation:blink 2s ease-in-out infinite;"></div>
+            Dernières études intégrées
+          </div>
+          <div class="etudes-count">47 sources →</div>
+        </div>
+        <div class="etudes-card" style="flex:1;display:flex;flex-direction:column;">
+          <div style="overflow-y:auto;flex:1;">
+
+            <div class="etude-row">
+              <div class="etude-logo" style="color:#2563EB;background:#EFF6FF;border-color:#BFDBFE;">CC</div>
+              <div class="etude-body">
+                <div class="etude-top"><div class="etude-name">Palmarès Meilleure livraison 2024</div><span class="etude-new">Nouveau</span></div>
+                <div class="etude-source">ColisConsult · 3ème édition</div>
+                <div class="etude-meta">
+                  <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12 KPI</div>
+                  <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>518 sites</div>
+                  <div class="etude-age">2j</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="etude-row">
+              <div class="etude-logo" style="color:#0284C7;background:#F0F9FF;border-color:#BAE6FD;">F.</div>
+              <div class="etude-body">
+                <div class="etude-top"><div class="etude-name">Chiffres Clés e-commerce FR</div><span class="etude-new">Nouveau</span></div>
+                <div class="etude-source">FEVAD · Édition 2024</div>
+                <div class="etude-meta">
+                  <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+28 KPI</div>
+                  <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>FR macro</div>
+                  <div class="etude-age">5j</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="etude-row">
+              <div class="etude-logo" style="color:#9333EA;background:#FDF4FF;border-color:#E9D5FF;">SP</div>
+              <div class="etude-body">
+                <div class="etude-top"><div class="etude-name">Logistique urbaine & e-commerce</div><div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div></div>
+                <div class="etude-source">SprintProject × GS1 France</div>
+                <div class="etude-meta">
+                  <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+9 KPI</div>
+                  <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>last-mile</div>
+                  <div class="etude-age">1 sem.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="etude-row">
+              <div class="etude-logo" style="color:#D97706;background:#FFFBEB;border-color:#FDE68A;">MT</div>
+              <div class="etude-body">
+                <div class="etude-top"><div class="etude-name">Baromètre Transport & Livraison Mode</div><div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div></div>
+                <div class="etude-source">ModeTransport · Q3 2024</div>
+                <div class="etude-meta">
+                  <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+7 KPI</div>
+                  <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>Mode FR</div>
+                  <div class="etude-age">2 sem.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /col droite -->
+
+    </div><!-- /.main-grid -->
 
     <!-- Footer -->
     <div class="bench-footer">
@@ -373,104 +467,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;animation:spin 1s linear infinite;" id="continueSpinner"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
         Préparation en cours…
       </button>
-    </div>
-
-    <div class="bottom-row">
-
-      <!-- Fun fact rotatif -->
-      <div class="funfact-card">
-        <div class="funfact-eyebrow">
-          <div class="funfact-dot"></div>
-          <span class="funfact-label">Le saviez-vous ?</span>
-        </div>
-        <div class="funfact-quote" id="ffQuote"><strong>64 %</strong> des sites e-commerce offrent les retours</div>
-        <div class="funfact-body" id="ffBody">Parmi les 518 sites audités par ColisConsult en 2024, 333 proposent les retours gratuits — un standard qui devient difficile à ignorer en Mode & accessoires où ce taux grimpe à 88 %.</div>
-        <div class="funfact-source">
-          <div class="funfact-source-logo" id="ffLogo">CC</div>
-          <div class="funfact-source-name"><strong id="ffSourceName">Palmarès ColisConsult 2024</strong> · <span id="ffSourceDate">518 sites · 29 critères</span></div>
-          <div class="funfact-nav">
-            <div class="funfact-nav-btn" onclick="prevFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
-            <div class="funfact-nav-btn" onclick="nextFact()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Études récentes -->
-      <div class="etudes-card">
-        <div class="etudes-header">
-          <div class="etudes-label"><div class="etudes-live-dot"></div>Dernières études intégrées au benchmark</div>
-          <div class="etudes-count">47 sources actives · consulter la base →</div>
-        </div>
-
-        <div class="etude-row">
-          <div class="etude-logo" style="color:#2563EB;background:#EFF6FF;border-color:#BFDBFE;">CC</div>
-          <div class="etude-body">
-            <div class="etude-top">
-              <div class="etude-name">Palmarès Meilleure livraison e-commerce 2024</div>
-              <span class="etude-new">Nouveau</span>
-            </div>
-            <div class="etude-source">ColisConsult · 3ème édition annuelle</div>
-            <div class="etude-meta">
-              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12 KPI</div>
-              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>518 sites</div>
-              <div class="etude-age">il y a 2 jours</div>
-              <div class="etude-link">Voir l'impact →</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="etude-row">
-          <div class="etude-logo" style="color:#0284C7;background:#F0F9FF;border-color:#BAE6FD;">F.</div>
-          <div class="etude-body">
-            <div class="etude-top">
-              <div class="etude-name">Chiffres Clés du e-commerce français</div>
-              <span class="etude-new">Nouveau</span>
-            </div>
-            <div class="etude-source">FEVAD · Édition annuelle 2024</div>
-            <div class="etude-meta">
-              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+28 KPI</div>
-              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>FR macro</div>
-              <div class="etude-age">il y a 5 jours</div>
-              <div class="etude-link">Voir l'impact →</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="etude-row">
-          <div class="etude-logo" style="color:#9333EA;background:#FDF4FF;border-color:#E9D5FF;">SP</div>
-          <div class="etude-body">
-            <div class="etude-top">
-              <div class="etude-name">Livre Blanc — Logistique urbaine & e-commerce</div>
-              <div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div>
-            </div>
-            <div class="etude-source">SprintProject × GS1 France</div>
-            <div class="etude-meta">
-              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+9 KPI</div>
-              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>last-mile</div>
-              <div class="etude-age">il y a 1 sem.</div>
-              <div class="etude-link">Voir l'impact →</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="etude-row">
-          <div class="etude-logo" style="color:#D97706;background:#FFFBEB;border-color:#FDE68A;">MT</div>
-          <div class="etude-body">
-            <div class="etude-top">
-              <div class="etude-name">Baromètre Transport & Livraison Mode</div>
-              <div style="width:6px;height:6px;border-radius:50%;background:var(--success);margin-top:4px;flex-shrink:0;"></div>
-            </div>
-            <div class="etude-source">ModeTransport · Q3 2024</div>
-            <div class="etude-meta">
-              <div class="etude-kpi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+7 KPI</div>
-              <div class="etude-scope"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/></svg>Mode FR</div>
-              <div class="etude-age">il y a 2 sem.</div>
-              <div class="etude-link">Voir l'impact →</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
     </div>
 
 
@@ -554,6 +550,27 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); colo
 </style>
 
 <script>
+/* ── CARROUSEL ── */
+var carIdx = 0;
+var carTotal = 4;
+
+function carRender() {
+  document.getElementById('carTrack').style.transform = 'translateX(-' + (carIdx * 100) + '%)';
+  document.querySelectorAll('.car-dot').forEach(function(d, i) {
+    d.classList.toggle('active', i === carIdx);
+  });
+}
+
+function carMove(dir) {
+  carIdx = (carIdx + dir + carTotal) % carTotal;
+  carRender();
+}
+
+function carGo(i) { carIdx = i; carRender(); }
+
+// Auto-rotate toutes les 5s
+setInterval(function() { carMove(1); }, 5000);
+
 /* ── SAVE TO IA ── */
 function saveToIA() {
   var btn = document.getElementById('saveIaBtn');
@@ -713,11 +730,15 @@ function renderFact() {
     document.getElementById('ffSourceDate').textContent = f.date;
     wrap.style.opacity = '1';
     wrap.style.transition = 'opacity 0.3s';
+    document.querySelectorAll('#factDots .car-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === factIdx);
+    });
   }, 180);
 }
 
 function nextFact() { factIdx = (factIdx + 1) % facts.length; renderFact(); }
 function prevFact() { factIdx = (factIdx - 1 + facts.length) % facts.length; renderFact(); }
+function goFact(i) { factIdx = i; renderFact(); }
 
 // Auto-rotate toutes les 8s
 setInterval(nextFact, 8000);
