@@ -1,0 +1,104 @@
+name: 🐛 Bug report
+description: Signaler un comportement anormal sur elo·flow
+title: "[BUG] "
+labels: ["bug"]
+body:
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module concerné
+      description: Sur quelle page/module le bug apparaît-il ?
+      options:
+        - Home (dashboard principal)
+        - Transport
+        - Litiges
+        - Préparation
+        - Stocks
+        - Retours
+        - elo·IA (chatbot)
+        - Navigation / Layout global
+        - Autre
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Sévérité
+      options:
+        - "🔴 Bloquant — fonctionnalité inutilisable"
+        - "🟠 Majeur — dégradation significative"
+        - "🟡 Mineur — gêne sans blocage"
+        - "⚪ Cosmétique — affichage uniquement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du bug
+      description: Ce qui se passe vs ce qui devrait se passer
+      placeholder: |
+        Comportement observé : ...
+        Comportement attendu : ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: |
+        1. Aller sur la page "..."
+        2. Cliquer sur "..."
+        3. Observer "..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode d'affichage
+      options:
+        - Dark mode
+        - Light mode
+        - Les deux
+        - Non applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Appareil
+      options:
+        - Desktop
+        - Mobile
+        - Tablette
+        - Les deux
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Navigateur & version
+      placeholder: "ex : Chrome 125, Safari 17, Firefox 126"
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexte additionnel
+      description: Screenshot, console errors, lien vers la page concernée
+      placeholder: Coller ici les erreurs console ou un lien vers la page GitHub Pages concernée
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist avant soumission
+      options:
+        - label: J'ai vérifié que ce bug n'est pas déjà signalé dans les issues ouvertes
+          required: true
+        - label: J'ai testé sur la dernière version du proto (main branch)
+          required: true
