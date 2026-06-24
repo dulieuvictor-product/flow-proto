@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eLogik — Famille Produits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --bg:       #F4F6FA;
+  --surface:  #FFFFFF;
+  --surface2: #EEF1F5;
+  --border:   rgba(0,0,0,0.07);
+  --border2:  rgba(0,0,0,0.12);
+  --ink:      #1A1C1E;
+  --slate:    #4A5568;
+  --muted:    #8A95A3;
+  /* product colours — same hue family, shifted to work on white */
+  --flow:         #0E8FCC;
+  --flow-mid:     #29ABE2;
+  --flow-tint:    #EAF6FD;
+  --flow-border:  rgba(14,143,204,0.18);
+  --flow-glow:    rgba(14,143,204,0.10);
+  --ekan:         #6C47E8;
+  --ekan-mid:     #8B6BF0;
+  --ekan-tint:    #F0EDFF;
+  --ekan-border:  rgba(108,71,232,0.18);
+  --ekan-glow:    rgba(108,71,232,0.08);
+  --transit:      #C27B00;
+  --transit-mid:  #E0940A;
+  --transit-tint: #FEF4E0;
+  --transit-border: rgba(194,123,0,0.18);
+  --transit-glow: rgba(194,123,0,0.08);
+  --stock:        #2A9554;
+  --stock-mid:    #3AB568;
+  --stock-tint:   #E8F8EF;
+  --stock-border: rgba(42,149,84,0.18);
+  --stock-glow:   rgba(42,149,84,0.08);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+
+/* ── PAGE WRAPPER ── */
+.page { max-width: 1080px; margin: 0 auto; padding: 0 32px 100px; }
+
+/* ── HEADER ── */
+header {
+  padding: 40px 32px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1080px; margin: 0 auto;
+}
+.header-logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: var(--flow-mid);
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-mark svg { width: 20px; height: 20px; }
+.logo-text { font-size: 15px; font-weight: 300; color: var(--ink); letter-spacing: -0.02em; }
+.logo-text strong { font-weight: 600; }
+.logo-text .sub { color: var(--muted); font-weight: 300; }
+.header-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono);
+  border: 1px solid var(--border2); border-radius: 100px; padding: 5px 14px;
+  background: var(--surface);
+}
+
+/* ── HERO ── */
+.hero { padding: 72px 0 56px; text-align: center; }
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; flex: 1; max-width: 56px; height: 1px; background: var(--border2);
+}
+.hero-title {
+  font-size: clamp(34px, 5.5vw, 60px); font-weight: 300; letter-spacing: -0.04em;
+  color: var(--ink); line-height: 1.06; margin-bottom: 16px;
+}
+.hero-title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--flow) 0%, var(--ekan) 33%, var(--transit-mid) 66%, var(--stock) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-sub { font-size: 16px; color: var(--slate); max-width: 460px; margin: 0 auto; line-height: 1.65; }
+
+/* ── PRODUCT GRID ── */
+.product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
+
+.pcard {
+  background: var(--surface);
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.pcard:hover { transform: translateY(-5px); }
+.pcard-flow:hover   { border-color: var(--flow-border);    box-shadow: 0 16px 48px var(--flow-glow); }
+.pcard-ekan:hover   { border-color: var(--ekan-border);    box-shadow: 0 16px 48px var(--ekan-glow); }
+.pcard-transit:hover { border-color: var(--transit-border); box-shadow: 0 16px 48px var(--transit-glow); }
+.pcard-stock:hover  { border-color: var(--stock-border);   box-shadow: 0 16px 48px var(--stock-glow); }
+
+/* hero zone */
+.pcard-hero {
+  height: 172px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 18px;
+}
+.pcard-flow .pcard-hero   { background: var(--flow-tint); }
+.pcard-ekan .pcard-hero   { background: var(--ekan-tint); }
+.pcard-transit .pcard-hero { background: var(--transit-tint); }
+.pcard-stock .pcard-hero  { background: var(--stock-tint); }
+
+/* accent top bar */
+.pcard-hero::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.pcard-flow .pcard-hero::after   { background: var(--flow); }
+.pcard-ekan .pcard-hero::after   { background: var(--ekan); }
+.pcard-transit .pcard-hero::after { background: var(--transit-mid); }
+.pcard-stock .pcard-hero::after  { background: var(--stock); }
+
+/* big bg icon */
+.pcard-bigicon {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -56%);
+  opacity: 0.12;
+}
+.pcard-bigicon svg { width: 96px; height: 96px; }
+.pcard-flow .pcard-bigicon svg   { stroke: var(--flow); }
+.pcard-ekan .pcard-bigicon svg   { stroke: var(--ekan); }
+.pcard-transit .pcard-bigicon svg { stroke: var(--transit-mid); }
+.pcard-stock .pcard-bigicon svg  { stroke: var(--stock); }
+
+/* small icon chip */
+.pcard-icon {
+  position: absolute; top: 16px; right: 16px;
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid;
+}
+.pcard-flow .pcard-icon   { background: rgba(14,143,204,0.12);  border-color: rgba(14,143,204,0.22); }
+.pcard-ekan .pcard-icon   { background: rgba(108,71,232,0.10);  border-color: rgba(108,71,232,0.22); }
+.pcard-transit .pcard-icon { background: rgba(194,123,0,0.10);   border-color: rgba(194,123,0,0.22); }
+.pcard-stock .pcard-icon  { background: rgba(42,149,84,0.10);   border-color: rgba(42,149,84,0.22); }
+.pcard-icon svg { width: 16px; height: 16px; }
+.pcard-flow .pcard-icon svg   { stroke: var(--flow); }
+.pcard-ekan .pcard-icon svg   { stroke: var(--ekan); }
+.pcard-transit .pcard-icon svg { stroke: var(--transit); }
+.pcard-stock .pcard-icon svg  { stroke: var(--stock); }
+
+/* badge */
+.pcard-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px; border: 1px solid; font-family: var(--mono);
+  position: relative; z-index: 1;
+}
+.pcard-flow .pcard-badge   { color: var(--flow);    border-color: rgba(14,143,204,0.3);  background: rgba(14,143,204,0.08); }
+.pcard-ekan .pcard-badge   { color: var(--ekan);    border-color: rgba(108,71,232,0.3);  background: rgba(108,71,232,0.08); }
+.pcard-transit .pcard-badge { color: var(--transit); border-color: rgba(194,123,0,0.3);   background: rgba(194,123,0,0.08); }
+.pcard-stock .pcard-badge  { color: var(--stock);   border-color: rgba(42,149,84,0.3);   background: rgba(42,149,84,0.08); }
+
+/* body */
+.pcard-body { padding: 20px; }
+.pcard-name {
+  font-size: 26px; font-weight: 300; letter-spacing: -0.04em;
+  margin-bottom: 2px; line-height: 1;
+}
+.pcard-flow .pcard-name   { color: var(--flow); }
+.pcard-ekan .pcard-name   { color: var(--ekan); }
+.pcard-transit .pcard-name { color: var(--transit); }
+.pcard-stock .pcard-name  { color: var(--stock); }
+
+.pcard-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 12px; font-family: var(--mono);
+}
+.pcard-flow .pcard-label   { color: rgba(14,143,204,0.55); }
+.pcard-ekan .pcard-label   { color: rgba(108,71,232,0.55); }
+.pcard-transit .pcard-label { color: rgba(194,123,0,0.6); }
+.pcard-stock .pcard-label  { color: rgba(42,149,84,0.6); }
+
+.pcard-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.pcard-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+
+.pcard-features { display: flex; flex-direction: column; gap: 8px; }
+.pcard-feat { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--slate); }
+.pcard-feat-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+.pcard-flow .pcard-feat-dot   { background: var(--flow); }
+.pcard-ekan .pcard-feat-dot   { background: var(--ekan); }
+.pcard-transit .pcard-feat-dot { background: var(--transit-mid); }
+.pcard-stock .pcard-feat-dot  { background: var(--stock); }
+
+/* ── PALETTE BAR ── */
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+.palette-section { margin-bottom: 40px; }
+.palette-bar { display: flex; gap: 10px; }
+.pal-item {
+  flex: 1; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.pal-color { height: 56px; position: relative; }
+.pal-info { padding: 10px 12px; }
+.pal-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+.pal-flow .pal-name   { color: var(--flow); }
+.pal-ekan .pal-name   { color: var(--ekan); }
+.pal-transit .pal-name { color: var(--transit); }
+.pal-stock .pal-name  { color: var(--stock); }
+.pal-hex { font-size: 10px; font-family: var(--mono); color: var(--muted); }
+.pal-role { font-size: 9px; color: var(--muted); margin-top: 3px; }
+
+/* ── SEMANTIC GRID ── */
+.semantic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 40px; }
+.sem-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 18px;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.sem-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
+.sem-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.sem-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ── BOTTOM STRIP ── */
+.bottom-strip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  flex-wrap: wrap;
+}
+.bottom-family { display: flex; align-items: center; gap: 10px; }
+.bottom-family-logo {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--flow-mid);
+  display: flex; align-items: center; justify-content: center;
+}
+.bottom-family-logo svg { width: 16px; height: 16px; }
+.bottom-family-text { font-size: 13px; color: var(--slate); }
+.bottom-family-text strong { font-weight: 500; color: var(--ink); }
+.bottom-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.btag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px; border: 1px solid; font-family: var(--mono);
+}
+.btag-flow    { color: var(--flow);    border-color: rgba(14,143,204,0.3);  background: var(--flow-tint); }
+.btag-ekan    { color: var(--ekan);    border-color: rgba(108,71,232,0.25); background: var(--ekan-tint); }
+.btag-transit { color: var(--transit); border-color: rgba(194,123,0,0.25);  background: var(--transit-tint); }
+.btag-stock   { color: var(--stock);   border-color: rgba(42,149,84,0.25);  background: var(--stock-tint); }
+.bottom-meta { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero           { animation: fadeUp 0.55s ease both; }
+.product-grid   { animation: fadeUp 0.55s 0.12s ease both; }
+.palette-section { animation: fadeUp 0.55s 0.22s ease both; }
+.semantic-grid  { animation: fadeUp 0.55s 0.28s ease both; }
+.bottom-strip   { animation: fadeUp 0.55s 0.34s ease both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .palette-bar { flex-wrap: wrap; }
+  .pal-item { min-width: calc(50% - 5px); }
+}
+@media (max-width: 520px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 34px; }
+  .page { padding: 0 16px 80px; }
+  header { padding: 32px 16px 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <div class="logo-text">elo<strong>gik</strong> <span class="sub">fine logistic</span></div>
+  </div>
+  <div class="header-tag">Product family · v1.0 · 2026</div>
+</header>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Identité produits</div>
+    <h1 class="hero-title">Une suite.<br><em>Quatre solutions.</em></h1>
+    <p class="hero-sub">Chaque produit eLogik a sa propre couleur, son propre territoire — reliés par un seul système de design.</p>
+  </div>
+
+  <div class="product-grid">
+
+    <!-- FLOW -->
+    <div class="pcard pcard-flow">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.75" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">Data &amp; Analytics</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">elo <span style="font-size:0.55em;font-weight:400;opacity:0.55;letter-spacing:0">(flow)</span></div>
+        <div class="pcard-label">Visualisation · Pilotage</div>
+        <div class="pcard-desc">Dashboards opérationnels et data visualization des flux logistiques en temps réel.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>KPIs &amp; alertes live</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Graphiques avancés</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Rapports &amp; exports</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EKAN -->
+    <div class="pcard pcard-ekan">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.75" stroke-linecap="round">
+            <path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/>
+            <polyline points="16.5 9.4 7.55 4.24"/>
+            <path d="M12 22V12M3.29 7L12 12l8.71-5"/>
+            <circle cx="18" cy="18" r="3"/><path d="M18 15v3l2 1"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round">
+            <path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/>
+            <circle cx="18" cy="18" r="3"/><path d="M18 15v3l2 1"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">OMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">ekan</div>
+        <div class="pcard-label">Order Management</div>
+        <div class="pcard-desc">Gestion centralisée des commandes multicanal, du panier à la livraison finale.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Cycle de commande</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Stock &amp; allocations</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Retours &amp; SAV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSIT -->
+    <div class="pcard pcard-transit">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.75" stroke-linecap="round">
+            <rect x="1" y="3" width="15" height="13" rx="1"/>
+            <path d="M16 8h4l3 5v3h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round">
+            <rect x="1" y="3" width="15" height="13" rx="1"/>
+            <path d="M16 8h4l3 5v3h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">TMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">evo</div>
+        <div class="pcard-label">Transport Management</div>
+        <div class="pcard-desc">Planification des tournées, suivi des transporteurs et optimisation des coûts.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Planification tournées</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Suivi temps réel</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Gestion carriers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK -->
+    <div class="pcard pcard-stock">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.75" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="17"/>
+            <line x1="9" y1="14.5" x2="15" y2="14.5"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="17"/>
+            <line x1="9" y1="14.5" x2="15" y2="14.5"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">WMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">esto</div>
+        <div class="pcard-label">Warehouse Management</div>
+        <div class="pcard-desc">Gestion opérationnelle des entrepôts, des emplacements et des inventaires.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Réception &amp; picking</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Inventaire temps réel</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Emplacements &amp; SSCC</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PALETTE BAR -->
+  <div class="palette-section">
+    <div class="section-label">Palette produits</div>
+    <div class="palette-bar">
+
+      <div class="pal-item pal-flow">
+        <div class="pal-color" style="background:var(--flow-tint)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(14,143,204,0.12);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(14,143,204,0.28)">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--flow)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">elo <span style="font-size:0.85em;opacity:0.6">(flow)</span></div>
+          <div class="pal-hex">#0E8FCC</div>
+          <div class="pal-role">Data · Vision · Analytics</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-ekan">
+        <div class="pal-color" style="background:var(--ekan-tint)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(108,71,232,0.10);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(108,71,232,0.28)">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--ekan)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">ekan</div>
+          <div class="pal-hex">#6C47E8</div>
+          <div class="pal-role">OMS · Commandes · Décision</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-transit">
+        <div class="pal-color" style="background:var(--transit-tint)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(194,123,0,0.10);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(194,123,0,0.28)">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--transit-mid)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">evo</div>
+          <div class="pal-hex">#E0940A</div>
+          <div class="pal-role">TMS · Transport · Terrain</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-stock">
+        <div class="pal-color" style="background:var(--stock-tint)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(42,149,84,0.10);display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(42,149,84,0.28)">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--stock)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">esto</div>
+          <div class="pal-hex">#2A9554</div>
+          <div class="pal-role">WMS · Entrepôt · Opérations</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEMANTIC -->
+  <div class="section-label">Logique sémantique</div>
+  <div class="semantic-grid">
+    <div class="sem-card">
+      <div class="sem-dot" style="background:var(--flow)"></div>
+      <div>
+        <div class="sem-title" style="color:var(--flow)">Cyan — elo (flow)</div>
+        <div class="sem-desc">Couleur froide = données, vision, intelligence. Le cyan évoque l'écran, la lecture, l'analyse en temps réel. C'est la couleur de la clarté.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot" style="background:var(--ekan)"></div>
+      <div>
+        <div class="sem-title" style="color:var(--ekan)">Violet — ekan</div>
+        <div class="sem-desc">Orchestration, décision, complexité maîtrisée. Le violet évoque la gestion multi-sources et l'intelligence de la commande.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot" style="background:var(--transit-mid)"></div>
+      <div>
+        <div class="sem-title" style="color:var(--transit)">Ambre — evo</div>
+        <div class="sem-desc">Énergie, mouvement, urgence terrain. L'ambre signale le dynamisme du transport — c'est une couleur d'action et d'alerte positive.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot" style="background:var(--stock)"></div>
+      <div>
+        <div class="sem-title" style="color:var(--stock)">Vert — esto</div>
+        <div class="sem-desc">Opérations concrètes, présence physique, ADN eLogik. Le vert est la couleur d'origine du logo — ancrage dans le réel.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM STRIP -->
+  <div class="bottom-strip">
+    <div class="bottom-family">
+      <div class="bottom-family-logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="bottom-family-text"><strong>eLogik</strong> Fine Logistic — Product Family</div>
+    </div>
+    <div class="bottom-tags">
+      <span class="btag btag-flow">elo</span>
+      <span class="btag btag-ekan">ekan</span>
+      <span class="btag btag-transit">evo</span>
+      <span class="btag btag-stock">esto</span>
+    </div>
+    <div class="bottom-meta">Design System v1.0 · Mars 2026</div>
+  </div>
+
+</div>
+</body>
+</html>

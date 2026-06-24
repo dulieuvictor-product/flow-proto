@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eLogik — Famille Produits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --bg: #070A0F;
+  --surface: #0F1319;
+  --surface2: #161C26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #C8D3E0;
+  --muted: #4A5568;
+  --white: #FFFFFF;
+  --flow: #1ADCFF;
+  --flow-dim: rgba(26,220,255,0.12);
+  --flow-glow: rgba(26,220,255,0.25);
+  --ekan: #A78BFF;
+  --ekan-dim: rgba(167,139,255,0.12);
+  --ekan-glow: rgba(167,139,255,0.25);
+  --transit: #FFB020;
+  --transit-dim: rgba(255,176,32,0.12);
+  --transit-glow: rgba(255,176,32,0.25);
+  --stock: #22FF7A;
+  --stock-dim: rgba(34,255,122,0.12);
+  --stock-glow: rgba(34,255,122,0.25);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ── PAGE WRAPPER ── */
+.page { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 32px 100px; }
+
+/* ── HEADER ── */
+header {
+  padding: 48px 32px 0;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1080px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+.header-logo { display: flex; align-items: center; gap: 12px; }
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, #0E8FCC, #29ABE2);
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-mark svg { width: 20px; height: 20px; }
+.logo-text { font-size: 15px; font-weight: 300; color: var(--white); letter-spacing: -0.02em; }
+.logo-text strong { font-weight: 600; }
+.header-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono);
+  border: 1px solid var(--border2); border-radius: 100px; padding: 5px 12px;
+}
+
+/* ── HERO ── */
+.hero { padding: 80px 0 64px; text-align: center; position: relative; }
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--border2);
+}
+.hero-title {
+  font-size: clamp(36px, 6vw, 64px); font-weight: 300; letter-spacing: -0.04em;
+  color: var(--white); line-height: 1.05; margin-bottom: 16px;
+}
+.hero-title em { font-style: normal; color: transparent;
+  background: linear-gradient(90deg, var(--flow) 0%, var(--ekan) 33%, var(--transit) 66%, var(--stock) 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+.hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto; line-height: 1.65; }
+
+/* ── PRODUCT GRID ── */
+.product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 48px; }
+
+.pcard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+}
+.pcard:hover { transform: translateY(-6px); }
+
+.pcard-flow:hover  { border-color: rgba(26,220,255,0.3);  box-shadow: 0 20px 60px rgba(26,220,255,0.08); }
+.pcard-ekan:hover  { border-color: rgba(167,139,255,0.3); box-shadow: 0 20px 60px rgba(167,139,255,0.08); }
+.pcard-transit:hover { border-color: rgba(255,176,32,0.3); box-shadow: 0 20px 60px rgba(255,176,32,0.08); }
+.pcard-stock:hover { border-color: rgba(34,255,122,0.3);  box-shadow: 0 20px 60px rgba(34,255,122,0.08); }
+
+/* hero zone */
+.pcard-hero {
+  height: 180px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 20px;
+}
+.pcard-flow .pcard-hero   { background: #020E14; }
+.pcard-ekan .pcard-hero   { background: #0A0614; }
+.pcard-transit .pcard-hero { background: #130900; }
+.pcard-stock .pcard-hero  { background: #021408; }
+
+/* ambient glow */
+.pcard-hero::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: 50%; width: 200px; height: 200px;
+  top: -60px; left: 50%; transform: translateX(-50%);
+  filter: blur(50px); opacity: 0.5; pointer-events: none;
+}
+.pcard-flow .pcard-hero::before   { background: var(--flow); }
+.pcard-ekan .pcard-hero::before   { background: var(--ekan); }
+.pcard-transit .pcard-hero::before { background: var(--transit); }
+.pcard-stock .pcard-hero::before  { background: var(--stock); }
+
+/* big icon */
+.pcard-bigicon {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -56%);
+  opacity: 0.15;
+}
+.pcard-bigicon svg { width: 96px; height: 96px; }
+.pcard-flow .pcard-bigicon svg   { stroke: var(--flow); }
+.pcard-ekan .pcard-bigicon svg   { stroke: var(--ekan); }
+.pcard-transit .pcard-bigicon svg { stroke: var(--transit); }
+.pcard-stock .pcard-bigicon svg  { stroke: var(--stock); }
+
+/* small icon */
+.pcard-icon {
+  position: absolute; top: 18px; right: 18px;
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border2);
+}
+.pcard-flow .pcard-icon   { background: var(--flow-dim); }
+.pcard-ekan .pcard-icon   { background: var(--ekan-dim); }
+.pcard-transit .pcard-icon { background: var(--transit-dim); }
+.pcard-stock .pcard-icon  { background: var(--stock-dim); }
+.pcard-icon svg { width: 16px; height: 16px; }
+.pcard-flow .pcard-icon svg   { stroke: var(--flow); }
+.pcard-ekan .pcard-icon svg   { stroke: var(--ekan); }
+.pcard-transit .pcard-icon svg { stroke: var(--transit); }
+.pcard-stock .pcard-icon svg  { stroke: var(--stock); }
+
+/* badge */
+.pcard-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+  border: 1px solid; font-family: var(--mono);
+  position: relative; z-index: 1;
+}
+.pcard-flow .pcard-badge   { color: var(--flow);    border-color: rgba(26,220,255,0.3);  background: var(--flow-dim); }
+.pcard-ekan .pcard-badge   { color: var(--ekan);    border-color: rgba(167,139,255,0.3); background: var(--ekan-dim); }
+.pcard-transit .pcard-badge { color: var(--transit); border-color: rgba(255,176,32,0.3); background: var(--transit-dim); }
+.pcard-stock .pcard-badge  { color: var(--stock);   border-color: rgba(34,255,122,0.3);  background: var(--stock-dim); }
+
+/* body */
+.pcard-body { padding: 20px; }
+.pcard-name {
+  font-size: 26px; font-weight: 300; letter-spacing: -0.04em;
+  margin-bottom: 2px; line-height: 1;
+}
+.pcard-flow .pcard-name   { color: var(--flow); }
+.pcard-ekan .pcard-name   { color: var(--ekan); }
+.pcard-transit .pcard-name { color: var(--transit); }
+.pcard-stock .pcard-name  { color: var(--stock); }
+
+.pcard-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 12px; font-family: var(--mono);
+}
+.pcard-flow .pcard-label   { color: rgba(26,220,255,0.5); }
+.pcard-ekan .pcard-label   { color: rgba(167,139,255,0.5); }
+.pcard-transit .pcard-label { color: rgba(255,176,32,0.5); }
+.pcard-stock .pcard-label  { color: rgba(34,255,122,0.5); }
+
+.pcard-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+
+.pcard-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+
+.pcard-features { display: flex; flex-direction: column; gap: 8px; }
+.pcard-feat { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text); }
+.pcard-feat-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+.pcard-flow .pcard-feat-dot   { background: var(--flow); }
+.pcard-ekan .pcard-feat-dot   { background: var(--ekan); }
+.pcard-transit .pcard-feat-dot { background: var(--transit); }
+.pcard-stock .pcard-feat-dot  { background: var(--stock); }
+
+/* ── PALETTE BAR ── */
+.palette-section { margin-bottom: 40px; }
+.section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--mono); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.palette-bar { display: flex; gap: 10px; }
+.pal-item {
+  flex: 1; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.pal-color { height: 56px; position: relative; overflow: hidden; }
+.pal-color::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+}
+.pal-info { padding: 10px 12px; }
+.pal-name { font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+.pal-flow .pal-name   { color: var(--flow); }
+.pal-ekan .pal-name   { color: var(--ekan); }
+.pal-transit .pal-name { color: var(--transit); }
+.pal-stock .pal-name  { color: var(--stock); }
+.pal-hex { font-size: 10px; font-family: var(--mono); color: var(--muted); }
+.pal-role { font-size: 9px; color: var(--muted); margin-top: 3px; }
+
+/* ── SEMANTIC ROW ── */
+.semantic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 40px; }
+.sem-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 18px;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.sem-dot-wrap { flex-shrink: 0; margin-top: 3px; }
+.sem-dot { width: 10px; height: 10px; border-radius: 50%; }
+.sem-content {}
+.sem-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+.sem-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ── BOTTOM STRIP ── */
+.bottom-strip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  flex-wrap: wrap;
+}
+.bottom-family { display: flex; align-items: center; gap: 10px; }
+.bottom-family-logo { width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg, #0E8FCC, #29ABE2);
+  display: flex; align-items: center; justify-content: center; }
+.bottom-family-logo svg { width: 16px; height: 16px; }
+.bottom-family-text { font-size: 13px; color: var(--text); }
+.bottom-family-text strong { font-weight: 500; color: var(--white); }
+.bottom-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.btag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px; border: 1px solid;
+  font-family: var(--mono);
+}
+.btag-flow    { color: var(--flow);    border-color: rgba(26,220,255,0.25);  background: var(--flow-dim); }
+.btag-ekan    { color: var(--ekan);    border-color: rgba(167,139,255,0.25); background: var(--ekan-dim); }
+.btag-transit { color: var(--transit); border-color: rgba(255,176,32,0.25);  background: var(--transit-dim); }
+.btag-stock   { color: var(--stock);   border-color: rgba(34,255,122,0.25);  background: var(--stock-dim); }
+.bottom-meta { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+
+/* ── ENTRY ANIMATION ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero         { animation: fadeUp 0.6s ease both; }
+.product-grid { animation: fadeUp 0.6s 0.15s ease both; }
+.palette-section { animation: fadeUp 0.6s 0.25s ease both; }
+.semantic-grid { animation: fadeUp 0.6s 0.3s ease both; }
+.bottom-strip { animation: fadeUp 0.6s 0.35s ease both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .palette-bar { flex-wrap: wrap; }
+  .pal-item { min-width: calc(50% - 5px); }
+}
+@media (max-width: 520px) {
+  .product-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <div class="logo-text">elo<strong>gik</strong> <span style="color:var(--muted);font-weight:300">fine logistic</span></div>
+  </div>
+  <div class="header-tag">Product family · v1.0 · 2026</div>
+</header>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Identité produits</div>
+    <h1 class="hero-title">Une suite.<br><em>Quatre solutions.</em></h1>
+    <p class="hero-sub">Chaque produit eLogik a sa propre couleur, son propre territoire — reliés par un seul système de design.</p>
+  </div>
+
+  <!-- PRODUCT CARDS -->
+  <div class="product-grid">
+
+    <!-- FLOW -->
+    <div class="pcard pcard-flow">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">Data & Analytics</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">elo <span style="font-size:0.55em;font-weight:400;opacity:0.55;letter-spacing:0">(flow)</span></div>
+        <div class="pcard-label">Visualisation · Pilotage</div>
+        <div class="pcard-desc">Dashboards opérationnels et data visualization des flux logistiques en temps réel.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>KPIs & alertes live</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Graphiques avancés</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Rapports & exports</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EKAN / OMS -->
+    <div class="pcard pcard-ekan">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/>
+            <polyline points="16.5 9.4 7.55 4.24"/>
+            <path d="M12 22V12M3.29 7L12 12l8.71-5"/>
+            <circle cx="18" cy="18" r="3"/><path d="M18 15v3l2 1"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/>
+            <circle cx="18" cy="18" r="3"/><path d="M18 15v3l2 1"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">OMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">ekan</div>
+        <div class="pcard-label">Order Management</div>
+        <div class="pcard-desc">Gestion centralisée des commandes multicanal, du panier à la livraison finale.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Cycle de commande</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Stock & allocations</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Retours & SAV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSIT / TMS -->
+    <div class="pcard pcard-transit">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <rect x="1" y="3" width="15" height="13" rx="1"/>
+            <path d="M16 8h4l3 5v3h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <rect x="1" y="3" width="15" height="13" rx="1"/>
+            <path d="M16 8h4l3 5v3h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">TMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">evo</div>
+        <div class="pcard-label">Transport Management</div>
+        <div class="pcard-desc">Planification des tournées, suivi des transporteurs et optimisation des coûts.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Planification tournées</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Suivi temps réel</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Gestion carriers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK / WMS -->
+    <div class="pcard pcard-stock">
+      <div class="pcard-hero">
+        <div class="pcard-bigicon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="0.8" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="17"/>
+            <line x1="9" y1="14.5" x2="15" y2="14.5"/>
+          </svg>
+        </div>
+        <div class="pcard-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="17"/>
+            <line x1="9" y1="14.5" x2="15" y2="14.5"/>
+          </svg>
+        </div>
+        <span class="pcard-badge">WMS</span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">esto</div>
+        <div class="pcard-label">Warehouse Management</div>
+        <div class="pcard-desc">Gestion opérationnelle des entrepôts, des emplacements et des inventaires.</div>
+        <div class="pcard-divider"></div>
+        <div class="pcard-features">
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Réception & picking</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Inventaire temps réel</div>
+          <div class="pcard-feat"><div class="pcard-feat-dot"></div>Emplacements & SSCC</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PALETTE BAR -->
+  <div class="palette-section">
+    <div class="section-label">Palette produits</div>
+    <div class="palette-bar">
+
+      <div class="pal-item pal-flow">
+        <div class="pal-color" style="background:linear-gradient(135deg, #020E14, #062030)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(26,220,255,0.15);display:flex;align-items:center;justify-content:center;border:1px solid rgba(26,220,255,0.3)">
+              <div style="width:12px;height:12px;border-radius:50%;background:#1ADCFF;box-shadow:0 0 12px rgba(26,220,255,0.8)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">elo <span style="font-size:0.85em;opacity:0.6">(flow)</span></div>
+          <div class="pal-hex">#1ADCFF</div>
+          <div class="pal-role">Data · Vision · Analytics</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-ekan">
+        <div class="pal-color" style="background:linear-gradient(135deg, #0A0614, #150B26)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(167,139,255,0.15);display:flex;align-items:center;justify-content:center;border:1px solid rgba(167,139,255,0.3)">
+              <div style="width:12px;height:12px;border-radius:50%;background:#A78BFF;box-shadow:0 0 12px rgba(167,139,255,0.8)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">ekan</div>
+          <div class="pal-hex">#A78BFF</div>
+          <div class="pal-role">OMS · Commandes · Décision</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-transit">
+        <div class="pal-color" style="background:linear-gradient(135deg, #130900, #221200)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,176,32,0.15);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,176,32,0.3)">
+              <div style="width:12px;height:12px;border-radius:50%;background:#FFB020;box-shadow:0 0 12px rgba(255,176,32,0.8)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">evo</div>
+          <div class="pal-hex">#FFB020</div>
+          <div class="pal-role">TMS · Transport · Terrain</div>
+        </div>
+      </div>
+
+      <div class="pal-item pal-stock">
+        <div class="pal-color" style="background:linear-gradient(135deg, #021408, #031F0C)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(34,255,122,0.15);display:flex;align-items:center;justify-content:center;border:1px solid rgba(34,255,122,0.3)">
+              <div style="width:12px;height:12px;border-radius:50%;background:#22FF7A;box-shadow:0 0 12px rgba(34,255,122,0.8)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pal-info">
+          <div class="pal-name">esto</div>
+          <div class="pal-hex">#22FF7A</div>
+          <div class="pal-role">WMS · Entrepôt · Opérations</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEMANTIC -->
+  <div class="section-label">Logique sémantique</div>
+  <div class="semantic-grid">
+    <div class="sem-card">
+      <div class="sem-dot-wrap"><div class="sem-dot" style="background:var(--flow)"></div></div>
+      <div class="sem-content">
+        <div class="sem-title" style="color:var(--flow)">Cyan — elo (flow)</div>
+        <div class="sem-desc">Couleur froide = données, vision, intelligence. Le cyan évoque l'écran, la lecture, l'analyse en temps réel. C'est la couleur de la clarté.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot-wrap"><div class="sem-dot" style="background:var(--ekan)"></div></div>
+      <div class="sem-content">
+        <div class="sem-title" style="color:var(--ekan)">Violet — ekan</div>
+        <div class="sem-desc">Orchestration, décision, complexité maîtrisée. Le violet evoque la gestion multi-sources et l'intelligence de la commande.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot-wrap"><div class="sem-dot" style="background:var(--transit)"></div></div>
+      <div class="sem-content">
+        <div class="sem-title" style="color:var(--transit)">Ambre — evo</div>
+        <div class="sem-desc">Énergie, mouvement, urgence terrain. L'ambre signale le dynamisme du transport — c'est une couleur d'action et d'alerte positive.</div>
+      </div>
+    </div>
+    <div class="sem-card">
+      <div class="sem-dot-wrap"><div class="sem-dot" style="background:var(--stock)"></div></div>
+      <div class="sem-content">
+        <div class="sem-title" style="color:var(--stock)">Lime — esto</div>
+        <div class="sem-desc">Opérations concrètes, présence physique, ADN eLogik. Le lime est la couleur d'origine du logo — ancrage dans le réel.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM STRIP -->
+  <div class="bottom-strip">
+    <div class="bottom-family">
+      <div class="bottom-family-logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="bottom-family-text"><strong>eLogik</strong> Fine Logistic — Product Family</div>
+    </div>
+    <div class="bottom-tags">
+      <span class="btag btag-flow">elo</span>
+      <span class="btag btag-ekan">ekan</span>
+      <span class="btag btag-transit">evo</span>
+      <span class="btag btag-stock">esto</span>
+    </div>
+    <div class="bottom-meta">Design System v1.0 · Mars 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
