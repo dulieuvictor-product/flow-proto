@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
 <head>
-<script>(function(){var t=localStorage.getItem("elo-theme");if(t)document.documentElement.setAttribute("data-theme",t);})()</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>elo·e-logik — Stocks</title>
+<title>elo·e-logik — Stocks · Instantané</title>
+<link rel="icon" href="https://e-logik.fr/wp-content/uploads/2020/02/cropped-Favicon-site-e-logik-1-150x150.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root, [data-theme="light"] {
   --bg:#F2F4F8; --surface:#FFFFFF; --surface2:#F4F6FA;
@@ -23,12 +21,12 @@
   --violet:#6C47E8; --violet-tint:#F0EDFF;
   --nav-bg:#FFFFFF; --nav-active-bg:#FFFBEB; --nav-active-tx:#B45309;
   --topbar-bg:#FFFFFF; --card-shadow:0 1px 3px rgba(0,0,0,0.06);
+  --c-stocks:#D97706; --c-stocks-t:#FFFBEB;
   --c-business:#2563EB; --c-business-t:#EFF6FF;
-  --c-qlog:#0E7490;    --c-qlog-t:#ECFEFF;
-  --c-qtrans:#0284C7;  --c-qtrans-t:#F0F9FF;
-  --c-savt:#6366F1;    --c-savt-t:#EEF2FF;
-  --c-savl:#9333EA;    --c-savl-t:#FDF4FF;
-  --c-stocks:#D97706;  --c-stocks-t:#FFFBEB;
+  --c-qlog:#0E7490; --c-qlog-t:#ECFEFF;
+  --c-qtrans:#0284C7; --c-qtrans-t:#F0F9FF;
+  --c-savt:#6366F1; --c-savt-t:#EEF2FF;
+  --c-savl:#9333EA; --c-savl-t:#FDF4FF;
   --ai-border:rgba(108,71,232,0.2);
 }
 [data-theme="dark"] {
@@ -42,12 +40,12 @@
   --violet:#A78BFF; --violet-tint:rgba(167,139,255,0.13);
   --nav-bg:#141A22; --nav-active-bg:rgba(217,119,6,0.15); --nav-active-tx:#FCD34D;
   --topbar-bg:#141A22; --card-shadow:0 1px 0 rgba(255,255,255,0.04);
+  --c-stocks:#FCD34D; --c-stocks-t:rgba(252,211,77,0.13);
   --c-business:#60A5FA; --c-business-t:rgba(96,165,250,0.13);
-  --c-qlog:#22D3EE;    --c-qlog-t:rgba(34,211,238,0.13);
-  --c-qtrans:#38BDF8;  --c-qtrans-t:rgba(56,189,248,0.13);
-  --c-savt:#A5B4FC;    --c-savt-t:rgba(165,180,252,0.13);
-  --c-savl:#C084FC;    --c-savl-t:rgba(192,132,252,0.13);
-  --c-stocks:#FCD34D;  --c-stocks-t:rgba(252,211,77,0.13);
+  --c-qlog:#22D3EE; --c-qlog-t:rgba(34,211,238,0.13);
+  --c-qtrans:#38BDF8; --c-qtrans-t:rgba(56,189,248,0.13);
+  --c-savt:#A5B4FC; --c-savt-t:rgba(165,180,252,0.13);
+  --c-savl:#C084FC; --c-savl-t:rgba(192,132,252,0.13);
   --ai-border:rgba(167,139,255,0.2);
 }
 html, body { height:100%; }
@@ -87,6 +85,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
 /* ── MAIN ── */
 .main { flex:1; display:flex; flex-direction:column; min-width:0; overflow-y:auto; height:100vh; }
+
+/* ── TOPBAR : pas de grain, surface simple ── */
 .topbar { background:var(--topbar-bg); border-bottom:1px solid var(--border); padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; position:sticky; top:0; z-index:100; flex-shrink:0; transition:background 0.25s; }
 .breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; }
 .bc-parent { color:var(--muted); } .bc-sep { color:var(--border2); } .bc-current { font-weight:500; color:var(--ink); }
@@ -100,39 +100,38 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .icon-btn svg { width:16px; height:16px; color:var(--slate); }
 .notif-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--danger); border:1.5px solid var(--topbar-bg); }
 
-/* ── ELO IA COMPOSANT ── */
-.time-selector { display:flex; align-items:center; gap:4px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:3px; }
-.ts-btn { font-size:12px; font-weight:500; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 14px; border-radius:7px; border:none; background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-.ts-btn:hover { color:var(--ink); }
-.ts-btn.active { background:var(--surface); color:var(--primary); font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
-.date-picker-btn { display:flex; align-items:center; gap:6px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:0 12px; height:34px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; color:var(--slate); white-space:nowrap; transition:all 0.12s; }
-.date-picker-btn:hover { border-color:var(--primary); color:var(--primary); }
-.date-picker-btn svg { width:14px; height:14px; }
-.cal-dropdown { position:absolute; top:44px; right:0; background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:14px; width:248px; z-index:300; display:none; box-shadow:0 6px 24px rgba(0,0,0,0.1); }
-.cal-dropdown.open { display:block; }
-.cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.cal-nav-btn { background:var(--surface2); border:1px solid var(--border); border-radius:6px; cursor:pointer; color:var(--slate); font-size:14px; padding:3px 8px; font-family:'Plus Jakarta Sans',sans-serif; }
-.cal-month-lbl { font-size:12px; font-weight:600; color:var(--ink); font-family:'DM Mono',monospace; }
-.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-.cal-dh { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-align:center; padding:2px 0; font-family:'DM Mono',monospace; }
-.cal-d { font-size:11px; text-align:center; padding:5px 2px; border-radius:5px; cursor:pointer; color:var(--slate); font-family:'DM Mono',monospace; }
-.cal-d:hover { background:var(--surface2); } .cal-d.in-range { background:var(--primary-tint); color:var(--primary); }
-.cal-d.range-start,.cal-d.range-end { background:var(--primary); color:#fff; font-weight:700; }
-.cal-d.other-month { color:var(--border2); cursor:default; } .cal-d.today { font-weight:700; color:var(--ink); }
-.cal-range-info { font-size:10px; color:var(--muted); margin-top:8px; font-family:'DM Mono',monospace; min-height:16px; }
-.cal-footer { margin-top:10px; display:flex; gap:6px; justify-content:flex-end; }
-.cal-action { font-size:11px; font-weight:500; padding:5px 12px; border-radius:7px; cursor:pointer; border:1px solid var(--border2); background:var(--surface2); color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; }
-.cal-action.primary { background:var(--primary); color:white; border-color:var(--primary); }
-.date-wrap { position:relative; }
+/* ── CONTENT ── */
+.content { padding:16px 24px 80px; flex:1; display:flex; flex-direction:column; gap:12px; }
+
+/* ── PAGE HEADER INSTANTANÉ ── */
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:4px; }
+.page-header-left {}
+.page-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
+.page-title { font-size:20px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); }
+.page-title span { color:var(--c-stocks); }
+/* Indicateur freshness — remplace le sélecteur de période */
+.freshness-bar { display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border2); border-radius:10px; padding:7px 14px; flex-shrink:0; margin-top:2px; }
+.fresh-live { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; font-family:'DM Mono',monospace; color:var(--success); }
+.fresh-pulse { width:6px; height:6px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; flex-shrink:0; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.fresh-sep { width:1px; height:18px; background:var(--border2); }
+.fresh-time { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; }
+.fresh-time strong { color:var(--ink); font-weight:600; }
+.refresh-btn { display:flex; align-items:center; gap:5px; background:transparent; border:1px solid var(--border2); border-radius:7px; padding:4px 10px; font-size:11px; font-weight:500; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
+.refresh-btn:hover { border-color:var(--primary); color:var(--primary); }
+.refresh-btn svg { width:12px; height:12px; }
+.refresh-btn.spinning svg { animation:spin 0.6s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── ELO IA – header sans sélecteur de période ── */
 .chatbot-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--card-shadow); }
-.chatbot-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+.chatbot-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
 .chatbot-av { width:30px; height:30px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .chatbot-av svg { width:16px; height:16px; }
 .chatbot-name { font-size:13px; font-weight:600; color:var(--ink); }
 .chatbot-desc { font-size:10px; color:var(--muted); margin-top:1px; font-family:'DM Mono',monospace; }
 .live-badge { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; font-family:'DM Mono',monospace; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:5px 12px; white-space:nowrap; }
 .live-pulse { width:6px; height:6px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
 .chat-collapsible { overflow:hidden; }
 .chat-collapsible.collapsed { display:none; }
 .chat-area { padding:0 16px; display:flex; flex-direction:column; gap:10px; }
@@ -154,6 +153,10 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .re-icon svg { width:12px; height:12px; }
 .re-title { font-size:11px; font-weight:600; color:var(--ink); }
 .re-sub { font-size:10px; color:var(--muted); line-height:1.3; margin-top:1px; }
+.re-footer { border-top:1px solid var(--border); }
+.re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
+.re-toggle:hover { background:var(--surface2); }
+.re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
 .qs-header { padding:10px 18px 6px; }
 .qs-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
 .qs-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:7px; padding:0 14px 12px; }
@@ -166,186 +169,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .chat-input:focus { border-color:var(--violet); color:var(--ink); }
 .send-btn { width:30px; height:30px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.4; transition:opacity 0.15s; }
 .send-btn.ready { opacity:1; } .send-btn:hover { opacity:0.85; } .send-btn svg { width:13px; height:13px; }
-.re-footer { border-top:1px solid var(--border); }
-.re-toggle { display:flex; align-items:center; justify-content:space-between; padding:9px 18px; cursor:pointer; user-select:none; transition:background 0.12s; }
-.re-toggle:hover { background:var(--surface2); }
-.re-toggle-left { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--muted); }
-
-/* ── CONTENT ── */
-.content { padding:16px 24px 40px; flex:1; display:flex; flex-direction:column; gap:12px; }
-.page-header { margin-bottom:4px; }
-.page-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:4px; }
-.page-title { font-size:20px; font-weight:300; letter-spacing:-0.03em; color:var(--ink); }
-.page-title span { color:var(--c-savt); }
-.page-sub { font-size:12px; color:var(--muted); margin-top:3px; }
-.section-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
-.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
-
-/* ── KPI GRID ── */
-.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-.kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:background 0.25s, transform 0.15s; cursor:default; }
-.kpi-card:hover { transform:translateY(-2px); }
-.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--module-color, var(--c-savt)); }
-.kpi-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-.kpi-label-wrap { display:flex; align-items:flex-start; gap:9px; }
-.kpi-mod-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.kpi-mod-icon svg { width:15px; height:15px; }
-.kpi-label { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; line-height:1.4; }
-.kpi-label-sub { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; margin-top:1px; }
-.kpi-status-badge { font-size:9px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; white-space:nowrap; flex-shrink:0; }
-.kpi-status-badge.ok { background:var(--success-tint); color:var(--success); }
-.kpi-status-badge.bad { background:var(--danger-tint); color:var(--danger); }
-.kpi-status-badge.warn { background:var(--warning-tint); color:var(--warning); }
-.kpi-big { font-size:32px; font-weight:300; letter-spacing:-0.04em; line-height:1; margin-bottom:5px; }
-.kpi-big .unit { font-size:16px; font-weight:400; }
-.kpi-secondary { font-size:11px; color:var(--muted); margin-bottom:4px; line-height:1.4; }
-.kpi-sub-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.delta-up { font-size:10px; font-weight:600; background:var(--success-tint); color:var(--success); padding:1px 6px; border-radius:100px; }
-.delta-dn { font-size:10px; font-weight:600; background:var(--danger-tint); color:var(--danger); padding:1px 6px; border-radius:100px; }
-.kpi-bar-wrap { margin-top:12px; }
-.kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; }
-.kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
-
-/* ── MAIN LAYOUT 2/3 + 1/3 ── */
-.main-layout { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
-
-/* ── CARDS SHARED ── */
-.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
-.card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.card-title { font-size:13px; font-weight:600; color:var(--ink); }
-.card-sub { font-size:11px; color:var(--muted); margin-top:2px; }
-.card-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'DM Mono',monospace; }
-.cb-ok { background:var(--success-tint); color:var(--success); }
-.cb-bad { background:var(--danger-tint); color:var(--danger); }
-.cb-warn { background:var(--warning-tint); color:var(--warning); }
-.cb-savt { background:var(--c-savt-t); color:var(--c-savt); }
-.chart-tabs { display:flex; gap:4px; padding:12px 18px 0; }
-.ct-btn { font-size:11px; font-weight:500; padding:5px 14px; border-radius:7px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
-.ct-btn:hover { color:var(--ink); }
-.ct-btn.active { background:var(--c-savt-t); color:var(--c-savt); border-color:var(--c-savt); font-weight:600; }
-.chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 18px 10px; }
-.cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
-.cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
-
-/* ── TABLEAUX ── */
-.tbl-wrap { overflow-x:auto; }
-.tbl { width:100%; border-collapse:collapse; font-size:12px; }
-.tbl th { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; padding:9px 14px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
-.tbl th.center { text-align:center; }
-.tbl td { padding:11px 14px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; }
-.tbl td.center { text-align:center; }
-.tbl tbody tr:last-child td { border-bottom:none; }
-.tbl tbody tr:hover td { background:var(--surface2); }
-.num-mono { font-family:'DM Mono',monospace; font-size:12px; }
-.num-good { color:var(--success); font-weight:600; font-family:'DM Mono',monospace; }
-.num-warn { color:var(--warning); font-weight:600; font-family:'DM Mono',monospace; }
-.num-bad { color:var(--danger); font-weight:600; font-family:'DM Mono',monospace; }
-.badge-pill { display:inline-flex; align-items:center; padding:2px 9px; border-radius:100px; font-size:9px; font-weight:700; font-family:'DM Mono',monospace; white-space:nowrap; }
-.bp-ouvert { background:var(--danger-tint); color:var(--danger); }
-.bp-encours { background:var(--warning-tint); color:var(--warning); }
-.bp-resolu { background:var(--success-tint); color:var(--success); }
-.bp-attente { background:var(--c-savt-t); color:var(--c-savt); }
-.source-chip { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:600; padding:2px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
-.sc-client { background:var(--c-business-t); color:var(--c-business); }
-.sc-trans { background:var(--c-qtrans-t); color:var(--c-qtrans); }
-
-/* ── ALERT CARDS (feed litiges) ── */
-.alert-feed { display:flex; flex-direction:column; gap:0; overflow-y:auto; max-height:780px; }
-.alert-feed::-webkit-scrollbar { width:3px; }
-.alert-feed::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
-.alert-card {
-  padding:13px 16px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  border-left:3px solid transparent;
-  transition:background 0.12s;
-  position:relative;
-}
-.alert-card:last-child { border-bottom:none; }
-.alert-card:hover { background:var(--surface2); }
-.alert-card.critical { border-left-color:var(--danger); }
-.alert-card.warn { border-left-color:var(--warning); }
-.alert-card.info { border-left-color:var(--c-savt); }
-.alert-card-top { display:flex; align-items:flex-start; gap:8px; }
-.alert-icon { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-.alert-icon svg { width:12px; height:12px; }
-.alert-icon.critical { background:var(--danger-tint); }
-.alert-icon.warn { background:var(--warning-tint); }
-.alert-icon.info { background:var(--c-savt-t); }
-.alert-title { font-size:12px; font-weight:600; color:var(--ink); line-height:1.35; flex:1; }
-.alert-title.critical { color:var(--danger); }
-.alert-title.warn { color:var(--warning); }
-.alert-title.info { color:var(--c-savt); }
-.alert-desc { font-size:11px; color:var(--slate); line-height:1.5; padding-left:30px; }
-.alert-meta { display:flex; align-items:center; gap:6px; padding-left:30px; flex-wrap:wrap; }
-.alert-meta-chip { font-size:9px; font-family:'DM Mono',monospace; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:100px; padding:1px 7px; }
-.alert-meta-chip.amount { color:var(--ink); font-weight:600; }
-.alert-meta-chip.client { color:var(--c-business); background:var(--c-business-t); border-color:transparent; }
-.alert-actions { display:flex; gap:6px; padding-left:30px; flex-wrap:wrap; }
-.alert-btn { font-size:11px; font-weight:600; border:none; border-radius:6px; padding:5px 12px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.12s; }
-.alert-btn.primary { background:var(--danger-tint); color:var(--danger); }
-.alert-btn.primary:hover { background:var(--danger); color:white; }
-.alert-btn.warn-primary { background:var(--warning-tint); color:var(--warning); }
-.alert-btn.warn-primary:hover { background:var(--warning); color:white; }
-.alert-btn.info-primary { background:var(--c-savt-t); color:var(--c-savt); }
-.alert-btn.info-primary:hover { background:var(--c-savt); color:white; }
-.alert-btn.ghost { background:var(--surface2); color:var(--muted); }
-.alert-btn.ghost:hover { background:var(--border2); color:var(--ink); }
-/* Save CTA */
-.alert-btn.save { background:var(--violet-tint); color:var(--violet); border:1px solid var(--ai-border); }
-.alert-btn.save:hover { background:var(--violet); color:white; }
-.alert-btn.save.saved { background:var(--success-tint); color:var(--success); border-color:rgba(42,149,84,0.2); cursor:default; }
-
-/* Feed header avec compteur live */
-.feed-header { padding:12px 16px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.feed-title { font-size:12px; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:8px; }
-.feed-pulse { width:7px; height:7px; border-radius:50%; background:var(--danger); animation:pulse 1.6s infinite; }
-.feed-count { font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); }
-
-/* ── ANALYSES & ACTIONS ── */
-.block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
-.aa-col { background:var(--surface); border:1px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--card-shadow); min-height:280px; }
-.aa-head { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
-.aa-head-left { display:flex; align-items:center; gap:9px; }
-.aa-head-title { font-size:12px; font-weight:600; color:var(--ink); }
-.aa-head-sub { font-size:10px; color:var(--muted); font-family:'DM Mono',monospace; }
-.aa-head-badge { font-size:10px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 7px; border-radius:100px; font-family:'DM Mono',monospace; }
-.aa-body { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:7px; }
-.aa-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:12px; text-align:center; padding:20px; }
-.aa-empty svg { width:28px; height:28px; opacity:0.3; }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; transition:border-color 0.12s; }
-.analysis-item:hover { border-color:var(--primary); }
-.analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:4px; }
-.analysis-mod-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:4px; }
-.analysis-q { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; flex:1; }
-.analysis-archive-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
-.analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
-.analysis-archive-btn svg { width:11px; height:11px; }
-.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
-.analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
-.analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
-.analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
-.action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; display:flex; align-items:flex-start; gap:10px; transition:border-color 0.12s; }
-.action-item:hover { border-color:var(--violet); }
-.action-check { width:16px; height:16px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
-.action-check:hover { border-color:var(--success); background:var(--success-tint); }
-.action-check.done { border-color:var(--success); background:var(--success); }
-.action-check.done svg { display:block; } .action-check svg { display:none; width:9px; height:9px; }
-.action-text { flex:1; min-width:0; }
-.action-title { font-size:11px; font-weight:500; color:var(--ink); line-height:1.4; }
-.action-title.done-text { text-decoration:line-through; color:var(--muted); }
-.action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
-.action-controls { display:flex; align-items:center; gap:5px; flex-shrink:0; }
-.action-ctrl-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); }
-.action-ctrl-btn:hover { background:var(--surface); color:var(--ink); }
-.action-ctrl-btn svg { width:10px; height:10px; }
-.aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
-.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
-.aa-add-input:focus { border-color:var(--violet); }
-
-/* ── IA SAVE FEATURE ── */
 .conv-pill { display:none; align-items:center; gap:6px; margin:8px 16px 0; padding:5px 11px; background:var(--violet-tint); border:1px solid rgba(108,71,232,0.25); border-radius:100px; font-size:10px; color:var(--violet); font-weight:500; width:fit-content; }
 .conv-pill.visible { display:flex; }
 .conv-pill svg { width:11px; height:11px; }
@@ -364,8 +187,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .chat-saved-banner svg { width:13px; height:13px; }
 .chat-saved-banner .open-link { margin-left:auto; font-size:10px; font-weight:700; color:var(--success); text-decoration:underline; cursor:pointer; font-family:'DM Mono',monospace; }
 
-
-/* ── STOCKS SPECIFIQUE ── */
+/* ── KPI INSTANTANÉ ── */
 .kpi-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; position:relative; overflow:hidden; box-shadow:var(--card-shadow); transition:transform 0.15s; }
 .kpi-card:hover { transform:translateY(-2px); }
@@ -384,18 +206,22 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .kpi-big .unit { font-size:16px; font-weight:400; }
 .kpi-secondary { font-size:11px; color:var(--muted); margin-bottom:4px; line-height:1.4; }
 .kpi-sub-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.delta-dn  { font-size:10px; font-weight:600; background:var(--danger-tint);  color:var(--danger);  padding:1px 6px; border-radius:100px; }
-.delta-up  { font-size:10px; font-weight:600; background:var(--success-tint); color:var(--success); padding:1px 6px; border-radius:100px; }
-.delta-neu { font-size:10px; font-weight:600; background:var(--surface2); color:var(--slate); padding:1px 6px; border-radius:100px; }
+/* Remplace les deltas temporels par des indicateurs de seuil */
+.kpi-threshold { display:flex; align-items:center; gap:5px; font-size:10px; font-family:'DM Mono',monospace; }
+.kpi-threshold .lbl { color:var(--muted); }
+.kpi-threshold .val { font-weight:600; }
 .kpi-bar { height:3px; background:var(--border2); border-radius:100px; overflow:hidden; margin-top:12px; }
-.kpi-fill { height:100%; border-radius:100px; }
+.kpi-fill { height:100%; border-radius:100px; transition:width 0.6s ease; }
 
-/* SECTION SEPARATOR */
-.section-sep { display:flex; align-items:center; gap:10px; margin:4px 0 16px; }
-.section-sep-title { font-size:9px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; white-space:nowrap; }
+/* ── SECTION SEPARATOR ── */
+.section-sep { display:flex; align-items:center; gap:12px; margin:4px 0 0; }
+.section-sep-icon { width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.section-sep-icon svg { width:13px; height:13px; }
+.section-sep-title { font-size:11px; font-weight:700; color:var(--ink); letter-spacing:-0.01em; }
+.section-sep-sub { font-size:10px; color:var(--muted); margin-top:1px; }
 .section-sep-line { flex:1; height:1px; background:var(--border); }
 
-/* CARDS */
+/* ── CARDS ── */
 .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--card-shadow); overflow:hidden; }
 .card-head { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 .card-title { font-size:13px; font-weight:600; color:var(--ink); }
@@ -406,12 +232,13 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .cb-warn{ background:var(--warning-tint); color:var(--warning); }
 .cb-neu { background:var(--surface2); color:var(--slate); }
 
-/* GRID 50/50 */
-.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-/* GRID 2/3 + 1/3 */
-.g-pie { display:grid; grid-template-columns:2fr 1fr; gap:12px; }
+/* ── MINI KPI ── */
+.mini-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 18px; border-bottom:1px solid var(--border); }
+.mini-kpi { text-align:center; padding:10px; background:var(--surface2); border-radius:10px; border:1px solid var(--border); }
+.mini-kpi-val { font-size:22px; font-weight:300; letter-spacing:-0.03em; }
+.mini-kpi-lbl { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
 
-/* STOCK TABLE */
+/* ── TABLEAUX STOCKS ── */
 .stock-table { width:100%; border-collapse:collapse; font-size:12px; }
 .stock-table th { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); padding:9px 14px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface2); font-family:'DM Mono',monospace; white-space:nowrap; }
 .stock-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; font-size:12px; }
@@ -422,36 +249,34 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .td-mono { font-family:'DM Mono',monospace; font-size:11px; color:var(--slate); }
 .td-bold { font-weight:600; }
 
-/* BADGES */
+/* ── BADGES ── */
 .badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
 .bdg-d { background:var(--danger-tint);  color:var(--danger); }
 .bdg-w { background:var(--warning-tint); color:var(--warning); }
 .bdg-s { background:var(--success-tint); color:var(--success); }
 .bdg-g { background:var(--surface2); color:var(--muted); }
 
-/* DAYS CHIP */
+/* ── JOURS CHIP ── */
 .days-chip { display:inline-flex; align-items:center; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; font-family:'DM Mono',monospace; }
 .days-ok   { background:var(--success-tint); color:var(--success); }
 .days-warn { background:var(--warning-tint); color:var(--warning); }
 .days-bad  { background:var(--danger-tint);  color:var(--danger); }
 
-/* MINI-KPI row in card */
-.mini-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 18px; border-bottom:1px solid var(--border); }
-.mini-kpi { text-align:center; padding:10px; background:var(--surface2); border-radius:10px; border:1px solid var(--border); }
-.mini-kpi-val { font-size:22px; font-weight:300; letter-spacing:-0.03em; }
-.mini-kpi-lbl { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
-
-/* ROTATION THRESHOLD CONTROL */
+/* ── ROTATION SLIDER ── */
 .threshold-ctrl { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:6px 12px; font-size:12px; }
 .threshold-ctrl input[type=range] { width:80px; accent-color:var(--danger); cursor:pointer; }
 .threshold-val { font-family:'DM Mono',monospace; font-weight:700; color:var(--danger); min-width:36px; text-align:center; font-size:13px; }
 
-/* CHART LEGEND */
+/* ── GRAPHES ── */
 .chart-legend { display:flex; gap:16px; flex-wrap:wrap; padding:4px 18px 10px; }
 .cl-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
 .cl-dot { width:10px; height:3px; border-radius:100px; flex-shrink:0; }
+.g-pie { display:grid; grid-template-columns:2fr 1fr; gap:12px; }
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+.g-hist { display:grid; grid-template-columns:2fr 1fr; gap:12px; align-items:start; }
+.g-hist3 { display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; align-items:start; }
 
-/* ANALYSES & ACTIONS */
+/* ── ANALYSE & ACTIONS ── */
 .block-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:280px; }
 .aa-col { background:var(--surface); border:1px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--card-shadow); min-height:280px; }
 .aa-head { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
@@ -470,7 +295,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .analysis-archive-btn { width:20px; height:20px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.12s; color:var(--muted); }
 .analysis-archive-btn:hover { background:var(--danger-tint); border-color:var(--danger); color:var(--danger); }
 .analysis-archive-btn svg { width:11px; height:11px; }
-.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; }
+.analysis-answer { font-size:10px; color:var(--slate); line-height:1.5; margin-top:2px; }
 .analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
 .analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
 .analysis-src  { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
@@ -489,46 +314,59 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .action-ctrl-btn:hover { background:var(--surface); color:var(--ink); }
 .action-ctrl-btn svg { width:10px; height:10px; }
 .aa-add-row { padding:8px 12px; border-top:1px solid var(--border); flex-shrink:0; }
-.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',monospace; outline:none; transition:border-color 0.15s; }
+.aa-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
 .aa-add-input:focus { border-color:var(--violet); }
+/* ════ IA DOCK v4 — Full Height ════ */
 
-/* IA SAVE */
-.conv-pill { display:none; align-items:center; gap:6px; margin:8px 16px 0; padding:5px 11px; background:var(--violet-tint); border:1px solid rgba(108,71,232,0.25); border-radius:100px; font-size:10px; color:var(--violet); font-weight:500; width:fit-content; }
-.conv-pill.visible { display:flex; }
-.conv-pill svg { width:11px; height:11px; }
-.conv-pill-close { margin-left:6px; cursor:pointer; opacity:0.6; }
-.chat-save-bar { display:flex; align-items:center; justify-content:space-between; padding:9px 16px; border-top:1px solid var(--border); background:var(--surface2); }
-.chat-save-bar.hidden { display:none; }
-.chat-save-hint { font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-.chat-save-hint svg { width:13px; height:13px; }
-.chat-save-btn { display:flex; align-items:center; gap:7px; background:var(--violet); color:white; border:none; border-radius:8px; padding:7px 16px; font-size:12px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; }
-.chat-save-btn:hover { opacity:0.88; }
-.chat-save-btn.saved { background:var(--success); cursor:default; }
-.chat-save-btn svg { width:13px; height:13px; }
-.chat-saved-banner { display:none; align-items:center; gap:8px; padding:7px 16px; background:var(--success-tint); border-top:1px solid rgba(42,149,84,0.2); font-size:11px; color:var(--success); font-weight:500; }
-.chat-saved-banner.visible { display:flex; }
-.chat-saved-banner .open-link { margin-left:auto; font-size:10px; font-weight:700; color:var(--success); text-decoration:underline; cursor:pointer; font-family:'DM Mono',monospace; }
+:root { --dock-left: 220px; --dock-shadow: 0 -4px 32px rgba(0,0,0,0.10); }
+@media (max-width:640px) { :root { --dock-left: 0px; } }
+.ia-dock-anchor {
+  position: fixed;
+  bottom: 0;
+  left: var(--dock-left);
+  right: 0;
+  z-index: 150; /* sous .sidenav (z:200), sous .nav-overlay (z:190) */
+  pointer-events: none;
+}
+.ia-dock-inner {
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
 
-/* ── GRAIN TRANSITION ── */
-.grain-flash { animation: grainFade 0.22s ease; }
-@keyframes grainFade { 0%{opacity:0.3} 100%{opacity:1} }
+/* ── SIGNAL IA (zone flottante au-dessus du dock) ── */
+.ia-signal-zone {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
 
-/* ── IA DOCK ANCHOR & FULL DOCK SYSTEM ── */
-:root { --dock-left: 220px; --dock-shadow: 0 -4px 24px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.06); }
-[data-theme="dark"] { --dock-shadow: 0 -4px 24px rgba(0,0,0,0.35), 0 -1px 0 rgba(255,255,255,0.04); }
-@media (max-width: 640px) { :root { --dock-left: 0px; } }
-.ia-dock-anchor { position:fixed; bottom:0; left:var(--dock-left); right:0; z-index:150; pointer-events:none; }
-.ia-dock-inner { width:100%; pointer-events:none; display:flex; flex-direction:column; }
-.ia-signal-zone { pointer-events:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:6px; }
-.signal-ia { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--dock-shadow); position:relative; pointer-events:auto; animation:signalIn 0.35s ease both; }
+/* Signal card */
+.signal-ia {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--dock-shadow);
+  position: relative;
+  pointer-events: auto;
+  animation: signalIn 0.35s ease both;
+}
 @keyframes signalIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
-.signal-ia.dismissing { animation:signalOut 0.28s ease forwards; }
+.signal-ia.dismissing { animation: signalOut 0.28s ease forwards; }
 @keyframes signalOut { to{opacity:0;transform:translateY(-6px);max-height:0;overflow:hidden;} }
-.signal-ia::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0; }
-.signal-ia[data-severity="danger"]::before  { background:var(--danger); }
-.signal-ia[data-severity="warning"]::before { background:var(--warning); }
-.signal-ia[data-severity="info"]::before    { background:var(--primary); }
-.signal-ia[data-severity="success"]::before { background:var(--success); }
+.signal-ia::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0;
+}
+.signal-ia[data-severity="danger"]::before  { background: var(--danger); }
+.signal-ia[data-severity="warning"]::before { background: var(--warning); }
+.signal-ia[data-severity="info"]::before    { background: var(--primary); }
+.signal-ia[data-severity="success"]::before { background: var(--success); }
+
+/* Signal head */
 .signal-ia-head { display:flex; align-items:center; justify-content:space-between; padding:11px 14px 9px; gap:10px; }
 .signal-ia-head-left { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
 .signal-ia-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -541,8 +379,12 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .signal-ia[data-severity="warning"] .signal-ia-icon svg { stroke:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-icon svg { stroke:var(--primary); }
 .signal-ia[data-severity="success"] .signal-ia-icon svg { stroke:var(--success); }
+
 .signal-ia-meta { min-width:0; flex:1; }
-.signal-ia-source { font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px; }
+.signal-ia-source {
+  font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  font-family:'DM Mono',monospace; display:flex; align-items:center; gap:5px; margin-bottom:1px;
+}
 .signal-ia[data-severity="danger"]  .signal-ia-source { color:var(--danger); }
 .signal-ia[data-severity="warning"] .signal-ia-source { color:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-source { color:var(--primary); }
@@ -552,90 +394,194 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .signal-ia[data-severity="warning"] .signal-ia-source-dot { background:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-source-dot { background:var(--primary); }
 .signal-ia[data-severity="success"] .signal-ia-source-dot { background:var(--success); }
+
 .signal-ia-text-inline { font-size:12px; color:var(--ink); line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .signal-ia-text-inline strong { font-weight:600; }
 .signal-ia[data-severity="danger"]  .signal-ia-text-inline strong { color:var(--danger); }
 .signal-ia[data-severity="warning"] .signal-ia-text-inline strong { color:var(--warning); }
 .signal-ia[data-severity="info"]    .signal-ia-text-inline strong { color:var(--primary); }
+
 .signal-ia-head-right { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+
+/* Signal body (reco — toujours visible) */
 .signal-ia-reco { padding:0 14px 12px; display:block; }
 .signal-ia-reco-inner { background:var(--violet-tint); border:1px solid rgba(108,71,232,0.15); border-radius:10px; padding:9px 12px; }
 [data-theme="dark"] .signal-ia-reco-inner { border-color:rgba(167,139,255,0.18); }
-.signal-ia-reco-head { display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--violet); font-family:'DM Mono',monospace; margin-bottom:5px; }
+.signal-ia-reco-head {
+  display:flex; align-items:center; gap:5px; font-size:9px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--violet);
+  font-family:'DM Mono',monospace; margin-bottom:5px;
+}
 .signal-ia-reco-head svg { width:10px; height:10px; }
 .signal-ia-reco-body { font-size:11.5px; color:var(--ink); line-height:1.6; }
 .signal-ia-reco-body strong { color:var(--violet); font-weight:600; }
-.signal-ia-btn { font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif; padding:5px 12px; border-radius:100px; border:none; cursor:pointer; display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap; }
+
+/* Signal buttons */
+.signal-ia-btn {
+  font-size:11px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif;
+  padding:5px 12px; border-radius:100px; border:none; cursor:pointer;
+  display:flex; align-items:center; gap:4px; transition:all 0.12s; white-space:nowrap;
+}
 .signal-ia-btn svg { width:10px; height:10px; }
 .signal-ia-btn-primary { background:var(--violet); color:white; }
 .signal-ia-btn-primary:hover { background:#5535D0; }
 .signal-ia-btn-save { background:var(--surface2); border:1px solid var(--border2); color:var(--slate); }
 .signal-ia-btn-save:hover { background:var(--violet-tint); border-color:rgba(108,71,232,0.2); color:var(--violet); }
 .signal-ia-btn-save.saved { background:var(--success-tint); border-color:rgba(42,149,84,0.2); color:var(--success); cursor:default; }
-.signal-ia-dismiss { width:22px; height:22px; border-radius:6px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0; }
+.signal-ia-dismiss {
+  width:22px; height:22px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--muted); transition:all 0.12s; flex-shrink:0;
+}
 .signal-ia-dismiss:hover { background:var(--surface2); color:var(--ink); }
 .signal-ia-dismiss svg { width:11px; height:11px; }
-.ia-dock { pointer-events:auto; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:0; box-shadow:var(--dock-shadow); transition:background 0.25s,border-color 0.25s; overflow:hidden; display:flex; flex-direction:column-reverse; }
-.ia-dock-bar { display:flex; align-items:stretch; min-height:52px; border-top:1px solid var(--border); }
-.ia-dock-zone { display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--border); min-width:0; flex-shrink:0; }
-.ia-dock-zone.ia-dock-input-zone { flex:1; flex-shrink:1; min-width:0; order:10; border-right:none; gap:8px; }
-.ia-dock-toggle { order:11; }
-.ia-dock-zone:first-child { order:0; }
-.ia-dock-zone:last-child { border-right:none; }
+
+/* ═══════════════════════════════════════════
+   DOCK PRINCIPAL
+   ═══════════════════════════════════════════ */
+.ia-dock {
+  pointer-events: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: var(--dock-shadow);
+  transition: background 0.25s, border-color 0.25s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse; /* barre EN BAS, corps AU-DESSUS */
+}
+
+/* ── BARRE PRINCIPALE (toujours visible) ──
+   Ordre visuel : [brand] [Analyses] [Actions] [champ IA →] [toggle]
+   Le champ utilise order:10 pour se positionner après les previews
+   sans modifier l'ordre DOM.
+*/
+.ia-dock-bar {
+  display: flex;
+  align-items: stretch;
+  min-height: 52px;
+  border-top: 1px solid var(--border);
+}
+.ia-dock-zone {
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  min-width: 0; flex-shrink: 0;
+}
+.ia-dock-zone.ia-dock-input-zone {
+  flex: 1; flex-shrink: 1; min-width: 0;
+  order: 10; border-right: none;
+  gap: 8px;
+}
+.ia-dock-toggle { order: 11; }
+.ia-dock-zone:first-child { order: 0; }
+.ia-dock-zone:last-child { border-right: none; }
+
+/* Brand */
 .ia-dock-brand { display:flex; align-items:center; gap:9px; }
 .ia-dock-av { width:28px; height:28px; border-radius:8px; background:var(--violet); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .ia-dock-av svg { width:14px; height:14px; }
 .ia-dock-label { font-size:11px; font-weight:600; color:var(--ink); white-space:nowrap; }
 .ia-dock-status { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--success); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
 .ia-status-dot { width:5px; height:5px; border-radius:50%; background:var(--success); animation:pulse 1.6s infinite; }
-.ia-dock-input-wrap { flex:1; display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border2); border-radius:100px; padding:7px 14px; transition:border-color 0.15s,background 0.25s; }
+
+/* Champ de saisie */
+.ia-dock-input-wrap {
+  flex:1; display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:100px; padding:7px 14px;
+  transition:border-color 0.15s, background 0.25s;
+}
 .ia-dock-input-wrap:focus-within { border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-tint); }
 .ia-dock-input { flex:1; background:none; border:none; outline:none; font-size:12.5px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); }
 .ia-dock-input::placeholder { color:var(--muted); }
-.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s,transform 0.12s; }
+.ia-dock-send { width:26px; height:26px; border-radius:50%; background:var(--violet); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.35; transition:opacity 0.15s, transform 0.12s; }
 .ia-dock-send.ready { opacity:1; }
 .ia-dock-send:hover.ready { transform:scale(1.08); }
 .ia-dock-send svg { width:11px; height:11px; }
-.ia-saved-pill { display:none; align-items:center; gap:5px; font-size:10px; font-weight:500; color:var(--success); background:var(--success-tint); border:1px solid rgba(42,149,84,0.2); border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+
+/* Pill "Enregistrée" */
+.ia-saved-pill {
+  display:none; align-items:center; gap:5px;
+  font-size:10px; font-weight:500; color:var(--success);
+  background:var(--success-tint); border:1px solid rgba(42,149,84,0.2);
+  border-radius:100px; padding:3px 9px; font-family:'DM Mono',monospace;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
 .ia-saved-pill.visible { display:flex; }
 .ia-saved-pill svg { width:10px; height:10px; }
-.ia-dock-preview { align-items:center !important; flex-direction:row; justify-content:flex-start; padding:0 16px !important; cursor:pointer; gap:10px; width:200px; flex-shrink:0; transition:background 0.12s; }
+
+/* Zones preview (Analyses / Actions) dans la barre */
+.ia-dock-preview {
+  align-items:center !important; flex-direction:row;
+  justify-content:flex-start; padding:0 16px !important;
+  cursor:pointer; gap:10px; width:200px; flex-shrink:0;
+  transition:background 0.12s;
+}
 .ia-dock-preview:hover { background:rgba(0,0,0,0.025); }
 [data-theme="dark"] .ia-dock-preview:hover { background:rgba(255,255,255,0.03); }
 .ia-dock-preview-head { display:flex; align-items:center; gap:10px; width:100%; }
 .ia-dock-preview-title { font-size:10px; font-weight:600; color:var(--slate); font-family:'Plus Jakarta Sans',sans-serif; display:flex; align-items:center; gap:6px; white-space:nowrap; }
 .ia-dock-preview-title svg { width:13px; height:13px; opacity:0.6; }
-.ia-dock-preview-items { display:none !important; }
-.ia-dock-preview-input-row { display:none !important; }
+.ia-dock-preview-items { display:none !important; }  /* toujours masqués */
+.ia-dock-preview-input-row { display:none !important; } /* toujours masqués */
+
+/* Badges */
 .ia-count { font-size:9px; font-weight:700; background:var(--primary-tint); color:var(--primary); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
 .ia-count-action { font-size:9px; font-weight:700; background:var(--violet-tint); color:var(--violet); padding:1px 6px; border-radius:100px; font-family:'DM Mono',monospace; }
+
+/* Toggle */
 .ia-dock-toggle { width:44px; flex-shrink:0; border:none; border-left:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.12s; }
 .ia-dock-toggle:hover { background:var(--surface2); color:var(--ink); }
 .ia-dock-toggle svg { width:14px; height:14px; transition:transform 0.25s; transform:rotate(180deg); }
 .ia-dock.open .ia-dock-toggle svg { transform:rotate(0deg); }
 .ia-dock.fullpage .ia-dock-toggle svg { transform:rotate(0deg); }
+/* Onglets dans la barre principale — indicateur en haut, pas de fond actif */
 .ia-bar-tab { height:100%; border-bottom:none !important; border-top:2px solid transparent; }
 .ia-bar-tab.active { border-top-color:var(--primary); border-bottom:none !important; background:none !important; }
+
+/* ── CORPS EXPANDABLE ── */
 .ia-dock-body { overflow:hidden; max-height:0; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1); border-bottom:1px solid var(--border); }
 .ia-dock.open .ia-dock-body { max-height:360px; }
-.ia-dock.fullpage .ia-dock-body { max-height:calc(100vh - 52px); overflow-y:auto; }
-.ia-dock.fullpage .ia-dock-panel { height:calc(100vh - 52px - 38px); }
+/* Full-page : le panel s'étend jusqu'sous la topbar */
+.ia-dock.fullpage .ia-dock-body { max-height:calc(100vh - 52px - 52px); overflow-y:auto; }
+
+/* Tabbar */
 .ia-dock-tabs { display:flex; align-items:stretch; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
-.ia-dock-tab-btn { display:flex; align-items:center; gap:7px; padding:0 20px; height:38px; font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0; }
+.ia-dock-tab-btn {
+  display:flex; align-items:center; gap:7px; padding:0 20px; height:38px;
+  font-size:12px; font-weight:500; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif;
+  background:none; border:none; border-bottom:2px solid transparent;
+  cursor:pointer; transition:all 0.12s; white-space:nowrap; flex-shrink:0;
+}
 .ia-dock-tab-btn svg { width:13px; height:13px; opacity:0.6; }
 .ia-dock-tab-btn:hover { color:var(--ink); }
 .ia-dock-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); background:var(--surface); }
 .ia-dock-tab-btn.active svg { opacity:1; }
-.ia-dock-tab-btn .ia-count, .ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+.ia-dock-tab-btn .ia-count,
+.ia-dock-tab-btn .ia-count-action { margin-left:2px; }
+
+/* Panneaux */
 .ia-dock-panel { display:none; flex-direction:column; height:322px; overflow:hidden; }
 .ia-dock-panel.active { display:flex; }
+/* Full-page : le panneau prend toute la hauteur dispo */
+.ia-dock.fullpage .ia-dock-panel { height:calc(100vh - 52px - 52px - 38px); } /* topbar + dock-bar + tabbar */
+
+/* Scroll générique panneau */
 .ia-dock-panel-scroll { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:9px; }
 .ia-dock-panel-scroll::-webkit-scrollbar { width:3px; }
 .ia-dock-panel-scroll::-webkit-scrollbar-thumb { background:var(--border2); border-radius:100px; }
+
+/* Section head dans panneau fusionné */
 .ia-merged-section-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px 6px; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; }
 .ia-merged-section-title { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:6px; }
 .ia-merged-section-title svg { width:10px; height:10px; }
+
+/* Footer panneau */
 .ia-dock-panel-footer { flex-shrink:0; border-top:1px solid var(--border); background:var(--surface2); padding:8px 14px; }
+
+/* ── Messages conversation ── */
 .ia-msg-user { align-self:flex-end; max-width:88%; background:var(--violet); color:white; border-radius:12px 12px 3px 12px; padding:8px 12px; font-size:11.5px; line-height:1.5; }
 .ia-msg-ai-wrap { align-self:flex-start; width:100%; display:flex; flex-direction:column; gap:5px; }
 .ia-msg-ai-meta { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; display:flex; align-items:center; gap:4px; }
@@ -645,13 +591,18 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .ia-msg-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; align-self:flex-end; }
 .ia-typing { display:flex; align-items:center; gap:4px; padding:8px 12px; background:var(--surface2); border:1px solid var(--border); border-radius:3px 12px 12px 12px; width:fit-content; }
 .ia-tdot { width:5px; height:5px; border-radius:50%; background:var(--violet); animation:pulse 1.2s infinite; }
-.ia-tdot:nth-child(2) { animation-delay:0.2s; } .ia-tdot:nth-child(3) { animation-delay:0.4s; }
+.ia-tdot:nth-child(2) { animation-delay:0.2s; }
+.ia-tdot:nth-child(3) { animation-delay:0.4s; }
+
+/* Suggestions */
 .ia-dock-sugg { padding:7px 12px 8px; border-top:1px solid var(--border); flex-shrink:0; display:flex; flex-direction:column; gap:4px; background:var(--surface2); }
 .ia-sugg-label { font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:2px; }
 .ia-sugg { display:flex; align-items:center; gap:6px; padding:5px 8px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); font-size:11px; color:var(--slate); cursor:pointer; transition:all 0.12s; }
 .ia-sugg:hover { border-color:var(--violet); background:var(--violet-tint); color:var(--ink); }
 .ia-sugg-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
-.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; cursor:pointer; transition:border-color 0.12s,box-shadow 0.25s; }
+
+/* ── Analyses ── */
+.analysis-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; cursor:pointer; transition:border-color 0.12s, box-shadow 0.25s; }
 .analysis-item:hover { border-color:var(--primary); }
 .analysis-item.highlight { border-color:var(--violet) !important; box-shadow:0 0 0 3px var(--violet-tint); }
 .analysis-item-head { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; margin-bottom:3px; }
@@ -664,6 +615,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .analysis-footer { display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
 .analysis-time { font-size:9px; color:var(--muted); font-family:'DM Mono',monospace; }
 .analysis-src { font-size:9px; color:var(--primary); font-family:'DM Mono',monospace; }
+
+/* ── Actions ── */
 .action-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 10px; display:flex; align-items:flex-start; gap:9px; transition:border-color 0.12s; }
 .action-item:hover { border-color:var(--violet); }
 .action-check { width:15px; height:15px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
@@ -676,45 +629,54 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .action-meta { font-size:9px; color:var(--muted); margin-top:2px; font-family:'DM Mono',monospace; }
 .action-ctrl-btn { width:18px; height:18px; border-radius:5px; border:1px solid var(--border2); background:transparent; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.12s; color:var(--muted); flex-shrink:0; }
 .action-ctrl-btn svg { width:10px; height:10px; }
+
+/* Champ ajout action */
 .ia-dock-add-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color 0.15s; }
 .ia-dock-add-input:focus { border-color:var(--violet); }
+
+/* Empty state */
 .dock-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:11px; text-align:center; padding:16px; }
 .dock-empty svg { width:24px; height:24px; opacity:0.3; }
+
+/* ============================================================
+   FIN DU COMPOSANT — styles page de documentation ci-dessous
+   ============================================================ */
+
 </style>
 </head>
 <body>
 
+<!-- ══ SIDENAV ══ -->
 <aside class="sidenav">
   <div class="nav-brand">
-    <div class="nav-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div>
-      <div class="nav-brand-name"><strong>elo</strong>·e-logik</div>
-
+    <div class="nav-brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     </div>
+    <div class="nav-brand-name"><strong>elo</strong>·e-logik</div>
   </div>
   <div class="nav-section">Principal</div>
-  <div class="nav-item" onclick="location.href='home.html'" style="cursor:pointer;">
+  <div class="nav-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
     Tableau de bord
   </div>
   <div class="nav-section">Modules</div>
-  <div class="nav-item" onclick="location.href='business.html'" style="cursor:pointer;">
+  <div class="nav-item">
     <div class="nav-mod-icon" style="background:var(--c-business-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-business)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
     Business
   </div>
-  <div class="nav-item" onclick="location.href='preparation.html'" style="cursor:pointer;">
+  <div class="nav-item">
     <div class="nav-mod-icon" style="background:var(--c-qlog-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qlog)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-    Préparation
+    Qualité logistique
   </div>
-  <div class="nav-item" onclick="location.href='transport.html'" style="cursor:pointer;">
+  <div class="nav-item">
     <div class="nav-mod-icon" style="background:var(--c-qtrans-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-qtrans)"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-    Transports
+    Qualité transport
   </div>
-  <div class="nav-item" onclick="location.href='litiges.html'" style="cursor:pointer;">
+  <div class="nav-item">
     <div class="nav-mod-icon" style="background:var(--c-savt-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savt)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-    Litiges <span class="nav-badge">47</span>
+    Litiges transport <span class="nav-badge">12</span>
   </div>
-  <div class="nav-item" onclick="location.href='retours.html'" style="cursor:pointer;">
+  <div class="nav-item" style="opacity:0.45;cursor:default">
     <div class="nav-mod-icon" style="background:var(--c-savl-t)"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke="var(--c-savl)"><path d="M21 10V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l2-1.14"/><polyline points="16.5 9.4 7.55 4.24"/><path d="M12 22V12M3.29 7L12 12l8.71-5"/></svg></div>
     Retours <span class="nav-badge-warn">24</span>
   </div>
@@ -735,129 +697,118 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ══ MAIN ══ -->
 <div class="main">
+
+  <!-- TOPBAR : surface simple, zéro grain -->
   <div class="topbar">
     <div class="breadcrumb">
       <span class="bc-parent">elogik</span><span class="bc-sep">/</span><span class="bc-current">Stocks</span>
     </div>
     <div class="topbar-right">
-      <div class="time-selector">
-        <button class="ts-btn" onclick="setPeriod(this)">Jour</button>
-        <button class="ts-btn active" onclick="setPeriod(this)">Semaine</button>
-        <button class="ts-btn" onclick="setPeriod(this)">Mois</button>
-        <button class="ts-btn" onclick="setPeriod(this)">Année</button>
-      </div>
-      <div class="date-wrap">
-        <button class="date-picker-btn" onclick="toggleCal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span id="dpLabel">17 – 23 mars</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="cal-dropdown" id="calDrop">
-          <div class="cal-nav">
-            <button class="cal-nav-btn" onclick="moveMonth(-1)">&#x2039;</button>
-            <span class="cal-month-lbl" id="calMonth">Mars 2025</span>
-            <button class="cal-nav-btn" onclick="moveMonth(1)">&#x203a;</button>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-          <div class="cal-range-info" id="rangeInfo">Sélectionnez une plage de dates</div>
-          <div class="cal-footer">
-            <button class="cal-action" onclick="toggleCal()">Annuler</button>
-            <button class="cal-action primary" onclick="applyRange()">Appliquer</button>
-          </div>
-        </div>
-      </div>
       <button class="theme-btn" onclick="toggleTheme()">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
         Mode sombre
       </button>
+      <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
     </div>
   </div>
 
   <div class="content">
 
-  <!-- ══ KPI ══ -->
-  <div>
-    <div style="margin-bottom:14px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px">Module</div>
-      <div style="font-size:20px;font-weight:300;letter-spacing:-0.03em;color:var(--ink)"><span style="color:var(--c-stocks)">Stocks</span> — Indicateurs clés</div>
-      <div id="page-sub" style="font-size:12px;color:var(--muted);margin-top:3px">Semaine 17–23 mars 2025 · tous entrepôts · toutes références</div>
+    <!-- ══ PAGE HEADER ══ -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-eyebrow">Module</div>
+        <div class="page-title"><span>Stocks</span> — Photographie instantanée</div>
+      </div>
+      <div class="freshness-bar">
+        <div class="fresh-live"><div class="fresh-pulse"></div>Temps réel</div>
+        <div class="fresh-sep"></div>
+        <div class="fresh-time">Màj : <strong id="freshTimestamp">—</strong></div>
+
+      </div>
     </div>
+
+    <!-- ══ #1 — 3 CARTES KPI ══ -->
     <div class="kpi-grid-3">
-      <!-- Ruptures proches -->
-      <div class="kpi-card" style="--module-color:var(--warning)">
+
+      <!-- KPI 1 : Volume total -->
+      <div class="kpi-card" style="--module-color:var(--c-stocks)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="kpi-label">Ruptures proches</div><div class="kpi-label-sub">Seuil alerte atteint</div></div>
+            <div class="kpi-mod-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
+            <div>
+              <div class="kpi-label">Total en stock</div>
+              <div class="kpi-label-sub">Unités · toutes références</div>
+            </div>
           </div>
-          <span id="kpi-alert-badge" class="kpi-status-badge warn">&#x26A0; À surveiller</span>
+          <span class="kpi-status-badge ok">✓ Nominal</span>
         </div>
-        <div id="kpi-alert-big" class="kpi-big" style="color:var(--warning)">14<span class="unit"> réf.</span></div>
-        <div id="kpi-alert-sec" class="kpi-secondary">stock &#x2264; seuil d'alerte · risque sous 7 jours</div>
-        <div id="kpi-alert-delta" class="kpi-sub-row"><span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div id="kpi-alert-fill" class="kpi-fill" style="background:var(--warning);width:46%"></div></div>
+        <div class="kpi-big" style="color:var(--c-stocks)">24 480<span class="unit"> u.</span></div>
+        <div class="kpi-secondary">
+          <span style="color:var(--ink);font-weight:600">334</span> références disponibles &nbsp;·&nbsp; <span style="color:var(--ink);font-weight:600">287</span> actives sur OMS
+        </div>
+        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--c-stocks);width:73%"></div></div>
       </div>
-      <!-- Ruptures actives -->
+
+      <!-- KPI 2 : Ruptures actives -->
       <div class="kpi-card" style="--module-color:var(--danger)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-            <div><div class="kpi-label">Ruptures actives</div><div class="kpi-label-sub">Stock &#x3D; 0 ou critique</div></div>
+            <div class="kpi-mod-icon" style="background:var(--danger-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div>
+              <div class="kpi-label">Ruptures actives</div>
+              <div class="kpi-label-sub">Stock = 0 ou &lt; seuil critique</div>
+            </div>
           </div>
-          <span id="kpi-rupt-badge" class="kpi-status-badge bad">&#x26A0; Action requise</span>
+          <span class="kpi-status-badge bad">⚡ Urgent</span>
         </div>
-        <div id="kpi-rupt-big" class="kpi-big" style="color:var(--danger)">8<span class="unit"> réf.</span></div>
-        <div id="kpi-rupt-sec" class="kpi-secondary">dont 2 à stock zéro · impact commandes directes</div>
-        <div id="kpi-rupt-delta" class="kpi-sub-row"><span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div id="kpi-rupt-fill" class="kpi-fill" style="background:var(--danger);width:62%"></div></div>
+        <div class="kpi-big" style="color:var(--danger)">8<span class="unit"> réf.</span></div>
+        <div class="kpi-secondary">Dont 2 références à fort volume — impact commandes direct</div>
+        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--danger);width:100%"></div></div>
       </div>
-      <!-- Produits en stock vs CMS -->
-      <div class="kpi-card" style="--module-color:var(--success)">
+
+      <!-- KPI 3 : Seuils d'alerte atteints -->
+      <div class="kpi-card" style="--module-color:var(--warning)">
         <div class="kpi-header">
           <div class="kpi-label-wrap">
-            <div class="kpi-mod-icon" style="background:var(--success-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9" y1="14.5" x2="15" y2="14.5"/></svg></div>
-            <div><div class="kpi-label">Produits en stock</div><div class="kpi-label-sub">vs. actifs sur CMS</div></div>
+            <div class="kpi-mod-icon" style="background:var(--warning-tint)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div>
+              <div class="kpi-label">Ruptures prochaines</div>
+              <div class="kpi-label-sub">Seuil d'alerte atteint</div>
+            </div>
           </div>
-          <span id="kpi-stock-badge" class="kpi-status-badge ok">&#x2713; Cohérent</span>
+          <span class="kpi-status-badge warn">⚠ À surveiller</span>
         </div>
-        <div id="kpi-stock-big" class="kpi-big" style="color:var(--success)">334 <span class="unit">/ 342</span></div>
-        <div id="kpi-stock-sec" class="kpi-secondary">8 réf. actives sur CMS sans stock · 97.7% couverture</div>
-        <div id="kpi-stock-delta" class="kpi-sub-row"><span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine précédente</span></div>
-        <div class="kpi-bar"><div id="kpi-stock-fill" class="kpi-fill" style="background:var(--success);width:97.7%"></div></div>
+        <div class="kpi-big" style="color:var(--warning)">14<span class="unit"> réf.</span></div>
+        <div class="kpi-secondary">Couverture estimée &lt; 7 jours au rythme actuel</div>
+        <div class="kpi-bar"><div class="kpi-fill" style="background:var(--warning);width:46%"></div></div>
       </div>
     </div>
-  </div>
 
-  <!-- ══ SEPARATEUR STOCKS & RUPTURES ══ -->
-  <div class="section-sep">
-    <div class="section-sep-title">Stocks &amp; Ruptures</div>
-    <div class="section-sep-line"></div>
-  </div>
+    <!-- ══ #2 — TABLEAUX ══ -->
+    <div class="section-sep">
+      <div class="section-sep-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+      <div>
+        <div class="section-sep-title">Niveaux de stock</div>
+        <div class="section-sep-sub">État temps réel par référence · stock disponible, réservé et couverture</div>
+      </div>
+      <div class="section-sep-line"></div>
+    </div>
 
-  <!-- ══ BLOC 1 : STOCK-OUT + ROTATION ══ -->
-  <div class="g2">
-
-    <!-- Block 1 : Stock-out rate -->
+    <!-- Tableau pleine largeur : niveaux de stock par référence -->
     <div class="card">
       <div class="card-head">
-        <div><div class="card-title">Stock-out rate — Ruptures</div><div class="card-sub">Références en rupture ou à risque</div></div>
-        <span class="card-badge cb-bad" id="stockout-count">8 ruptures</span>
-      </div>
-      <div class="mini-kpi-row">
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--danger)" id="so-critical">8</div>
-          <div class="mini-kpi-lbl">Rupture</div>
+        <div>
+          <div class="card-title">Niveaux de stock par référence</div>
+          <div class="card-sub">Stock disponible · réservé · jours restants · statut instantané</div>
         </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--warning)" id="so-alert">14</div>
-          <div class="mini-kpi-lbl">Seuil atteint</div>
-        </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--success)" id="so-ok">312</div>
-          <div class="mini-kpi-lbl">OK</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="card-badge cb-bad" id="nbRuptures">8 ruptures</span>
+          <span class="card-badge cb-warn" id="nbAlertes">14 alertes</span>
+          <span class="card-badge cb-ok">312 OK</span>
         </div>
       </div>
       <div style="overflow-x:auto">
@@ -866,586 +817,325 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
             <tr>
               <th>Référence</th>
               <th>Désignation</th>
-              <th>Stock</th>
+              <th>Disponible</th>
+              <th>Réservé</th>
               <th>Seuil</th>
+              <th>Jours restants</th>
               <th>Statut</th>
             </tr>
           </thead>
           <tbody>
             <tr class="stock-alert-row">
-              <td class="td-mono">COS-10421</td>
-              <td class="td-bold">Shampoing Hydra+ 250ml</td>
-              <td class="td-mono" style="color:var(--danger)">0</td>
-              <td class="td-mono">50</td>
+              <td class="td-mono">COS-10421</td><td class="td-bold">Shampoing Hydra+ 250ml</td>
+              <td class="td-mono" style="color:var(--danger);font-weight:700">0 u</td>
+              <td class="td-mono">12 u</td><td class="td-mono">50 u</td>
+              <td><span class="days-chip days-bad">0 j</span></td>
               <td><span class="badge bdg-d">Rupture</span></td>
             </tr>
             <tr class="stock-alert-row">
-              <td class="td-mono">COS-10187</td>
-              <td class="td-bold">Mousse coiffante Volume 150ml</td>
-              <td class="td-mono" style="color:var(--danger)">3</td>
-              <td class="td-mono">20</td>
+              <td class="td-mono">COS-10187</td><td class="td-bold">Mousse coiffante Volume 150ml</td>
+              <td class="td-mono" style="color:var(--danger);font-weight:700">3 u</td>
+              <td class="td-mono">3 u</td><td class="td-mono">20 u</td>
+              <td><span class="days-chip days-bad">&lt; 1 j</span></td>
               <td><span class="badge bdg-d">Rupture</span></td>
             </tr>
             <tr class="stock-alert-row">
-              <td class="td-mono">COS-10822</td>
-              <td class="td-bold">Laque Brillance Extra 300ml</td>
-              <td class="td-mono" style="color:var(--danger)">7</td>
-              <td class="td-mono">30</td>
+              <td class="td-mono">COS-10822</td><td class="td-bold">Laque Brillance Extra 300ml</td>
+              <td class="td-mono" style="color:var(--danger);font-weight:700">7 u</td>
+              <td class="td-mono">7 u</td><td class="td-mono">30 u</td>
+              <td><span class="days-chip days-bad">1 j</span></td>
               <td><span class="badge bdg-d">Rupture</span></td>
             </tr>
             <tr>
-              <td class="td-mono">COS-10654</td>
-              <td class="td-bold">Masque capillaire Repair 200ml</td>
-              <td class="td-mono" style="color:var(--warning)">18</td>
-              <td class="td-mono">25</td>
+              <td class="td-mono">COS-10654</td><td class="td-bold">Masque capillaire Repair 200ml</td>
+              <td class="td-mono" style="color:var(--warning);font-weight:700">18 u</td>
+              <td class="td-mono">5 u</td><td class="td-mono">25 u</td>
+              <td><span class="days-chip days-warn">3 j</span></td>
               <td><span class="badge bdg-w">Seuil atteint</span></td>
             </tr>
             <tr>
-              <td class="td-mono">COS-10229</td>
-              <td class="td-bold">Après-shampoing Douceur 250ml</td>
-              <td class="td-mono" style="color:var(--warning)">22</td>
-              <td class="td-mono">30</td>
+              <td class="td-mono">COS-10229</td><td class="td-bold">Après-shampoing Douceur 250ml</td>
+              <td class="td-mono" style="color:var(--warning);font-weight:700">22 u</td>
+              <td class="td-mono">8 u</td><td class="td-mono">30 u</td>
+              <td><span class="days-chip days-warn">5 j</span></td>
               <td><span class="badge bdg-w">Seuil atteint</span></td>
             </tr>
             <tr>
-              <td class="td-mono">COS-11042</td>
-              <td class="td-bold">Sérum Lissant Kératine 50ml</td>
-              <td class="td-mono" style="color:var(--warning)">31</td>
-              <td class="td-mono">40</td>
+              <td class="td-mono">COS-11042</td><td class="td-bold">Sérum Lissant Kératine 50ml</td>
+              <td class="td-mono" style="color:var(--warning);font-weight:700">31 u</td>
+              <td class="td-mono">10 u</td><td class="td-mono">40 u</td>
+              <td><span class="days-chip days-warn">6 j</span></td>
               <td><span class="badge bdg-w">Seuil atteint</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10339</td><td class="td-bold">Huile Argan Brillance 100ml</td>
+              <td class="td-mono">148 u</td>
+              <td class="td-mono">22 u</td><td class="td-mono">50 u</td>
+              <td><span class="days-chip days-ok">18 j</span></td>
+              <td><span class="badge bdg-s">OK</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10044</td><td class="td-bold">Gel Coiffant Force 5 200ml</td>
+              <td class="td-mono">210 u</td>
+              <td class="td-mono">40 u</td><td class="td-mono">60 u</td>
+              <td><span class="days-chip days-ok">22 j</span></td>
+              <td><span class="badge bdg-s">OK</span></td>
+            </tr>
+            <tr>
+              <td class="td-mono">COS-10772</td><td class="td-bold">Spray Brillance 150ml</td>
+              <td class="td-mono">305 u</td>
+              <td class="td-mono">60 u</td><td class="td-mono">80 u</td>
+              <td><span class="days-chip days-ok">31 j</span></td>
+              <td><span class="badge bdg-s">OK</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div style="padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center">
-        <span>8 ruptures · 14 alertes · 312 OK</span>
-        <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500">Voir tout &#x2192;</span>
+      <div style="padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;">
+        <span>Affichage limité · 9 références sur 334</span>
+        <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500">Voir toutes les références &#x2192;</span>
       </div>
     </div>
 
-    <!-- Block 2 : Stock dormant -->
-    <div class="card">
-      <div class="card-head">
-        <div><div class="card-title">Stock dormant</div><div class="card-sub">Références immobiles sans mouvement</div></div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:var(--muted)">Immobile depuis ></span>
-          <div class="threshold-ctrl">
-            <input type="range" min="7" max="180" value="60" id="rotSlider" oninput="updateRotation(this.value)">
-            <span class="threshold-val" id="rotVal">60j</span>
+    <!-- Grille 50/50 : Stock dormant + Suivi des ruptures -->
+    <div class="g2">
+
+      <!-- Stock dormant (ex Rotation) -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Stock dormant</div>
+            <div class="card-sub">Références sans mouvement</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;color:var(--muted)">Immobile depuis ></span>
+            <div class="threshold-ctrl">
+              <input type="range" min="7" max="180" value="7" id="rotSlider" oninput="updateRotation(this.value)">
+              <span class="threshold-val" id="rotVal">7j</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="mini-kpi-row" style="grid-template-columns:repeat(3,1fr)">
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--danger)" id="rot-count">—</div>
-          <div class="mini-kpi-lbl">Réfs immobiles</div>
+        <div class="mini-kpi-row">
+          <div class="mini-kpi">
+            <div class="mini-kpi-val" style="color:var(--danger)" id="rot-count">—</div>
+            <div class="mini-kpi-lbl">Réfs dormantes</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-kpi-val" style="color:var(--warning)" id="rot-val-stock">—</div>
+            <div class="mini-kpi-lbl">Unités bloquées</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-kpi-val" style="color:var(--slate)" id="rot-avg">—</div>
+            <div class="mini-kpi-lbl">Délai moyen</div>
+          </div>
         </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--warning)" id="rot-val-stock">—</div>
-          <div class="mini-kpi-lbl">Unités bloquées</div>
-        </div>
-        <div class="mini-kpi">
-          <div class="mini-kpi-val" style="color:var(--slate)" id="rot-avg">—</div>
-          <div class="mini-kpi-lbl">Délai moyen</div>
-        </div>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="stock-table">
-          <thead>
-            <tr>
-              <th>Référence</th>
-              <th>Désignation</th>
-              <th>Qté</th>
-              <th>Dernier mouvement</th>
-              <th>Immobile</th>
-            </tr>
-          </thead>
-          <tbody id="rot-table"></tbody>
-        </table>
-      </div>
-      <div style="padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;">
-        <button id="rot-export-btn" onclick="exportRotation()" disabled style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:not-allowed;transition:all 0.12s;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:12px;height:12px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exporter <span id="rot-export-count">0</span> références
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ BLOC DLC + RUPTURES ══ -->
-  <div class="g2">
-
-    <!-- #1 Références à DLC courte (< 30j) -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">DLC courte — &lt; 30 jours</div>
-          <div class="card-sub">Références à écouler en priorité · semaine en cours</div>
-        </div>
-        <span class="card-badge cb-bad">10 réf.</span>
-      </div>
-      <div style="overflow-x:auto;">
-        <div style="overflow-y:auto;max-height:225px;">
-          <table class="tbl" style="min-width:100%;">
-            <thead style="position:sticky;top:0;z-index:2;background:var(--surface2);">
+        <div style="overflow-x:auto">
+          <table class="stock-table">
+            <thead>
               <tr>
-                <th>Référence</th>
-                <th>Désignation</th>
-                <th class="center">Stock</th>
-                <th class="center">DLC</th>
-                <th class="center">Jours restants</th>
+                <th>Référence</th><th>Désignation</th><th>Qté</th><th>Dernier mvt</th><th>Immobile</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="rot-table">
               <tr>
-                <td class="td-mono">COS-10337</td>
-                <td class="td-bold">Crème solaire SPF50 100ml</td>
-                <td class="center"><span class="num-bad">42</span></td>
-                <td class="center"><span class="num-mono">08/04/25</span></td>
-                <td class="center"><span class="num-bad">7j</span></td>
+                <td class="td-mono">COS-10821</td>
+                <td class="td-bold">BB Cream SPF30 30ml</td>
+                <td class="td-mono">64 u</td>
+                <td class="td-mono">14 juin 2026</td>
+                <td><span class="days-chip days-ok">10j</span></td>
               </tr>
               <tr>
-                <td class="td-mono">COS-10582</td>
-                <td class="td-bold">Masque détox argile 75ml</td>
-                <td class="center"><span class="num-warn">118</span></td>
-                <td class="center"><span class="num-mono">12/04/25</span></td>
-                <td class="center"><span class="num-bad">11j</span></td>
+                <td class="td-mono">COS-10255</td>
+                <td class="td-bold">Démaquillant Huile 150ml</td>
+                <td class="td-mono">38 u</td>
+                <td class="td-mono">11 juin 2026</td>
+                <td><span class="days-chip days-ok">13j</span></td>
               </tr>
               <tr>
-                <td class="td-mono">COS-10994</td>
-                <td class="td-bold">Sérum vitamine C 30ml</td>
-                <td class="center"><span class="num-warn">67</span></td>
-                <td class="center"><span class="num-mono">16/04/25</span></td>
-                <td class="center"><span class="num-bad">15j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-10118</td>
-                <td class="td-bold">Lotion tonique florale 200ml</td>
-                <td class="center"><span class="num-warn">204</span></td>
-                <td class="center"><span class="num-mono">18/04/25</span></td>
-                <td class="center"><span class="num-warn">17j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-11203</td>
-                <td class="td-bold">Exfoliant corps 150ml</td>
-                <td class="center"><span class="num-mono">89</span></td>
-                <td class="center"><span class="num-mono">20/04/25</span></td>
-                <td class="center"><span class="num-warn">19j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-10774</td>
-                <td class="td-bold">Huile corps amande douce 100ml</td>
-                <td class="center"><span class="num-mono">156</span></td>
-                <td class="center"><span class="num-mono">22/04/25</span></td>
-                <td class="center"><span class="num-warn">21j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-10456</td>
-                <td class="td-bold">BB crème teintée 30ml</td>
-                <td class="center"><span class="num-mono">73</span></td>
-                <td class="center"><span class="num-mono">24/04/25</span></td>
-                <td class="center"><span class="num-warn">23j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-11087</td>
-                <td class="td-bold">Contour yeux anti-âge 15ml</td>
-                <td class="center"><span class="num-mono">31</span></td>
-                <td class="center"><span class="num-mono">25/04/25</span></td>
-                <td class="center"><span class="num-warn">24j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-10661</td>
-                <td class="td-bold">Fond de teint fluide 30ml</td>
-                <td class="center"><span class="num-mono">48</span></td>
-                <td class="center"><span class="num-mono">27/04/25</span></td>
-                <td class="center"><span class="num-warn">26j</span></td>
-              </tr>
-              <tr>
-                <td class="td-mono">COS-10902</td>
-                <td class="td-bold">Crème hydratante nuit 50ml</td>
-                <td class="center"><span class="num-mono">112</span></td>
-                <td class="center"><span class="num-mono">30/04/25</span></td>
-                <td class="center"><span class="num-warn">29j</span></td>
+                <td class="td-mono">COS-10163</td>
+                <td class="td-bold">Fond de teint Fluide 30ml</td>
+                <td class="td-mono">46 u</td>
+                <td class="td-mono">9 juin 2026</td>
+                <td><span class="days-chip days-ok">15j</span></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div style="padding:7px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;display:flex;gap:16px;flex-wrap:wrap;">
-        <span style="color:var(--danger);font-weight:700;">≤ 15j</span> critique &nbsp;·&nbsp;
-        <span style="color:var(--warning);font-weight:700;">16–30j</span> à surveiller
-      </div>
-    </div>
 
-    <!-- #2 Références en rupture -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Références en rupture</div>
-          <div class="card-sub">Commandes bloquées · statut réapprovisionnement</div>
+      <!-- Suivi des ruptures -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Suivi des ruptures</div>
+            <div class="card-sub">Ruptures actives &amp; alertes en cours</div>
+          </div>
+          <span class="card-badge cb-bad">8 ruptures · 14 alertes</span>
         </div>
-        <span class="card-badge cb-bad">8 réf.</span>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Référence</th>
-              <th>Désignation</th>
-              <th class="center">Cmd. bloquées</th>
-              <th class="center">Réappro</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="td-mono">COS-10421</td>
-              <td class="td-bold">Shampoing Hydra+ 250ml</td>
-              <td class="center"><span class="num-bad">24</span></td>
-              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10187</td>
-              <td class="td-bold">Mousse coiffante Volume 150ml</td>
-              <td class="center"><span class="num-bad">17</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10822</td>
-              <td class="td-bold">Laque Brillance Extra 300ml</td>
-              <td class="center"><span class="num-warn">11</span></td>
-              <td class="center"><span class="badge bdg-s">Récept. en cours</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10539</td>
-              <td class="td-bold">Gel douche Éclat 250ml</td>
-              <td class="center"><span class="num-bad">19</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10711</td>
-              <td class="td-bold">Démaquillant biphasé 150ml</td>
-              <td class="center"><span class="num-warn">8</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10348</td>
-              <td class="td-bold">Eau micellaire 400ml</td>
-              <td class="center"><span class="num-warn">13</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-10963</td>
-              <td class="td-bold">Baume lèvres protection 4ml</td>
-              <td class="center"><span class="num-mono">6</span></td>
-              <td class="center"><span class="badge bdg-g">Commandé</span></td>
-            </tr>
-            <tr>
-              <td class="td-mono">COS-11124</td>
-              <td class="td-bold">Poudre libre translucide 10g</td>
-              <td class="center"><span class="num-bad">21</span></td>
-              <td class="center"><span class="badge bdg-w">Non commandé</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ══ SEPARATEUR ÉVOLUTIONS ══ -->
-  <div class="section-sep">
-    <div class="section-sep-title">Répartition et coûts</div>
-    <div class="section-sep-line"></div>
-  </div>
-
-  <!-- ══ BLOC 2 : HISTORIQUE + PIE ══ -->
-  <div class="g-pie">
-
-    <!-- Tableau factures stockage reçues -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Factures stockage reçues</div>
-          <div class="card-sub">Janvier · Février · Mars 2025 — WMS elogik</div>
+        <div style="overflow-x:auto">
+          <table class="stock-table">
+            <thead>
+              <tr>
+                <th>Référence</th><th>Désignation</th><th>Stock</th><th>Seuil</th><th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="stock-alert-row">
+                <td class="td-mono">COS-10421</td><td class="td-bold">Shampoing Hydra+ 250ml</td>
+                <td class="td-mono" style="color:var(--danger);font-weight:700">0 u</td>
+                <td class="td-mono">50 u</td><td><span class="badge bdg-d">Rupture</span></td>
+              </tr>
+              <tr class="stock-alert-row">
+                <td class="td-mono">COS-10187</td><td class="td-bold">Mousse coiffante Volume 150ml</td>
+                <td class="td-mono" style="color:var(--danger);font-weight:700">3 u</td>
+                <td class="td-mono">20 u</td><td><span class="badge bdg-d">Rupture</span></td>
+              </tr>
+              <tr class="stock-alert-row">
+                <td class="td-mono">COS-10822</td><td class="td-bold">Laque Brillance Extra 300ml</td>
+                <td class="td-mono" style="color:var(--danger);font-weight:700">7 u</td>
+                <td class="td-mono">30 u</td><td><span class="badge bdg-d">Rupture</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10654</td><td class="td-bold">Masque capillaire Repair 200ml</td>
+                <td class="td-mono" style="color:var(--warning);font-weight:700">18 u</td>
+                <td class="td-mono">25 u</td><td><span class="badge bdg-w">Seuil atteint</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-10229</td><td class="td-bold">Après-shampoing Douceur 250ml</td>
+                <td class="td-mono" style="color:var(--warning);font-weight:700">22 u</td>
+                <td class="td-mono">30 u</td><td><span class="badge bdg-w">Seuil atteint</span></td>
+              </tr>
+              <tr>
+                <td class="td-mono">COS-11042</td><td class="td-bold">Sérum Lissant Kératine 50ml</td>
+                <td class="td-mono" style="color:var(--warning);font-weight:700">31 u</td>
+                <td class="td-mono">40 u</td><td><span class="badge bdg-w">Seuil atteint</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <span class="card-badge" style="background:var(--c-stocks-t);color:var(--c-stocks)">3 factures</span>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Réf. facture</th>
-              <th>Période</th>
-              <th class="center">Montant total</th>
-              <th class="center">Vol. étagères</th>
-              <th class="center">Vol. palettes</th>
-              <th class="center">Mouvements</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Janvier -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-001</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/01/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Janvier 2025</span></td>
-              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">4 820 €</span></td>
-              <td class="center"><span class="num-mono">1 240 €</span></td>
-              <td class="center"><span class="num-mono">2 960 €</span></td>
-              <td class="center"><span class="num-mono">620 €</span></td>
-            </tr>
-            <!-- Février -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-002</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 28/02/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Février 2025</span></td>
-              <td class="center"><span class="num-mono" style="color:var(--ink);font-weight:700;">5 140 €</span></td>
-              <td class="center"><span class="num-mono">1 380 €</span></td>
-              <td class="center"><span class="num-mono">3 120 €</span></td>
-              <td class="center"><span class="num-mono">640 €</span></td>
-            </tr>
-            <!-- Mars -->
-            <tr>
-              <td>
-                <div style="font-weight:600;font-size:12px;color:var(--ink);font-family:'DM Mono',monospace;">FAC-2025-003</div>
-                <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Émise le 31/03/25</div>
-              </td>
-              <td><span style="font-size:11px;color:var(--slate);">Mars 2025</span></td>
-              <td class="center"><span class="num-warn" style="font-weight:700;">5 680 €</span></td>
-              <td class="center"><span class="num-mono">1 520 €</span></td>
-              <td class="center"><span class="num-mono">3 440 €</span></td>
-              <td class="center"><span class="num-mono">720 €</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- Ligne totaux -->
-      <div style="display:grid;grid-template-columns:1fr repeat(4,auto);gap:0;border-top:1px solid var(--border2);padding:10px 16px;align-items:center;background:var(--surface2);">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;">Total T1 2025</span>
-        <div style="display:flex;gap:24px;margin-left:auto;align-items:baseline;">
-          <div style="text-align:center;">
-            <div style="font-size:18px;font-weight:300;letter-spacing:-0.03em;color:var(--c-stocks);">15 640 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Total</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">4 140 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Étagères</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">9 520 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Palettes</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-size:14px;font-weight:600;color:var(--ink);font-family:'DM Mono',monospace;">1 980 €</div>
-            <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Mouvements</div>
-          </div>
+        <div style="padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;">
+          <span>8 ruptures · 14 alertes · 312 OK</span>
+          <span style="margin-left:auto;color:var(--primary);cursor:pointer;font-weight:500">Voir tout &#x2192;</span>
         </div>
       </div>
     </div>
 
-    <!-- Pie chart répartition palette / magasin -->
-    <div class="card">
-      <div class="card-head">
-        <div>
-          <div class="card-title">Répartition emplacement</div>
-          <div class="card-sub">Palette · Étagères · Consignes</div>
-        </div>
+    <!-- ══ #3 — CONTEXTE HISTORIQUE ══ -->
+    <div class="section-sep">
+      <div class="section-sep-icon" style="background:var(--c-stocks-t)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--c-stocks)" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div>
+        <div class="section-sep-title">Contexte historique</div>
+        <div class="section-sep-sub">Évolutions 12 mois glissants · répartition emplacement · facturation stockage</div>
       </div>
-      <div style="padding:8px 16px 0;position:relative;height:160px"><canvas id="chartPie"></canvas></div>
-      <div style="padding:10px 18px 14px;display:flex;flex-direction:column;gap:6px">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#D97706;flex-shrink:0"></div>Palette</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">58% · 14 200 u</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#0E8FCC;flex-shrink:0"></div>Étagères</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">34% · 8 320 u</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:10px;height:10px;border-radius:2px;background:#6C47E8;flex-shrink:0"></div>Consignes / Transit</div>
-          <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">8% · 1 960 u</span>
-        </div>
-      </div>
+      <div class="section-sep-line"></div>
     </div>
-  </div>
 
+    <!-- Grille 3 colonnes -->
+    <div class="g-hist3">
+
+      <!-- Col 1 : Histo évolution -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Évolution du stock</div>
+            <div class="card-sub">12 mois glissants · unités totales en entrepôt</div>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="cl-item"><div class="cl-dot" style="background:#D97706;height:8px;border-radius:2px"></div>Unités en stock</div>
+        </div>
+        <div style="padding:4px 16px 14px;position:relative;height:180px;"><canvas id="chartEvol"></canvas></div>
+      </div>
+
+      <!-- Col 2 : Pie répartition -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Répartition emplacement</div>
+            <div class="card-sub">Palette · Magasin · Consignes</div>
+          </div>
+        </div>
+        <div style="padding:8px 16px 0;position:relative;height:140px;"><canvas id="chartPie"></canvas></div>
+        <div style="padding:10px 18px 14px;display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:8px;height:8px;border-radius:2px;background:#D97706;flex-shrink:0"></div>Palette</div>
+            <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">58% · 14 200 u</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:8px;height:8px;border-radius:2px;background:#0E8FCC;flex-shrink:0"></div>Magasin</div>
+            <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">34% · 8 320 u</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--slate)"><div style="width:8px;height:8px;border-radius:2px;background:#6C47E8;flex-shrink:0"></div>Consignes / Transit</div>
+            <span style="font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink)">8% · 1 960 u</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Col 3 : Factures stockage (bloc différé) -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Factures stockage reçues</div>
+            <div class="card-sub">Facturation e-logik · à raccorder</div>
+          </div>
+        </div>
+        <div style="padding:36px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" style="width:20px;height:20px"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted)">Bloc différé</div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.5;max-width:180px;">À raccorder à la facturation e-logik.</div>
+        </div>
+      </div>
+
+    </div>
   </div><!-- /content -->
 </div><!-- /main -->
 
 <script>
-/* THEME */
+/* ── TIMESTAMP LIVE ── */
+function fmtNow() {
+  var d = new Date();
+  return d.toLocaleDateString('fr-FR', { weekday:'short', day:'2-digit', month:'short' })
+    + ' · ' + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+function fmtNowShort() {
+  var d = new Date();
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' })
+    + ' · ' + d.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+}
+function updateTimestamps() {
+  var ts = fmtNow();
+  var el = document.getElementById('freshTimestamp');
+  if (el) el.textContent = ts;
+  var ia = document.getElementById('iaTimestamp');
+  if (ia) ia.textContent = fmtNowShort();
+  var at = document.getElementById('analysisTime');
+  if (at) at.textContent = 'Aujourd\'hui · ' + new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+}
+setInterval(updateTimestamps, 1000);
+
+/* ── REFRESH ANIMATION ── */
+function doRefresh() {
+  var btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  btn.disabled = true;
+  setTimeout(function() {
+    btn.classList.remove('spinning');
+    btn.disabled = false;
+    updateTimestamps();
+  }, 700);
+}
+
+/* ── THEME ── */
 function toggleTheme() {
-  var h = document.documentElement;
-  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  h.setAttribute("data-theme", next);
-  localStorage.setItem("elo-theme", next);
+  var d = document.documentElement;
+  d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  rebuildCharts();
 }
 
-/* ══ GRAIN DATA ══ */
-var GRAIN_DATA = {
-
-  /* ── JOUR — mardi 18 mars 2025 ── */
-  jour: {
-    label: 'Jour', dateLabel: 'Mar. 18 mars',
-    pageSub: 'Mardi 18 mars 2025 · tous entrepôts · toutes références',
-    // KPI Ruptures proches
-    alertBig: '14<span class="unit"> réf.</span>',
-    alertBadgeTxt: '&#x26A0; À surveiller', alertBadgeCls: 'warn',
-    alertSec: 'stock \u2264 seuil d\'alerte \xb7 risque sous 24\u202fh',
-    alertDelta: '<span class="delta-neu">= +0</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
-    alertFillW: '46%',
-    // KPI Ruptures actives
-    ruptBig: '8<span class="unit"> réf.</span>',
-    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
-    ruptSec: 'dont 2 \xe0 stock z\xe9ro \xb7 19 commandes bloqu\xe9es aujourd\'hui',
-    ruptDelta: '<span class="delta-neu">= +0</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
-    ruptFillW: '62%',
-    // KPI Produits en stock
-    stockBig: '334 <span class="unit">/ 342</span>',
-    stockBadgeTxt: '&#x2713; Coh\xe9rent', stockBadgeCls: 'ok',
-    stockSec: '8 r\xe9f. actives sur CMS sans stock \xb7 97.7% couverture',
-    stockDelta: '<span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs hier</span>',
-    stockFillW: '97.7%',
-    // mini-KPIs Stock-out
-    soCritical: '8', soAlert: '14', soOk: '312', stockoutBadge: '8 ruptures',
-    // Stock dormant default threshold
-    rotThreshold: 7
-  },
-
-  /* ── SEMAINE — S17, 17-23 mars 2025 ── */
-  semaine: {
-    label: 'Semaine', dateLabel: '17 \u2013 23 mars',
-    pageSub: 'Semaine 17\u201323 mars 2025 \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
-    alertBig: '14<span class="unit"> r\xe9f.</span>',
-    alertBadgeTxt: '&#x26A0; \xc0 surveiller', alertBadgeCls: 'warn',
-    alertSec: 'stock \u2264 seuil d\'alerte \xb7 risque sous 7 jours',
-    alertDelta: '<span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
-    alertFillW: '46%',
-    ruptBig: '8<span class="unit"> r\xe9f.</span>',
-    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
-    ruptSec: 'dont 2 \xe0 stock z\xe9ro \xb7 impact commandes directes',
-    ruptDelta: '<span class="delta-dn">&#x2191; +2</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
-    ruptFillW: '62%',
-    stockBig: '334 <span class="unit">/ 342</span>',
-    stockBadgeTxt: '&#x2713; Coh\xe9rent', stockBadgeCls: 'ok',
-    stockSec: '8 r\xe9f. actives sur CMS sans stock \xb7 97.7% couverture',
-    stockDelta: '<span class="delta-neu">= Stable</span><span style="font-size:11px;color:var(--muted)">vs semaine pr\xe9c\xe9dente</span>',
-    stockFillW: '97.7%',
-    soCritical: '8', soAlert: '14', soOk: '312', stockoutBadge: '8 ruptures',
-    rotThreshold: 60
-  },
-
-  /* ── MOIS — Mars 2025 (4 semaines) ── */
-  mois: {
-    label: 'Mois', dateLabel: 'Mars 2025',
-    pageSub: 'Mars 2025 \xb7 4 semaines \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
-    alertBig: '18<span class="unit"> r\xe9f.</span>',
-    alertBadgeTxt: '&#x26A0; \xc0 surveiller', alertBadgeCls: 'warn',
-    alertSec: 'stock \u2264 seuil d\'alerte \xb7 tendance hausse sur le mois',
-    alertDelta: '<span class="delta-dn">&#x2191; +5</span><span style="font-size:11px;color:var(--muted)">vs mois pr\xe9c\xe9dent</span>',
-    alertFillW: '59%',
-    ruptBig: '10<span class="unit"> r\xe9f.</span>',
-    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
-    ruptSec: 'dont 3 \xe0 stock z\xe9ro \xb7 impact sur 58 commandes',
-    ruptDelta: '<span class="delta-dn">&#x2191; +3</span><span style="font-size:11px;color:var(--muted)">vs mois pr\xe9c\xe9dent</span>',
-    ruptFillW: '77%',
-    stockBig: '332 <span class="unit">/ 342</span>',
-    stockBadgeTxt: '&#x26A0; En baisse', stockBadgeCls: 'warn',
-    stockSec: '10 r\xe9f. actives sur CMS sans stock \xb7 97.1% couverture',
-    stockDelta: '<span class="delta-dn">&#x2193; \u22122</span><span style="font-size:11px;color:var(--muted)">r\xe9f. vs f\xe9vrier</span>',
-    stockFillW: '97.1%',
-    soCritical: '10', soAlert: '18', soOk: '314', stockoutBadge: '10 ruptures',
-    rotThreshold: 30
-  },
-
-  /* ── ANNÉE — 2025 YTD (Jan–Mars, 3 mois × 4 semaines) ── */
-  annee: {
-    label: 'Ann\xe9e', dateLabel: '2025 YTD',
-    pageSub: '2025 YTD \xb7 Janvier \u2013 Mars \xb7 tous entrep\xf4ts \xb7 toutes r\xe9f\xe9rences',
-    alertBig: '18<span class="unit"> r\xe9f.</span>',
-    alertBadgeTxt: '&#x26A0; Tendance hausse', alertBadgeCls: 'warn',
-    alertSec: 'pic atteint en mars \xb7 moyenne mensuelle : 14 r\xe9f.',
-    alertDelta: '<span class="delta-dn">&#x2191; +28%</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
-    alertFillW: '59%',
-    ruptBig: '10<span class="unit"> r\xe9f.</span>',
-    ruptBadgeTxt: '&#x26A0; Action requise', ruptBadgeCls: 'bad',
-    ruptSec: 'dont 3 \xe0 stock z\xe9ro \xb7 124 commandes bloqu\xe9es YTD',
-    ruptDelta: '<span class="delta-dn">&#x2191; +25%</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
-    ruptFillW: '77%',
-    stockBig: '332 <span class="unit">/ 342</span>',
-    stockBadgeTxt: '&#x26A0; En baisse', stockBadgeCls: 'warn',
-    stockSec: 'couverture en baisse progressive depuis janvier',
-    stockDelta: '<span class="delta-dn">&#x2193; \u22122 pts</span><span style="font-size:11px;color:var(--muted)">vs d\xe9c. 2024</span>',
-    stockFillW: '97.1%',
-    soCritical: '10', soAlert: '18', soOk: '314', stockoutBadge: '10 ruptures',
-    rotThreshold: 90
-  }
-};
-
-/* PERIOD */
-var currentGrain = 'semaine';
-
-function setPeriod(btn) {
-  document.querySelectorAll('.time-selector .ts-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  var map = { 'Jour': 'jour', 'Semaine': 'semaine', 'Mois': 'mois', 'Ann\xe9e': 'annee' };
-  currentGrain = map[btn.textContent.trim()] || 'semaine';
-  applyGrain(currentGrain);
-}
-
-function applyGrain(grain) {
-  var d = GRAIN_DATA[grain];
-  if (!d) return;
-
-  /* Flash */
-  document.querySelectorAll('.kpi-big, .mini-kpi-val').forEach(function(el) {
-    el.classList.remove('grain-flash'); void el.offsetWidth; el.classList.add('grain-flash');
-  });
-
-  /* Labels */
-  var dpL = document.getElementById('dpLabel'); if (dpL) dpL.textContent = d.dateLabel;
-  var ps  = document.getElementById('page-sub'); if (ps) ps.textContent = d.pageSub;
-
-  /* KPI — Ruptures proches */
-  var el;
-  el = document.getElementById('kpi-alert-big');   if (el) el.innerHTML = d.alertBig;
-  el = document.getElementById('kpi-alert-badge');  if (el) { el.className = 'kpi-status-badge ' + d.alertBadgeCls; el.innerHTML = d.alertBadgeTxt; }
-  el = document.getElementById('kpi-alert-sec');    if (el) el.textContent = d.alertSec;
-  el = document.getElementById('kpi-alert-delta');  if (el) el.innerHTML = d.alertDelta;
-  el = document.getElementById('kpi-alert-fill');   if (el) el.style.width = d.alertFillW;
-
-  /* KPI — Ruptures actives */
-  el = document.getElementById('kpi-rupt-big');    if (el) el.innerHTML = d.ruptBig;
-  el = document.getElementById('kpi-rupt-badge');  if (el) { el.className = 'kpi-status-badge ' + d.ruptBadgeCls; el.innerHTML = d.ruptBadgeTxt; }
-  el = document.getElementById('kpi-rupt-sec');    if (el) el.textContent = d.ruptSec;
-  el = document.getElementById('kpi-rupt-delta');  if (el) el.innerHTML = d.ruptDelta;
-  el = document.getElementById('kpi-rupt-fill');   if (el) el.style.width = d.ruptFillW;
-
-  /* KPI — Produits en stock */
-  el = document.getElementById('kpi-stock-big');   if (el) el.innerHTML = d.stockBig;
-  el = document.getElementById('kpi-stock-badge'); if (el) { el.className = 'kpi-status-badge ' + d.stockBadgeCls; el.innerHTML = d.stockBadgeTxt; }
-  el = document.getElementById('kpi-stock-sec');   if (el) el.textContent = d.stockSec;
-  el = document.getElementById('kpi-stock-delta'); if (el) el.innerHTML = d.stockDelta;
-  el = document.getElementById('kpi-stock-fill');  if (el) el.style.width = d.stockFillW;
-
-  /* Mini-KPIs Stock-out */
-  el = document.getElementById('so-critical'); if (el) el.textContent = d.soCritical;
-  el = document.getElementById('so-alert');    if (el) el.textContent = d.soAlert;
-  el = document.getElementById('so-ok');       if (el) el.textContent = d.soOk;
-  el = document.getElementById('stockout-count'); if (el) el.textContent = d.stockoutBadge;
-
-  /* Stock dormant — seuil par défaut */
-  var slider = document.getElementById('rotSlider');
-  var rotValEl = document.getElementById('rotVal');
-  if (slider) { slider.value = d.rotThreshold; }
-  if (rotValEl) { rotValEl.textContent = d.rotThreshold + 'j'; }
-  renderRotation(d.rotThreshold);
-}
-
-/* IA TOGGLE */
+/* ── IA TOGGLE ── */
 function toggleChatCollapse() {
   var coll = document.getElementById('chatCollapsible');
   var icon = document.getElementById('chatCollapseIcon');
@@ -1475,10 +1165,9 @@ function sendChatMain() {
   area.appendChild(w); inp.value = '';
   document.getElementById('sendBtnMain').classList.remove('ready');
 }
-var _chatInpMain = document.getElementById('chatInputMain');
-if (_chatInpMain) _chatInpMain.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMain(); });
+document.getElementById('chatInputMain').addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMain(); });
 
-/* IA SAVE */
+/* ── IA SAVE ── */
 var iaAnalysisSaved = false;
 function saveAnalysisIA() {
   if (iaAnalysisSaved) return; iaAnalysisSaved = true;
@@ -1495,114 +1184,116 @@ function scrollToAnalysis() {
   document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* CALENDAR */
-var calOpen = false, curY = 2025, curM = 2, rs = null, re = null;
-function toggleCal() { calOpen = !calOpen; document.getElementById('calDrop').classList.toggle('open', calOpen); if (calOpen) renderCal(); }
-function moveMonth(d) { curM += d; if (curM < 0) { curM = 11; curY--; } if (curM > 11) { curM = 0; curY++; } renderCal(); }
-function renderCal() {
-  var M = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  document.getElementById('calMonth').textContent = M[curM] + ' ' + curY;
-  var g = document.getElementById('calGrid'); g.innerHTML = '';
-  ['L','M','M','J','V','S','D'].forEach(function(d) { var e = document.createElement('div'); e.className = 'cal-dh'; e.textContent = d; g.appendChild(e); });
-  var fd = new Date(curY, curM, 1).getDay(); fd = (fd + 6) % 7;
-  var dim = new Date(curY, curM + 1, 0).getDate();
-  var prev = new Date(curY, curM, 0).getDate();
-  for (var i = 0; i < fd; i++) { var e = document.createElement('div'); e.className = 'cal-d other-month'; e.textContent = prev - fd + 1 + i; g.appendChild(e); }
-  for (var day = 1; day <= dim; day++) {
-    var e = document.createElement('div'); e.className = 'cal-d';
-    var dt = new Date(curY, curM, day);
-    if (rs && re) { if (dt > rs && dt < re) e.classList.add('in-range'); if (dt.toDateString() === rs.toDateString()) e.classList.add('range-start'); if (dt.toDateString() === re.toDateString()) e.classList.add('range-end'); }
-    else if (rs && dt.toDateString() === rs.toDateString()) e.classList.add('range-start');
-    e.textContent = day;
-    e.onclick = (function(d2) { return function() { pickDay(d2); }; })(new Date(dt));
-    g.appendChild(e);
-  }
-}
-function pickDay(date) {
-  if (!rs || (rs && re)) { rs = date; re = null; document.getElementById('rangeInfo').textContent = 'Début : ' + fmtD(date); }
-  else { if (date < rs) { re = rs; rs = date; } else re = date; document.getElementById('rangeInfo').textContent = fmtD(rs) + ' - ' + fmtD(re); }
-  renderCal();
-}
-function fmtD(d) { var M = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']; return d.getDate() + ' ' + M[d.getMonth()]; }
-function applyRange() { if (rs) document.getElementById('dpLabel').textContent = re ? fmtD(rs) + ' - ' + fmtD(re) : fmtD(rs); toggleCal(); }
-document.addEventListener('click', function(e) { if (calOpen && !document.querySelector('.date-wrap').contains(e.target)) { calOpen = false; document.getElementById('calDrop').classList.remove('open'); } });
-
-/* ROTATION TABLE */
-var rotData = [
-  { ref:'COS-21142', name:'Sérum brillance Lissant 50ml',      qty:240, lastMove:'04 jan. 2026', days:71 },
-  { ref:'COS-20834', name:'Gel coiffant Fixation forte 150ml',  qty:85,  lastMove:'18 jan. 2026', days:57 },
-  { ref:'COS-21891', name:'Huile capillaire Argan 100ml',       qty:310, lastMove:'28 déc. 2025', days:78 },
-  { ref:'COS-20412', name:'Spray thermoprotecteur 200ml',       qty:62,  lastMove:'12 jan. 2026', days:63 },
-  { ref:'COS-22014', name:'Crème de soin Boucles 250ml',        qty:520, lastMove:'02 nov. 2025', days:134 },
-  { ref:'COS-19876', name:'Mousse Volume Légère 200ml',         qty:190, lastMove:'05 jan. 2026', days:70 },
-  { ref:'COS-21304', name:'Brillantine solide 75ml',            qty:430, lastMove:'10 nov. 2025', days:126 },
+/* ── ROTATION ── */
+var ROT_DATA = [
+  { ref:'COS-10931', name:'Crème Boucles 250ml',           qty:320, days:134 },
+  { ref:'COS-10044', name:'Gel Coiffant Force 5 200ml',   qty:210, days:97  },
+  { ref:'COS-10772', name:'Spray Brillance 150ml',         qty:185, days:88  },
+  { ref:'COS-10210', name:'Sérum Nutrition 50ml',           qty:140, days:76  },
+  { ref:'COS-11100', name:'Masque Couleur 200ml',          qty:95,  days:67  },
+  { ref:'COS-10658', name:'Baume Lissant 100ml',           qty:70,  days:62  },
+  { ref:'COS-10502', name:'Lotion Tonique 200ml',          qty:55,  days:44  },
+  { ref:'COS-10388', name:'Exfoliant Doux Visage 100ml',   qty:88,  days:31  },
+  { ref:'COS-10714', name:'Eau Micel. Sensitive 400ml',    qty:120, days:22  },
+  { ref:'COS-10821', name:'BB Cream SPF30 30ml',           qty:64,  days:14  },
+  { ref:'COS-10255', name:'Démaquillant Huile 150ml',       qty:38,  days:9   },
+  { ref:'COS-10163', name:'Fond de teint Fluide 30ml',     qty:46,  days:7   },
 ];
+
+function fmtLastMove(days) {
+  var d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+}
+
 function renderRotation(threshold) {
-  var filtered = rotData.filter(function(r) { return r.days >= threshold; });
-  document.getElementById('rot-count').textContent = filtered.length;
-  document.getElementById('rot-val-stock').textContent = filtered.reduce(function(s,r){ return s+r.qty; }, 0).toLocaleString('fr-FR');
-  var avg = filtered.length ? Math.round(filtered.reduce(function(s,r){ return s+r.days; },0)/filtered.length) : 0;
-  document.getElementById('rot-avg').textContent = avg + 'j';
-  var tbody = document.getElementById('rot-table');
-  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);font-size:12px;padding:16px">Aucune référence immobile au-delà de ce seuil</td></tr>'; }
-  else {
-    tbody.innerHTML = filtered.map(function(r) {
-      var cls = r.days >= 90 ? 'days-bad' : r.days >= 60 ? 'days-warn' : 'days-ok';
-      return '<tr class="stock-alert-row"><td class="td-mono">' + r.ref + '</td><td style="font-weight:500">' + r.name + '</td><td class="td-mono">' + r.qty + '</td><td class="td-mono">' + r.lastMove + '</td><td><span class="days-chip ' + cls + '">' + r.days + 'j</span></td></tr>';
-    }).join('');
+  var t = parseInt(threshold);
+  var filtered = ROT_DATA.filter(function(r){ return r.days >= t; })
+    .sort(function(a,b){ return b.days - a.days; });
+
+  var countEl = document.getElementById('rot-count');
+  var stockEl = document.getElementById('rot-val-stock');
+  var avgEl   = document.getElementById('rot-avg');
+  var tbody   = document.getElementById('rot-table');
+  if (!tbody) return;
+
+  var totalUnits = filtered.reduce(function(s,r){ return s+r.qty; }, 0);
+  var avg = filtered.length ? Math.round(filtered.reduce(function(s,r){ return s+r.days; }, 0) / filtered.length) : 0;
+
+  if (countEl) countEl.textContent = filtered.length;
+  if (stockEl) stockEl.textContent = totalUnits.toLocaleString('fr-FR') + ' u';
+  if (avgEl)   avgEl.textContent   = avg ? avg + 'j' : '—';
+
+  tbody.innerHTML = '';
+
+  if (filtered.length === 0) {
+    var empty = document.createElement('tr');
+    empty.innerHTML = '<td colspan="5" style="text-align:center;color:var(--muted);padding:20px;font-size:11px;">Aucune référence immobile depuis plus de ' + t + ' jours</td>';
+    tbody.appendChild(empty);
+    return;
   }
-  /* CTA export */
-  var btn = document.getElementById('rot-export-btn');
-  var cnt = document.getElementById('rot-export-count');
-  cnt.textContent = filtered.length;
-  if (filtered.length > 0) {
-    btn.disabled = false;
-    btn.style.cursor = 'pointer';
-    btn.style.color = 'var(--primary)';
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.background = 'var(--primary-tint)';
-  } else {
-    btn.disabled = true;
-    btn.style.cursor = 'not-allowed';
-    btn.style.color = 'var(--muted)';
-    btn.style.borderColor = 'var(--border2)';
-    btn.style.background = 'var(--surface2)';
-  }
-}
-function exportRotation() {
-  var threshold = parseInt(document.getElementById('rotSlider').value);
-  var filtered = rotData.filter(function(r) { return r.days >= threshold; });
-  if (!filtered.length) return;
-  var rows = [['Référence','Désignation','Qté','Dernier mouvement','Immobile (j)']];
-  filtered.forEach(function(r){ rows.push([r.ref, r.name, r.qty, r.lastMove, r.days]); });
-  var csv = rows.map(function(r){ return r.join(';'); }).join('\n');
-  var a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'rotation-stocks-' + threshold + 'j.csv';
-  a.click();
-}
-function updateRotation(val) {
-  document.getElementById('rotVal').textContent = val + 'j';
-  renderRotation(parseInt(val));
+
+  filtered.forEach(function(r) {
+    var cls = r.days >= 90 ? 'days-bad' : (r.days >= 30 ? 'days-warn' : 'days-ok');
+    var row = document.createElement('tr');
+    row.innerHTML =
+      '<td class="td-mono">' + r.ref + '</td>' +
+      '<td class="td-bold">' + r.name + '</td>' +
+      '<td class="td-mono">' + r.qty + ' u</td>' +
+      '<td class="td-mono">' + fmtLastMove(r.days) + '</td>' +
+      '<td><span class="days-chip ' + cls + '">' + r.days + 'j</span></td>';
+    tbody.appendChild(row);
+  });
 }
 
-/* CHARTS */
+function updateRotation(v) {
+  var val = parseInt(v);
+  var rotVal = document.getElementById('rotVal');
+  if (rotVal) rotVal.textContent = val + 'j';
+  renderRotation(val);
+}
+
+/* ── CHARTS ── */
 var chartEvol = null, chartPie = null;
-var weeks = ['S7','S8','S9','S10','S11','S12','S13','S14','S15','S16','S17','S18'];
-var stockUnits  = [24800,23100,25400,22800,21600,24200,23100,22000,20800,19800,18480,18480];
-var factureLog  = [4200, 4050, 4380, 3980, 3820, 4150, 4020, 3890, 3740, 3620, 3490, 3490];
-
 function buildCharts() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-  /* Pie répartition */
+  var gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  var textColor = isDark ? '#5A6C7D' : '#8A95A3';
+  var ctxE = document.getElementById('chartEvol');
+  if (!ctxE) return;
+  if (chartEvol) { chartEvol.destroy(); chartEvol = null; }
+  chartEvol = new Chart(ctxE.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'],
+      datasets: [
+        {
+          label: 'Unités en stock',
+          data: [31200,30800,29900,28700,27400,26100,25200,24800,25500,24900,24100,24480],
+          backgroundColor: isDark ? 'rgba(252,211,77,0.25)' : 'rgba(217,119,6,0.18)',
+          borderColor: isDark ? '#FCD34D' : '#D97706',
+          borderWidth: 1.5,
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, family: 'DM Mono' } } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9, family: 'DM Mono' }, callback: function(v) { return (v/1000).toFixed(0) + 'k'; } } }
+      }
+    }
+  });
   var ctxP = document.getElementById('chartPie');
   if (!ctxP) return;
   if (chartPie) { chartPie.destroy(); chartPie = null; }
   chartPie = new Chart(ctxP.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Palette', 'Étagères', 'Consignes / Transit'],
+      labels: ['Palette', 'Magasin', 'Consignes / Transit'],
       datasets: [{
         data: [58, 34, 8],
         backgroundColor: [
@@ -1610,28 +1301,18 @@ function buildCharts() {
           isDark ? '#38BDF8' : '#0E8FCC',
           isDark ? '#A78BFF' : '#6C47E8'
         ],
-        borderWidth: 0,
-        hoverOffset: 6
+        borderWidth: 0, hoverOffset: 6
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) { return ' ' + ctx.label + ' : ' + ctx.raw + '%'; }
-          }
-        }
-      }
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ' ' + ctx.label + ' : ' + ctx.raw + '%'; } } } }
     }
   });
 }
-
 function rebuildCharts() { buildCharts(); }
 
-/* ANALYSES */
+/* ── ANALYSES ── */
 var analysisAutoId = 10;
 function injectAnalysis(color, q, a, src) {
   var list = document.getElementById('analysisList');
@@ -1642,15 +1323,10 @@ function injectAnalysis(color, q, a, src) {
   list.insertBefore(item, list.firstChild);
   updateAnalysisCount();
 }
-function archiveAnalysis(id) {
-  var c = document.getElementById('analysis-card-' + id);
-  if (c) { c.remove(); updateAnalysisCount(); }
-}
-function updateAnalysisCount() {
-  document.getElementById('analysisCount').textContent = document.getElementById('analysisList').querySelectorAll('.analysis-item').length;
-}
+function archiveAnalysis(id) { var c = document.getElementById('analysis-card-' + id); if (c) { c.remove(); updateAnalysisCount(); } }
+function updateAnalysisCount() { document.getElementById('analysisCount').textContent = document.getElementById('analysisList').querySelectorAll('.analysis-item').length; }
 
-/* ACTIONS */
+/* ── ACTIONS ── */
 var actions = [];
 function addAction() {
   var inp = document.getElementById('actionInput'), val = inp.value.trim();
@@ -1680,26 +1356,256 @@ function renderActions() {
   });
 }
 
-/* INIT */
+/* ── INIT ── */
 window.addEventListener('DOMContentLoaded', function() {
-  renderCal();
+  updateTimestamps();
+  renderRotation(7);
   buildCharts();
-  applyGrain('semaine');
-  updateDockHeight();
-  syncDockAnalysisCounts();
-  window.addEventListener('resize', updateDockHeight);
 });
+</script>
 
+<!-- ════ FLOATING IA DOCK (footer commun à toutes les pages) ════ -->
+<!-- IA DOCK v4 -->
+<div class="ia-dock-anchor" id="iaDockAnchor">
+  <div class="ia-dock-inner">
+
+    <!-- Zone Signal IA (flottante, au-dessus du dock) -->
+    <div class="ia-signal-zone" id="iaSignalZone">
+      <!-- Les signaux sont injectés dynamiquement via showSignalDemo() ou saveSignal() -->
+    </div>
+
+    <!-- Dock principal -->
+    <div class="ia-dock" id="iaDock">
+
+      <!-- BARRE PRINCIPALE (toujours visible) -->
+      <div class="ia-dock-bar">
+
+        <!-- Zone 1 : Brand elo·IA — cliquable → ouvre Conversation -->
+        <div class="ia-dock-zone" style="cursor:pointer;" onclick="switchDockTab('chat')">
+          <div class="ia-dock-brand">
+            <div class="ia-dock-av">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </div>
+            <div>
+              <div class="ia-dock-label">elo · IA</div>
+              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre fermée : onglet Analyses -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-analyses" onclick="switchDockTab('analyses')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyses
+          <span class="ia-count" id="analysisCount">3</span>
+        </button>
+
+        <!-- Barre fermée : onglet Alertes -->
+        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-alertes" onclick="switchDockTab('alertes')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          Alertes
+          <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCount">2</span>
+        </button>
+
+        <!-- Zone input (order:10) -->
+        <div class="ia-dock-zone ia-dock-input-zone">
+          <div class="ia-dock-input-wrap">
+            <input class="ia-dock-input" id="iaDockInput"
+              placeholder="Posez une question sur vos données…"
+              oninput="toggleSend(this)"
+              onkeydown="if(event.key==='Enter')sendIA()"/>
+            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="ia-saved-pill" id="iaSavedPill" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Enregistrée
+          </div>
+        </div>
+
+        <!-- Toggle chevron (order:11) -->
+        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+
+      </div><!-- /ia-dock-bar -->
+
+      <!-- CORPS EXPANDABLE -->
+      <div class="ia-dock-body" id="iaDockBody">
+
+        <!-- Tabbar volet ouvert : 3 onglets -->
+        <div class="ia-dock-tabs">
+          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Conversation
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Analyses &amp; Actions
+            <span class="ia-count" id="analysisCountFull">3</span>
+          </button>
+          <button class="ia-dock-tab-btn" id="tab-alertes" onclick="switchDockTab('alertes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Alertes
+            <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCountFull">2</span>
+          </button>
+        </div>
+
+        <!-- Panneau Chat -->
+        <div class="ia-dock-panel active" id="panel-chat">
+          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
+            <div class="ia-msg-user">Quels transporteurs ont le plus de retards cette semaine ?</div>
+            <div class="ia-msg-ai-wrap">
+              <div class="ia-msg-ai-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                elo·IA · Démonstration composant
+              </div>
+              <div class="ia-msg-ai"><strong>DHL</strong> en tête avec 19 retards (6,6 %) — incident hub IDF confirmé. Chronopost suit avec 8 retards (2,6 %). Les 4 autres transporteurs sont dans les normes.</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
+                <button onclick="saveMsg(this,'msg-demo','Quels transporteurs ont le plus de retards ?','DHL en tête avec 19 retards')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                  Enregistrer
+                </button>
+                <span class="ia-msg-time">demo</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-dock-panel-footer">
+            <div class="ia-sugg-label" style="margin-bottom:6px">Suggestions</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <div class="ia-sugg" onclick="fillAndSend('Impact client de l\'incident DHL')"><div class="ia-sugg-dot" style="background:var(--danger)"></div>Impact client DHL</div>
+              <div class="ia-sugg" onclick="fillAndSend('Taux de litiges par transporteur')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Litiges par transporteur</div>
+              <div class="ia-sugg" onclick="fillAndSend('Comparer S-1 vs semaine actuelle')"><div class="ia-sugg-dot" style="background:var(--primary)"></div>Comparer S-1 vs actuel</div>
+              <div class="ia-sugg" onclick="fillAndSend('Quelles références sont en rupture imminente ?')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Ruptures imminentes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panneau Analyses & Actions (50/50) -->
+        <div class="ia-dock-panel" id="panel-analyses">
+          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
+            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  Analyses sauvegardées
+                </div>
+                <span class="ia-count" id="analysisCountPanel">3</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
+                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--danger)"></div><div class="analysis-q">Transporteurs avec le plus de retards</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 19 retards (6,6 %) · Chronopost : 8 retards (2,6 %). Incident DHL IDF confirmé.</div>
+                  <div class="analysis-footer"><span class="analysis-time">16 mars · 09h14</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-2" onclick="loadAnalysisInIA(2)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--warning)"></div><div class="analysis-q">Évolution du taux de livraison sur 7 jours</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">96,4 % global — recul de −0,4 pt vs S-1.</div>
+                  <div class="analysis-footer"><span class="analysis-time">15 mars · 16h30</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+                <div class="analysis-item" id="analysis-card-3" onclick="loadAnalysisInIA(3)">
+                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--primary)"></div><div class="analysis-q">Litiges ouverts — répartition par transporteur</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
+                  <div class="analysis-answer">DHL : 4 litiges · Chronopost : 3 · GLS : 2.</div>
+                  <div class="analysis-footer"><span class="analysis-time">14 mars · 11h02</span><span class="analysis-src">elo·IA</span></div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="ia-merged-section-head">
+                <div class="ia-merged-section-title">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Actions de suivi
+                </div>
+                <span class="ia-count-action" id="actionCountPanel">0</span>
+              </div>
+              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
+                <div class="dock-empty" id="actionsEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                  Aucune action.<br>Ajoutez un suivi ci-dessous.
+                </div>
+              </div>
+              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
+                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
+              </div>
+            </div>
+          </div>
+        </div><!-- /panel-analyses -->
+
+        <!-- Panneau Alertes -->
+        <div class="ia-dock-panel" id="panel-alertes">
+          <div class="ia-dock-panel-scroll" id="alertesList">
+
+            <div class="signal-ia" data-severity="danger" id="alerte-1">
+              <div class="signal-ia-head">
+                <div class="signal-ia-head-left">
+                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                  <div class="signal-ia-meta">
+                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Litiges transport</div>
+                    <div class="signal-ia-text-inline"><strong>GLS : +8 litiges vs S-1</strong> — seuil critique franchi (23/sem.)</div>
+                  </div>
+                </div>
+                <div class="signal-ia-head-right">
+                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser la hausse des litiges GLS')">Analyser IA</button>
+                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-1" onclick="saveSignal('alerte-1','Litiges GLS · +8 vs S-1 · seuil critique franchi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
+                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+              <div class="signal-ia-reco">
+                <div class="signal-ia-reco-inner">
+                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
+                  <div class="signal-ia-reco-body">Basculer <strong>30–40 % des flux GLS vers Colis Privé</strong> (réseau elogik, 98 % qualité). Estimation : ≈ 15–20 litiges/sem. évités.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="signal-ia" data-severity="warning" id="alerte-2">
+              <div class="signal-ia-head">
+                <div class="signal-ia-head-left">
+                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                  <div class="signal-ia-meta">
+                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Stocks</div>
+                    <div class="signal-ia-text-inline"><strong>5 références en rupture imminente</strong> — stock &lt; 48h</div>
+                  </div>
+                </div>
+                <div class="signal-ia-head-right">
+                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Quelles références sont en rupture imminente ?')">Analyser IA</button>
+                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-2" onclick="saveSignal('alerte-2','Stocks · 5 références rupture imminente · &lt;48h')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
+                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+              <div class="signal-ia-reco">
+                <div class="signal-ia-reco-inner">
+                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
+                  <div class="signal-ia-reco-body">Déclencher un <strong>réappro prioritaire sur REF-2341, REF-8812, REF-0093</strong> avant 17h pour éviter une rupture de service demain matin.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /panel-alertes -->
+
+      </div><!-- /ia-dock-body -->
+    </div><!-- /ia-dock -->
+  </div><!-- /ia-dock-inner -->
+</div><!-- /ia-dock-anchor -->
+
+</div><!-- /ia-dock-anchor -->
+
+
+<script>
+/* ════ IA DOCK v4 JS ════ */
 /* ── DOCK HEIGHT — adapte le padding-bottom de .main ── */
 function updateDockHeight() {
   var anchor = document.getElementById('iaDockAnchor');
   var h = anchor ? anchor.getBoundingClientRect().height : 60;
-  var contentEl = document.querySelector('.main');
-  if (contentEl) contentEl.style.paddingBottom = (h + 8) + 'px';
+  var main = document.querySelector('.main');
+  if (main) main.style.paddingBottom = (h + 8) + 'px';
 }
 
 /* ── OPEN / CLOSE / TOGGLE ── */
 function toggleDock() {
+  /* Chevron : bascule entre fullpage et fermé */
   var dock = document.getElementById('iaDock');
   if (dock.classList.contains('fullpage')) {
     dock.classList.remove('fullpage', 'open');
@@ -1743,29 +1649,55 @@ function dismissAlerte(id) {
   el.classList.add('dismissing');
   setTimeout(function() { el.remove(); _syncAlertCount(); updateDockHeight(); }, 300);
 }
+function showSignalDemo() {
+  _demoSigCount++;
+  var id = 'sig-demo-' + _demoSigCount;
+  var list = document.getElementById('alertesList');
+  var div = document.createElement('div');
+  div.className = 'signal-ia';
+  div.setAttribute('data-severity', _demoSigCount % 2 === 0 ? 'warning' : 'danger');
+  div.id = id;
+  div.innerHTML =
+    '<div class="signal-ia-head">' +
+      '<div class="signal-ia-head-left">' +
+        '<div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+        '<div class="signal-ia-meta">' +
+          '<div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Signal #' + _demoSigCount + '</div>' +
+          '<div class="signal-ia-text-inline"><strong>Anomalie détectée</strong> — seuil d\'alerte franchi</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="signal-ia-head-right">' +
+        '<button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA(\'Analyser l\\\'anomalie\')">Analyser IA</button>' +
+        '<button class="signal-ia-btn signal-ia-btn-save" id="save-' + id + '" onclick="saveSignal(\'' + id + '\',\'Signal #' + _demoSigCount + ' · Anomalie · Seuil d\\\'alerte franchi\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>' +
+        '<button class="signal-ia-dismiss" onclick="dismissAlerte(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="signal-ia-reco"><div class="signal-ia-reco-inner">' +
+      '<div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>' +
+      '<div class="signal-ia-reco-body"><strong>Action recommandée</strong> — vérifier les données sources.</div>' +
+    '</div></div>';
+  list.appendChild(div);
+  _syncAlertCount();
+  switchDockTab('alertes');
+}
 
 /* ── CHAMP DE SAISIE ── */
 function toggleSend(inp) {
   document.getElementById('iaSendBtn').classList.toggle('ready', inp.value.trim().length > 0);
 }
 
-/* ── RÉPONSES IA ── */
-var aiResponsesStocks = {
-  'rupture':      '<strong>8 ruptures actives</strong> — Shampoing Hydra+ (0 u) et Mousse coiffante Volume (3 u) sont critiques. 14 références supplémentaires ont atteint leur seuil d\'alerte. Réapprovisionnement urgent à déclencher sous 24h pour éviter l\'impact commandes.',
-  'shampoing':    'Shampoing Hydra+ : <strong>0 unité en stock</strong> — rupture totale depuis 2 jours. Délai réappro fournisseur : 4 j. Commandes bloquées estimées : 18 unités. Action immédiate : déclencher bon de commande fournisseur + basculer les commandes en attente vers l\'alternative Hydra Pro.',
-  'rotation':     '<strong>23 références immobiles depuis +60 jours</strong> (4 820 unités). La Crème Boucles 250ml cumule 134 jours sans mouvement — valeur stock immobilisé : ~3 200 €. Recommandation : palette de déstockage + promotion flash sur 8 références à faible rotation.',
-  'destockage':   'Articles à désocker en priorité : <strong>Crème Boucles 250ml (134 j)</strong>, Huile Argan 100ml (98 j), Spray Fixant (87 j). Valeur totale : 4 820 unités · ~6 400 € immobilisés. Opération promo ou liquidation recommandée avant fin de mois.',
-  'consommable':  'Consommables critiques cette semaine : <strong>Cartons M — besoin +500 u</strong> d\'ici vendredi au rythme actuel. Stock restant : 120 u. Délai fournisseur : 48h. Scotch d\'emballage : 18 rouleaux restants (≈ 3 jours). Commander immédiatement.',
-  'alerte':       '<strong>14 références en seuil d\'alerte</strong> (stock &lt; seuil mini). Top 3 à risque : Mousse Volume (3 u), Sérum Brillance (8 u), Laque Forte (11 u). Délai d\'épuisement estimé : 2–4 jours au rythme actuel des commandes.',
-  'dlc':          '<strong>6 références avec DLC &lt; 30 jours</strong> — dont 3 en stock significatif (&gt;50 u). Crème Hydratante Lot B : 847 u · DLC 14 mars. Action urgente : prioriser en picking, offre promotionnelle ou don associatif.',
-  'valeur':       'Valeur totale du stock : <strong>142 600 €</strong>. Répartition : actif 78 % (111 200 €), immobilisé +60 j 22 % (31 400 €). Coût de possession estimé : ~2 % / mois soit 2 850 €/mois de stock mort. ROI déstockage prioritaire : libérer ~6 400 €.',
-  'réappro':      'Réapprovisionnements recommandés cette semaine : <strong>3 commandes urgentes</strong> (Shampoing Hydra+, Mousse Volume, Cartons M) + 5 commandes préventives pour les références en seuil. Budget estimé : ~4 200 € fournisseurs.',
-  'cms':          'Synchronisation CMS : <strong>1 247 références actives</strong> sur le site · 1 189 en stock (95,3 %). 58 références actives sur CMS avec stock 0 — à désactiver ou marquer en rupture pour éviter les commandes bloquées.',
+/* ── RÉPONSES IA — remplacer par l'appel API réel ── */
+var _aiResponses = {
+  'retard': "<strong>DHL</strong> en tête avec 19 retards (6,6 %) — incident hub IDF. Chronopost : 8 retards (2,6 %). Les 4 autres transporteurs sont dans les normes.",
+  'litige': "DHL : 1,4 % (4/287) · Chronopost : 1,0 % (3/312) · GLS : 1,0 % (2/198). <strong>DHL seul au-dessus du seuil cible 1,0 %.</strong>",
+  'impact': "3 commandes impactées. Risque de <strong>3 réclamations SAV</strong> si non résolues avant 18h. Recommandation : email proactif + rebooking GLS.",
+  'comparer': "Taux livraison : 96,8 % (S-1) → 96,4 % (−0,4 pt). <strong>Hors incident DHL, toutes les métriques s'améliorent.</strong>",
+  'rupture': "J'ai identifié <strong>8 références</strong> dont la couverture de stock est inférieure à 72h selon les flux de commandes en cours.<div class='ai-table-wrap' style='margin:8px 0'><table class='ai-table'><thead><tr><th>Référence</th><th>Stock</th><th>Sorties/j</th><th>Couverture</th><th>Statut</th></tr></thead><tbody><tr><td class='td-name'>REF-2341</td><td class='td-neutral'>47 u.</td><td class='td-neutral'>28 u.</td><td class='td-bad'>&lt; 2j</td><td><span class='td-badge badge-bad'>Critique</span></td></tr><tr><td class='td-name'>REF-8812</td><td class='td-neutral'>62 u.</td><td class='td-neutral'>35 u.</td><td class='td-bad'>&lt; 2j</td><td><span class='td-badge badge-bad'>Critique</span></td></tr><tr><td class='td-name'>REF-0093</td><td class='td-neutral'>88 u.</td><td class='td-neutral'>42 u.</td><td class='td-warn'>2–3j</td><td><span class='td-badge badge-warn'>Vigilance</span></td></tr><tr><td class='td-name'>REF-5507</td><td class='td-neutral'>120 u.</td><td class='td-neutral'>50 u.</td><td class='td-warn'>2–3j</td><td><span class='td-badge badge-warn'>Vigilance</span></td></tr><tr><td class='td-name'>REF-1190</td><td class='td-neutral'>210 u.</td><td class='td-neutral'>70 u.</td><td class='td-warn'>3j</td><td><span class='td-badge badge-warn'>Vigilance</span></td></tr><tr><td class='td-name'>REF-4421</td><td class='td-neutral'>180 u.</td><td class='td-neutral'>55 u.</td><td class='td-warn'>3–4j</td><td><span class='td-badge badge-warn'>Vigilance</span></td></tr><tr><td class='td-name'>REF-7730</td><td class='td-neutral'>340 u.</td><td class='td-neutral'>95 u.</td><td class='td-neutral'>3–4j</td><td><span class='td-badge badge-new'>Surveiller</span></td></tr><tr><td class='td-name'>REF-3318</td><td class='td-neutral'>290 u.</td><td class='td-neutral'>80 u.</td><td class='td-neutral'>3–4j</td><td><span class='td-badge badge-new'>Surveiller</span></td></tr></tbody></table></div><div class='ai-conclusion'><div class='ai-conclusion-head'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' style='width:13px;height:13px'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>Préconisation elo·IA</div><div class='ai-conclusion-body'>Déclencher un <strong>réappro prioritaire REF-2341 &amp; REF-8812</strong> avant 17h. Pour les 6 autres, planifier le réassort sous 48h pour éviter toute rupture de service.</div></div>",
 };
 function getResponse(q) {
   var ql = q.toLowerCase();
-  for (var k in aiResponsesStocks) { if (ql.indexOf(k) > -1) return aiResponsesStocks[k]; }
-  return 'J\'analyse vos données Stocks \u0026 Entrepôt… <strong>Aucune anomalie supplémentaire</strong> au-delà des signaux déjà remontés. Posez-moi une question précise sur les ruptures, la rotation, les DLC, les consommables ou les réapprovisionnements.';
+  for (var k in _aiResponses) { if (ql.indexOf(k) > -1) return _aiResponses[k]; }
+  return "Analyse en cours… <strong>Aucune anomalie supplémentaire détectée</strong> au-delà des signaux déjà remontés.";
 }
 
 /* ── ENVOI MESSAGE ── */
@@ -1785,14 +1717,22 @@ function appendMsg(type, text, question) {
     var hm = now.getHours() + 'h' + String(now.getMinutes()).padStart(2,'0');
     var msgId = 'msg-' + Date.now();
     var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+    var isRupture = question && question.toLowerCase().indexOf('rupture') > -1;
+    var exportBtn = isRupture
+      ? '<button onclick="exportRupturesCSV()" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--success);background:var(--success-tint);border:1px solid rgba(42,149,84,0.2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;white-space:nowrap;">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px;flex-shrink:0"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+        'Exporter CSV</button>'
+      : '';
+    var cleanText = text.replace(/<[^>]+>/g, '').slice(0, 80).replace(/'/g, "\\'");
     div.innerHTML =
       '<div class="ia-msg-ai-meta">' + icon + ' elo·IA · ' + hm + '</div>' +
       '<div class="ia-msg-ai">' + text + '</div>' +
       '<div style="display:flex;align-items:center;gap:8px;margin-top:5px;">' +
-        '<button id="' + msgId + '" onclick="saveMsg(this,'' + msgId + '','' + (question||'').replace(/'/g,"\'") + '','' + text.replace(/'/g,"\'") + '')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
+        '<button id="' + msgId + '" onclick="saveMsg(this,\'' + msgId + '\',\'' + (question||'').replace(/'/g,"\\'") + '\',\'' + cleanText + '\')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>' +
           'Enregistrer' +
         '</button>' +
+        exportBtn +
         '<span class="ia-msg-time">' + hm + '</span>' +
       '</div>';
   }
@@ -1846,6 +1786,33 @@ function fillAndSend(q) {
   sendIA();
 }
 
+/* ── EXPORT CSV — Ruptures imminentes ── */
+function exportRupturesCSV() {
+  var rows = [
+    ['Référence','Stock actuel (u.)','Sorties / jour (u.)','Couverture','Statut'],
+    ['REF-2341','47','28','< 2j','Critique'],
+    ['REF-8812','62','35','< 2j','Critique'],
+    ['REF-0093','88','42','2–3j','Vigilance'],
+    ['REF-5507','120','50','2–3j','Vigilance'],
+    ['REF-1190','210','70','3j','Vigilance'],
+    ['REF-4421','180','55','3–4j','Vigilance'],
+    ['REF-7730','340','95','3–4j','À surveiller'],
+    ['REF-3318','290','80','3–4j','À surveiller'],
+  ];
+  var csv = rows.map(function(r) {
+    return r.map(function(c) { return '"' + c.replace(/"/g, '""') + '"'; }).join(';');
+  }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'ruptures-imminentes-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 /* ── ANALYSES ── */
 function _syncCounts() {
   var list = document.getElementById('analysesList');
@@ -1869,8 +1836,8 @@ function injectAnalysis(q, answer) {
     '<div class="analysis-item-head"><div class="analysis-mod-dot" style="background:' + col + '"></div>' +
     '<div class="analysis-q">' + q + '</div>' +
     '<button class="analysis-archive-btn" onclick="archiveAnalysis(event,' + id + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>' +
-    '<div class="analysis-answer">' + clean.slice(0,120) + (clean.length > 120 ? '\u2026' : '') + '</div>' +
-    '<div class="analysis-footer"><span class="analysis-time">demo · ' + hm + '</span><span class="analysis-src">elo\u00b7IA</span></div>';
+    '<div class="analysis-answer">' + clean.slice(0,120) + (clean.length > 120 ? '…' : '') + '</div>' +
+    '<div class="analysis-footer"><span class="analysis-time">demo · ' + hm + '</span><span class="analysis-src">elo·IA</span></div>';
   list.insertBefore(card, list.querySelector('.analysis-item') || null);
   _syncCounts();
   setTimeout(function() { card.classList.add('highlight'); }, 20);
@@ -1885,7 +1852,7 @@ function archiveAnalysis(e, id) {
 }
 function loadAnalysisInIA(id) {
   var card = document.getElementById('analysis-card-' + id); if (!card) return;
-  document.getElementById('iaDockInput').value = '\u21a9 ' + card.querySelector('.analysis-q').textContent;
+  document.getElementById('iaDockInput').value = '↩ ' + card.querySelector('.analysis-q').textContent;
   document.getElementById('iaSendBtn').classList.add('ready');
   switchDockTab('chat');
   document.getElementById('iaDockInput').focus();
@@ -1945,10 +1912,18 @@ function saveSignal(sigId, analysisText) {
   var btn = document.getElementById('save-' + sigId);
   if (btn) {
     btn.classList.add('saved');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistr\u00e9e';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg> Enregistrée';
     btn.onclick = null;
   }
-  injectAnalysis('Signal \u00b7 ' + analysisText.split('\u00b7')[0].trim(), analysisText);
+  injectAnalysis('Signal · ' + analysisText.split('·')[0].trim(), analysisText);
+}
+
+/* ── THEME (doc uniquement) ── */
+function toggleTheme() {
+  var h = document.documentElement;
+  var next = h.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  h.setAttribute("data-theme", next);
+  localStorage.setItem("elo-theme", next);
 }
 
 /* ── INIT ── */
@@ -1956,221 +1931,9 @@ window.addEventListener('DOMContentLoaded', function() {
   _syncAlertCount();
   updateDockHeight();
   window.addEventListener('resize', updateDockHeight);
-});</script>
+  /* updateDockHeight called here, charts/stocks init in script 2 */
+});
 
-<!-- ════ FLOATING IA DOCK ════ -->
-<div class="ia-dock-anchor" id="iaDockAnchor">
-  <div class="ia-dock-inner">
-
-    <!-- Zone Signal IA (flottante, au-dessus du dock) -->
-    <div class="ia-signal-zone" id="iaSignalZone">
-    </div>
-
-    <!-- Dock principal -->
-    <div class="ia-dock" id="iaDock">
-
-      <!-- BARRE PRINCIPALE (toujours visible) -->
-      <div class="ia-dock-bar">
-
-        <!-- Zone 1 : Brand elo·IA — cliquable → ouvre Conversation -->
-        <div class="ia-dock-zone" style="cursor:pointer;" onclick="switchDockTab('chat')">
-          <div class="ia-dock-brand">
-            <div class="ia-dock-av">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-            </div>
-            <div>
-              <div class="ia-dock-label">elo · IA</div>
-              <div class="ia-dock-status"><div class="ia-status-dot"></div>Active</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Barre fermée : onglet Analyses -->
-        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-analyses" onclick="switchDockTab('analyses')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Analyses
-          <span class="ia-count" id="analysisCount">1</span>
-        </button>
-
-        <!-- Barre fermée : onglet Alertes -->
-        <button class="ia-dock-tab-btn ia-bar-tab" id="bar-tab-alertes" onclick="switchDockTab('alertes')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-          Alertes
-          <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCount">2</span>
-        </button>
-
-        <!-- Zone input (order:10) -->
-        <div class="ia-dock-zone ia-dock-input-zone">
-          <div class="ia-dock-input-wrap">
-            <input class="ia-dock-input" id="iaDockInput"
-              placeholder="Posez une question sur les stocks…"
-              oninput="toggleSend(this)"
-              onkeydown="if(event.key==='Enter')sendIA()"/>
-            <button class="ia-dock-send" id="iaSendBtn" onclick="sendIA()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-          </div>
-          <div class="ia-saved-pill" id="iaSavedPill" onclick="switchDockTab('analyses')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-            Enregistrée
-          </div>
-        </div>
-
-        <!-- Toggle chevron (order:11) -->
-        <button class="ia-dock-toggle" id="dockToggleBtn" onclick="toggleDock()" title="Ouvrir / fermer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-        </button>
-
-      </div><!-- /ia-dock-bar -->
-
-      <!-- CORPS EXPANDABLE -->
-      <div class="ia-dock-body" id="iaDockBody">
-
-        <!-- Tabbar volet ouvert : 3 onglets -->
-        <div class="ia-dock-tabs">
-          <button class="ia-dock-tab-btn active" id="tab-chat" onclick="switchDockTab('chat')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            Conversation
-          </button>
-          <button class="ia-dock-tab-btn" id="tab-analyses" onclick="switchDockTab('analyses')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Analyses &amp; Actions
-            <span class="ia-count" id="analysisCountFull">1</span>
-          </button>
-          <button class="ia-dock-tab-btn" id="tab-alertes" onclick="switchDockTab('alertes')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-            Alertes
-            <span class="ia-count" style="background:var(--danger-tint);color:var(--danger);" id="alertCountFull">2</span>
-          </button>
-        </div>
-
-        <!-- Panneau Chat -->
-        <div class="ia-dock-panel active" id="panel-chat">
-          <div class="ia-dock-panel-scroll" id="iaConvoScroll">
-            <div class="ia-msg-user">Quels articles vont bientôt être en rupture et lesquels ne bougent plus ?</div>
-            <div class="ia-msg-ai-wrap">
-              <div class="ia-msg-ai-meta">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:9px;height:9px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-                elo·IA · Analyse Stocks · 17 mars · 10h05
-              </div>
-              <div class="ia-msg-ai"><strong>8 ruptures actives</strong> — Shampoing Hydra+ (0 u) et Mousse coiffante Volume (3 u) sont critiques. 14 références supplémentaires ont atteint leur seuil d'alerte.<br><br>Côté rotation : <strong>23 références immobiles depuis +60 jours</strong> (4 820 u). La Crème Boucles 250ml cumule 134 jours — palette de déstockage recommandée.</div>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
-                <button onclick="saveMsg(this,'msg-demo','Ruptures et articles immobiles','8 ruptures actives dont Shampoing Hydra+')" style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;cursor:pointer;transition:all 0.12s;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:9px;height:9px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
-                  Enregistrer
-                </button>
-                <span class="ia-msg-time">10h05</span>
-              </div>
-            </div>
-          </div>
-          <div class="ia-dock-panel-footer">
-            <div class="ia-sugg-label" style="margin-bottom:6px">Suggestions</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              <div class="ia-sugg" onclick="fillAndSend('Quels articles sont en rupture de stock ?')"><div class="ia-sugg-dot" style="background:var(--danger)"></div>Ruptures actives</div>
-              <div class="ia-sugg" onclick="fillAndSend('Quels articles mettre sur palette de déstockage ?')"><div class="ia-sugg-dot" style="background:var(--c-stocks)"></div>Articles à déstocker</div>
-              <div class="ia-sugg" onclick="fillAndSend('Quel est mon besoin en consommables cette semaine ?')"><div class="ia-sugg-dot" style="background:var(--warning)"></div>Besoin consommables</div>
-              <div class="ia-sugg" onclick="fillAndSend('Quelles références ont une DLC proche ?')"><div class="ia-sugg-dot" style="background:var(--violet)"></div>DLC proches</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panneau Analyses & Actions (50/50) -->
-        <div class="ia-dock-panel" id="panel-analyses">
-          <div style="display:grid;grid-template-columns:1fr 1fr;height:100%;min-height:0">
-            <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border)">
-              <div class="ia-merged-section-head">
-                <div class="ia-merged-section-title">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  Analyses sauvegardées
-                </div>
-                <span class="ia-count" id="analysisCountPanel">1</span>
-              </div>
-              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="analysesList">
-                <div class="analysis-item" id="analysis-card-1" onclick="loadAnalysisInIA(1)">
-                  <div class="analysis-item-head"><div class="analysis-mod-dot" style="background:var(--c-stocks)"></div><div class="analysis-q">8 ruptures actives dont Shampoing Hydra+ (0 u) — impact commandes directes</div><button class="analysis-archive-btn" onclick="archiveAnalysis(event,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></button></div>
-                  <div class="analysis-answer">Shampoing Hydra+ : 0 u · Mousse coiffante : 3 u. Réappro urgente. 14 références en seuil d'alerte. 23 articles immobiles +60 j (4 820 u).</div>
-                  <div class="analysis-footer"><span class="analysis-time">Lundi 17 mars · 10h05</span><span class="analysis-src">elo·IA</span></div>
-                </div>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;overflow:hidden">
-              <div class="ia-merged-section-head">
-                <div class="ia-merged-section-title">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                  Actions de suivi
-                </div>
-                <span class="ia-count-action" id="actionCountPanel">0</span>
-              </div>
-              <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:8px 12px" id="actionsList">
-                <div class="dock-empty" id="actionsEmpty">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                  Aucune action.<br>Ajoutez un suivi ci-dessous.
-                </div>
-              </div>
-              <div class="ia-merged-section-head" style="border-top:1px solid var(--border);border-bottom:none">
-                <input class="ia-dock-add-input" id="actionInput" placeholder="+ Ajouter une action…" onkeydown="if(event.key==='Enter')addAction()" style="width:100%"/>
-              </div>
-            </div>
-          </div>
-        </div><!-- /panel-analyses -->
-
-        <!-- Panneau Alertes -->
-        <div class="ia-dock-panel" id="panel-alertes">
-          <div class="ia-dock-panel-scroll" id="alertesList">
-
-            <div class="signal-ia" data-severity="danger" id="alerte-1">
-              <div class="signal-ia-head">
-                <div class="signal-ia-head-left">
-                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-                  <div class="signal-ia-meta">
-                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Stocks critiques</div>
-                    <div class="signal-ia-text-inline"><strong>Shampoing Hydra+ : 0 unité</strong> — rupture totale, commandes bloquées</div>
-                  </div>
-                </div>
-                <div class="signal-ia-head-right">
-                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Analyser la rupture Shampoing Hydra+')">Analyser IA</button>
-                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-1" onclick="saveSignal('alerte-1','Shampoing Hydra+ · 0 u · rupture totale · commandes bloquées')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
-                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                </div>
-              </div>
-              <div class="signal-ia-reco">
-                <div class="signal-ia-reco-inner">
-                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
-                  <div class="signal-ia-reco-body">Déclencher la <strong>réappro urgente Shampoing Hydra+</strong> avant 17h pour éviter une rupture de service demain matin.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="signal-ia" data-severity="warning" id="alerte-2">
-              <div class="signal-ia-head">
-                <div class="signal-ia-head-left">
-                  <div class="signal-ia-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-                  <div class="signal-ia-meta">
-                    <div class="signal-ia-source"><div class="signal-ia-source-dot"></div>elo · IA · Déstockage</div>
-                    <div class="signal-ia-text-inline"><strong>23 références immobiles +60 j</strong> — 4 820 u à déstocker</div>
-                  </div>
-                </div>
-                <div class="signal-ia-head-right">
-                  <button class="signal-ia-btn signal-ia-btn-primary" onclick="askIA('Quels articles mettre sur palette de déstockage ?')">Analyser IA</button>
-                  <button class="signal-ia-btn signal-ia-btn-save" id="save-alerte-2" onclick="saveSignal('alerte-2','Déstockage · 23 références immobiles +60j · 4 820 u')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:10px;height:10px"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> Sauvegarder</button>
-                  <button class="signal-ia-dismiss" onclick="dismissAlerte('alerte-2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                </div>
-              </div>
-              <div class="signal-ia-reco">
-                <div class="signal-ia-reco-inner">
-                  <div class="signal-ia-reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Préconisation elo · IA</div>
-                  <div class="signal-ia-reco-body">Monter une <strong>palette promo sur les 8 références avec DLC &lt;60 j</strong> — Crème Boucles 250ml en priorité (134 j immobile).</div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div><!-- /panel-alertes -->
-
-      </div><!-- /ia-dock-body -->
-    </div><!-- /ia-dock -->
-  </div><!-- /ia-dock-inner -->
-</div><!-- /ia-dock-anchor -->
-
+</script>
 </body>
 </html>
